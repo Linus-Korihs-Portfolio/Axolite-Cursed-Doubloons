@@ -1,2 +1,2 @@
-# GruenderGame
+# Gründer Game
 
