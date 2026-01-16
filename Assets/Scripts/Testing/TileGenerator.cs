@@ -1,7 +1,17 @@
+// TileGenerator.cs
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// Deterministic Wave Function Collapse tile generator (3D grid, X/Z).
+/// Rules:
+/// - Road must connect to Road (and match height within epsilon)
+/// - Ground must connect to Ground
+/// - Exactly one Start and one End (optional: placed pre-collapse)
+/// - No Road sockets facing outside on grid borders
+/// </summary>
 public class TileGenerator : MonoBehaviour
 {
     [Header("Data")]
@@ -19,14 +29,18 @@ public class TileGenerator : MonoBehaviour
     public Transform parent;
     public bool clearBeforeGenerate = true;
 
-    private System.Random rng;
-    private List<TileOption> allOptions;
-    private Dictionary<GameObject, int> currentCounts;
+    [Header("Debug")]
+    public bool showDebugLogs = false;
 
-    private void Start()
-    {
-        Generate();
-    }
+    private System.Random rng;
+
+    private List<TileOption> allOptions;
+    private List<TileOption> startOptions;
+    private List<TileOption> endOptions;
+
+    private WFCCell[,] grid;
+
+    private void Start() => Generate();
 
     [ContextMenu("Generate")]
     public void Generate()
@@ -37,204 +51,424 @@ public class TileGenerator : MonoBehaviour
             return;
         }
 
-        if (parent == null) parent = this.transform;
+        if (parent == null) parent = transform;
 
-        // Initialize seed BEFORE any randomness
         if (randomSeed)
-        {
-            // Use deterministic seed generation (based on system time, but reproducible via seed override)
-            seed = System.Environment.TickCount; // Can be overridden by setting seed manually
-        }
-        
+            seed = Environment.TickCount;
+
         rng = new System.Random(seed);
 
         if (clearBeforeGenerate) ClearChildren(parent);
 
-        // Build all tile options (prefab + rotation)
-        allOptions = BuildOptions(settings);
-        currentCounts = new Dictionary<GameObject, int>();
+        allOptions = BuildOptions(settings, TileRole.Normal, TileRole.Start, TileRole.End);
 
-        // Initialize current counts
-        foreach (var entry in settings.tiles)
+        startOptions = allOptions.Where(o => o.role == TileRole.Start).ToList();
+        endOptions   = allOptions.Where(o => o.role == TileRole.End).ToList();
+
+        if (settings.placeStartAndEnd)
         {
-            if (entry.prefab != null)
-                currentCounts[entry.prefab] = 0;
-        }
-
-        // Try to fill grid with backtracking - always finds a solution
-        var chosen = new TileOption[width, height];
-        if (TryFillGridWithBacktracking(chosen, 0))
-        {
-            Build(chosen);
-            Debug.Log($"PCG generated successfully. Seed={seed}");
-        }
-        else
-        {
-            Debug.LogError("FATAL: Could not generate grid even with backtracking. Check constraints!");
-        }
-    }
-
-    /// <summary>
-    /// Recursive backtracking: fills grid from top-left, backtracks if constraints violated.
-    /// Guarantees a solution exists (or constraints are impossible).
-    /// </summary>
-    private bool TryFillGridWithBacktracking(TileOption[,] chosen, int cellIndex)
-    {
-        // Base case: all cells filled
-        if (cellIndex == width * height)
-        {
-            // Final check: all occurrence constraints met
-            return MeetsOccurrenceConstraints(settings, currentCounts);
-        }
-
-        int y = cellIndex / width;
-        int x = cellIndex % width;
-
-        // Collect valid options at this position
-        var valid = new List<TileOption>(64);
-        foreach (var opt in allOptions)
-        {
-            if (!IsValidAt(x, y, opt, chosen))
-                continue;
-
-            if (!PassesBorderRule(x, y, opt))
-                continue;
-
-            // Check if placing this tile still allows constraint satisfaction
-            if (!CanStillMeetConstraints(opt, currentCounts, settings, width * height - cellIndex - 1))
-                continue;
-
-            valid.Add(opt);
-        }
-
-        if (valid.Count == 0)
-            return false; // No valid options, backtrack
-
-        // Shuffle valid options using seeded RNG for variety
-        int n = valid.Count;
-        for (int i = n - 1; i > 0; i--)
-        {
-            int randomIndex = rng.Next(i + 1);
-            var temp = valid[i];
-            valid[i] = valid[randomIndex];
-            valid[randomIndex] = temp;
-        }
-
-        // Try each valid option
-        foreach (var opt in valid)
-        {
-            // Place tile
-            chosen[x, y] = opt;
-            currentCounts[opt.basePrefab]++;
-
-            // Recurse
-            if (TryFillGridWithBacktracking(chosen, cellIndex + 1))
-                return true;
-
-            // Backtrack
-            chosen[x, y] = null;
-            currentCounts[opt.basePrefab]--;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Checks if placing this tile could still allow us to meet min/max constraints
-    /// with remaining cells. Prunes impossible branches early.
-    /// </summary>
-    private bool CanStillMeetConstraints(TileOption opt, Dictionary<GameObject, int> counts, TileSettingsSO settings, int cellsRemaining)
-    {
-        int currentCount = counts[opt.basePrefab];
-
-        foreach (var entry in settings.tiles)
-        {
-            if (entry.prefab == null) continue;
-
-            counts.TryGetValue(entry.prefab, out int c);
-
-            // Check if we can still reach minCount
-            int maxPossible = c + (entry.prefab == opt.basePrefab ? cellsRemaining : cellsRemaining);
-            if (maxPossible < entry.minCount)
-                return false; // Can't reach minCount
-
-            // Check if we can stay under maxCount
-            if (entry.maxCount > 0)
+            if (startOptions.Count == 0 || endOptions.Count == 0)
             {
-                int minPossible = c;
-                if (entry.prefab == opt.basePrefab)
-                    minPossible++; // We're placing one of this type
-                
-                if (minPossible > entry.maxCount)
-                    return false; // Already exceeded maxCount
+                Debug.LogError("placeStartAndEnd is enabled, but no Start or End tiles exist in TileSettingsSO (TileEntry.role).");
+                return;
             }
         }
 
-        return true;
+        InitializeGrid();
+
+        // Apply border constraints to all cells initially (reduces contradictions early)
+        ApplyBorderConstraintsToAllCells();
+
+        // Pre-place Start/End as hard constraints (exactly one each)
+        if (settings.placeStartAndEnd)
+            PlaceStartAndEnd();
+
+        // Run WFC
+        if (CollapseWaveFunction())
+        {
+            BuildFinalGrid();
+            Debug.Log($"✓ WFC Success! Seed={seed}");
+        }
+        else
+        {
+            Debug.LogError($"✗ WFC Failed. Seed={seed} (Check socket setup / constraints / tileset completeness)");
+        }
     }
 
-    private bool IsValidAt(int x, int y, TileOption opt, TileOption[,] chosen)
+    private void InitializeGrid()
     {
-        // West neighbor
-        if (x - 1 >= 0 && chosen[x - 1, y] != null)
+        grid = new WFCCell[width, height];
+
+        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
+            grid[x, y] = new WFCCell(x, y, new List<TileOption>(allOptions));
+    }
+
+    private bool CollapseWaveFunction()
+    {
+        int iterations = 0;
+        const int MAX_ITERATIONS = 20000;
+
+        while (!IsFullyCollapsed())
         {
-            if (!AreCompatible(chosen[x - 1, y], opt, Direction.East, Direction.West))
+            iterations++;
+            if (iterations > MAX_ITERATIONS)
+            {
+                Debug.LogError($"Max iterations ({MAX_ITERATIONS}) reached!");
+                return false;
+            }
+
+            WFCCell cell = GetCellWithLowestEntropy();
+            if (cell == null)
+                break;
+
+            CollapseCell(cell);
+
+            if (!Propagate(cell))
                 return false;
         }
 
-        // South neighbor
-        if (y - 1 >= 0 && chosen[x, y - 1] != null)
+        // Final sanity pass: ensure all adjacent pairs satisfy the hard rules
+        return VerifyAdjacencyConstraints();
+    }
+
+    private bool IsFullyCollapsed()
+    {
+        foreach (var c in grid)
+            if (!c.isCollapsed) return false;
+        return true;
+    }
+
+    private WFCCell GetCellWithLowestEntropy()
+    {
+        List<WFCCell> candidates = new();
+        int minEntropy = int.MaxValue;
+
+        foreach (var c in grid)
         {
-            if (!AreCompatible(chosen[x, y - 1], opt, Direction.North, Direction.South))
+            if (c.isCollapsed) continue;
+            int e = c.possibleOptions.Count;
+            if (e == 0) return c; // contradiction cell -> will fail later quickly
+
+            if (e < minEntropy)
+            {
+                minEntropy = e;
+                candidates.Clear();
+                candidates.Add(c);
+            }
+            else if (e == minEntropy)
+            {
+                candidates.Add(c);
+            }
+        }
+
+        if (candidates.Count == 0) return null;
+        return candidates[rng.Next(candidates.Count)];
+    }
+
+    private void CollapseCell(WFCCell cell)
+    {
+        if (cell.possibleOptions.Count == 0)
+            return;
+
+        TileOption chosen = WeightedPickRNG(cell.possibleOptions);
+
+        cell.possibleOptions.Clear();
+        cell.possibleOptions.Add(chosen);
+        cell.isCollapsed = true;
+        cell.finalOption = chosen;
+
+        LogDebug($"Collapsed ({cell.x},{cell.y}) -> {chosen.basePrefab.name}_r{chosen.rotationSteps}");
+    }
+
+    private bool Propagate(WFCCell startCell)
+    {
+        Queue<WFCCell> q = new();
+        q.Enqueue(startCell);
+
+        while (q.Count > 0)
+        {
+            WFCCell cell = q.Dequeue();
+
+            // For each direction, reduce neighbor options based on current cell options
+            if (!PropagateToNeighbor(cell, Direction.North, q)) return false;
+            if (!PropagateToNeighbor(cell, Direction.South, q)) return false;
+            if (!PropagateToNeighbor(cell, Direction.East,  q)) return false;
+            if (!PropagateToNeighbor(cell, Direction.West,  q)) return false;
+        }
+
+        return true;
+    }
+
+    private bool PropagateToNeighbor(WFCCell cell, Direction dir, Queue<WFCCell> q)
+    {
+        WFCCell n = GetNeighbor(cell, dir);
+        if (n == null || n.isCollapsed) return true;
+
+        Direction opp = GetOppositeDirection(dir);
+
+        bool changed = false;
+
+        // Keep neighbor option only if there exists SOME option in current cell that matches pairwise rules
+        for (int i = n.possibleOptions.Count - 1; i >= 0; i--)
+        {
+            TileOption nOpt = n.possibleOptions[i];
+
+            bool hasMatch = false;
+            foreach (TileOption cOpt in cell.possibleOptions)
+            {
+                if (AreEdgeCompatible(cOpt, dir, nOpt, opp))
+                {
+                    hasMatch = true;
+                    break;
+                }
+            }
+
+            if (!hasMatch)
+            {
+                n.possibleOptions.RemoveAt(i);
+                changed = true;
+            }
+        }
+
+        // Border constraints (no roads pointing outside)
+        if (ApplyBorderConstraints(n))
+            changed = true;
+
+        if (changed)
+        {
+            if (n.possibleOptions.Count == 0)
+            {
+                LogDebug($"Contradiction at ({n.x},{n.y}) after propagating from ({cell.x},{cell.y})");
+                return false;
+            }
+            q.Enqueue(n);
+        }
+
+        return true;
+    }
+
+    private bool AreEdgeCompatible(TileOption a, Direction aDir, TileOption b, Direction bDir)
+    {
+        SocketType aType = a.GetSocketType(aDir);
+        SocketType bType = b.GetSocketType(bDir);
+
+        // Hard rule: must be same type
+        if (aType != bType) return false;
+
+        // If it's Road, must match height within epsilon
+        if (aType == SocketType.Road)
+        {
+            float ah = a.GetHeight(aDir);
+            float bh = b.GetHeight(bDir);
+            return Mathf.Abs(ah - bh) <= settings.heightEpsilon;
+        }
+
+        // Ground: ok (ignore height)
+        return true;
+    }
+
+    private WFCCell GetNeighbor(WFCCell cell, Direction dir)
+    {
+        int nx = cell.x, ny = cell.y;
+
+        switch (dir)
+        {
+            case Direction.North: ny++; break;
+            case Direction.South: ny--; break;
+            case Direction.East:  nx++; break;
+            case Direction.West:  nx--; break;
+        }
+
+        if (nx < 0 || nx >= width || ny < 0 || ny >= height)
+            return null;
+
+        return grid[nx, ny];
+    }
+
+    private static Direction GetOppositeDirection(Direction dir)
+    {
+        return dir switch
+        {
+            Direction.North => Direction.South,
+            Direction.South => Direction.North,
+            Direction.East  => Direction.West,
+            Direction.West  => Direction.East,
+            _ => Direction.North
+        };
+    }
+
+    private void PlaceStartAndEnd()
+    {
+        // Choose positions
+        Vector2Int startPos = PickRandomCellPos(settings.startEndOnBorder);
+        Vector2Int endPos;
+
+        int safety = 0;
+        do
+        {
+            endPos = PickRandomCellPos(settings.startEndOnBorder);
+            safety++;
+        } while (endPos == startPos && safety < 1000);
+
+        // Constrain those cells to Start / End options
+        ForceCellToRole(startPos.x, startPos.y, TileRole.Start);
+        ForceCellToRole(endPos.x, endPos.y, TileRole.End);
+
+        // Propagate from both constraints
+        if (!Propagate(grid[startPos.x, startPos.y]))
+            Debug.LogError("Propagation failed after placing Start.");
+
+        if (!Propagate(grid[endPos.x, endPos.y]))
+            Debug.LogError("Propagation failed after placing End.");
+
+        LogDebug($"Placed Start at {startPos}, End at {endPos}");
+    }
+
+    private Vector2Int PickRandomCellPos(bool borderOnly)
+    {
+        if (!borderOnly)
+            return new Vector2Int(rng.Next(0, width), rng.Next(0, height));
+
+        // Border cell: x==0|w-1 or y==0|h-1
+        bool pickHorizontalEdge = rng.NextDouble() < 0.5;
+        if (pickHorizontalEdge)
+        {
+            int x = rng.Next(0, width);
+            int y = (rng.NextDouble() < 0.5) ? 0 : (height - 1);
+            return new Vector2Int(x, y);
+        }
+        else
+        {
+            int y = rng.Next(0, height);
+            int x = (rng.NextDouble() < 0.5) ? 0 : (width - 1);
+            return new Vector2Int(x, y);
+        }
+    }
+
+    private void ForceCellToRole(int x, int y, TileRole role)
+    {
+        WFCCell cell = grid[x, y];
+
+        List<TileOption> roleOpts = role switch
+        {
+            TileRole.Start => startOptions,
+            TileRole.End   => endOptions,
+            _              => allOptions.Where(o => o.role == TileRole.Normal).ToList()
+        };
+
+        // Intersect existing possibilities with the role options
+        cell.possibleOptions = cell.possibleOptions
+            .Where(o => o.role == role)
+            .ToList();
+
+        // Apply border constraints too
+        ApplyBorderConstraints(cell);
+
+        if (cell.possibleOptions.Count == 0)
+        {
+            Debug.LogError($"No valid {role} options for cell ({x},{y}). Check your Start/End tiles & border rules.");
+            return;
+        }
+
+        // Collapse immediately to one of them (weighted)
+        TileOption chosen = WeightedPickRNG(cell.possibleOptions);
+        cell.possibleOptions.Clear();
+        cell.possibleOptions.Add(chosen);
+        cell.isCollapsed = true;
+        cell.finalOption = chosen;
+    }
+
+    private void ApplyBorderConstraintsToAllCells()
+    {
+        foreach (var c in grid)
+            ApplyBorderConstraints(c);
+    }
+
+    private bool ApplyBorderConstraints(WFCCell cell)
+    {
+        bool changed = false;
+
+        for (int i = cell.possibleOptions.Count - 1; i >= 0; i--)
+        {
+            var opt = cell.possibleOptions[i];
+
+            bool invalid = false;
+
+            // IMPORTANT: independent checks (no else-if)
+            if (cell.x == 0 && opt.GetSocketType(Direction.West) == SocketType.Road) invalid = true;
+            if (cell.x == width - 1 && opt.GetSocketType(Direction.East) == SocketType.Road) invalid = true;
+            if (cell.y == 0 && opt.GetSocketType(Direction.South) == SocketType.Road) invalid = true;
+            if (cell.y == height - 1 && opt.GetSocketType(Direction.North) == SocketType.Road) invalid = true;
+
+            if (invalid)
+            {
+                cell.possibleOptions.RemoveAt(i);
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+
+    private bool VerifyAdjacencyConstraints()
+    {
+        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
+        {
+            var c = grid[x, y];
+            if (c.finalOption == null) return false;
+
+            var east = GetNeighbor(c, Direction.East);
+            if (east != null && !AreEdgeCompatible(c.finalOption, Direction.East, east.finalOption, Direction.West))
+                return false;
+
+            var north = GetNeighbor(c, Direction.North);
+            if (north != null && !AreEdgeCompatible(c.finalOption, Direction.North, north.finalOption, Direction.South))
                 return false;
         }
 
         return true;
     }
 
-    private bool PassesBorderRule(int x, int y, TileOption opt)
-    {
-        // "Closed border": no Road socket may face outside the grid
-        if (x == 0 && opt.GetSocketType(Direction.West) == SocketType.Road) return false;
-        if (x == width - 1 && opt.GetSocketType(Direction.East) == SocketType.Road) return false;
-        if (y == 0 && opt.GetSocketType(Direction.South) == SocketType.Road) return false;
-        if (y == height - 1 && opt.GetSocketType(Direction.North) == SocketType.Road) return false;
-        return true;
-    }
-
-    private bool AreCompatible(TileOption a, TileOption b, Direction dirA, Direction dirB)
-    {
-        // Type must match (Road-Road, Ground-Ground)
-        var typeA = a.GetSocketType(dirA);
-        var typeB = b.GetSocketType(dirB);
-        if (typeA != typeB) return false;
-
-        // Height must match (for EVERYTHING is simplest & robust)
-        float hA = a.GetHeight(dirA);
-        float hB = b.GetHeight(dirB);
-        return Mathf.Abs(hA - hB) <= settings.heightEpsilon;
-    }
-
-    private void Build(TileOption[,] chosen)
+    private void BuildFinalGrid()
     {
         float s = settings.cellSize;
 
         for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
         {
-            for (int x = 0; x < width; x++)
-            {
-                var opt = chosen[x, y];
-                if (opt == null) 
-                {
-                    Debug.LogError($"Tile at ({x}, {y}) is null after successful backtracking!");
-                    continue;
-                }
-                
-                var pos = new Vector3(x * s, 0f, y * s);
-                var go = Instantiate(opt.basePrefab, pos, Quaternion.Euler(0f, opt.rotationY, 0f), parent);
-                go.name = $"{opt.basePrefab.name}_r{opt.rotationSteps}_{x}_{y}";
-            }
+            var cell = grid[x, y];
+            if (cell.finalOption == null) continue;
+
+            var opt = cell.finalOption;
+            var pos = new Vector3(x * s, 0f, y * s);
+            var go = Instantiate(opt.basePrefab, pos, Quaternion.Euler(0f, opt.rotationY, 0f), parent);
+            go.name = $"{opt.basePrefab.name}_r{opt.rotationSteps}_{x}_{y}";
         }
+    }
+
+    private TileOption WeightedPickRNG(List<TileOption> list)
+    {
+        int total = 0;
+        foreach (var opt in list)
+            total += Mathf.Max(1, opt.weight);
+
+        int roll = rng.Next(0, total);
+        int sum = 0;
+
+        foreach (var opt in list)
+        {
+            sum += Mathf.Max(1, opt.weight);
+            if (roll < sum) return opt;
+        }
+
+        return list[list.Count - 1];
+    }
+
+    private void LogDebug(string msg)
+    {
+        if (showDebugLogs) Debug.Log(msg);
     }
 
     private static void ClearChildren(Transform t)
@@ -243,29 +477,16 @@ public class TileGenerator : MonoBehaviour
             DestroyImmediate(t.GetChild(i).gameObject);
     }
 
-    private static bool MeetsOccurrenceConstraints(TileSettingsSO settings, Dictionary<GameObject, int> counts)
-    {
-        foreach (var entry in settings.tiles)
-        {
-            if (entry.prefab == null) continue;
-
-            counts.TryGetValue(entry.prefab, out int c);
-
-            if (c < entry.minCount) return false;
-            if (entry.maxCount > 0 && c > entry.maxCount) return false;
-        }
-        return true;
-    }
-
-    private static List<TileOption> BuildOptions(TileSettingsSO settings)
+    private static List<TileOption> BuildOptions(TileSettingsSO settings, params TileRole[] allowedRoles)
     {
         var all = new List<TileOption>(512);
 
         foreach (var entry in settings.tiles)
         {
             if (entry.prefab == null) continue;
+            if (allowedRoles != null && allowedRoles.Length > 0 && !allowedRoles.Contains(entry.role))
+                continue;
 
-            // Read sockets on the prefab
             var sockets = entry.prefab.GetComponentsInChildren<TileSocket>(true);
             if (sockets == null || sockets.Length == 0)
             {
@@ -274,12 +495,10 @@ public class TileGenerator : MonoBehaviour
             }
 
             var baseData = TileSocketData.FromSockets(sockets);
-
             int rotCount = entry.allowRotation ? 4 : 1;
+
             for (int r = 0; r < rotCount; r++)
-            {
-                all.Add(new TileOption(entry.prefab, baseData, r, entry.weight));
-            }
+                all.Add(new TileOption(entry.prefab, entry.role, baseData, r, entry.weight));
         }
 
         return all;
@@ -287,18 +506,36 @@ public class TileGenerator : MonoBehaviour
 
     // ----------------- Helper Types -----------------
 
+    private class WFCCell
+    {
+        public int x, y;
+        public List<TileOption> possibleOptions;
+        public bool isCollapsed;
+        public TileOption finalOption;
+
+        public WFCCell(int x, int y, List<TileOption> options)
+        {
+            this.x = x;
+            this.y = y;
+            possibleOptions = options;
+        }
+    }
+
     private class TileOption
     {
         public GameObject basePrefab;
+        public TileRole role;
+
         public int rotationSteps; // 0..3
         public int rotationY => rotationSteps * 90;
         public int weight;
 
         private TileSocketData baseData;
 
-        public TileOption(GameObject prefab, TileSocketData baseData, int rotationSteps, int weight)
+        public TileOption(GameObject prefab, TileRole role, TileSocketData baseData, int rotationSteps, int weight)
         {
-            this.basePrefab = prefab;
+            basePrefab = prefab;
+            this.role = role;
             this.baseData = baseData;
             this.rotationSteps = rotationSteps;
             this.weight = weight;
@@ -334,7 +571,6 @@ public class TileGenerator : MonoBehaviour
         {
             var d = new TileSocketData();
 
-            // Default values (avoid uninitialized)
             for (int i = 0; i < 4; i++)
             {
                 d.types[i] = SocketType.Ground;
@@ -343,7 +579,7 @@ public class TileGenerator : MonoBehaviour
 
             foreach (var s in sockets)
             {
-                int idx = (int)s.direction; // assumes enum order N,E,S,W
+                int idx = (int)s.direction; // enum order N,E,S,W
                 d.types[idx] = s.socketType;
                 d.heights[idx] = s.heightLevel;
             }

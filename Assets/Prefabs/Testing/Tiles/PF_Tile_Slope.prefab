@@ -140,7 +140,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Tile_Socket
   socketType: 1
   direction: 1
-  heightLevel: 1.45
+  heightLevel: 1
 --- !u!1 &5670771172967517582
 GameObject:
   m_ObjectHideFlags: 0

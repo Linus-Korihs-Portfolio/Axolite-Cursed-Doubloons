@@ -165,14 +165,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 549acc48f1bd4fe4694b2c3e801b58fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TileGenerator
-  settings: {fileID: 0}
+  settings: {fileID: 11400000, guid: 9bcd27302c3fedc499137730dfb0ce44, type: 2}
   width: 10
   height: 10
-  seed: 12345
+  seed: 0
   randomSeed: 1
   parent: {fileID: 0}
   clearBeforeGenerate: 1
-  maxRetries: 30
+  showDebugLogs: 1
 --- !u!1 &193922689
 GameObject:
   m_ObjectHideFlags: 0
