@@ -19,7 +19,7 @@ MonoBehaviour:
   heightEpsilon: 0.01
   useRandomSeed: 1
   seed: 0
-  closedBorder: 1
+  closedBorder: 0
   useStartEnd: 1
   startOnBorderOnly: 1
   endOnBorderOnly: 1
