@@ -1,47 +1,71 @@
-// TileSettingsSO.cs
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TileRole
+[CreateAssetMenu(menuName = "WFC/Tile Settings", fileName = "TileSettings")]
+public class SO_TileSetting : ScriptableObject
 {
-    Normal,
-    Start,
-    End
+	[Header("Grid")]
+	public int width = 4;
+	public int height = 4;
+	public bool autoCellSize = true;
+	public float cellSize = 1f;
+	public float heightEpsilon = 0.01f;
+
+	[Header("Seed")]
+	public bool useRandomSeed = true;
+	public int seed = 0;
+
+	[Header("Border")]
+	public bool closedBorder = true;
+
+	[Header("Start / End")]
+	public bool useStartEnd = false;
+	public bool startOnBorderOnly = true;
+	public bool endOnBorderOnly = true;
+	public int minStartEndDistance = 2;
+
+	[Header("Counts")]
+	public bool enforceCounts = true;
+	public int hardMaxTolerance = 2;
+
+	[Header("Retry")]
+	public int maxRetries = 20;
+	public bool logSteps = false;
+
+	[Header("Tiles")]
+	public List<TileEntry> tiles = new();
 }
 
-[CreateAssetMenu(menuName = "PCG/Tile Settings")]
-public class TileSettingsSO : ScriptableObject
+public enum TileRole
 {
-    [Header("Grid")]
-    public float cellSize = 3f;
-
-    [Header("Height Matching")]
-    [Tooltip("Tolerance for float height comparisons (e.g., 0.01).")]
-    public float heightEpsilon = 0.01f;
-
-    [Header("Start/End placement")]
-    public bool placeStartAndEnd = true;
-
-    [Tooltip("If true, Start/End are placed on border cells only.")]
-    public bool startEndOnBorder = false;
-
-    [Header("Tiles")]
-    public List<TileEntry> tiles = new();
+	Normal,
+	Start,
+	End,
+	Wall
 }
 
 [Serializable]
 public class TileEntry
 {
-    public GameObject prefab;
+	[Tooltip("Optional id to recognize the tile in logs.")]
+	public string id = "Tile";
 
-    [Min(0)] public int weight = 10;
-    public bool allowRotation = true;
+	[Tooltip("Prefab that contains four TileSocket components (N/E/S/W).")]
+	public GameObject prefab;
 
-    [Header("Role")]
-    public TileRole role = TileRole.Normal;
+	[Tooltip("How this tile is allowed to be used.")]
+	public TileRole role = TileRole.Normal;
 
-    [Header("Occurrence constraints (optional)")]
-    [Min(0)] public int minCount = 0;
-    [Min(0)] public int maxCount = 0; // 0 = unlimited
+	[Tooltip("Allow automatic 90 degree rotations when building options.")]
+	public bool allowRotation = true;
+
+	[Tooltip("Weight used for the random pick during collapse.")]
+	public float weight = 1f;
+
+	[Tooltip("Minimum number of times this tile should appear (per base prefab, rotations share the same counter).")]
+	public int minCount = 0;
+
+	[Tooltip("Maximum allowed count. 0 = unlimited. A small tolerance is applied during solving.")]
+	public int maxCount = 0;
 }

@@ -12,62 +12,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85541951dffd6204d8d500b16d3ad96d, type: 3}
   m_Name: SO_TileSettings
   m_EditorClassIdentifier: Assembly-CSharp::TileSettingsSO
-  cellSize: 3
+  width: 10
+  height: 10
+  autoCellSize: 1
+  cellSize: 1
   heightEpsilon: 0.01
-  placeStartAndEnd: 1
-  startEndOnBorder: 0
+  useRandomSeed: 1
+  seed: 0
+  closedBorder: 1
+  useStartEnd: 1
+  startOnBorderOnly: 1
+  endOnBorderOnly: 1
+  minStartEndDistance: 2
+  enforceCounts: 1
+  hardMaxTolerance: 2
+  maxRetries: 200
+  logSteps: 1
   tiles:
-  - prefab: {fileID: 4689637982457313718, guid: edceba07d773d394ba44c28d58ccac79, type: 3}
-    weight: 10
-    allowRotation: 1
-    role: 0
-    minCount: 1
-    maxCount: 10
-  - prefab: {fileID: 1898332319804718152, guid: 02d5e933ac75be64f8aa498ffdbc3f5a, type: 3}
-    weight: 10
-    allowRotation: 1
-    role: 0
-    minCount: 1
-    maxCount: 10
-  - prefab: {fileID: 2800400120219635772, guid: 89caa1f7a4edc1f488dce36954c3cf90, type: 3}
-    weight: 10
-    allowRotation: 1
-    role: 0
-    minCount: 1
-    maxCount: 10
-  - prefab: {fileID: 4671215881688250616, guid: 8504d08bb69c72947b2742c2db3b129d, type: 3}
-    weight: 10
-    allowRotation: 1
-    role: 0
-    minCount: 1
-    maxCount: 10
-  - prefab: {fileID: 1895867622479603788, guid: 488255fddcaf4cf4e91bdd3576c73f92, type: 3}
-    weight: 10
-    allowRotation: 1
-    role: 0
-    minCount: 1
-    maxCount: 10
-  - prefab: {fileID: 1856487636462580531, guid: 4f1aec1941b32b84ab44d1f9ba172947, type: 3}
-    weight: 10
-    allowRotation: 1
-    role: 0
-    minCount: 1
-    maxCount: 10
-  - prefab: {fileID: 2300618384957913685, guid: 61c7a20bec5d3e146b56bfa0cb990dbc, type: 3}
-    weight: 10
-    allowRotation: 1
+  - id: Start
+    prefab: {fileID: 5518840626794122479, guid: 49b365ea75dc96748b892842dd64a39f, type: 3}
     role: 1
-    minCount: 1
-    maxCount: 10
-  - prefab: {fileID: 6485919868479677207, guid: 5ecc3ee2906e3424da63eb9020488d92, type: 3}
-    weight: 10
     allowRotation: 1
+    weight: 1
+    minCount: 1
+    maxCount: 1
+  - id: End
+    prefab: {fileID: 8302244990582529806, guid: ecab43cc2a3c75e4d9a8c2c43b51eace, type: 3}
     role: 2
-    minCount: 1
-    maxCount: 10
-  - prefab: {fileID: 7391166285317165005, guid: dc1cb0d148fcdc745bab55fc2a1a540d, type: 3}
-    weight: 10
     allowRotation: 1
-    role: 0
+    weight: 1
     minCount: 1
-    maxCount: 10
+    maxCount: 1
+  - id: NormalFloor
+    prefab: {fileID: 2093143411029013635, guid: 0bdb1bc4c9d563c41bac47755e5a407f, type: 3}
+    role: 0
+    allowRotation: 1
+    weight: 5
+    minCount: 1
+    maxCount: 100
+  - id: StoneFloor
+    prefab: {fileID: 4722214241081795448, guid: d4536deda765f2e49bed04e548d2a64a, type: 3}
+    role: 0
+    allowRotation: 1
+    weight: 5
+    minCount: 1
+    maxCount: 100
+  - id: StoneWall
+    prefab: {fileID: 3236629337386840471, guid: b0c406e5330c9704cbf4a2c4addbdf2b, type: 3}
+    role: 3
+    allowRotation: 1
+    weight: 5
+    minCount: 1
+    maxCount: 100

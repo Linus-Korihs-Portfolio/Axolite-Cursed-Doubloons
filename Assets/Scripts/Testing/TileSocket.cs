@@ -1,10 +1,9 @@
-// TileSocket.cs
 using UnityEngine;
 
 public enum SocketType
 {
-    Ground,
-    Road
+    Floor,
+    Wall
 }
 
 public enum Direction
