@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 661064319758090581}
-  - component: {fileID: 6407609495682038105}
   m_Layer: 0
   m_Name: Socket_W
   m_TagString: Untagged
@@ -26,27 +25,12 @@ Transform:
   m_GameObject: {fileID: 1934951836427376098}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5, y: -0.5, z: 0}
+  m_LocalPosition: {x: -0.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4557022951241418889}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6407609495682038105
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934951836427376098}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d672ea5da9c5ef4298d0d9abe02afa5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Tile_Socket
-  socketType: 0
-  direction: 3
-  heightLevel: 0
 --- !u!1 &4933583117546527851
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,7 +40,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4844926412419810416}
-  - component: {fileID: 8602530708821595226}
   m_Layer: 0
   m_Name: Socket_E
   m_TagString: Untagged
@@ -73,27 +56,12 @@ Transform:
   m_GameObject: {fileID: 4933583117546527851}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4557022951241418889}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8602530708821595226
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4933583117546527851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d672ea5da9c5ef4298d0d9abe02afa5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Tile_Socket
-  socketType: 0
-  direction: 1
-  heightLevel: 0
 --- !u!1 &4953920103395034489
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,7 +71,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1804338503367022503}
-  - component: {fileID: 2424457934143029797}
   m_Layer: 0
   m_Name: Socket_N
   m_TagString: Untagged
@@ -120,27 +87,12 @@ Transform:
   m_GameObject: {fileID: 4953920103395034489}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4557022951241418889}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2424457934143029797
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4953920103395034489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d672ea5da9c5ef4298d0d9abe02afa5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Tile_Socket
-  socketType: 0
-  direction: 0
-  heightLevel: 0
 --- !u!1 &4962660563478335450
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,7 +102,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 78792211358636691}
-  - component: {fileID: 8845007876372487902}
   m_Layer: 0
   m_Name: Socket_S
   m_TagString: Untagged
@@ -167,27 +118,12 @@ Transform:
   m_GameObject: {fileID: 4962660563478335450}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: -0.5}
+  m_LocalPosition: {x: 0, y: 0, z: -0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4557022951241418889}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8845007876372487902
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4962660563478335450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d672ea5da9c5ef4298d0d9abe02afa5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Tile_Socket
-  socketType: 0
-  direction: 2
-  heightLevel: 0
 --- !u!1 &5518840626794122479
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,7 +240,7 @@ Transform:
   m_GameObject: {fileID: 7834369457011563917}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
