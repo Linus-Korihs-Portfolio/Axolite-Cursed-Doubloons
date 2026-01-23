@@ -14,11 +14,17 @@ public class WFCGenerator : MonoBehaviour
     public float cellSize = 3f;
     public bool autoCellSize = true;
 
-    [Header("Start/End (optional fixed placements)")]
+    [Header("Start/End (fixed placements)")]
     public bool placeStartAndEnd = true;
     public WFCNode startNode;
     public WFCNode endNode;
-    public bool startEndOnBorder = true;
+
+    [Tooltip("Place Start/End not on border, but inset into the level (recommended).")]
+    public bool startEndInsetIntoLevel = true;
+
+    [Min(1)]
+    [Tooltip("How far Start/End is placed inside from the border (1 = directly next to border wall ring).")]
+    public int startEndInset = 1;
 
     [Header("Seed")]
     public bool randomSeed = true;
@@ -37,6 +43,7 @@ public class WFCGenerator : MonoBehaviour
     [Header("Border Walls")]
     public bool forceBorderWalls = true;
     public WFCNode wallNode;
+
     public bool stackBorderWalls = true;
 
     [Min(1)]
@@ -47,7 +54,6 @@ public class WFCGenerator : MonoBehaviour
 
     [Tooltip("If true, the first wall segment starts at y=0. If false, it starts at y=1 segmentHeight.")]
     public bool wallStartsAtZero = true;
-
 
     [Tooltip("Rotate border walls so they face OUTWARD (fixes west/north/south wrong orientation).")]
     public bool orientBorderWallsOutward = true;
@@ -60,12 +66,8 @@ public class WFCGenerator : MonoBehaviour
         West   // -X
     }
 
-    [Tooltip("Which direction does your Wall prefab face when rotation = identity? (Most Unity meshes face +Z by default, yours seems to face East.)")]
-    public WallFacing wallPrefabDefaultFacing = WallFacing.East;
-
-    [Header("Wall Height")]
-    [Tooltip("If enabled, border walls get lifted by this amount (Y).")]
-    public bool raiseBorderWalls = true;
+    [Tooltip("Which direction does your Wall prefab face when rotation = identity?")]
+    public WallFacing wallPrefabDefaultFacing = WallFacing.North;
 
     [Header("Visual Rotation")]
     [Tooltip("If enabled, tiles with allowVisualRotation=true get random rotation 0/90/180/270 (visual only).")]
@@ -129,9 +131,6 @@ public class WFCGenerator : MonoBehaviour
             ForceBorderWalls();
 
             if (!PropagateAllBorders()) return false;
-
-            // If we force border walls, Start/End should NOT be on border.
-            startEndOnBorder = false;
         }
 
         // Start / End
@@ -139,30 +138,40 @@ public class WFCGenerator : MonoBehaviour
         {
             if (startNode == null || endNode == null)
             {
-                Debug.LogError("placeStartAndEnd is true, but startNode or endNode is null.");
+                Debug.LogError("Start or End node missing.");
                 return false;
             }
 
-            var startPos = PickRandomPos(startEndOnBorder);
-            var endPos = PickRandomPos(startEndOnBorder);
-
-            // If border walls are forced: clamp to inner area
-            if (forceBorderWalls)
+            // Basic sanity for inset
+            if (startEndInsetIntoLevel)
             {
-                startPos = ClampToInner(startPos);
-                endPos = ClampToInner(endPos);
+                int minSize = 2 * startEndInset + 1;
+                if (width < minSize || height < minSize)
+                {
+                    Debug.LogError($"Grid too small for startEndInset={startEndInset}. Need at least {minSize}x{minSize}.");
+                    return false;
+                }
             }
 
-            int safety = 0;
-            while (endPos == startPos && safety++ < 2000)
-            {
-                endPos = PickRandomPos(startEndOnBorder);
-                if (forceBorderWalls) endPos = ClampToInner(endPos);
-            }
+            // Pick start side
+            WFCDirection startSide = GetRandomSide();
+            Vector2Int startPos = GetStartEndPosition(startSide, startEndInsetIntoLevel, startEndInset);
 
+            // Pick end side (must be different)
+            WFCDirection endSide;
+            do
+            {
+                endSide = GetRandomSide();
+            }
+            while (endSide == startSide);
+
+            Vector2Int endPos = GetStartEndPosition(endSide, startEndInsetIntoLevel, startEndInset);
+
+            // Place Start / End
             if (!ForceCell(startPos.x, startPos.y, startNode)) return false;
             if (!ForceCell(endPos.x, endPos.y, endNode)) return false;
 
+            // Propagate constraints
             if (!PropagateFrom(startPos.x, startPos.y)) return false;
             if (!PropagateFrom(endPos.x, endPos.y)) return false;
         }
@@ -350,6 +359,31 @@ public class WFCGenerator : MonoBehaviour
         return true;
     }
 
+    // ---------------- Start/End Placement ----------------
+
+    private WFCDirection GetRandomSide()
+    {
+        return (WFCDirection)rng.Next(0, 4);
+    }
+
+    private Vector2Int GetStartEndPosition(WFCDirection side, bool insetIntoLevel, int inset)
+    {
+        int midX = width / 2;
+        int midY = height / 2;
+
+        // If inset is enabled: move one (or more) tiles inside from the border wall ring.
+        int i = insetIntoLevel ? Mathf.Max(1, inset) : 0;
+
+        return side switch
+        {
+            WFCDirection.North => new Vector2Int(midX, height - 1 - i),
+            WFCDirection.South => new Vector2Int(midX, 0 + i),
+            WFCDirection.West  => new Vector2Int(0 + i, midY),
+            WFCDirection.East  => new Vector2Int(width - 1 - i, midY),
+            _ => new Vector2Int(midX, height - 1 - i)
+        };
+    }
+
     // ---------------- Force / Pick ----------------
 
     private bool ForceCell(int x, int y, WFCNode node)
@@ -378,34 +412,6 @@ public class WFCGenerator : MonoBehaviour
         }
 
         return options[options.Count - 1];
-    }
-
-    private Vector2Int PickRandomPos(bool borderOnly)
-    {
-        if (!borderOnly)
-            return new Vector2Int(rng.Next(0, width), rng.Next(0, height));
-
-        bool horizontal = rng.NextDouble() < 0.5;
-        if (horizontal)
-        {
-            int x = rng.Next(0, width);
-            int y = (rng.NextDouble() < 0.5) ? 0 : (height - 1);
-            return new Vector2Int(x, y);
-        }
-        else
-        {
-            int y = rng.Next(0, height);
-            int x = (rng.NextDouble() < 0.5) ? 0 : (width - 1);
-            return new Vector2Int(x, y);
-        }
-    }
-
-    private Vector2Int ClampToInner(Vector2Int p)
-    {
-        return new Vector2Int(
-            Mathf.Clamp(p.x, 1, width - 2),
-            Mathf.Clamp(p.y, 1, height - 2)
-        );
     }
 
     private bool ForceBorderWalls()
@@ -438,14 +444,14 @@ public class WFCGenerator : MonoBehaviour
             var node = c.final;
             if (node == null || node.prefab == null) continue;
 
-            float yOffset = node.spawnYOffset;
-
             bool isBorder = (x == 0 || x == width - 1 || y == 0 || y == height - 1);
             bool isWall = (wallNode != null && node == wallNode);
 
+            float yOffset = node.spawnYOffset;
+
             Quaternion rot = Quaternion.identity;
 
-            // 1) Border wall outward rotation
+            // Border wall outward rotation
             if (isBorder && isWall && orientBorderWallsOutward)
             {
                 WallFacing outward = GetOutwardFacingForBorder(x, y);
@@ -458,7 +464,7 @@ public class WFCGenerator : MonoBehaviour
             }
             else
             {
-                // 2) Random visual rotation (for floors etc.)
+                // Random visual rotation (for floors etc.)
                 if (randomizeVisualRotation && node.allowVisualRotation)
                 {
                     int steps = rng.Next(0, 4);
@@ -466,42 +472,41 @@ public class WFCGenerator : MonoBehaviour
                 }
             }
 
-        Vector3 basePos = new Vector3(x * cellSize, yOffset, y * cellSize);
+            Vector3 basePos = new Vector3(x * cellSize, yOffset, y * cellSize);
 
-        if (isBorder && isWall && stackBorderWalls)
-        {
-            int h = Mathf.Max(1, borderWallHeight);
-            float start = wallStartsAtZero ? 0f : wallSegmentHeight;
-
-            for (int i = 0; i < h; i++)
+            // Stack border walls vertically
+            if (isBorder && isWall && stackBorderWalls)
             {
-                float yAdd = start + i * wallSegmentHeight;
-                Vector3 p = basePos + new Vector3(0f, yAdd, 0f);
+                int h = Mathf.Max(1, borderWallHeight);
+                float start = wallStartsAtZero ? 0f : wallSegmentHeight;
 
-                var go = Instantiate(node.prefab, p, rot, parent);
-                go.name = $"{node.id}_{x}_{y}_H{i}";
+                for (int i = 0; i < h; i++)
+                {
+                    float yAdd = start + i * wallSegmentHeight;
+                    Vector3 p = basePos + new Vector3(0f, yAdd, 0f);
+
+                    var go = Instantiate(node.prefab, p, rot, parent);
+                    go.name = $"{node.id}_{x}_{y}_H{i}";
+                }
             }
-        }
-        else
-        {
-            var go = Instantiate(node.prefab, basePos, rot, parent);
-            go.name = $"{node.id}_{x}_{y}";
-        }
+            else
+            {
+                var go = Instantiate(node.prefab, basePos, rot, parent);
+                go.name = $"{node.id}_{x}_{y}";
+            }
         }
     }
 
     private WallFacing GetOutwardFacingForBorder(int x, int y)
     {
-        // Assumes grid: +Y = North in grid space -> world +Z
-        if (y == 0) return WallFacing.South;             // bottom edge faces outward -Z
-        if (y == height - 1) return WallFacing.North;    // top edge faces outward +Z
-        if (x == 0) return WallFacing.West;              // left edge faces outward -X
-        return WallFacing.East;                           // right edge faces outward +X
+        if (y == 0) return WallFacing.South;
+        if (y == height - 1) return WallFacing.North;
+        if (x == 0) return WallFacing.West;
+        return WallFacing.East;
     }
 
     private static float FacingToYaw(WallFacing f)
     {
-        // yaw in degrees where 0 = +Z (Unity forward)
         return f switch
         {
             WallFacing.North => 0f,
