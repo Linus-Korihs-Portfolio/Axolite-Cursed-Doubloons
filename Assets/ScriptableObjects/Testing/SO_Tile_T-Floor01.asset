@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2cbe6f75a9f33445a5b051c9209e6c3, type: 3}
-  m_Name: SO_Tile_End
+  m_Name: SO_Tile_T-Floor01
   m_EditorClassIdentifier: Assembly-CSharp::RoomDefinition
-  id: End
-  prefab: {fileID: 2623178341064694818, guid: 8ac961604a507bf418bb3b807c1914db, type: 3}
+  id: T 01
+  prefab: {fileID: 478669132782175203, guid: 7a2aaf05598905345a263ec2b0941fd4, type: 3}
   weight: 10
   isStart: 0
-  isEnd: 1
+  isEnd: 0
   isDeadEnd: 0
-  isHallway: 0
-  isRoom: 1
+  isHallway: 1
+  isRoom: 0
   allowRotation: 1
   widthTolerance: 0.05
   allowedSocketTypes: 00000000

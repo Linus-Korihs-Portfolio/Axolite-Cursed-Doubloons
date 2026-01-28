@@ -11,25 +11,15 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2cbe6f75a9f33445a5b051c9209e6c3, type: 3}
   m_Name: SO_Tile_Start
-  m_EditorClassIdentifier: Assembly-CSharp::WFCNode
+  m_EditorClassIdentifier: Assembly-CSharp::RoomDefinition
   id: Start
-  prefab: {fileID: 5518840626794122479, guid: 49b365ea75dc96748b892842dd64a39f, type: 3}
+  prefab: {fileID: 781002443901508745, guid: 4f67966f0d2ad494cbe6f4eed8874aa5, type: 3}
   weight: 10
-  allowVisualRotation: 1
-  spawnYOffset: 0
-  northAllowed:
-  - {fileID: 11400000, guid: 378a180c2dc519247b03c438e206fde8, type: 2}
-  - {fileID: 11400000, guid: cc6ad3d78a6d1d944928e04782cba06c, type: 2}
-  - {fileID: 11400000, guid: 53c509dabb6115e449781ec4246c736c, type: 2}
-  eastAllowed:
-  - {fileID: 11400000, guid: 378a180c2dc519247b03c438e206fde8, type: 2}
-  - {fileID: 11400000, guid: cc6ad3d78a6d1d944928e04782cba06c, type: 2}
-  - {fileID: 11400000, guid: 53c509dabb6115e449781ec4246c736c, type: 2}
-  southAllowed:
-  - {fileID: 11400000, guid: 378a180c2dc519247b03c438e206fde8, type: 2}
-  - {fileID: 11400000, guid: cc6ad3d78a6d1d944928e04782cba06c, type: 2}
-  - {fileID: 11400000, guid: 53c509dabb6115e449781ec4246c736c, type: 2}
-  westAllowed:
-  - {fileID: 11400000, guid: 378a180c2dc519247b03c438e206fde8, type: 2}
-  - {fileID: 11400000, guid: cc6ad3d78a6d1d944928e04782cba06c, type: 2}
-  - {fileID: 11400000, guid: 53c509dabb6115e449781ec4246c736c, type: 2}
+  isStart: 1
+  isEnd: 0
+  isDeadEnd: 0
+  isHallway: 0
+  isRoom: 1
+  allowRotation: 1
+  widthTolerance: 0.05
+  allowedSocketTypes: 00000000

@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2cbe6f75a9f33445a5b051c9209e6c3, type: 3}
-  m_Name: SO_Tile_End
+  m_Name: SO_Tile_Crossway02
   m_EditorClassIdentifier: Assembly-CSharp::RoomDefinition
-  id: End
-  prefab: {fileID: 2623178341064694818, guid: 8ac961604a507bf418bb3b807c1914db, type: 3}
+  id: Crossway 2
+  prefab: {fileID: 1189765609623565262, guid: 3c7a5e7643860f34288979d93b6f27b0, type: 3}
   weight: 10
   isStart: 0
-  isEnd: 1
+  isEnd: 0
   isDeadEnd: 0
-  isHallway: 0
-  isRoom: 1
+  isHallway: 1
+  isRoom: 0
   allowRotation: 1
   widthTolerance: 0.05
   allowedSocketTypes: 00000000

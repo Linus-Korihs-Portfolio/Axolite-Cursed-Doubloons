@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2cbe6f75a9f33445a5b051c9209e6c3, type: 3}
-  m_Name: SO_Tile_End
+  m_Name: SO_Tile_BigRoom01
   m_EditorClassIdentifier: Assembly-CSharp::RoomDefinition
-  id: End
-  prefab: {fileID: 2623178341064694818, guid: 8ac961604a507bf418bb3b807c1914db, type: 3}
+  id: BigRoom 1
+  prefab: {fileID: 7160508785593374139, guid: b70284833c2923b4fa510be733173ee1, type: 3}
   weight: 10
   isStart: 0
-  isEnd: 1
+  isEnd: 0
   isDeadEnd: 0
   isHallway: 0
   isRoom: 1
