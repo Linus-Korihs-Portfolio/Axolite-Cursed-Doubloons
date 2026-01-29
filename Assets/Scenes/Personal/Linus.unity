@@ -510,6 +510,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 833103c004d1e6a4aac51cc8ba2d09a9, type: 2}
   - {fileID: 11400000, guid: 7524bb6857f37874b905bb5ba78a1adb, type: 2}
   - {fileID: 11400000, guid: 2d6155fd9e77c7f44ab61a43dacaf13d, type: 2}
+  wallCapRoom: {fileID: 11400000, guid: 683f4ae77d082e644b510e8cc8550017, type: 2}
   maxRooms: 50
   minStepsToEnd: 6
   maxStepsToEnd: 20
@@ -517,11 +518,17 @@ MonoBehaviour:
   capOpenSocketsAfterEnd: 1
   useDeadEndsToCap: 1
   maxCapsAfterEnd: 999
-  capExtraPadding: 0.05
-  overlapMask:
+  capExtraPadding: 0.03
+  preventCapOverlappingCaps: 1
+  roomOverlapMask:
     serializedVersion: 2
     m_Bits: 64
-  overlapPadding: 0.025
+  capOverlapMask:
+    serializedVersion: 2
+    m_Bits: 128
+  overlapPadding: 0.02
+  wallCapInset: 0
+  wallCapYawOffset: 0
   centerSnapTolerance: 0.02
   forwardDotTolerance: 0.95
   widthToleranceFallback: 0.05

@@ -9,6 +9,10 @@ public class RoomAssemblerGenerator : MonoBehaviour
     public RoomDefinition endRoom;
     public List<RoomDefinition> roomPool = new();
 
+    [Header("Wall Cap (Fallback)")]
+    [Tooltip("Cap prefab WITHOUT SocketMarkers (e.g. wall/door blocker). Layer should be 'Cap'.")]
+    public RoomDefinition wallCapRoom;
+
     [Header("Generation")]
     [Min(1)] public int maxRooms = 50;
 
@@ -23,23 +27,34 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
     [Header("Capping (No exits to void)")]
     public bool capOpenSocketsAfterEnd = true;
-
-    [Tooltip("If true, we will try to cap remaining open sockets with DeadEnd rooms.")]
     public bool useDeadEndsToCap = true;
 
     [Tooltip("Max number of caps we place after End to avoid runaway spawning.")]
     [Min(0)] public int maxCapsAfterEnd = 999;
 
     [Header("Capping Safety")]
-    [Tooltip("Extra overlap padding applied only during capping (dead-ends).")]
+    [Tooltip("Extra overlap padding applied only during capping (dead-ends / caps).")]
     public float capExtraPadding = 0.03f;
 
-    [Header("Physics / Overlap")]
-    [Tooltip("Best practice: set to 'Generated' layer only.")]
-    public LayerMask overlapMask = ~0;
+    [Tooltip("If true, caps will also avoid overlapping other caps (Cap layer).")]
+    public bool preventCapOverlappingCaps = false;
+
+    [Header("Overlap / Layers")]
+    [Tooltip("Only 'Generated' rooms layer. CAPS should NOT be included here.")]
+    public LayerMask roomOverlapMask;
+
+    [Tooltip("Only 'Cap' layer. Used only if preventCapOverlappingCaps = true.")]
+    public LayerMask capOverlapMask;
 
     [Tooltip("Shrink bounds slightly so edge-touching is NOT considered overlap.")]
     public float overlapPadding = 0.02f;
+
+    [Header("Wall Cap Placement")]
+    [Tooltip("Push the wall slightly towards the socket (0 = exactly at socket center).")]
+    public float wallCapInset = 0.0f;
+
+    [Tooltip("Extra rotation offset for wall caps if your prefab forward is not aligned.")]
+    public float wallCapYawOffset = 0f;
 
     [Header("Socket Matching")]
     [Tooltip("If two socket centers are closer than this, they can be treated as meeting (for loops).")]
@@ -53,8 +68,6 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
     [Header("Loops")]
     public bool allowLoops = true;
-
-    [Tooltip("If true, we will close sockets that meet (creates loops).")]
     public bool autoCloseMatchingSockets = true;
 
     [Header("Seed")]
@@ -72,14 +85,9 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
     private readonly List<PlacedRoom> placed = new();
     private readonly List<OpenSocket> openSockets = new();
-
-    // cache dead ends for capping
     private readonly List<RoomDefinition> deadEndCache = new();
 
-    private void Start()
-    {
-        Generate();
-    }
+    private void Start() => Generate();
 
     [ContextMenu("Generate")]
     public void Generate()
@@ -137,6 +145,12 @@ public class RoomAssemblerGenerator : MonoBehaviour
             Debug.LogError("Room pool is empty.");
             return false;
         }
+        if (roomOverlapMask == 0)
+            Debug.LogWarning("roomOverlapMask is 0. Set it to your 'Generated' layer.");
+
+        if (wallCapRoom == null || wallCapRoom.prefab == null)
+            Debug.LogWarning("wallCapRoom is not set. Fallback wall caps will not be placed.");
+
         return true;
     }
 
@@ -163,7 +177,6 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
             bool forceEndNow = placedAfterStart >= maxStepsToEnd;
 
-            // pick a random open socket to expand
             int idx = rng.Next(openSockets.Count);
             var target = openSockets[idx];
 
@@ -179,8 +192,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
                 if (candidate == null || candidate.prefab == null)
                     continue;
 
-                // normal growth uses 0 extra padding
-                if (TryAttachRoom(target, candidate, out var newPlaced, extraOverlapPadding: 0f))
+                if (TryAttachRoom(target, candidate, out var newPlaced, extraOverlapPadding: 0f, overlapMaskToUse: roomOverlapMask))
                 {
                     openSockets.RemoveAt(idx);
 
@@ -196,8 +208,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
                     {
                         endPlaced = true;
 
-                        if (capOpenSocketsAfterEnd)
-                            CapAllOpenSockets();
+                        if (capOpenSocketsAfterEnd) CapAllOpenSockets();
 
                         return true;
                     }
@@ -210,7 +221,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
             if (!placedSomething)
             {
                 // couldn't fill this socket => close it logically
-                openSockets.RemoveAt(idx);
+                target.owner.connectedSocketInstanceIds.Add(target.marker.GetInstanceID());
 
                 if (forceEndNow) return false;
             }
@@ -223,7 +234,6 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
     private RoomDefinition PickNonEndRoom(bool endPlaced)
     {
-        // while End not placed: avoid dead ends (keeps main path alive)
         if (!endPlaced)
             return WeightedPickFiltered(roomPool, r => r != null && !r.isDeadEnd);
 
@@ -233,10 +243,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
     private RoomDefinition PickRoomWithBiasToEnd(bool forceEnd)
     {
         if (forceEnd) return endRoom;
-
-        // 20% chance to place End after minSteps
         if (rng.Next(0, 100) < 20) return endRoom;
-
         return WeightedPick(roomPool);
     }
 
@@ -282,7 +289,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
     // ---------------- Placement ----------------
 
-    private bool TryAttachRoom(OpenSocket target, RoomDefinition room, out PlacedRoom placedRoom, float extraOverlapPadding)
+    private bool TryAttachRoom(OpenSocket target, RoomDefinition room, out PlacedRoom placedRoom, float extraOverlapPadding, LayerMask overlapMaskToUse)
     {
         placedRoom = null;
 
@@ -306,7 +313,6 @@ public class RoomAssemblerGenerator : MonoBehaviour
             if (candSocket.type != target.type) continue;
             if (!IsWidthCompatible(target.width, candSocket.WidthWorld, room)) continue;
 
-            // --- compute yaw-only rotation so candidate socket faces opposite of target socket ---
             Vector3 a = candSocket.ForwardWorld;
             Vector3 b = -target.forward;
 
@@ -320,18 +326,16 @@ public class RoomAssemblerGenerator : MonoBehaviour
             b.Normalize();
 
             float yaw = Vector3.SignedAngle(a, b, Vector3.up);
-            go.transform.rotation = Quaternion.AngleAxis(yaw, Vector3.up) * go.transform.rotation;
+            if (room.allowRotation)
+                go.transform.rotation = Quaternion.AngleAxis(yaw, Vector3.up) * go.transform.rotation;
 
-            // after rotation, recompute center
             Vector3 candCenter = candSocket.CenterWorld;
-
-            // translate so centers coincide
             go.transform.position += (target.center - candCenter);
 
             go.SetActive(true);
             Physics.SyncTransforms();
 
-            bool overlaps = OverlapsAnything(go, extraOverlapPadding);
+            bool overlaps = OverlapsAnything(go, extraOverlapPadding, overlapMaskToUse, ignoreRoot: null);
 
             if (log)
             {
@@ -344,11 +348,14 @@ public class RoomAssemblerGenerator : MonoBehaviour
                 go.name = room.id;
 
                 placedRoom = new PlacedRoom(room, go);
+
+                // Mark BOTH sockets as connected
                 placedRoom.connectedSocketInstanceIds.Add(candSocket.GetInstanceID());
+                target.owner.connectedSocketInstanceIds.Add(target.marker.GetInstanceID());
+
                 return true;
             }
 
-            // revert and try next
             go.SetActive(false);
             go.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
         }
@@ -363,13 +370,12 @@ public class RoomAssemblerGenerator : MonoBehaviour
         return Mathf.Abs(a - b) <= tol;
     }
 
-    // ---------------- Overlap ----------------
+    // ---------------- Overlap (WITH optional ignoreRoot) ----------------
 
-    private bool OverlapsAnything(GameObject candidate, float extraPadding)
+    private bool OverlapsAnything(GameObject candidate, float extraPadding, LayerMask maskToUse, Transform ignoreRoot)
     {
         float pad = overlapPadding + extraPadding;
 
-        // Prefer dedicated Bounds collider (OBB)
         var boundsTf = candidate.transform.Find("Bounds");
         if (boundsTf != null)
         {
@@ -385,17 +391,21 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
                 Quaternion rot = bc.transform.rotation;
 
-                var hits = Physics.OverlapBox(center, half, rot, overlapMask, QueryTriggerInteraction.Ignore);
+                var hits = Physics.OverlapBox(center, half, rot, maskToUse, QueryTriggerInteraction.Collide);
                 for (int h = 0; h < hits.Length; h++)
                 {
-                    if (hits[h].transform.IsChildOf(candidate.transform)) continue;
+                    var hit = hits[h];
+                    if (hit == null) continue;
+
+                    if (hit.transform.IsChildOf(candidate.transform)) continue;
+                    if (ignoreRoot != null && hit.transform.IsChildOf(ignoreRoot)) continue;
+
                     return true;
                 }
                 return false;
             }
         }
 
-        // fallback: any colliders (AABB)
         var cols = candidate.GetComponentsInChildren<Collider>();
         for (int i = 0; i < cols.Length; i++)
         {
@@ -410,10 +420,15 @@ public class RoomAssemblerGenerator : MonoBehaviour
             half.y = Mathf.Max(0.001f, half.y);
             half.z = Mathf.Max(0.001f, half.z);
 
-            var hits = Physics.OverlapBox(center, half, Quaternion.identity, overlapMask, QueryTriggerInteraction.Ignore);
+            var hits = Physics.OverlapBox(center, half, Quaternion.identity, maskToUse, QueryTriggerInteraction.Collide);
             for (int h = 0; h < hits.Length; h++)
             {
-                if (hits[h].transform.IsChildOf(candidate.transform)) continue;
+                var hit = hits[h];
+                if (hit == null) continue;
+
+                if (hit.transform.IsChildOf(candidate.transform)) continue;
+                if (ignoreRoot != null && hit.transform.IsChildOf(ignoreRoot)) continue;
+
                 return true;
             }
         }
@@ -456,7 +471,6 @@ public class RoomAssemblerGenerator : MonoBehaviour
                 var b = openSockets[j];
 
                 if (a.type != b.type) continue;
-
                 if (Vector3.Distance(a.center, b.center) > centerSnapTolerance) continue;
 
                 float dot = Vector3.Dot(a.forward, -b.forward);
@@ -464,6 +478,10 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
                 float tol = widthToleranceFallback;
                 if (Mathf.Abs(a.width - b.width) > tol) continue;
+
+                // mark both as connected
+                a.owner.connectedSocketInstanceIds.Add(a.marker.GetInstanceID());
+                b.owner.connectedSocketInstanceIds.Add(b.marker.GetInstanceID());
 
                 openSockets.RemoveAt(i);
                 openSockets.RemoveAt(j);
@@ -476,13 +494,6 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
     private void CapAllOpenSockets()
     {
-        if (!useDeadEndsToCap) return;
-        if (deadEndCache.Count == 0)
-        {
-            if (log) Debug.LogWarning("CapAllOpenSockets: No dead ends available.");
-            return;
-        }
-
         int caps = 0;
 
         for (int i = openSockets.Count - 1; i >= 0; i--)
@@ -492,32 +503,90 @@ public class RoomAssemblerGenerator : MonoBehaviour
             var target = openSockets[i];
             bool capped = false;
 
-            for (int attempt = 0; attempt < attemptsPerOpenSocket; attempt++)
+            // 1) Try dead ends with sockets (your DeadEnd 1/2 etc.)
+            if (useDeadEndsToCap && deadEndCache.Count > 0)
             {
-                var dead = WeightedPick(deadEndCache);
-                if (dead == null) continue;
+                LayerMask capCheckMask = roomOverlapMask;
+                if (preventCapOverlappingCaps)
+                    capCheckMask |= capOverlapMask;
 
-                // capping uses extra padding (more conservative)
-                if (TryAttachRoom(target, dead, out var newPlaced, extraOverlapPadding: capExtraPadding))
+                for (int attempt = 0; attempt < attemptsPerOpenSocket; attempt++)
                 {
-                    openSockets.RemoveAt(i);
-                    placed.Add(newPlaced);
+                    var dead = WeightedPick(deadEndCache);
+                    if (dead == null || dead.prefab == null) continue;
 
-                    // IMPORTANT: dead ends are caps -> do NOT add their sockets
-                    caps++;
-                    capped = true;
-                    break;
+                    // Important: dead ends might still overlap; we try multiple
+                    if (TryAttachRoom(target, dead, out var newPlaced, extraOverlapPadding: capExtraPadding, overlapMaskToUse: capCheckMask))
+                    {
+                        openSockets.RemoveAt(i);
+                        placed.Add(newPlaced);
+
+                        // IMPORTANT: caps/dead ends are caps -> do NOT add their sockets
+                        caps++;
+                        capped = true;
+                        break;
+                    }
                 }
+            }
+
+            if (capped) continue;
+
+            // 2) Fallback: place wall cap (NO sockets), ignoring the owner room overlap
+            if (TryPlaceWallCapFallback(target))
+            {
+                target.owner.connectedSocketInstanceIds.Add(target.marker.GetInstanceID());
+                openSockets.RemoveAt(i);
+                caps++;
+                capped = true;
             }
 
             if (!capped)
             {
                 // can't cap => close logically (treated as wall)
+                target.owner.connectedSocketInstanceIds.Add(target.marker.GetInstanceID());
                 openSockets.RemoveAt(i);
             }
         }
 
         if (log) Debug.Log($"CapAllOpenSockets: capped={caps}");
+    }
+
+    private bool TryPlaceWallCapFallback(OpenSocket target)
+    {
+        if (wallCapRoom == null || wallCapRoom.prefab == null) return false;
+
+        var go = Instantiate(wallCapRoom.prefab, Vector3.zero, Quaternion.identity, parent);
+        go.SetActive(false);
+
+        // Align to socket forward (faces out of room)
+        Quaternion rot = Quaternion.LookRotation(target.forward, Vector3.up) * Quaternion.Euler(0f, wallCapYawOffset, 0f);
+
+        // place at socket center (optionally inset a tiny bit)
+        Vector3 pos = target.center + (-target.forward * wallCapInset);
+
+        go.transform.SetPositionAndRotation(pos, rot);
+
+        go.SetActive(true);
+        Physics.SyncTransforms();
+
+        // Cap must avoid overlapping other rooms, but MUST IGNORE the owner room (because it's inside its tile bounds)
+        LayerMask mask = roomOverlapMask;
+        if (preventCapOverlappingCaps)
+            mask |= capOverlapMask;
+
+        bool overlaps = OverlapsAnything(go, capExtraPadding, mask, ignoreRoot: target.owner.root.transform);
+
+        if (log)
+            Debug.Log($"TryWallCap {wallCapRoom.id} at {target.marker.name} overlaps={overlaps}");
+
+        if (overlaps)
+        {
+            DestroyImmediate(go);
+            return false;
+        }
+
+        go.name = $"CAP_{wallCapRoom.id}";
+        return true;
     }
 
     // ---------------- Utils ----------------

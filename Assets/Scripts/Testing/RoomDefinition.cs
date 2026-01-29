@@ -12,7 +12,7 @@ public class RoomDefinition : ScriptableObject
     [Header("Flags")]
     public bool isStart = false;
     public bool isEnd = false;
-    public bool isDeadEnd = false;
+    public bool isDeadEnd = false; // can also be used for WallCaps
     public bool isHallway = false;
     public bool isRoom = false;
 
