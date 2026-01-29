@@ -513,7 +513,7 @@ MonoBehaviour:
   wallCapRoom: {fileID: 11400000, guid: 683f4ae77d082e644b510e8cc8550017, type: 2}
   maxRooms: 50
   minStepsToEnd: 6
-  maxStepsToEnd: 20
+  maxStepsToEnd: 30
   attemptsPerOpenSocket: 50
   capOpenSocketsAfterEnd: 1
   useDeadEndsToCap: 1
