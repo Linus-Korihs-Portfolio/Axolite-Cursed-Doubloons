@@ -7,83 +7,11 @@ using PCG.RoomAssembler.Logic;
 
 public class RoomAssemblerGenerator : MonoBehaviour
 {
-    [Header("Rooms")]
-    public RoomDefinition startRoom;
-    public RoomDefinition endRoom;
-    public List<RoomDefinition> roomPool = new();
-
-    [Header("Wall Cap (Fallback)")]
-    [Tooltip("Cap prefab without SocketMarkers (e.g. wall/door blocker). Layer should be Cap")]
-    public RoomDefinition wallCapRoom;
-
-    [Header("Generation")]
-    [Min(1)] public int maxRooms = 50;
-
-    [Tooltip("Minimum number of connections (steps) from Start to End.")]
-    [Min(0)] public int minStepsToEnd = 6;
-
-    [Tooltip("Maximum number of connections (steps) from Start to End. After this we try to force End.")]
-    [Min(1)] public int maxStepsToEnd = 20;
-
-    [Tooltip("How many attempts per socket before we give up on that socket.")]
-    [Min(1)] public int attemptsPerOpenSocket = 50;
-
-    [Header("Capping")]
-    public bool capOpenSocketsAfterEnd = true;
-    public bool useDeadEndsToCap = true;
-
-    [Tooltip("Max number of caps we place after End to avoid runaway spawning.")]
-    [Min(0)] public int maxCapsAfterEnd = 999;
-
-    [Header("Capping Safety")]
-    [Tooltip("Extra overlap padding applied only during capping (dead-ends / caps).")]
-    public float capExtraPadding = 0.03f;
-
-    [Tooltip("If true, caps will also avoid overlapping other caps (Cap layer).")]
-    public bool preventCapOverlappingCaps = true;
-
-    [Header("Overlap / Layers")]
-    [Tooltip("Only 'Generated' rooms layer. CAPS should NOT be included here.")]
-    public LayerMask roomOverlapMask;
-
-    [Tooltip("Only 'Cap' layer. Used only if preventCapOverlappingCaps = true.")]
-    public LayerMask capOverlapMask;
-
-    [Tooltip("Shrink bounds slightly so edge-touching is NOT considered overlap.")]
-    public float overlapPadding = 0.02f;
-
-    [Header("Wall Cap Placement")]
-    [Tooltip("Push the wall slightly towards the socket (0 = exactly at socket center).")]
-    public float wallCapInset = 0.0f;
-
-    [Tooltip("Extra rotation offset for wall caps if your prefab forward is not aligned.")]
-    public float wallCapYawOffset = 0f;
-
-    [Header("Socket Matching")]
-    [Tooltip("If two socket centers are closer than this, they can be treated as meeting (for loops).")]
-    public float centerSnapTolerance = 0.02f;
-
-    [Tooltip("Dot threshold for opposite facing. 1 = perfect opposite. 0.95 ~ 18 degrees.")]
-    public float forwardDotTolerance = 0.95f;
-
-    [Tooltip("Fallback width tolerance if RoomDefinition has none.")]
-    public float widthToleranceFallback = 0.05f;
-
-    [Header("Loops")]
-    public bool allowLoops = true;
-    public bool autoCloseMatchingSockets = true;
-
-    [Header("Seed")]
-    public bool randomSeed = true;
-    public int seed = 12345;
+    public RoomAssemblerConfig config;
 
     [Header("Output")]
     public Transform parent;
     public bool clearBeforeGenerate = true;
-
-    [Header("Debug")]
-    public bool log = false;
-
     private System.Random rng;
 
     private readonly List<PlacedRoom> placed = new();
@@ -102,73 +30,98 @@ public class RoomAssemblerGenerator : MonoBehaviour
         if (!ValidateSetup()) return;
 
         if (parent == null) parent = transform;
-        if (clearBeforeGenerate) ClearChildren(parent);
 
-        if (randomSeed) seed = Environment.TickCount;
-        rng = new System.Random(seed);
-
-        roomPicker = new RoomPicker(rng);
-        roomPlacer = new RoomPlacer(
-            parent: parent,
-            rng: rng,
-            overlapPadding: overlapPadding,
-            widthToleranceFallback: widthToleranceFallback,
-            wallCapInset: wallCapInset,
-            wallCapYawOffset: wallCapYawOffset,
-            log: log
-        );
-        capping = new Capping(roomPicker, roomPlacer);
-
-        placed.Clear();
-        openSockets.Clear();
-        BuildDeadEndCache();
-
-        // Spawn Start at origin
-        var startGO = Instantiate(startRoom.prefab, Vector3.zero, Quaternion.identity, parent);
-        startGO.name = $"START_{startRoom.id}";
-        var startPlaced = new PlacedRoom(startRoom, startGO);
-        placed.Add(startPlaced);
-
-        SocketUtils.AddOpenSocketsFromRoom(openSockets, startPlaced);
-
-        if (log)
+        for (int attempt = 0; attempt < config.maxGenerationRetries; attempt++)
         {
-            Debug.Log($"Start sockets found: {startGO.GetComponentsInChildren<SocketMarker>(true).Length}");
-            Debug.Log($"Open sockets after start: {openSockets.Count}");
-            Debug.Log($"RoomPool count: {roomPool.Count}");
-            Debug.Log($"DeadEnd cache count: {deadEndCache.Count}");
+            if (clearBeforeGenerate) ClearChildren(parent);
+
+            int runSeed = config.randomSeed ? (Environment.TickCount + attempt) : config.seed;
+            rng = new System.Random(runSeed);
+
+            roomPicker = new RoomPicker(rng);
+            roomPlacer = new RoomPlacer(
+                parent: parent,
+                rng: rng,
+                overlapPadding: config.overlapPadding,
+                widthToleranceFallback: config.widthToleranceFallback,
+                wallCapInset: config.wallCapInset,
+                wallCapYawOffset: config.wallCapYawOffset,
+                log: config.log
+            );
+            capping = new Capping(roomPicker, roomPlacer);
+
+            placed.Clear();
+            openSockets.Clear();
+            BuildDeadEndCache(config.roomPool);
+
+            var startGO = Instantiate(config.startRoom.prefab, Vector3.zero, Quaternion.identity, parent);
+            startGO.name = $"START_{config.startRoom.id}";
+            var startPlaced = new PlacedRoom(config.startRoom, startGO);
+            placed.Add(startPlaced);
+
+            SocketUtils.AddOpenSocketsFromRoom(openSockets, startPlaced);
+
+            float roomUnitWorld = (config.roomUnitWorldOverride > 0f) ? config.roomUnitWorldOverride : ComputeRoomUnitWorldFromBounds(startGO);
+
+            float minEndWorld = config.minEndDistanceRooms * roomUnitWorld;
+            float maxEndWorld = Mathf.Max(minEndWorld, config.maxEndDistanceRooms * roomUnitWorld);
+
+            bool success = GrowUntilEnd(
+                startWorldPos: GetStartCenterWorld(startGO),
+                useDistanceRange: config.useEndDistanceRange,
+                minEndWorld: minEndWorld,
+                maxEndWorld: maxEndWorld,
+                minRooms: config.minRooms,
+                maxRooms: config.maxRooms,
+                attemptsPerOpenSocket: config.attemptsPerOpenSocket,
+                runSeed: runSeed
+            );
+
+            if (success)
+            {
+                if (config.log)
+                    Debug.Log($"✓ Generation success. Seed={runSeed}, Rooms={placed.Count}, attempt={attempt + 1}");
+                return;
+            }
         }
 
-        bool success = GrowUntilEnd();
-
-        if (!success)
-            Debug.LogError($"✗ Generation failed. Seed={seed}");
-        else
-            Debug.Log($"✓ Generation success. Seed={seed}, Rooms={placed.Count}");
+        Debug.LogError($"✗ Generation failed after {config.maxGenerationRetries} retries.");
     }
 
     private bool ValidateSetup()
     {
-        if (startRoom == null || startRoom.prefab == null)
+        if (config == null)
+        {
+            Debug.LogError("RoomAssemblerConfig missing.");
+            return false;
+        }
+
+        if (config.startRoom == null || config.startRoom.prefab == null)
         {
             Debug.LogError("Start room missing.");
             return false;
         }
-        if (endRoom == null || endRoom.prefab == null)
+
+        if (config.endRoom == null || config.endRoom.prefab == null)
         {
             Debug.LogError("End room missing.");
             return false;
         }
-        if (roomPool == null || roomPool.Count == 0)
+
+        if (config.roomPool == null || config.roomPool.Count == 0)
         {
             Debug.LogError("Room pool is empty.");
             return false;
         }
-        if (roomOverlapMask == 0)
-            Debug.LogWarning("roomOverlapMask is 0. Set it to your 'Generated' layer.");
 
-        if (wallCapRoom == null || wallCapRoom.prefab == null)
-            Debug.LogWarning("wallCapRoom is not set. Fallback wall caps will not be placed.");
+        if (config.maxRooms < config.minRooms)
+        {
+            Debug.LogError("Config invalid: maxRooms < minRooms.");
+            return false;
+        }
+
+        if (config.roomOverlapMask == 0)
+            Debug.LogWarning("roomOverlapMask is 0. Set it to your 'Generated' layer.");
 
         return true;
     }
@@ -176,27 +129,30 @@ public class RoomAssemblerGenerator : MonoBehaviour
     private void BuildDeadEndCache()
     {
         deadEndCache.Clear();
-        for (int i = 0; i < roomPool.Count; i++)
+        for (int i = 0; i < config.roomPool.Count; i++)
         {
-            var r = roomPool[i];
+            var r = config.roomPool[i];
             if (r == null || r.prefab == null) continue;
             if (r.isDeadEnd) deadEndCache.Add(r);
         }
     }
 
-    private bool GrowUntilEnd()
+    private bool GrowUntilEnd(
+        Vector3 startWorldPos,
+        bool useDistanceRange,
+        float minEndWorld,
+        float maxEndWorld,
+        int minRooms,
+        int maxRooms,
+        int attemptsPerOpenSocket,
+        int runSeed)
     {
-        int safety = maxRooms * 200;
+        int safety = maxRooms * 250;
         bool endPlaced = false;
-        int placedAfterStart = 0;
-        int forcedEndAttempts = 0;
-        int maxForcedEndAttempts = attemptsPerOpenSocket * 2;
 
         while (safety-- > 0 && placed.Count < maxRooms)
         {
             if (openSockets.Count == 0) return false;
-
-            bool forceEndNow = placedAfterStart >= maxStepsToEnd;
 
             int idx = rng.Next(openSockets.Count);
             var target = openSockets[idx];
@@ -205,48 +161,54 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
             for (int attempt = 0; attempt < attemptsPerOpenSocket; attempt++)
             {
-                RoomDefinition candidate =
-                    (forceEndNow || placedAfterStart >= minStepsToEnd)
-                        ? roomPicker.PickRoomWithBiasToEnd(roomPool, endRoom, forceEndNow)
-                        : roomPicker.PickNonEndRoom(roomPool, endPlaced);
+                bool canTryEndByRoomCount = (placed.Count >= Mathf.Max(1, minRooms - 1));
+                RoomDefinition candidate;
+                if (!endPlaced && canTryEndByRoomCount)
+                {
+                    candidate = roomPicker.PickRoomWithBiasToEnd(config.roomPool, config.endRoom, forceEnd: false);
+                }
+                else
+                {
+                    candidate = roomPicker.PickNonEndRoom(config.roomPool, endPlaced);
+                }
 
-                if (candidate == null || candidate.prefab == null)
-                    continue;
+                if (candidate == null || candidate.prefab == null) continue;
 
-                if (roomPlacer.TryAttachRoom(target, candidate, out var newPlaced, extraOverlapPadding: 0f, overlapMaskToUse: roomOverlapMask))
+                bool isEnd = (!endPlaced && candidate == config.endRoom);
+
+                Func<Vector3, bool> endValidator = null;
+                if (isEnd && useDistanceRange)
+                {
+                    endValidator = (endCenter) =>
+                    {
+                        float d = Vector3.Distance(startWorldPos, endCenter);
+                        return d >= minEndWorld && d <= maxEndWorld;
+                    };
+                }
+
+                if (roomPlacer.TryAttachRoom(
+                        target,
+                        candidate,
+                        out var newPlaced,
+                        extraOverlapPadding: 0f,
+                        overlapMaskToUse: config.roomOverlapMask,
+                        placementCenterValidator: endValidator))
                 {
                     openSockets.RemoveAt(idx);
-
                     placed.Add(newPlaced);
-                    placedAfterStart++;
 
                     SocketUtils.AddOpenSocketsFromRoom(openSockets, newPlaced);
 
-                    if (allowLoops && autoCloseMatchingSockets)
-                        SocketUtils.CloseAnySocketPairsThatMeet(openSockets, centerSnapTolerance, forwardDotTolerance, widthToleranceFallback);
+                    if (config.allowLoops && config.autoCloseMatchingSockets)
+                        SocketUtils.CloseAnySocketPairsThatMeet(
+                            openSockets,
+                            config.centerSnapTolerance,
+                            config.forwardDotTolerance,
+                            config.widthToleranceFallback);
 
-                    if (candidate == endRoom)
+                    if (isEnd)
                     {
                         endPlaced = true;
-
-                        if (capOpenSocketsAfterEnd)
-                        {       
-                        capping.CapAllOpenSockets(
-                            openSockets: openSockets,
-                            placedRooms: placed,
-                            deadEndCache: deadEndCache,
-                            wallCapRoom: wallCapRoom,
-                            attemptsPerOpenSocket: attemptsPerOpenSocket,
-                            maxCapsAfterEnd: maxCapsAfterEnd,
-                            useDeadEndsToCap: useDeadEndsToCap,
-                            capExtraPadding: capExtraPadding,
-                            roomOverlapMask: roomOverlapMask,
-                            preventCapOverlappingCaps: preventCapOverlappingCaps,
-                            capOverlapMask: capOverlapMask,
-                            log: log
-                        );
-                    }
-                        return true;
                     }
 
                     placedSomething = true;
@@ -257,25 +219,68 @@ public class RoomAssemblerGenerator : MonoBehaviour
             if (!placedSomething)
             {
                 target.owner.connectedSocketInstanceIds.Add(target.marker.GetInstanceID());
-
-                if (forceEndNow)
-                {
-                    forcedEndAttempts++;
-                    if (forcedEndAttempts >= maxForcedEndAttempts)
-                        return false;
-                }
             }
-            else
+
+            if (endPlaced && placed.Count >= minRooms)
             {
-                forcedEndAttempts = 0;
+                if (config.capOpenSocketsAfterEnd)
+                {
+                    capping.CapAllOpenSockets(
+                        openSockets: openSockets,
+                        placedRooms: placed,
+                        deadEndCache: deadEndCache,
+                        wallCapRoom: config.wallCapRoom,
+                        attemptsPerOpenSocket: attemptsPerOpenSocket,
+                        maxCapsAfterEnd: config.maxCapsAfterEnd,
+                        useDeadEndsToCap: config.useDeadEndsToCap,
+                        capExtraPadding: config.capExtraPadding,
+                        roomOverlapMask: config.roomOverlapMask,
+                        preventCapOverlappingCaps: config.preventCapOverlappingCaps,
+                        capOverlapMask: config.capOverlapMask,
+                        log: config.log
+                    );
+                }
+                return true;
             }
         }
-
         return false;
     }
+
     private static void ClearChildren(Transform t)
     {
         for (int i = t.childCount - 1; i >= 0; i--)
             DestroyImmediate(t.GetChild(i).gameObject);
+    }
+
+    private void BuildDeadEndCache(List<RoomDefinition> pool)
+    {
+        deadEndCache.Clear();
+        for (int i = 0; i < pool.Count; i++)
+        {
+            var r = pool[i];
+            if (r == null || r.prefab == null) continue;
+            if (r.isDeadEnd) deadEndCache.Add(r);
+        }
+    }
+
+    private static float ComputeRoomUnitWorldFromBounds(GameObject roomRoot)
+    {
+        var boundsTf = roomRoot.transform.Find("Bounds");
+        if (boundsTf != null)
+        {
+            var bc = boundsTf.GetComponent<BoxCollider>();
+            if (bc != null)
+            {
+                Vector3 size = Vector3.Scale(bc.size, bc.transform.lossyScale);
+                float unit = Mathf.Max(size.x, size.z);
+                return Mathf.Max(0.01f, unit);
+            }
+        }
+        return 4.5f;
+    }
+
+    private static Vector3 GetStartCenterWorld(GameObject startGO)
+    {
+        return OverlapChecker.TryGetBoundsCenter(startGO, out var c) ? c : startGO.transform.position;
     }
 }

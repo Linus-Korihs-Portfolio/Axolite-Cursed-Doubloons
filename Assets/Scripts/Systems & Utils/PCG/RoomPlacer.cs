@@ -9,13 +9,10 @@ namespace PCG.RoomAssembler
     {
         private readonly Transform parent;
         private readonly System.Random rng;
-
         private readonly float overlapPadding;
         private readonly float widthToleranceFallback;
-
         private readonly float wallCapInset;
         private readonly float wallCapYawOffset;
-
         private readonly bool log;
 
         public RoomPlacer(
@@ -29,13 +26,10 @@ namespace PCG.RoomAssembler
         {
             this.parent = parent;
             this.rng = rng;
-
             this.overlapPadding = overlapPadding;
             this.widthToleranceFallback = widthToleranceFallback;
-
             this.wallCapInset = wallCapInset;
             this.wallCapYawOffset = wallCapYawOffset;
-
             this.log = log;
         }
 
@@ -44,7 +38,8 @@ namespace PCG.RoomAssembler
             RoomDefinition room,
             out PlacedRoom placedRoom,
             float extraOverlapPadding,
-            LayerMask overlapMaskToUse)
+            LayerMask overlapMaskToUse,
+            Func<Vector3, bool> placementCenterValidator = null)
         {
             placedRoom = null;
             if (room == null || room.prefab == null) return false;
@@ -69,36 +64,40 @@ namespace PCG.RoomAssembler
                 if (candSocket.type != target.type) continue;
                 if (!IsWidthCompatible(target.width, candSocket.WidthWorld, room)) continue;
 
-                // rotate to face the target (opposite forward)
                 Vector3 a = candSocket.ForwardWorld;
                 Vector3 b = -target.forward;
 
                 a.y = 0f;
                 b.y = 0f;
 
-                if (a.sqrMagnitude < 0.0001f || b.sqrMagnitude < 0.0001f)
-                    continue;
+                if (a.sqrMagnitude < 0.0001f || b.sqrMagnitude < 0.0001f) continue;
 
                 a.Normalize();
                 b.Normalize();
 
                 float yaw = Vector3.SignedAngle(a, b, Vector3.up);
-                if (room.allowRotation)
-                    go.transform.rotation = Quaternion.AngleAxis(yaw, Vector3.up) * go.transform.rotation;
+                if (room.allowRotation) go.transform.rotation = Quaternion.AngleAxis(yaw, Vector3.up) * go.transform.rotation;
 
-                // snap socket centers
                 Vector3 candCenter = candSocket.CenterWorld;
                 go.transform.position += (target.center - candCenter);
 
                 go.SetActive(true);
                 Physics.SyncTransforms();
 
+                Vector3 center = OverlapChecker.TryGetBoundsCenter(go, out var boundsCenter) ? boundsCenter : go.transform.position;
+
+                if (placementCenterValidator != null && !placementCenterValidator(center))
+                {
+                    go.SetActive(false);
+                    go.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+                    continue;
+                }
+
                 bool overlaps = OverlapChecker.Overlaps(go, overlapPadding, extraOverlapPadding, overlapMaskToUse, ignoreRoot: null);
 
                 if (log)
                 {
-                    Debug.Log($"TryAttach {room.id} via candSocket={candSocket.name} to target={target.marker.name} | " +
-                              $"widthA={target.width:F2} widthB={candSocket.WidthWorld:F2} | overlaps={overlaps}");
+                    Debug.Log($"TryAttach {room.id} via candSocket={candSocket.name} to target={target.marker.name} | " + $"widthA={target.width:F2} widthB={candSocket.WidthWorld:F2} | overlaps={overlaps}");
                 }
 
                 if (!overlaps)
@@ -106,8 +105,6 @@ namespace PCG.RoomAssembler
                     go.name = room.id;
 
                     placedRoom = new PlacedRoom(room, go);
-
-                    // mark BOTH sockets connected
                     placedRoom.connectedSocketInstanceIds.Add(candSocket.GetInstanceID());
                     target.owner.connectedSocketInstanceIds.Add(target.marker.GetInstanceID());
 
@@ -144,8 +141,7 @@ namespace PCG.RoomAssembler
             Physics.SyncTransforms();
 
             LayerMask mask = roomOverlapMask;
-            if (preventCapOverlappingCaps)
-                mask |= capOverlapMask;
+            if (preventCapOverlappingCaps) mask |= capOverlapMask;
 
             bool overlaps = OverlapChecker.Overlaps(go, overlapPadding, capExtraPadding, mask, ignoreRoot: target.owner.root.transform);
 

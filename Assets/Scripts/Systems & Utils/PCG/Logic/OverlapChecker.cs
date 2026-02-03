@@ -71,8 +71,20 @@ namespace PCG.RoomAssembler.Logic
                     return true;
                 }
             }
-
             return false;
+        }
+        public static bool TryGetBoundsCenter(GameObject candidate, out Vector3 center)
+        {
+            center = candidate.transform.position;
+
+            var boundsTf = candidate.transform.Find("Bounds");
+            if (boundsTf == null) return false;
+
+            var bc = boundsTf.GetComponent<BoxCollider>();
+            if (bc == null || !bc.enabled) return false;
+
+            center = bc.transform.TransformPoint(bc.center);
+            return true;
         }
     }
 }
