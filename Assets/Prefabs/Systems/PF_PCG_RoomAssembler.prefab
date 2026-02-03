@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8976436695498274876}
   - component: {fileID: 3135967114009463569}
   m_Layer: 0
-  m_Name: RoomAssembler
+  m_Name: PF_PCG_RoomAssembler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
