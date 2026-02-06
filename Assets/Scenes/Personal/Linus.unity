@@ -623,11 +623,11 @@ Transform:
   m_GameObject: {fileID: 1231888702}
   serializedVersion: 2
   m_LocalRotation: {x: 0.52573127, y: 0.000000015753205, z: -0.000000009736018, w: 0.8506508}
-  m_LocalPosition: {x: 2, y: 24, z: -4}
+  m_LocalPosition: {x: 0, y: 14, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 344324676}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1492189492 stripped
 GameObject:
@@ -776,6 +776,11 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!4 &1746883246 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2151853351454571588, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+  m_PrefabInstance: {fileID: 2695888406797043093}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2695888406797043093
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -841,13 +846,33 @@ PrefabInstance:
       value: PF_Player
       objectReference: {fileID: 0}
     - target: {fileID: 3608480699236668065, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: visual
+      value: 
+      objectReference: {fileID: 1746883246}
+    - target: {fileID: 3608480699236668065, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: aimCamera
+      value: 
+      objectReference: {fileID: 1231888706}
+    - target: {fileID: 3608480699236668065, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: moveAction
       value: 
       objectReference: {fileID: 406618043}
     - target: {fileID: 3608480699236668065, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: rotateSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3608480699236668065, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 344324676}
+    - target: {fileID: 3608480699236668065, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: rotateVisualsOnly
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3608480699236668065, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: aimGroundMask.m_Bits
+      value: 192
+      objectReference: {fileID: 0}
     - target: {fileID: 5362914721898336316, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: m_Height
       value: 1.1
@@ -878,7 +903,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1376630763156820813, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1231888707}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3093259835440501442, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       insertIndex: -1
@@ -980,6 +1008,5 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 576831226}
-  - {fileID: 1231888707}
   - {fileID: 2695888406797043093}
   - {fileID: 1092750262}

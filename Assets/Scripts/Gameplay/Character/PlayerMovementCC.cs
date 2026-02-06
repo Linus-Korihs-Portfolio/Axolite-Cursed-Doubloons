@@ -14,6 +14,16 @@ public class PlayerMovementCC : MonoBehaviour
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private Transform cameraTransform;
 
+    [Header("Aim / Rotation")]
+    [SerializeField] private Camera aimCamera;
+    [SerializeField] private LayerMask aimGroundMask;
+    [SerializeField] private float rotateSpeed = 20f;
+    [SerializeField] private bool rotateVisualsOnly = false;
+
+    [SerializeField] private Transform visual;
+    [SerializeField] private float visualTurnSpeed = 20f;
+
+
     private CharacterController cc;
     private float verticalVelocity;
     private Vector2 moveInput;
@@ -21,6 +31,7 @@ public class PlayerMovementCC : MonoBehaviour
     private void Awake()
     {
         cc = GetComponent<CharacterController>();
+        if (aimCamera == null) aimCamera = Camera.main;
     }
 
     private void Update()
@@ -28,6 +39,7 @@ public class PlayerMovementCC : MonoBehaviour
         ReadInput();
         ApplyGravity();
         MoveCC();
+
     }
 
     private void ApplyGravity()
@@ -68,6 +80,9 @@ public class PlayerMovementCC : MonoBehaviour
         velocity.y = verticalVelocity;
 
         cc.Move(velocity * Time.deltaTime);
+
+        if (rotateVisualsOnly) RotateVisualsToMouse();
+        else RotateToMouse(); 
     }
 
     private void OnEnable()
@@ -83,5 +98,42 @@ public class PlayerMovementCC : MonoBehaviour
     private void ReadInput()
     {
         moveInput = moveAction != null ? moveAction.action.ReadValue<Vector2>() : Vector2.zero;
+    }
+
+    private void RotateToMouse()
+    {
+        if (aimCamera == null) return;
+
+        Ray ray = aimCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (!Physics.Raycast(ray, out RaycastHit hit, 500f, aimGroundMask, QueryTriggerInteraction.Ignore)) return;
+
+        Vector3 look = hit.point - transform.position;
+        look.y = 0f;
+
+        if (look.sqrMagnitude < 0.0001f) return;
+
+        Quaternion targetRot = Quaternion.LookRotation(look.normalized, Vector3.up);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotateSpeed * Time.deltaTime);
+    }
+
+    private void RotateVisualsToMouse()
+    {
+        if (visual != null)
+        {
+            Vector3 dir = new Vector3(moveInput.x, 0f, moveInput.y);
+
+            if (cameraTransform != null)
+            {
+                Vector3 forward = cameraTransform.forward; forward.y = 0f; forward.Normalize();
+                Vector3 right = cameraTransform.right; right.y = 0f; right.Normalize();
+                dir = (right * dir.x + forward * dir.z);
+            }
+
+            if (dir.sqrMagnitude > 0.0001f)
+            {
+                Quaternion target = Quaternion.LookRotation(dir.normalized, Vector3.up);
+                visual.rotation = Quaternion.Slerp(visual.rotation, target * Quaternion.Euler(0f, 180f, 0f), visualTurnSpeed * Time.deltaTime);
+            }
+        }
     }
 }
