@@ -367,6 +367,20 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &963848510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Player/Dodge
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 2940cdc9-efe2-4e3d-a66f-eb176506b668
 --- !u!1 &971666737
 GameObject:
   m_ObjectHideFlags: 0
@@ -940,6 +954,12 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3093259835440501442, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 2695888406797043102}
+    - targetCorrespondingSourceObject: {fileID: 3093259835440501442, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2695888406797043101}
+    - targetCorrespondingSourceObject: {fileID: 3093259835440501442, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 2695888406797043097}
   m_SourcePrefab: {fileID: 100100000, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
 --- !u!114 &2695888406797043097
@@ -972,6 +992,43 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 1231888706}
+--- !u!114 &2695888406797043101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492189492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbe4fbd9e6cb5d743838d2cb01152452, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAim
+  aimCamera: {fileID: 1231888706}
+  aimGroundMask:
+    serializedVersion: 2
+    m_Bits: 192
+  rotateSpeed: 20
+  rotateByMouse: 0
+  visual: {fileID: 1746883246}
+  visualTurnSpeed: 15
+--- !u!114 &2695888406797043102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492189492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c85a497849294ac4384ef109f526d94e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDodge
+  dodgeAction: {fileID: 963848510}
+  dodgeSpeed: 12
+  dodgeDuration: 0.18
+  dodgeCooldown: 0.35
+  dodgeUsesAimDirection: 0
 --- !u!1001 &2837341898456449613
 PrefabInstance:
   m_ObjectHideFlags: 0
