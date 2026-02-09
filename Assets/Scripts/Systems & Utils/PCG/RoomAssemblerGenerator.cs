@@ -79,12 +79,10 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
             if (success)
             {
-                if (config.log)
-                    Debug.Log($"✓ Generation success. Seed={runSeed}, Rooms={placed.Count}, attempt={attempt + 1}");
+                if (config.log) Debug.Log($"✓ Generation success. Seed={runSeed}, Rooms={placed.Count}, attempt={attempt + 1}");
                 return;
             }
         }
-
         Debug.LogError($"✗ Generation failed after {config.maxGenerationRetries} retries.");
     }
 
