@@ -12,7 +12,7 @@ public class PlayerPunch : MonoBehaviour
     [SerializeField] private float range = 1.1f;
     [SerializeField] private float radius = 0.6f;
     [SerializeField] private LayerMask hitMask;
-    [SerializeField] private int damage = 1;
+    //[SerializeField] private int damage = 1;
 
     [Header("Knockback (optional)")]
     [SerializeField] private float knockbackForce = 6f;
