@@ -4,23 +4,12 @@ using UnityEngine;
 [RequireComponent(typeof(CapsuleCollider), typeof(Rigidbody))]
 public class CameraOcclusionTrigger : MonoBehaviour
 {
+    [Header("Settings")]
+    [SerializeField] private CameraCMSettings settings;
+
     [Header("References")]
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private Transform target;
-
-    [Header("Occluders")]
-    [SerializeField] private LayerMask occluderMask;
-    [SerializeField] private bool makeTransparent = true;
-    [SerializeField, Range(0.05f, 1f)] private float transparentAlpha = 0.25f;
-
-    [Header("Trigger Shape")]
-    [SerializeField] private float radius = 0.35f;
-    [SerializeField] private float paddingFromCamera = 0.2f;
-    [SerializeField] private float paddingFromTarget = 0.1f;
-
-    [Header("Debug")]
-    [SerializeField] private bool debugEnabled = false;
-    [SerializeField] private bool drawGizmos = true;
 
     private CapsuleCollider capsule;
     private Rigidbody rb;
@@ -33,11 +22,18 @@ public class CameraOcclusionTrigger : MonoBehaviour
     private static readonly int ColorId = Shader.PropertyToID("_Color");
     private Vector3 gizmoStart, gizmoEnd;
 
-    [SerializeField] private int staleFramesToRestore = 2; // failsafe gegen verpasste Exit-events
-
     private readonly Dictionary<Renderer, int> overlapCounts = new();
     private readonly Dictionary<Renderer, int> lastSeenFrame = new();
 
+    private LayerMask OccluderMask => settings.occluderMask;
+    private bool MakeTransparent => settings.makeTransparent;
+    private float TransparentAlpha => settings.transparentAlpha;
+    private float Radius => settings.occlusionRadius;
+    private float PaddingFromCamera => settings.paddingFromCamera;
+    private float PaddingFromTarget => settings.paddingFromTarget;
+    private bool DebugEnabled => settings.debugEnabled;
+    private bool DrawGizmos => settings.drawGizmos;
+    private int StaleFramesToRestore => settings.staleFramesToRestore;
 
     private void Awake()
     {
@@ -48,14 +44,14 @@ public class CameraOcclusionTrigger : MonoBehaviour
 
         capsule.isTrigger = true;
         capsule.direction = 2;
-        capsule.radius = radius;
+        capsule.radius = Radius;
 
         rb.isKinematic = true;
         rb.useGravity = false;
 
         if (!cameraTransform) cameraTransform = Camera.main ? Camera.main.transform : null;
 
-        if (debugEnabled)
+        if (DebugEnabled)
         {
             Debug.Log($"[CameraOcclusionTrigger] Awake on '{name}'. " + $"cameraTransform={(cameraTransform ? cameraTransform.name : "NULL")} target={(target ? target.name : "NULL")}");
         }
@@ -74,8 +70,8 @@ public class CameraOcclusionTrigger : MonoBehaviour
 
         Vector3 dirN = dir / dist;
 
-        Vector3 start = camPos + dirN * paddingFromCamera;
-        Vector3 end = targetPos - dirN * paddingFromTarget;
+        Vector3 start = camPos + dirN * PaddingFromCamera;
+        Vector3 end = targetPos - dirN * PaddingFromTarget;
 
         float paddedDist = Vector3.Distance(start, end);
         if (paddedDist <= 0.001f) return;
@@ -86,19 +82,19 @@ public class CameraOcclusionTrigger : MonoBehaviour
         transform.position = (start + end) * 0.5f;
         transform.rotation = Quaternion.LookRotation((end - start).normalized, Vector3.up);
 
-        capsule.radius = radius;
-        capsule.height = Mathf.Max(paddedDist + 2f * radius, 2f * radius);
+        capsule.radius = Radius;
+        capsule.height = Mathf.Max(paddedDist + 2f * Radius, 2f * Radius);
         CleanupStaleOccluders();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!IsInMask(other.gameObject.layer, occluderMask)) return;
+        if (!IsInMask(other.gameObject.layer, OccluderMask)) return;
 
         var rend = other.GetComponentInParent<Renderer>();
         if (!rend)
         {
-            if (debugEnabled) Debug.Log($"[CameraOcclusionTrigger] ENTER '{other.name}' but no Renderer found.");
+            if (DebugEnabled) Debug.Log($"[CameraOcclusionTrigger] ENTER '{other.name}' but no Renderer found.");
             return;
         }
 
@@ -108,14 +104,14 @@ public class CameraOcclusionTrigger : MonoBehaviour
         count++;
         overlapCounts[rend] = count;
 
-        if (debugEnabled) Debug.Log($"[CameraOcclusionTrigger] ENTER '{other.name}' -> '{rend.name}' count={count}");
+        if (DebugEnabled) Debug.Log($"[CameraOcclusionTrigger] ENTER '{other.name}' -> '{rend.name}' count={count}");
 
         if (count == 1) ApplyOcclusion(rend);
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (!IsInMask(other.gameObject.layer, occluderMask)) return;
+        if (!IsInMask(other.gameObject.layer, OccluderMask)) return;
 
         var rend = other.GetComponentInParent<Renderer>();
         if (!rend) return;
@@ -128,18 +124,18 @@ public class CameraOcclusionTrigger : MonoBehaviour
             overlapCounts[rend] = Mathf.Max(1, count);
             ApplyOcclusion(rend);
 
-            if (debugEnabled) Debug.Log($"[CameraOcclusionTrigger] STAY '{other.name}' -> '{rend.name}' count={overlapCounts[rend]}");
+            if (DebugEnabled) Debug.Log($"[CameraOcclusionTrigger] STAY '{other.name}' -> '{rend.name}' count={overlapCounts[rend]}");
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (!IsInMask(other.gameObject.layer, occluderMask)) return;
+        if (!IsInMask(other.gameObject.layer, OccluderMask)) return;
 
         var rend = other.GetComponentInParent<Renderer>();
         if (!rend)
         {
-            if (debugEnabled) Debug.Log($"[CameraOcclusionTrigger] EXIT '{other.name}' but no Renderer found.");
+            if (DebugEnabled) Debug.Log($"[CameraOcclusionTrigger] EXIT '{other.name}' but no Renderer found.");
             return;
         }
 
@@ -152,19 +148,19 @@ public class CameraOcclusionTrigger : MonoBehaviour
             lastSeenFrame.Remove(rend);
             RestoreOne(rend);
 
-            if (debugEnabled) Debug.Log($"[CameraOcclusionTrigger] EXIT '{other.name}' -> '{rend.name}' restored (count=0)");
+            if (DebugEnabled) Debug.Log($"[CameraOcclusionTrigger] EXIT '{other.name}' -> '{rend.name}' restored (count=0)");
         }
         else
         {
             overlapCounts[rend] = count;
 
-            if (debugEnabled) Debug.Log($"[CameraOcclusionTrigger] EXIT '{other.name}' -> '{rend.name}' count={count}");
+            if (DebugEnabled) Debug.Log($"[CameraOcclusionTrigger] EXIT '{other.name}' -> '{rend.name}' count={count}");
         }
     }
 
     private void OnDisable()
     {
-        if (debugEnabled)
+        if (DebugEnabled)
             Debug.Log($"[CameraOcclusionTrigger] OnDisable - restoring {activeOccluders.Count} occluders.");
 
         foreach (var r in new List<Renderer>(activeOccluders))
@@ -179,17 +175,17 @@ public class CameraOcclusionTrigger : MonoBehaviour
     {
         if (!activeOccluders.Add(rend))
         {
-            if (debugEnabled) Debug.Log($"[CameraOcclusionTrigger] Apply skipped (already active) -> '{rend.name}'");
+            if (DebugEnabled) Debug.Log($"[CameraOcclusionTrigger] Apply skipped (already active) -> '{rend.name}'");
             return;
         }
 
         if (!originalEnabled.ContainsKey(rend)) originalEnabled[rend] = rend.enabled;
 
-        if (!makeTransparent)
+        if (!MakeTransparent)
         {
             rend.enabled = false;
 
-            if (debugEnabled) Debug.Log($"[CameraOcclusionTrigger] HIDE -> '{rend.name}' (renderer.enabled=false)");
+            if (DebugEnabled) Debug.Log($"[CameraOcclusionTrigger] HIDE -> '{rend.name}' (renderer.enabled=false)");
                 Debug.Log($"[CameraOcclusionTrigger] HIDE -> '{rend.name}' (renderer.enabled=false)");
 
             return;
@@ -197,7 +193,7 @@ public class CameraOcclusionTrigger : MonoBehaviour
 
         if (!rend.sharedMaterial)
         {
-            if (debugEnabled) Debug.LogWarning($"[CameraOcclusionTrigger] '{rend.name}' has no sharedMaterial. Falling back to HIDE.");
+            if (DebugEnabled) Debug.LogWarning($"[CameraOcclusionTrigger] '{rend.name}' has no sharedMaterial. Falling back to HIDE.");
             rend.enabled = false;
             return;
         }
@@ -209,30 +205,30 @@ public class CameraOcclusionTrigger : MonoBehaviour
         if (rend.sharedMaterial.HasProperty(BaseColorId))
         {
             Color c = rend.sharedMaterial.GetColor(BaseColorId);
-            c.a = transparentAlpha;
+            c.a = TransparentAlpha;
             mpb.SetColor(BaseColorId, c);
             applied = true;
         }
         else if (rend.sharedMaterial.HasProperty(ColorId))
         {
             Color c = rend.sharedMaterial.GetColor(ColorId);
-            c.a = transparentAlpha;
+            c.a = TransparentAlpha;
             mpb.SetColor(ColorId, c);
             applied = true;
         }
 
         if (!applied)
         {
-            if (debugEnabled) Debug.LogWarning($"[CameraOcclusionTrigger] Shader on '{rend.name}' doesn't have _BaseColor/_Color. Falling back to HIDE.");
+            if (DebugEnabled) Debug.LogWarning($"[CameraOcclusionTrigger] Shader on '{rend.name}' doesn't have _BaseColor/_Color. Falling back to HIDE.");
             rend.enabled = false;
             return;
         }
 
         rend.SetPropertyBlock(mpb);
 
-        if (debugEnabled)
+        if (DebugEnabled)
         {
-            Debug.Log($"[CameraOcclusionTrigger] FADE -> '{rend.name}' alpha={transparentAlpha} " + $"(mat='{rend.sharedMaterial.name}', shader='{rend.sharedMaterial.shader.name}')");
+            Debug.Log($"[CameraOcclusionTrigger] FADE -> '{rend.name}' alpha={TransparentAlpha} " + $"(mat='{rend.sharedMaterial.name}', shader='{rend.sharedMaterial.shader.name}')");
         }
     }
 
@@ -241,7 +237,7 @@ public class CameraOcclusionTrigger : MonoBehaviour
         if (!rend) return;
         if (!activeOccluders.Remove(rend))
         {
-            if (debugEnabled) Debug.Log($"[CameraOcclusionTrigger] Restore skipped (not active) -> '{rend.name}'");
+            if (DebugEnabled) Debug.Log($"[CameraOcclusionTrigger] Restore skipped (not active) -> '{rend.name}'");
             return;
         }
 
@@ -249,20 +245,20 @@ public class CameraOcclusionTrigger : MonoBehaviour
 
         rend.SetPropertyBlock(null);
 
-        if (debugEnabled) Debug.Log($"[CameraOcclusionTrigger] RESTORE -> '{rend.name}' (enabled={rend.enabled})");
+        if (DebugEnabled) Debug.Log($"[CameraOcclusionTrigger] RESTORE -> '{rend.name}' (enabled={rend.enabled})");
     }
     private static bool IsInMask(int layer, LayerMask mask) => (mask.value & (1 << layer)) != 0;
 
     private void OnDrawGizmos()
     {
-        if (!debugEnabled || !drawGizmos) return;
+        if (!DrawGizmos) return;
 
         Gizmos.color = Color.cyan;
         Gizmos.DrawLine(gizmoStart, gizmoEnd);
 
         Gizmos.color = new Color(0f, 1f, 1f, 0.2f);
-        Gizmos.DrawWireSphere(gizmoStart, radius);
-        Gizmos.DrawWireSphere(gizmoEnd, radius);
+        Gizmos.DrawWireSphere(gizmoStart, Radius);
+        Gizmos.DrawWireSphere(gizmoEnd, Radius);
     }
 
     private void MarkSeen(Renderer rend)
@@ -284,7 +280,7 @@ public class CameraOcclusionTrigger : MonoBehaviour
                 continue;
             }
 
-            if (Time.frameCount - last > staleFramesToRestore) toRestore.Add(rend);
+            if (Time.frameCount - last > StaleFramesToRestore) toRestore.Add(rend);
         }
 
         for (int i = 0; i < toRestore.Count; i++)
@@ -296,7 +292,7 @@ public class CameraOcclusionTrigger : MonoBehaviour
             lastSeenFrame.Remove(r);
             RestoreOne(r);
 
-            if (debugEnabled) Debug.Log($"[CameraOcclusionTrigger] FAILSAFE RESTORE -> '{r.name}' (stale)");
+            if (DebugEnabled) Debug.Log($"[CameraOcclusionTrigger] FAILSAFE RESTORE -> '{r.name}' (stale)");
         }
     }
 
