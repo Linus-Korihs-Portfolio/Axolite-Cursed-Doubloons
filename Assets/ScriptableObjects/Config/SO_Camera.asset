@@ -20,3 +20,12 @@ MonoBehaviour:
   zoomSpeed: 0.02
   minRadius: 2.5
   maxRadius: 16
+  handleOcclusion: 1
+  hideInsteadOfFade: 1
+  occluderMask:
+    serializedVersion: 2
+    m_Bits: 192
+  fadeAlpha: 0.25
+  fadeSpeed: 12
+  occlusionSphereRadius: 0.2
+  occlusionDebug: 1
