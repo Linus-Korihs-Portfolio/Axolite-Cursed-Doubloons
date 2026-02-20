@@ -86,10 +86,15 @@ public class CameraCM : MonoBehaviour
     {
         if (zoomAction)
         {
-            float scrollY = zoomAction.action.ReadValue<float>();
-            if (Mathf.Abs(scrollY) > 0.001f)
+            float z = zoomAction.action.ReadValue<float>();
+            if (Mathf.Abs(z) > 0.001f)
             {
-                targetRadius = Mathf.Clamp(targetRadius - scrollY * ZoomSpeed, MinRadius, MaxRadius);
+                bool usingMouseWheel = Mouse.current != null && Mathf.Abs(Mouse.current.scroll.ReadValue().y) > 0.01f;
+
+                float speed = usingMouseWheel ? settings.mouseZoomSpeed : settings.gamepadZoomSpeed;
+                float dt = usingMouseWheel ? 1f : Time.deltaTime; // Controller = per second
+
+                targetRadius = Mathf.Clamp(targetRadius - z * speed * dt, MinRadius, MaxRadius);
             }
         }
 
@@ -122,7 +127,7 @@ public class CameraCM : MonoBehaviour
         }
 
         // Smooth transition
-        orbital.Radius = Mathf.Lerp(orbital.Radius, targetRadius, Time.deltaTime * TransitionSpeed);
+        orbital.Radius = Mathf.Lerp(orbital.Radius, targetRadius, Time.deltaTime * settings.zoomSmoothing);
 
         var v = orbital.VerticalAxis;
         v.Value = Mathf.Lerp(v.Value, targetVertical, Time.deltaTime * TransitionSpeed);

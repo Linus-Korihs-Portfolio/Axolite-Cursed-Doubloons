@@ -9,7 +9,7 @@ public class PlayerDodge : MonoBehaviour
     [SerializeField] private float dodgeSpeed = 12f;
     [SerializeField] private float dodgeDuration = 0.18f;
     [SerializeField] private float dodgeCooldown = 0.35f;
-    [SerializeField] private bool dodgeUsesAimDirection = true;
+    [SerializeField] private float activeMoveDeadzone = 0.35f;
 
     private PlayerMovementCC movement;
     private PlayerAim aim;
@@ -43,11 +43,21 @@ public class PlayerDodge : MonoBehaviour
     {
         if (cooldownTimer > 0f) return;
 
-        Vector3 dir = movement.LastMoveDir;
+        Vector3 dir = Vector3.zero;
 
-        if (dodgeUsesAimDirection && aim != null && aim.AimDirection.sqrMagnitude > 0.0001f) dir = aim.AimDirection;
+        if (movement.moveInput.magnitude >= activeMoveDeadzone) dir = movement.LastMoveDir;
+        else
+        {
+            if (aim != null && aim.FacingDirection.sqrMagnitude > 0.0001f) dir = aim.FacingDirection;
+            else dir = movement.LastMoveDir;
+        }
 
-        movement.AddExternalVelocity(dir.normalized * dodgeSpeed, dodgeDuration);
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.0001f) dir = transform.forward;
+        dir.Normalize();
+
+        movement.AddExternalVelocity(dir * dodgeSpeed, dodgeDuration);
         cooldownTimer = dodgeCooldown;
     }
+
 }

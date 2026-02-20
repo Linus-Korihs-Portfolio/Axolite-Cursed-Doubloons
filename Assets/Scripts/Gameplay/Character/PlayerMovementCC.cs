@@ -88,7 +88,10 @@ public class PlayerMovementCC : MonoBehaviour
         }
 
         if (move.sqrMagnitude > 1f) move.Normalize();
-        if (move.sqrMagnitude > 0.0001f) LastMoveDir = move.normalized;
+        
+        // block small input to prevent unwanted movement direction changes
+        const float dirUpdateDeadzone = 0.25f;
+        if (move.magnitude >= dirUpdateDeadzone) LastMoveDir = move.normalized;
 
         Vector3 velocity = move * walkSpeed;
         if (externalTimer > 0f) velocity += externalVelocity;

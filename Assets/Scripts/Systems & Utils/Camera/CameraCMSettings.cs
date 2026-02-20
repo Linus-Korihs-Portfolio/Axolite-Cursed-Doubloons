@@ -15,6 +15,12 @@ public class CameraCMSettings : ScriptableObject
     public float minRadius = 2.5f;
     public float maxRadius = 16f;
 
+    [Header("Zoom")]
+    public float mouseZoomSpeed = 0.02f;
+    public float gamepadZoomSpeed = 6f;
+    public float zoomSmoothing = 10f;
+
+
     [Header("Occlusion - Occluders")]
     public LayerMask occluderMask = ~0;
     public bool makeTransparent = true;

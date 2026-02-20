@@ -99,7 +99,7 @@ MonoBehaviour:
   dodgeSpeed: 12
   dodgeDuration: 0.18
   dodgeCooldown: 0.35
-  dodgeUsesAimDirection: 0
+  activeMoveDeadzone: 0.35
 --- !u!114 &2264711508527222585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,10 +116,9 @@ MonoBehaviour:
   aimGroundMask:
     serializedVersion: 2
     m_Bits: 192
-  rotateSpeed: 20
-  rotateByMouse: 0
   visual: {fileID: 2151853351454571588}
-  visualTurnSpeed: 15
+  visualTurnSpeed: 50
+  visualDeadzone: 0.3
 --- !u!114 &2161997929097658219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,6 +138,7 @@ MonoBehaviour:
   hitMask:
     serializedVersion: 2
     m_Bits: 256
+  hitboxBufferUpwards: 0.5
   knockbackForce: 6
   upwardKnock: 0
   drawGizmos: 1

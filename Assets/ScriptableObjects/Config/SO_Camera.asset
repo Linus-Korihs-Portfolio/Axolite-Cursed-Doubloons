@@ -20,6 +20,9 @@ MonoBehaviour:
   zoomSpeed: 0.02
   minRadius: 2.5
   maxRadius: 16
+  mouseZoomSpeed: 0.5
+  gamepadZoomSpeed: 10
+  zoomSmoothing: 10
   occluderMask:
     serializedVersion: 2
     m_Bits: 192

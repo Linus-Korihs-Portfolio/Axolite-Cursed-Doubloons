@@ -13,6 +13,7 @@ public class PlayerPunch : MonoBehaviour
     [SerializeField] private float radius = 0.6f;
     [SerializeField] private LayerMask hitMask;
     //[SerializeField] private int damage = 1;
+    [SerializeField] private float hitboxBufferUpwards = 0.5f;
 
     [Header("Knockback (optional)")]
     [SerializeField] private float knockbackForce = 6f;
@@ -45,7 +46,6 @@ public class PlayerPunch : MonoBehaviour
     private void Update()
     {
         if (cooldownTimer > 0f) cooldownTimer -= Time.deltaTime;
-
         if (punchAction != null && punchAction.action.WasPressedThisFrame()) TryPunch();
     }
 
@@ -54,29 +54,28 @@ public class PlayerPunch : MonoBehaviour
         if (cooldownTimer > 0f) return;
 
         Vector3 dir = GetPunchDirection();
-        Vector3 center = transform.position + dir * range;
+        Vector3 center = transform.position + Vector3.up * hitboxBufferUpwards + dir * range;
 
         Collider[] hits = Physics.OverlapSphere(center, radius, hitMask, QueryTriggerInteraction.Ignore);
 
         for (int i = 0; i < hits.Length; i++)
         {
             var col = hits[i];
-            Rigidbody rb = col.attachedRigidbody;
+            Rigidbody rb = col.attachedRigidbody != null ? col.attachedRigidbody : col.GetComponentInParent<Rigidbody>();
             if (rb != null)
             {
                 Vector3 kb = dir * knockbackForce;
                 if (upwardKnock != 0f) kb.y += upwardKnock;
 
-                rb.AddForce(kb, ForceMode.Impulse);
+                rb.AddForce(kb, ForceMode.VelocityChange);
             }
         }
-
         cooldownTimer = cooldown;
     }
 
     private Vector3 GetPunchDirection()
     {
-        if (aim != null && aim.AimDirection.sqrMagnitude > 0.0001f) return aim.AimDirection.normalized;
+        if (aim != null && aim.FacingDirection.sqrMagnitude > 0.0001f) return aim.FacingDirection.normalized;
         if (movement != null && movement.LastMoveDir.sqrMagnitude > 0.0001f) return movement.LastMoveDir.normalized;
 
         Vector3 fwd = transform.forward;
@@ -84,24 +83,15 @@ public class PlayerPunch : MonoBehaviour
         return fwd.sqrMagnitude > 0.0001f ? fwd.normalized : Vector3.forward;
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         if (!drawGizmos) return;
 
-        Vector3 dir = Vector3.forward;
-        var a = GetComponent<PlayerAim>();
-        var m = GetComponent<PlayerMovementCC>();
-
-        if (a != null && a.AimDirection.sqrMagnitude > 0.0001f) dir = a.AimDirection;
-        else if (m != null && m.LastMoveDir.sqrMagnitude > 0.0001f) dir = m.LastMoveDir;
-
-        dir.y = 0f;
-        if (dir.sqrMagnitude < 0.0001f) dir = Vector3.forward;
-        dir.Normalize();
-
-        Vector3 center = transform.position + dir * range;
+        Vector3 dir = GetPunchDirection();
+        Vector3 center = transform.position + Vector3.up * hitboxBufferUpwards + dir * range;
 
         Gizmos.DrawWireSphere(center, radius);
-        Gizmos.DrawLine(transform.position, center);
+        Gizmos.DrawLine(transform.position + Vector3.up * hitboxBufferUpwards, center);
     }
+
 }
