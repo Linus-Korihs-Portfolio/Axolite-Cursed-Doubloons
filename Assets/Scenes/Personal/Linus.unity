@@ -269,6 +269,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Comment
   commentText: Trigger Collider needed for Camera Occlusion. Needs the correct layer
     to be made transparent/hide
+--- !u!114 &268978652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Camera/LockOn
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 9f800ebe-2e4c-4eb1-b517-a5f99e8898dc
 --- !u!1 &335878358
 GameObject:
   m_ObjectHideFlags: 0
@@ -471,6 +485,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: 6c2ab1b8-8984-453a-af3d-a3c78ae1679a
+--- !u!20 &661275310 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 3296467166676520069, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+  m_PrefabInstance: {fileID: 2695888406797043093}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &661275314 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4450673186202674228, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+  m_PrefabInstance: {fileID: 2695888406797043093}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &861075205
 GameObject:
   m_ObjectHideFlags: 0
@@ -712,6 +736,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8735502233327984575, guid: 1bdfca6121177c44c80c032e6bd395d8, type: 3}
   m_PrefabInstance: {fileID: 2837341898456449613}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1345023574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Camera/Look
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: bf05e879-54bb-4fac-8b17-84547e4eda49
 --- !u!1 &1642299712
 GameObject:
   m_ObjectHideFlags: 0
@@ -882,6 +920,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: 8dbbcb4b-38e9-43e3-a180-03bf6a447b78
+--- !u!114 &1715513266 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6642064218002673456, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+  m_PrefabInstance: {fileID: 2695888406797043093}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
 --- !u!1001 &2695888406797043093
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -891,9 +940,21 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 463730145846815463, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: cmCamera
+      value: 
+      objectReference: {fileID: 1715513266}
+    - target: {fileID: 463730145846815463, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: lookAction
+      value: 
+      objectReference: {fileID: 1345023574}
+    - target: {fileID: 463730145846815463, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: zoomAction
       value: 
       objectReference: {fileID: 1666167150}
+    - target: {fileID: 463730145846815463, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: lockOnAction
+      value: 
+      objectReference: {fileID: 268978652}
     - target: {fileID: 463730145846815463, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: toggleAction
       value: 
@@ -938,10 +999,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2151853351454571588, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151853351454571588, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151853351454571588, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2161997929097658219, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: punchAction
       value: 
       objectReference: {fileID: 659780652}
+    - target: {fileID: 2264711508527222585, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: aimCamera
+      value: 
+      objectReference: {fileID: 661275310}
+    - target: {fileID: 2264711508527222585, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3093259835440501442, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: m_Name
       value: PF_Player
@@ -954,6 +1035,10 @@ PrefabInstance:
       propertyPath: moveAction
       value: 
       objectReference: {fileID: 406618043}
+    - target: {fileID: 3608480699236668065, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: cameraTransform
+      value: 
+      objectReference: {fileID: 661275314}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

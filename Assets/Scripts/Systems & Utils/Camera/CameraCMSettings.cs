@@ -31,4 +31,25 @@ public class CameraCMSettings : ScriptableObject
     [Header("Occlusion - Debug")]
     public bool debugEnabled = true;
     public bool drawGizmos = true;
+    [Header("Look (Right Stick / Mouse)")]
+    public float lookSensitivityX = 180f;
+    public float lookSensitivityY = 120f;
+    public bool invertY = false;
+    public bool lookScaleWithDeltaTime = true;
+    public float minVertical = 5f;
+    public float maxVertical = 85f;
+
+    [Header("Lock-On")]
+    public string[] lockOnTags = new[] { "Enemy" };
+    public float lockOnMaxDistance = 25f;
+
+    [Header("Look - Gamepad")]
+    public float gamepadSensitivityX = 180f;
+    public float gamepadSensitivityY = 120f;
+
+    [Header("Look - Mouse")]
+    public float mouseSensitivityX = 0.15f;
+    public float mouseSensitivityY = 0.15f;
+    public bool mouseScaleWithDeltaTime = false;
+
 }

@@ -31,3 +31,17 @@ MonoBehaviour:
   staleFramesToRestore: 2
   debugEnabled: 0
   drawGizmos: 1
+  lookSensitivityX: 180
+  lookSensitivityY: 120
+  invertY: 0
+  lookScaleWithDeltaTime: 1
+  minVertical: 5
+  maxVertical: 85
+  lockOnTags:
+  - Enemy
+  lockOnMaxDistance: 25
+  gamepadSensitivityX: 180
+  gamepadSensitivityY: 120
+  mouseSensitivityX: 0.1
+  mouseSensitivityY: 0.1
+  mouseScaleWithDeltaTime: 0

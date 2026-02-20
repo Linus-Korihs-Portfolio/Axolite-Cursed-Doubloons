@@ -73,16 +73,24 @@ public class PlayerMovementCC : MonoBehaviour
 
         if (cameraTransform != null)
         {
-            Vector3 forward = cameraTransform.forward; forward.y = 0f; forward.Normalize();
-            Vector3 right = cameraTransform.right; right.y = 0f; right.Normalize();
+            float yaw = cameraTransform.eulerAngles.y;
+            Quaternion yawRot = Quaternion.Euler(0f, yaw, 0f);
+            Vector3 forward = cameraTransform.forward;
+            forward.y = 0f;
+            forward.Normalize();
+
+            Vector3 right = cameraTransform.right;
+            right.y = 0f;
+            right.Normalize();
+
             move = (right * move.x + forward * move.z);
+
         }
 
         if (move.sqrMagnitude > 1f) move.Normalize();
         if (move.sqrMagnitude > 0.0001f) LastMoveDir = move.normalized;
 
         Vector3 velocity = move * walkSpeed;
-
         if (externalTimer > 0f) velocity += externalVelocity;
 
         velocity.y = verticalVelocity;

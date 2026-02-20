@@ -65,9 +65,16 @@ public class PlayerAim : MonoBehaviour
 
             if (movement.cameraTransform != null)
             {
-                Vector3 forward = movement.cameraTransform.forward; forward.y = 0f; forward.Normalize();
-                Vector3 right = movement.cameraTransform.right; right.y = 0f; right.Normalize();
+                Vector3 forward = movement.cameraTransform.forward;
+                forward.y = 0f;
+                forward.Normalize();
+
+                Vector3 right = movement.cameraTransform.right;
+                right.y = 0f;
+                right.Normalize();
+
                 dir = (right * dir.x + forward * dir.z);
+
             }
 
             if (dir.sqrMagnitude > 0.0001f)
