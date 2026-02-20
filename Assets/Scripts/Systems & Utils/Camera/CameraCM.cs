@@ -17,7 +17,7 @@ public class CameraCM : MonoBehaviour
     [Header("Cinemachine (optional but recommended)")]
     [SerializeField] private CinemachineCamera cmCamera;
 
-    [Header("Input Actions")]
+    [Header("Camera Actions")]
     [SerializeField] public InputActionReference lookAction;
     [SerializeField] public InputActionReference lockOnAction;
 
