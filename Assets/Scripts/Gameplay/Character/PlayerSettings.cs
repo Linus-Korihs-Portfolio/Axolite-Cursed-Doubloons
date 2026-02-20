@@ -7,8 +7,8 @@ public class PlayerConfig : ScriptableObject
     public float gravity = -25f;
     public float groundedStickForce = -2f;
     public float terminalVelocity = -50f;
-
     public float walkSpeed = 5f;
+    public float dirUpdateDeadzone = 0.25f;
 
     [Header("Dodge")]
     public float dodgeSpeed = 12f;

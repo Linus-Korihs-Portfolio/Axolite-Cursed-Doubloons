@@ -10,6 +10,7 @@ public class PlayerMovementCC : MonoBehaviour
     private float Gravity => config.gravity;
     private float GroundedStickForce => config.groundedStickForce;
     private float TerminalVelocity => config.terminalVelocity;
+    private float DirUpdateDeadzone => config.dirUpdateDeadzone;
 
     [Header("Movement")]
     private float WalkSpeed => config.walkSpeed;
@@ -86,14 +87,12 @@ public class PlayerMovementCC : MonoBehaviour
             right.Normalize();
 
             move = (right * move.x + forward * move.z);
-
         }
 
         if (move.sqrMagnitude > 1f) move.Normalize();
         
         // block small input to prevent unwanted movement direction changes
-        const float dirUpdateDeadzone = 0.25f;
-        if (move.magnitude >= dirUpdateDeadzone) LastMoveDir = move.normalized;
+        if (move.magnitude >= DirUpdateDeadzone) LastMoveDir = move.normalized;
 
         Vector3 velocity = move * WalkSpeed;
         if (externalTimer > 0f) velocity += externalVelocity;
