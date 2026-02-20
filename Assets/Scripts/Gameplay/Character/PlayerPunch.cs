@@ -1,12 +1,10 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerMovementCC))]
+[RequireComponent(typeof(PlayerAim))]
 public class PlayerPunch : MonoBehaviour
 {
     [SerializeField] private PlayerConfig config;
-    [Header("Input")]
-    [SerializeField] private InputActionReference punchAction;
 
     [Header("Punch")]
     private float Cooldown => config.punchCooldown;
@@ -26,7 +24,10 @@ public class PlayerPunch : MonoBehaviour
     private PlayerMovementCC movement;
     private PlayerAim aim;
 
+    public bool IsPunching => punchLockTimer > 0f;
+
     private float cooldownTimer;
+    private float punchLockTimer;
 
     private void Awake()
     {
@@ -34,28 +35,23 @@ public class PlayerPunch : MonoBehaviour
         aim = GetComponent<PlayerAim>();
     }
 
-    private void OnEnable()
+    public void Tick(float dt)
     {
-        if (punchAction != null) punchAction.action.Enable();
+        if (cooldownTimer > 0f) cooldownTimer -= dt;
+        if (punchLockTimer > 0f) punchLockTimer -= dt;
     }
 
-    private void OnDisable()
+    public bool TryPunch(Vector3 dir)
     {
-        if (punchAction != null) punchAction.action.Disable();
-    }
+        if (cooldownTimer > 0f) return false;
 
-    private void Update()
-    {
-        if (cooldownTimer > 0f) cooldownTimer -= Time.deltaTime;
-        if (punchAction != null && punchAction.action.WasPressedThisFrame()) TryPunch();
-    }
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.0001f) return false;
+        dir.Normalize();
 
-    private void TryPunch()
-    {
-        if (cooldownTimer > 0f) return;
+        Vector3 origin = movement != null ? movement.BodyTransform.position : transform.position;
+        Vector3 center = origin + Vector3.up * HitboxBufferUpwards + dir * Range;
 
-        Vector3 dir = GetPunchDirection();
-        Vector3 center = transform.position + Vector3.up * HitboxBufferUpwards + dir * Range;
 
         Collider[] hits = Physics.OverlapSphere(center, Radius, hitMask, QueryTriggerInteraction.Ignore);
 
@@ -63,7 +59,7 @@ public class PlayerPunch : MonoBehaviour
         {
             var col = hits[i];
             Rigidbody rb = col.attachedRigidbody != null ? col.attachedRigidbody : col.GetComponentInParent<Rigidbody>();
-            if (rb != null)
+            if (rb != null && !rb.isKinematic)
             {
                 Vector3 kb = dir * KnockbackForce;
                 if (UpwardKnock != 0f) kb.y += UpwardKnock;
@@ -71,7 +67,10 @@ public class PlayerPunch : MonoBehaviour
                 rb.AddForce(kb, ForceMode.VelocityChange);
             }
         }
+
+        punchLockTimer = config.punchLockDuration;
         cooldownTimer = Cooldown;
+        return true;
     }
 
     private Vector3 GetPunchDirection()
@@ -89,10 +88,11 @@ public class PlayerPunch : MonoBehaviour
         if (!drawGizmos) return;
 
         Vector3 dir = GetPunchDirection();
-        Vector3 center = transform.position + Vector3.up * HitboxBufferUpwards + dir * Range;
+        var m = movement != null ? movement : GetComponent<PlayerMovementCC>();
+        Vector3 origin = (m != null && m.BodyTransform != null) ? m.BodyTransform.position : transform.position;
+        Vector3 center = origin + Vector3.up * HitboxBufferUpwards + dir * Range;
 
         Gizmos.DrawWireSphere(center, Radius);
-        Gizmos.DrawLine(transform.position + Vector3.up * HitboxBufferUpwards, center);
+        Gizmos.DrawLine(origin + Vector3.up * HitboxBufferUpwards, center);
     }
-
 }

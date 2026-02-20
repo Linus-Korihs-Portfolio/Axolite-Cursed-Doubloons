@@ -21,6 +21,9 @@ public class PlayerConfig : ScriptableObject
     public float punchRange = 1.1f;
     public float punchRadius = 0.6f;
     //public float damage = 1f;
+    [Range(0.1f, 1f)] public float punchSlowMultiplier = 0.6f;
+    public float punchLockDuration = 0.15f;
+
     public float hitboxBufferUpwards = 0.5f;
     public float knockbackForce = 6f;
     public float upwardKnock = 0f;

@@ -16,6 +16,7 @@ MonoBehaviour:
   groundedStickForce: -2
   terminalVelocity: -50
   walkSpeed: 5
+  dirUpdateDeadzone: 0.25
   dodgeSpeed: 12
   dodgeDuration: 0.18
   dodgeCooldown: 0.35
@@ -23,6 +24,8 @@ MonoBehaviour:
   punchCooldown: 0.25
   punchRange: 1.1
   punchRadius: 0.6
+  punchSlowMultiplier: 0.6
+  punchLockDuration: 0.15
   hitboxBufferUpwards: 0.5
   knockbackForce: 6
   upwardKnock: 0

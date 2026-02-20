@@ -1,25 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(PlayerMovementCC))]
 public class PlayerAim : MonoBehaviour
 {
     [SerializeField] private PlayerConfig config;
     [Header("Aim / Rotation")]
-    [SerializeField] private Camera aimCamera;
-    [SerializeField] private LayerMask aimGroundMask;
     [SerializeField] public Transform visual;
     private float VisualTurnSpeed => config.visualTurnSpeed;
     private float VisualDeadzone => config.visualDeadzone;
-
-    public Vector3 AimDirection { get; private set; } = Vector3.forward;
-    public Vector3 AimPoint { get; private set; }
     public Vector3 FacingDirection { get; private set; } = Vector3.forward;
 
     private PlayerMovementCC movement;
 
     private void Awake()
     {
-        if (aimCamera == null) aimCamera = Camera.main;
         movement = GetComponent<PlayerMovementCC>();
     }
 
@@ -59,7 +54,7 @@ public class PlayerAim : MonoBehaviour
                 right.y = 0f;
                 right.Normalize();
 
-                dir = (right * dir.x + forward * dir.z);
+                dir = right * dir.x + forward * dir.z;
             }
 
             if (dir.magnitude >= VisualDeadzone)

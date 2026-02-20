@@ -1,7 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterController))]
 public class PlayerMovementCC : MonoBehaviour
 {
     [SerializeField] private PlayerConfig config;
@@ -14,12 +12,16 @@ public class PlayerMovementCC : MonoBehaviour
 
     [Header("Movement")]
     private float WalkSpeed => config.walkSpeed;
-    [SerializeField] private InputActionReference moveAction;
+    [SerializeField] private CharacterController cc;
     [SerializeField] public Transform cameraTransform;
 
+    public bool MovementLocked { get; set; } = false;
+    public float SpeedMultiplier { get; set; } = 1f;
+    public void SetMoveInput(Vector2 input) => moveInput = input;
     public Vector3 LastMoveDir { get; private set; } = Vector3.forward;
 
-    private CharacterController cc;
+    public Transform BodyTransform => cc.transform;
+
     private float verticalVelocity;
     public Vector2 moveInput;
 
@@ -28,30 +30,14 @@ public class PlayerMovementCC : MonoBehaviour
 
     private void Awake()
     {
-        cc = GetComponent<CharacterController>();
-    }
-
-    private void OnEnable()
-    {
-        if (moveAction != null) moveAction.action.Enable();
-    }
-
-    private void OnDisable()
-    {
-        if (moveAction != null) moveAction.action.Disable();
+        if (cc == null) cc = GetComponentInParent<CharacterController>();
     }
 
     private void Update()
     {
-        ReadInput();
         ApplyGravity();
         TickExternal();
         Move();
-    }
-
-    private void ReadInput()
-    {
-        moveInput = moveAction != null ? moveAction.action.ReadValue<Vector2>() : Vector2.zero;
     }
 
     private void ApplyGravity()
@@ -76,8 +62,6 @@ public class PlayerMovementCC : MonoBehaviour
 
         if (cameraTransform != null)
         {
-            float yaw = cameraTransform.eulerAngles.y;
-            Quaternion yawRot = Quaternion.Euler(0f, yaw, 0f);
             Vector3 forward = cameraTransform.forward;
             forward.y = 0f;
             forward.Normalize();
@@ -86,15 +70,16 @@ public class PlayerMovementCC : MonoBehaviour
             right.y = 0f;
             right.Normalize();
 
-            move = (right * move.x + forward * move.z);
+            move = right * move.x + forward * move.z;
         }
 
+        if (MovementLocked) move = Vector3.zero;
         if (move.sqrMagnitude > 1f) move.Normalize();
         
         // block small input to prevent unwanted movement direction changes
         if (move.magnitude >= DirUpdateDeadzone) LastMoveDir = move.normalized;
 
-        Vector3 velocity = move * WalkSpeed;
+        Vector3 velocity = move * WalkSpeed * SpeedMultiplier;
         if (externalTimer > 0f) velocity += externalVelocity;
 
         velocity.y = verticalVelocity;
