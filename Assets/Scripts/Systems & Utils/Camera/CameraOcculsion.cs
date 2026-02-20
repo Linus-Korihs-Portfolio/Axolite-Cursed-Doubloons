@@ -48,6 +48,8 @@ public class CameraOcclusionTrigger : MonoBehaviour
 
         rb.isKinematic = true;
         rb.useGravity = false;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         if (!cameraTransform) cameraTransform = Camera.main ? Camera.main.transform : null;
 
@@ -57,7 +59,7 @@ public class CameraOcclusionTrigger : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         if (!cameraTransform || !target) return;
 
@@ -79,11 +81,15 @@ public class CameraOcclusionTrigger : MonoBehaviour
         gizmoStart = start;
         gizmoEnd = end;
 
-        transform.position = (start + end) * 0.5f;
-        transform.rotation = Quaternion.LookRotation((end - start).normalized, Vector3.up);
-
         capsule.radius = Radius;
         capsule.height = Mathf.Max(paddedDist + 2f * Radius, 2f * Radius);
+
+        Vector3 mid = (start + end) * 0.5f;
+        Quaternion rot = Quaternion.LookRotation((end - start).normalized, Vector3.up);
+
+        rb.MovePosition(mid);
+        rb.MoveRotation(rot);
+
         CleanupStaleOccluders();
     }
 
@@ -186,8 +192,6 @@ public class CameraOcclusionTrigger : MonoBehaviour
             rend.enabled = false;
 
             if (DebugEnabled) Debug.Log($"[CameraOcclusionTrigger] HIDE -> '{rend.name}' (renderer.enabled=false)");
-                Debug.Log($"[CameraOcclusionTrigger] HIDE -> '{rend.name}' (renderer.enabled=false)");
-
             return;
         }
 
