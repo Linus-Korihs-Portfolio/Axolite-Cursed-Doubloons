@@ -9,11 +9,23 @@ public class PlayerBrain : MonoBehaviour
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference dodgeAction;
     [SerializeField] private InputActionReference punchAction;
+    [SerializeField] private InputActionReference cameraLookAction;
+    [SerializeField] private InputActionReference cameraToggleAction;
+    [SerializeField] private InputActionReference cameraZoomAction;
+    [SerializeField] private InputActionReference cameraLockOnAction;
 
     [SerializeField] private PlayerMovementCC movement;
     [SerializeField] private PlayerAim aim;
     [SerializeField] private PlayerDodge dodge;
     [SerializeField] private PlayerPunch punch;
+
+    public InputActionReference MoveAction => moveAction;
+    public InputActionReference DodgeAction => dodgeAction;
+    public InputActionReference PunchAction => punchAction;
+    public InputActionReference CameraLookAction => cameraLookAction;
+    public InputActionReference CameraToggleAction => cameraToggleAction;
+    public InputActionReference CameraZoomAction => cameraZoomAction;
+    public InputActionReference CameraLockOnAction => cameraLockOnAction;
 
     private void Awake()
     {
