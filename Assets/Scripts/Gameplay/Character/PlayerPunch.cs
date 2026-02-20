@@ -4,20 +4,21 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerMovementCC))]
 public class PlayerPunch : MonoBehaviour
 {
+    [SerializeField] private PlayerConfig config;
     [Header("Input")]
     [SerializeField] private InputActionReference punchAction;
 
     [Header("Punch")]
-    [SerializeField] private float cooldown = 0.25f;
-    [SerializeField] private float range = 1.1f;
-    [SerializeField] private float radius = 0.6f;
+    private float Cooldown => config.punchCooldown;
+    private float Range => config.punchRange;
+    private float Radius => config.punchRadius;
     [SerializeField] private LayerMask hitMask;
-    //[SerializeField] private int damage = 1;
-    [SerializeField] private float hitboxBufferUpwards = 0.5f;
+    //private int Damage => config.damage;
+    private float HitboxBufferUpwards => config.hitboxBufferUpwards;
 
     [Header("Knockback (optional)")]
-    [SerializeField] private float knockbackForce = 6f;
-    [SerializeField] private float upwardKnock = 0f;
+    private float KnockbackForce => config.knockbackForce;
+    private float UpwardKnock => config.upwardKnock;
 
     [Header("Debug")]
     [SerializeField] private bool drawGizmos = true;
@@ -54,9 +55,9 @@ public class PlayerPunch : MonoBehaviour
         if (cooldownTimer > 0f) return;
 
         Vector3 dir = GetPunchDirection();
-        Vector3 center = transform.position + Vector3.up * hitboxBufferUpwards + dir * range;
+        Vector3 center = transform.position + Vector3.up * HitboxBufferUpwards + dir * Range;
 
-        Collider[] hits = Physics.OverlapSphere(center, radius, hitMask, QueryTriggerInteraction.Ignore);
+        Collider[] hits = Physics.OverlapSphere(center, Radius, hitMask, QueryTriggerInteraction.Ignore);
 
         for (int i = 0; i < hits.Length; i++)
         {
@@ -64,13 +65,13 @@ public class PlayerPunch : MonoBehaviour
             Rigidbody rb = col.attachedRigidbody != null ? col.attachedRigidbody : col.GetComponentInParent<Rigidbody>();
             if (rb != null)
             {
-                Vector3 kb = dir * knockbackForce;
-                if (upwardKnock != 0f) kb.y += upwardKnock;
+                Vector3 kb = dir * KnockbackForce;
+                if (UpwardKnock != 0f) kb.y += UpwardKnock;
 
                 rb.AddForce(kb, ForceMode.VelocityChange);
             }
         }
-        cooldownTimer = cooldown;
+        cooldownTimer = Cooldown;
     }
 
     private Vector3 GetPunchDirection()
@@ -88,10 +89,10 @@ public class PlayerPunch : MonoBehaviour
         if (!drawGizmos) return;
 
         Vector3 dir = GetPunchDirection();
-        Vector3 center = transform.position + Vector3.up * hitboxBufferUpwards + dir * range;
+        Vector3 center = transform.position + Vector3.up * HitboxBufferUpwards + dir * Range;
 
-        Gizmos.DrawWireSphere(center, radius);
-        Gizmos.DrawLine(transform.position + Vector3.up * hitboxBufferUpwards, center);
+        Gizmos.DrawWireSphere(center, Radius);
+        Gizmos.DrawLine(transform.position + Vector3.up * HitboxBufferUpwards, center);
     }
 
 }

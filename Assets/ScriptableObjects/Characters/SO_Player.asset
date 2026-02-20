@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b1f60d16830974a8d975608201e979, type: 3}
+  m_Name: SO_Player
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerConfig
+  gravity: -25
+  groundedStickForce: -2
+  terminalVelocity: -50
+  walkSpeed: 5
+  dodgeSpeed: 12
+  dodgeDuration: 0.18
+  dodgeCooldown: 0.35
+  activeMoveDeadzone: 0.35
+  punchCooldown: 0.25
+  punchRange: 1.1
+  punchRadius: 0.6
+  hitboxBufferUpwards: 0.5
+  knockbackForce: 6
+  upwardKnock: 0
+  visualTurnSpeed: 50
+  visualDeadzone: 0.3

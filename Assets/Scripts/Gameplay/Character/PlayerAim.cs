@@ -3,12 +3,13 @@ using UnityEngine.InputSystem;
 
 public class PlayerAim : MonoBehaviour
 {
+    [SerializeField] private PlayerConfig config;
     [Header("Aim / Rotation")]
     [SerializeField] private Camera aimCamera;
     [SerializeField] private LayerMask aimGroundMask;
     [SerializeField] public Transform visual;
-    [SerializeField] private float visualTurnSpeed = 15f;
-    [SerializeField] private float visualDeadzone = 0.3f;
+    private float VisualTurnSpeed => config.visualTurnSpeed;
+    private float VisualDeadzone => config.visualDeadzone;
 
     public Vector3 AimDirection { get; private set; } = Vector3.forward;
     public Vector3 AimPoint { get; private set; }
@@ -61,10 +62,10 @@ public class PlayerAim : MonoBehaviour
                 dir = (right * dir.x + forward * dir.z);
             }
 
-            if (dir.magnitude >= visualDeadzone)
+            if (dir.magnitude >= VisualDeadzone)
             {
                 Quaternion target = Quaternion.LookRotation(dir.normalized, Vector3.up);
-                visual.rotation = Quaternion.Slerp(visual.rotation, target * Quaternion.Euler(0f, 180f, 0f), visualTurnSpeed * Time.deltaTime);
+                visual.rotation = Quaternion.Slerp(visual.rotation, target * Quaternion.Euler(0f, 180f, 0f), VisualTurnSpeed * Time.deltaTime);
             }
         }
     }

@@ -76,11 +76,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b99f9c7e75f6f724196d3243be409929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementCC
-  gravity: -25
-  groundedStickForce: -2
-  terminalVelocity: -50
+  config: {fileID: 11400000, guid: 98cfaab0de046b14c992d077d7712964, type: 2}
   moveAction: {fileID: 0}
-  walkSpeed: 5
   cameraTransform: {fileID: 4450673186202674228}
   moveInput: {x: 0, y: 0}
 --- !u!114 &3094407089267972483
@@ -95,11 +92,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c85a497849294ac4384ef109f526d94e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDodge
+  config: {fileID: 11400000, guid: 98cfaab0de046b14c992d077d7712964, type: 2}
   dodgeAction: {fileID: 0}
-  dodgeSpeed: 12
-  dodgeDuration: 0.18
-  dodgeCooldown: 0.35
-  activeMoveDeadzone: 0.35
 --- !u!114 &2264711508527222585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,13 +106,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe4fbd9e6cb5d743838d2cb01152452, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAim
+  config: {fileID: 11400000, guid: 98cfaab0de046b14c992d077d7712964, type: 2}
   aimCamera: {fileID: 3296467166676520069}
   aimGroundMask:
     serializedVersion: 2
     m_Bits: 192
   visual: {fileID: 2151853351454571588}
-  visualTurnSpeed: 50
-  visualDeadzone: 0.3
 --- !u!114 &2161997929097658219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,16 +124,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8eaee583c6c55c04e99f32b075bf47f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPunch
+  config: {fileID: 11400000, guid: 98cfaab0de046b14c992d077d7712964, type: 2}
   punchAction: {fileID: 0}
-  cooldown: 0.25
-  range: 1.1
-  radius: 0.6
   hitMask:
     serializedVersion: 2
     m_Bits: 256
-  hitboxBufferUpwards: 0.5
-  knockbackForce: 6
-  upwardKnock: 0
   drawGizmos: 1
 --- !u!114 &1808837662234277016
 MonoBehaviour:

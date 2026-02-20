@@ -4,12 +4,13 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerMovementCC))]
 public class PlayerDodge : MonoBehaviour
 {
+    [SerializeField] private PlayerConfig config;
     [Header("Dodge / Dash")]
     [SerializeField] private InputActionReference dodgeAction;
-    [SerializeField] private float dodgeSpeed = 12f;
-    [SerializeField] private float dodgeDuration = 0.18f;
-    [SerializeField] private float dodgeCooldown = 0.35f;
-    [SerializeField] private float activeMoveDeadzone = 0.35f;
+    private float DodgeSpeed => config.dodgeSpeed;
+    private float DodgeDuration => config.dodgeDuration;
+    private float DodgeCooldown => config.dodgeCooldown;
+    private float ActiveMoveDeadzone => config.activeMoveDeadzone;
 
     private PlayerMovementCC movement;
     private PlayerAim aim;
@@ -45,7 +46,7 @@ public class PlayerDodge : MonoBehaviour
 
         Vector3 dir = Vector3.zero;
 
-        if (movement.moveInput.magnitude >= activeMoveDeadzone) dir = movement.LastMoveDir;
+        if (movement.moveInput.magnitude >= ActiveMoveDeadzone) dir = movement.LastMoveDir;
         else
         {
             if (aim != null && aim.FacingDirection.sqrMagnitude > 0.0001f) dir = aim.FacingDirection;
@@ -56,8 +57,8 @@ public class PlayerDodge : MonoBehaviour
         if (dir.sqrMagnitude < 0.0001f) dir = transform.forward;
         dir.Normalize();
 
-        movement.AddExternalVelocity(dir * dodgeSpeed, dodgeDuration);
-        cooldownTimer = dodgeCooldown;
+        movement.AddExternalVelocity(dir * DodgeSpeed, DodgeDuration);
+        cooldownTimer = DodgeCooldown;
     }
 
 }

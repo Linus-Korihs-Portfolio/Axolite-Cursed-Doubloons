@@ -4,14 +4,16 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovementCC : MonoBehaviour
 {
+    [SerializeField] private PlayerConfig config;
+
     [Header("Physics")]
-    [SerializeField] private float gravity = -25f;
-    [SerializeField] private float groundedStickForce = -2f;
-    [SerializeField] private float terminalVelocity = -50f;
+    private float Gravity => config.gravity;
+    private float GroundedStickForce => config.groundedStickForce;
+    private float TerminalVelocity => config.terminalVelocity;
 
     [Header("Movement")]
+    private float WalkSpeed => config.walkSpeed;
     [SerializeField] private InputActionReference moveAction;
-    [SerializeField] private float walkSpeed = 5f;
     [SerializeField] public Transform cameraTransform;
 
     public Vector3 LastMoveDir { get; private set; } = Vector3.forward;
@@ -53,11 +55,11 @@ public class PlayerMovementCC : MonoBehaviour
 
     private void ApplyGravity()
     {
-        if (cc.isGrounded && verticalVelocity < 0f) verticalVelocity = groundedStickForce; 
+        if (cc.isGrounded && verticalVelocity < 0f) verticalVelocity = GroundedStickForce; 
         else
         {
-            verticalVelocity += gravity * Time.deltaTime;
-            if (verticalVelocity < terminalVelocity) verticalVelocity = terminalVelocity;
+            verticalVelocity += Gravity * Time.deltaTime;
+            if (verticalVelocity < TerminalVelocity) verticalVelocity = TerminalVelocity;
         }
     }
 
@@ -93,7 +95,7 @@ public class PlayerMovementCC : MonoBehaviour
         const float dirUpdateDeadzone = 0.25f;
         if (move.magnitude >= dirUpdateDeadzone) LastMoveDir = move.normalized;
 
-        Vector3 velocity = move * walkSpeed;
+        Vector3 velocity = move * WalkSpeed;
         if (externalTimer > 0f) velocity += externalVelocity;
 
         velocity.y = verticalVelocity;
