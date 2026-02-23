@@ -4,50 +4,42 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerMovementCC))]
 public class PlayerDodge : MonoBehaviour
 {
+    [SerializeField] private PlayerConfig config;
     [Header("Dodge / Dash")]
-    [SerializeField] private InputActionReference dodgeAction;
-    [SerializeField] private float dodgeSpeed = 12f;
-    [SerializeField] private float dodgeDuration = 0.18f;
-    [SerializeField] private float dodgeCooldown = 0.35f;
-    [SerializeField] private bool dodgeUsesAimDirection = true;
+    private float DodgeSpeed => config.dodgeSpeed;
+    private float DodgeDuration => config.dodgeDuration;
+    private float DodgeCooldown => config.dodgeCooldown;
+
+    public bool IsDodging => dodgeTimer > 0f;
+    private float cooldownTimer;
+    private float dodgeTimer;
 
     private PlayerMovementCC movement;
-    private PlayerAim aim;
-
-    private float cooldownTimer;
 
     private void Awake()
     {
         movement = GetComponent<PlayerMovementCC>();
-        aim = GetComponent<PlayerAim>();
     }
 
-    private void OnEnable()
+    public void Tick(float dt)
     {
-        if (dodgeAction != null) dodgeAction.action.Enable();
+        if (cooldownTimer > 0f) cooldownTimer -= dt;
+        if (dodgeTimer > 0f) dodgeTimer -= dt;
     }
 
-    private void OnDisable()
+    public bool TryDodge(Vector3 dir)
     {
-        if (dodgeAction != null) dodgeAction.action.Disable();
-    }
+        if (cooldownTimer > 0f) return false;
+        if (dodgeTimer > 0f) return false;
 
-    private void Update()
-    {
-        if (cooldownTimer > 0f) cooldownTimer -= Time.deltaTime;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.0001f) return false;
+        dir.Normalize();
 
-        if (dodgeAction != null && dodgeAction.action.WasPressedThisFrame()) TryDodge();
-    }
+        movement.AddExternalVelocity(dir * DodgeSpeed, DodgeDuration);
 
-    private void TryDodge()
-    {
-        if (cooldownTimer > 0f) return;
-
-        Vector3 dir = movement.LastMoveDir;
-
-        if (dodgeUsesAimDirection && aim != null && aim.AimDirection.sqrMagnitude > 0.0001f) dir = aim.AimDirection;
-
-        movement.AddExternalVelocity(dir.normalized * dodgeSpeed, dodgeDuration);
-        cooldownTimer = dodgeCooldown;
+        dodgeTimer = DodgeDuration;
+        cooldownTimer = DodgeCooldown;
+        return true;
     }
 }

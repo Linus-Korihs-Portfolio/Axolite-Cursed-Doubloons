@@ -1,22 +1,27 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterController))]
 public class PlayerMovementCC : MonoBehaviour
 {
+    [SerializeField] private PlayerConfig config;
+
     [Header("Physics")]
-    [SerializeField] private float gravity = -25f;
-    [SerializeField] private float groundedStickForce = -2f;
-    [SerializeField] private float terminalVelocity = -50f;
+    private float Gravity => config.gravity;
+    private float GroundedStickForce => config.groundedStickForce;
+    private float TerminalVelocity => config.terminalVelocity;
+    private float DirUpdateDeadzone => config.dirUpdateDeadzone;
 
     [Header("Movement")]
-    [SerializeField] private InputActionReference moveAction;
-    [SerializeField] private float walkSpeed = 5f;
+    private float WalkSpeed => config.walkSpeed;
+    [SerializeField] private CharacterController cc;
     [SerializeField] public Transform cameraTransform;
 
+    public bool MovementLocked { get; set; } = false;
+    public float SpeedMultiplier { get; set; } = 1f;
+    public void SetMoveInput(Vector2 input) => moveInput = input;
     public Vector3 LastMoveDir { get; private set; } = Vector3.forward;
 
-    private CharacterController cc;
+    public Transform BodyTransform => cc.transform;
+
     private float verticalVelocity;
     public Vector2 moveInput;
 
@@ -25,39 +30,23 @@ public class PlayerMovementCC : MonoBehaviour
 
     private void Awake()
     {
-        cc = GetComponent<CharacterController>();
-    }
-
-    private void OnEnable()
-    {
-        if (moveAction != null) moveAction.action.Enable();
-    }
-
-    private void OnDisable()
-    {
-        if (moveAction != null) moveAction.action.Disable();
+        if (cc == null) cc = GetComponentInParent<CharacterController>();
     }
 
     private void Update()
     {
-        ReadInput();
         ApplyGravity();
         TickExternal();
         Move();
     }
 
-    private void ReadInput()
-    {
-        moveInput = moveAction != null ? moveAction.action.ReadValue<Vector2>() : Vector2.zero;
-    }
-
     private void ApplyGravity()
     {
-        if (cc.isGrounded && verticalVelocity < 0f) verticalVelocity = groundedStickForce; 
+        if (cc.isGrounded && verticalVelocity < 0f) verticalVelocity = GroundedStickForce; 
         else
         {
-            verticalVelocity += gravity * Time.deltaTime;
-            if (verticalVelocity < terminalVelocity) verticalVelocity = terminalVelocity;
+            verticalVelocity += Gravity * Time.deltaTime;
+            if (verticalVelocity < TerminalVelocity) verticalVelocity = TerminalVelocity;
         }
     }
 
@@ -73,16 +62,24 @@ public class PlayerMovementCC : MonoBehaviour
 
         if (cameraTransform != null)
         {
-            Vector3 forward = cameraTransform.forward; forward.y = 0f; forward.Normalize();
-            Vector3 right = cameraTransform.right; right.y = 0f; right.Normalize();
-            move = (right * move.x + forward * move.z);
+            Vector3 forward = cameraTransform.forward;
+            forward.y = 0f;
+            forward.Normalize();
+
+            Vector3 right = cameraTransform.right;
+            right.y = 0f;
+            right.Normalize();
+
+            move = right * move.x + forward * move.z;
         }
 
+        if (MovementLocked) move = Vector3.zero;
         if (move.sqrMagnitude > 1f) move.Normalize();
-        if (move.sqrMagnitude > 0.0001f) LastMoveDir = move.normalized;
+        
+        // block small input to prevent unwanted movement direction changes
+        if (move.magnitude >= DirUpdateDeadzone) LastMoveDir = move.normalized;
 
-        Vector3 velocity = move * walkSpeed;
-
+        Vector3 velocity = move * WalkSpeed * SpeedMultiplier;
         if (externalTimer > 0f) velocity += externalVelocity;
 
         velocity.y = verticalVelocity;

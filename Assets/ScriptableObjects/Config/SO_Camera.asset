@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec59f96f86e8024ca658040f27068d1, type: 3}
+  m_Name: SO_Camera
+  m_EditorClassIdentifier: Assembly-CSharp::CameraCMSettings
+  topRadius: 12
+  topVertical: 75
+  thirdRadius: 4
+  thirdVertical: 25
+  transitionSpeed: 6
+  zoomSpeed: 0.02
+  minRadius: 2.5
+  maxRadius: 16
+  mouseZoomSpeed: 0.5
+  gamepadZoomSpeed: 10
+  zoomSmoothing: 10
+  occluderMask:
+    serializedVersion: 2
+    m_Bits: 192
+  makeTransparent: 1
+  transparentAlpha: 0.25
+  occlusionRadius: 0.35
+  paddingFromCamera: 0.2
+  paddingFromTarget: 0.1
+  staleFramesToRestore: 2
+  debugEnabled: 0
+  drawGizmos: 1
+  lookSensitivityX: 180
+  lookSensitivityY: 120
+  invertY: 0
+  lookScaleWithDeltaTime: 1
+  minVertical: 5
+  maxVertical: 85
+  lockOnTags:
+  - Enemy
+  lockOnMaxDistance: 25
+  gamepadSensitivityX: 180
+  gamepadSensitivityY: 120
+  mouseSensitivityX: 0.1
+  mouseSensitivityY: 0.1
+  mouseScaleWithDeltaTime: 0
