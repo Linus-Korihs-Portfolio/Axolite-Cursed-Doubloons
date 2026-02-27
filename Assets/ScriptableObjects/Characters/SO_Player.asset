@@ -17,17 +17,17 @@ MonoBehaviour:
   terminalVelocity: -50
   walkSpeed: 5
   dirUpdateDeadzone: 0.25
-  dodgeSpeed: 12
-  dodgeDuration: 0.18
-  dodgeCooldown: 0.35
+  dodgeSpeed: 10
+  dodgeDuration: 0.3
+  dodgeCooldown: 1
   activeMoveDeadzone: 0.35
-  punchCooldown: 0.25
-  punchRange: 1.1
+  punchCooldown: 0.5
+  punchRange: 1
   punchRadius: 0.6
-  punchSlowMultiplier: 0.6
+  punchSlowMultiplier: 0.36
   punchLockDuration: 0.15
   hitboxBufferUpwards: 0.5
-  knockbackForce: 6
+  knockbackForce: 2
   upwardKnock: 0
-  visualTurnSpeed: 50
-  visualDeadzone: 0.3
+  visualTurnSpeed: 90000
+  visualDeadzone: 0.21
