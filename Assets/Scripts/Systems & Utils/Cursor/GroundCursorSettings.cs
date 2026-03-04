@@ -17,17 +17,20 @@ public class GroundCursorSettings : ScriptableObject
     public float minDistance = 1.5f;       // never closer than this
     public float maxDistance = 12f;        // never farther than this
 
-    [Header("Manual Offset (Pikmin-like)")]
+    [Header("Direction Smoothing")]
+    public float dirSmoothing = 16f;        // higher = faster turn, less teleport
+
+    [Header("[Legacy] Manual Offset (Pikmin-like)")]
     public float maxOffsetRadius = 6f;     // clamp for manual aiming offset (relative around base)
     public float stickSpeed = 8f;          // units/sec (world plane)
     public float mouseSpeed = 0.06f;       // units per mouse-delta "tick"
     public float recenterSpeed = 10f;      // units/sec back to center when no input
 
-    [Header("Extra Press Mode")]
+    [Header("[Legacy] Extra Press Mode")]
     public bool extraPressMouse = false;    // mouse/keyboard input only applies when an extra button is held (e.g. right stick click or a keyboard key) - prevents unwanted cursor movement when just trying to move the character
-    public bool extraPressGamepad = false;   // gamepad stick input only applies when an extra button is held - prevents unwanted cursor movement when just trying to move the character
+    public bool extraPressGamepad = false;  // gamepad stick input only applies when an extra button is held - prevents unwanted cursor movement when just trying to move the character
 
-    [Header("Smoothing")]
+    [Header("[Legacy] Smoothing")]
     public float followSmoothing = 20f;    // free mode smoothing
     public bool smoothWhenFree = true;
 

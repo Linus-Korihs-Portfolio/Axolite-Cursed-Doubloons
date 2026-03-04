@@ -1248,6 +1248,10 @@ PrefabInstance:
       value: PF_Player
       objectReference: {fileID: 0}
     - target: {fileID: 3391111788512607623, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 2695888406797043094}
+    - target: {fileID: 3391111788512607623, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: cursorMoveAction
       value: 
       objectReference: {fileID: 1514403787}
@@ -1296,6 +1300,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+--- !u!4 &2695888406797043094 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2151853351454571588, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+  m_PrefabInstance: {fileID: 2695888406797043093}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2837341898456449613
 PrefabInstance:
   m_ObjectHideFlags: 0
