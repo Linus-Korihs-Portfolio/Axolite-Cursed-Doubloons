@@ -22,6 +22,7 @@ MonoBehaviour:
   baseDistance: 4.5
   minDistance: 1.5
   maxDistance: 12
+  dirSmoothing: 16
   maxOffsetRadius: 6
   stickSpeed: 8
   mouseSpeed: 0.06
