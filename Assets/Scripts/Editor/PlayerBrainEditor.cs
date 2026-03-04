@@ -24,6 +24,8 @@ public class PlayerBrainEditor : Editor
         DrawBinding("Camera Toggle", brain.CameraToggleAction);
         DrawBinding("Camera Zoom", brain.CameraZoomAction);
         DrawBinding("Camera Lock-On", brain.CameraLockOnAction);
+        DrawBinding("Cursor Move", brain.CursorMoveAction);
+        DrawBinding("Cursor Extra Key", brain.CursorExtraKeyAction);
     }
 
     private void DrawBinding(string label, InputActionReference actionRef)

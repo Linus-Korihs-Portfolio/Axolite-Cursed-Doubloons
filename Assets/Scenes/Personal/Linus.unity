@@ -133,6 +133,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: bf05e879-54bb-4fac-8b17-84547e4eda49
+--- !u!114 &81124037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Camera/CursorExtraKey
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 93dfebb6-388b-4053-9f62-84d820b24452
+--- !u!114 &82718839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Camera/CursorMove
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 6de82036-808b-468c-9295-761a173a8569
 --- !u!1001 &119383943
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -345,6 +373,20 @@ Transform:
   - {fileID: 960661844}
   m_Father: {fileID: 1092750262}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &576771823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Camera/CursorExtraKey
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 93dfebb6-388b-4053-9f62-84d820b24452
 --- !u!1 &576831224
 GameObject:
   m_ObjectHideFlags: 0
@@ -939,6 +981,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: bf05e879-54bb-4fac-8b17-84547e4eda49
+--- !u!114 &1514403787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Camera/CursorMove
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 6de82036-808b-468c-9295-761a173a8569
 --- !u!114 &1642121742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1191,6 +1247,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3391111788512607623, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: cursorMoveAction
+      value: 
+      objectReference: {fileID: 1514403787}
+    - target: {fileID: 3391111788512607623, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: cursorExtraKeyAction
+      value: 
+      objectReference: {fileID: 576771823}
     - target: {fileID: 8642570167466743387, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: moveAction
       value: 
@@ -1212,6 +1276,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 203993410}
     - target: {fileID: 8642570167466743387, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: cursorMoveAction
+      value: 
+      objectReference: {fileID: 82718839}
+    - target: {fileID: 8642570167466743387, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: cameraLockOnAction
       value: 
       objectReference: {fileID: 783548655}
@@ -1219,6 +1287,10 @@ PrefabInstance:
       propertyPath: cameraToggleAction
       value: 
       objectReference: {fileID: 1642121742}
+    - target: {fileID: 8642570167466743387, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: cursorExtraKeyAction
+      value: 
+      objectReference: {fileID: 81124037}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

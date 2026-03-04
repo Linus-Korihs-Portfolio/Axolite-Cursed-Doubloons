@@ -14,6 +14,8 @@ public class PlayerBrain : MonoBehaviour
     [SerializeField] private InputActionReference cameraZoomAction;
     [SerializeField] private InputActionReference cameraLockOnAction;
 
+    [SerializeField] private InputActionReference cursorMoveAction;
+    [SerializeField] private InputActionReference cursorExtraKeyAction;
     [SerializeField] private PlayerMovementCC movement;
     [SerializeField] private PlayerAim aim;
     [SerializeField] private PlayerDodge dodge;
@@ -26,6 +28,8 @@ public class PlayerBrain : MonoBehaviour
     public InputActionReference CameraToggleAction => cameraToggleAction;
     public InputActionReference CameraZoomAction => cameraZoomAction;
     public InputActionReference CameraLockOnAction => cameraLockOnAction;
+    public InputActionReference CursorMoveAction => cursorMoveAction;
+    public InputActionReference CursorExtraKeyAction => cursorExtraKeyAction;
 
     private void Awake()
     {
@@ -51,6 +55,7 @@ public class PlayerBrain : MonoBehaviour
         if (moveAction != null) moveAction.action.Enable();
         if (dodgeAction != null) dodgeAction.action.Enable();
         if (punchAction != null) punchAction.action.Enable();
+        if (cursorMoveAction != null) cursorMoveAction.action.Enable();
     }
 
     private void OnDisable()
@@ -58,6 +63,7 @@ public class PlayerBrain : MonoBehaviour
         if (moveAction != null) moveAction.action.Disable();
         if (dodgeAction != null) dodgeAction.action.Disable();
         if (punchAction != null) punchAction.action.Disable();
+        if (cursorMoveAction != null) cursorMoveAction.action.Disable();
     }
 
     private void Update()

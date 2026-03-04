@@ -27,10 +27,12 @@ public class PlayerMovementCC : MonoBehaviour
 
     private Vector3 externalVelocity;
     private float externalTimer;
+    private GroundCursor cursor;
 
     private void Awake()
     {
         if (cc == null) cc = GetComponentInParent<CharacterController>();
+        if (cursor == null) cursor = GetComponent<GroundCursor>();
     }
 
     private void Update()
@@ -84,6 +86,7 @@ public class PlayerMovementCC : MonoBehaviour
 
         velocity.y = verticalVelocity;
         cc.Move(velocity * Time.deltaTime);
+        cursor.SetMoveDirection(LastMoveDir);
     }
 
     public void AddExternalVelocity(Vector3 vel, float duration)

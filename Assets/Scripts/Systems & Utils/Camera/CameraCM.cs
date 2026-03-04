@@ -22,6 +22,7 @@ public class CameraCM : MonoBehaviour
     [SerializeField] public InputActionReference lockOnAction;
 
     private bool isLockedOn;
+    private GroundCursor cursor; // reference to GroundCursor for optional interaction (e.g. force unlock when player teleports)
     private Transform lockTarget;
     private Transform defaultLookAt;
 
@@ -47,7 +48,6 @@ public class CameraCM : MonoBehaviour
     private float LockOnMaxDistance => settings.lockOnMaxDistance;
     private float GamepadSensX => settings.gamepadSensitivityX;
     private float GamepadSensY => settings.gamepadSensitivityY;
-
     private float MouseSensX => settings.mouseSensitivityX;
     private float MouseSensY => settings.mouseSensitivityY;
     private bool MouseScaleWithDeltaTime => settings.mouseScaleWithDeltaTime;
@@ -79,6 +79,8 @@ public class CameraCM : MonoBehaviour
         if (!cmCamera) cmCamera = GetComponent<CinemachineCamera>();
         if (cmCamera) defaultLookAt = cmCamera.LookAt;
 
+        cursor = FindFirstObjectByType<GroundCursor>();
+
         SetMode(false, instant: true);
     }
 
@@ -101,6 +103,19 @@ public class CameraCM : MonoBehaviour
         if (!isLockedOn && lookAction)
         {
             Vector2 look = lookAction.action.ReadValue<Vector2>();
+
+            // Block camera look ONLY for the device currently aiming the cursor
+            if (!isLockedOn && cursor != null)
+            {
+                bool mouseMoving = Mouse.current != null && Mouse.current.delta.ReadValue().sqrMagnitude > 0.01f;
+                bool stickMoving = Gamepad.current != null && Gamepad.current.rightStick.ReadValue().sqrMagnitude > 0.01f;
+
+                if ((mouseMoving && cursor.IsAimingWithMouseKeyboard) || (stickMoving && cursor.IsAimingWithGamepad))
+                {
+                    return;
+                }
+            }
+
             if (look.sqrMagnitude > 0.0001f)
             {
                 bool usingMouse = Mouse.current != null && Mouse.current.delta.ReadValue().sqrMagnitude > 0.01f;
@@ -190,8 +205,10 @@ public class CameraCM : MonoBehaviour
         isLockedOn = true;
 
         cmCamera.LookAt = lockTarget;
+        if (cursor) cursor.LockTo(lockTarget);
 
         if (settings.debugEnabled) Debug.Log($"[CameraCM] LockOn -> {lockTarget.name}");
+        
     }
 
     private void ClearLockOn()
@@ -202,6 +219,7 @@ public class CameraCM : MonoBehaviour
         if (cmCamera) cmCamera.LookAt = defaultLookAt;
 
         if (settings.debugEnabled) Debug.Log("[CameraCM] LockOn cleared.");
+        if (cursor) cursor.ForceUnlockToPlayer();
     }
 
     private Transform FindClosestLockTarget()
@@ -241,8 +259,6 @@ public class CameraCM : MonoBehaviour
                 }
             }
         }
-
         return best;
     }
-
 }

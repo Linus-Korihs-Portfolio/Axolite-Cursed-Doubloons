@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d7cc6c24e9ef3d45881ce0159188337, type: 3}
+  m_Name: SO_Cursor
+  m_EditorClassIdentifier: Assembly-CSharp::GroundCursorSettings
+  cursorEnabled: 1
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 192
+  groundRayStartHeight: 6
+  groundRayLength: 80
+  heightOffset: 0.02
+  baseDistance: 4.5
+  minDistance: 1.5
+  maxDistance: 12
+  maxOffsetRadius: 6
+  stickSpeed: 8
+  mouseSpeed: 0.06
+  recenterSpeed: 10
+  extraPressMouse: 1
+  extraPressGamepad: 1
+  followSmoothing: 20
+  smoothWhenFree: 1
+  markerScale: {x: 1, y: 0.1, z: 1}
+  lockableMask:
+    serializedVersion: 2
+    m_Bits: 256
+  lockSearchRadius: 1.2
+  lockRange: 15
