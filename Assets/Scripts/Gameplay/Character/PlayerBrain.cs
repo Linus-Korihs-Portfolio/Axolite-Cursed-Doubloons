@@ -20,6 +20,7 @@ public class PlayerBrain : MonoBehaviour
     [SerializeField] private PlayerAim aim;
     [SerializeField] private PlayerDodge dodge;
     [SerializeField] private PlayerPunch punch;
+    [SerializeField] private GroundCursor cursor; // optional assign, otherwise auto-find
 
     public InputActionReference MoveAction => moveAction;
     public InputActionReference DodgeAction => dodgeAction;
@@ -37,11 +38,13 @@ public class PlayerBrain : MonoBehaviour
         if (aim == null) aim = GetComponentInChildren<PlayerAim>();
         if (dodge == null) dodge = GetComponentInChildren<PlayerDodge>();
         if (punch == null) punch = GetComponentInChildren<PlayerPunch>();
+        if (cursor == null) cursor = GetComponentInChildren<GroundCursor>();
 
         if (movement == null) Debug.LogError($"{name}: PlayerMovementCC is missing", this);
         if (aim == null) Debug.LogWarning($"{name}: PlayerAim is missing (Fallback to LastMoveDir/forward)", this);
         if (dodge == null) Debug.LogWarning($"{name}: PlayerDodge is missing", this);
         if (punch == null) Debug.LogWarning($"{name}: PlayerPunch is missing", this);
+        if (cursor == null) Debug.LogWarning($"{name}: GroundCursor is missing", this);
 
         if (config == null)
         {
@@ -99,6 +102,13 @@ public class PlayerBrain : MonoBehaviour
             Vector3 dir = GetDodgeDir(move);
             dodge.TryDodge(dir);
         }
+
+        if (movement != null)
+        {
+            Vector3 facing = GetFacingDir();
+            var cursor = GetComponentInChildren<GroundCursor>();
+            if (cursor != null) cursor.SetMoveDirection(facing);
+        }
     }
 
     private Vector3 GetFacingDir()
@@ -110,6 +120,15 @@ public class PlayerBrain : MonoBehaviour
 
     private Vector3 GetDodgeDir(Vector2 moveInput)
     {
+        // 1) Cursor direction (optional)
+        if (cursor != null)
+        {
+            Vector3 toCursor = cursor.WorldPos - movement.transform.position;
+            toCursor.y = 0f;
+            if (toCursor.sqrMagnitude > 0.0001f) return toCursor.normalized;
+        }
+
+        // 2) fallback: old logic
         if (moveInput.magnitude >= config.activeMoveDeadzone) return movement.LastMoveDir;
         return GetFacingDir();
     }

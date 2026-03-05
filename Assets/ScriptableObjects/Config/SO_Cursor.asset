@@ -20,20 +20,38 @@ MonoBehaviour:
   groundRayLength: 80
   heightOffset: 0.02
   baseDistance: 4.5
-  minDistance: 1.5
+  minDistance: 0
   maxDistance: 12
   dirSmoothing: 16
-  maxOffsetRadius: 6
-  stickSpeed: 8
-  mouseSpeed: 0.06
-  recenterSpeed: 10
-  extraPressMouse: 1
-  extraPressGamepad: 1
-  followSmoothing: 20
-  smoothWhenFree: 1
-  markerScale: {x: 1, y: 0.1, z: 1}
   lockableMask:
     serializedVersion: 2
     m_Bits: 256
-  lockSearchRadius: 1.2
   lockRange: 15
+  lockDashEnabled: 1
+  lockWithCursor: 1
+  lockRangeWithCursor: 8
+  smoothLockTransition: 1
+  lockMoveSpeed: 18
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 192
+  wallPadding: 0.05
+  wallProbeRadius: 0.05
+  wallClimbEnabled: 1
+  wallHitTriggers: 1
+  wallSurfaceOffset: 0.02
+  rotateMarkerToSurface: 1
+  wallMinHeight: 0.05
+  wallEyeHeight: 1.55
+  wallNearDistance: 0.6
+  wallFarDistance: 4.5
+  wallHeightSmoothing: 18
+  markerScale: {x: 1, y: 0.1, z: 1}
+  aimAssistEnabled: 1
+  aimEnterRadius: 2
+  aimExitRadius: 2.6
+  aimCooldown: 1
+  highlightEnabled: 1
+  aimHoldWhileRayHits: 1
+  aimHoldRayRadius: 0.25
+  aimHoldRayExtraLength: 2

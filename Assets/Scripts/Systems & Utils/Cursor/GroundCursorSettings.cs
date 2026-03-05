@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Camera/Cursor Settings")]
@@ -20,25 +21,47 @@ public class GroundCursorSettings : ScriptableObject
     [Header("Direction Smoothing")]
     public float dirSmoothing = 16f;        // higher = faster turn, less teleport
 
-    [Header("[Legacy] Manual Offset (Pikmin-like)")]
-    public float maxOffsetRadius = 6f;     // clamp for manual aiming offset (relative around base)
-    public float stickSpeed = 8f;          // units/sec (world plane)
-    public float mouseSpeed = 0.06f;       // units per mouse-delta "tick"
-    public float recenterSpeed = 10f;      // units/sec back to center when no input
+    [Header("Lock-On")]
+    public LayerMask lockableMask;
+    public float lockRange = 15f;           // auto unlock if player too far
+    public bool lockDashEnabled = true;     // if true, the player can dash towards the lock-on target (if not, the cursor will just snap to it but the player won't get any special movement benefits)
+    public bool lockWithCursor = true;      // if true, the cursor will try to snap to lock-on targets and also auto-unlock if the target is too far from the cursor (instead of player)
+    public float lockRangeWithCursor = 8f;  // if lockOnUsesCursor: auto unlock if target is farther than this from cursor (0 = ignore cursor distance for unlocking)
 
-    [Header("[Legacy] Extra Press Mode")]
-    public bool extraPressMouse = false;    // mouse/keyboard input only applies when an extra button is held (e.g. right stick click or a keyboard key) - prevents unwanted cursor movement when just trying to move the character
-    public bool extraPressGamepad = false;  // gamepad stick input only applies when an extra button is held - prevents unwanted cursor movement when just trying to move the character
+    [Header("Lock Transition")]
+    public bool smoothLockTransition = true;
+    public float lockMoveSpeed = 18f;     // units/sec (cursor slide to/from target)
 
-    [Header("[Legacy] Smoothing")]
-    public float followSmoothing = 20f;    // free mode smoothing
-    public bool smoothWhenFree = true;
+    [Header("Wall Blocking")]
+    public LayerMask wallMask;
+    public float wallPadding = 0.05f;     // small offset so cursor doesn't clip into wall
+    public float wallProbeRadius = 0.0f;  // 0 = Raycast, >0 = SphereCast (recommended: 0.1..0.25)
+
+    [Header("Wall Climb Cursor")]
+    public bool wallClimbEnabled = true;
+    public bool wallHitTriggers = false; // if false, the cursor will ignore trigger colliders when checking for walls to climb on - prevents unwanted climbing on trigger volumes like bushes, but also prevents climbing on actual climbable trigger volumes if you have those
+    public float wallSurfaceOffset = 0.02f; // how much the cursor should hover above the wall surface when climbing
+    public bool rotateMarkerToSurface = true;
+
+    [Header("Wall Climb Height")]
+    public float wallMinHeight = 0.05f;      // least height
+    public float wallEyeHeight = 1.55f;      // eye height relative to the player (or model)
+    public float wallNearDistance = 0.6f;    // when the player is this close to the wall -> EyeHeight (max)
+    public float wallFarDistance = 4.5f;     // when the player is this far -> near-ground (min)
+    public float wallHeightSmoothing = 18f;  // optional smoothing (for nice feel)
 
     [Header("Visual")]
     public Vector3 markerScale = new Vector3(1f, 0.1f, 1f);
 
-    [Header("Lock-On")]
-    public LayerMask lockableMask;
-    public float lockSearchRadius = 1.25f;
-    public float lockRange = 15f;          // auto unlock if player too far
+    [Header("Aim Assist (Near Enemy)")]
+    public bool aimAssistEnabled = true;
+    public float aimEnterRadius = 1.25f;
+    public float aimExitRadius  = 1.60f;
+    public float aimCooldown = 0.5f;
+    public bool highlightEnabled = true;
+
+    [Header("Aim Assist Ray Hold")]
+    public bool aimHoldWhileRayHits = true;
+    public float aimHoldRayRadius = 0.25f;     // 0 = Raycast, >0 = SphereCast (recommended: 0.1..0.25)
+    public float aimHoldRayExtraLength = 2.0f; // a bit further than baseDistance
 }

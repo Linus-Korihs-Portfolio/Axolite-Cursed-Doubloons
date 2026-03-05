@@ -224,9 +224,16 @@ public class CameraCM : MonoBehaviour
 
     private Transform FindClosestLockTarget()
     {
-        Transform origin = (cmCamera && cmCamera.Follow) ? cmCamera.Follow : transform;
+        Vector3 originPos = (cmCamera && cmCamera.Follow) ? cmCamera.Follow.position : transform.position;
 
-        float bestDistSq = LockOnMaxDistance * LockOnMaxDistance;
+        bool useCursorOrigin = cursor != null && cursor.LockWithCursor;
+        if (useCursorOrigin) originPos = cursor.WorldPos;
+
+        float maxDist = LockOnMaxDistance;
+        if (useCursorOrigin && cursor.LockRangeWithCursor > 0f)
+            maxDist = Mathf.Min(maxDist, cursor.LockRangeWithCursor);
+
+        float bestDistSq = maxDist * maxDist;
         Transform best = null;
 
         if (LockOnTags == null || LockOnTags.Length == 0) return null;
@@ -251,7 +258,7 @@ public class CameraCM : MonoBehaviour
                 var go = objs[i];
                 if (!go) continue;
 
-                float dSq = (go.transform.position - origin.position).sqrMagnitude;
+                float dSq = (go.transform.position - originPos).sqrMagnitude;
                 if (dSq < bestDistSq)
                 {
                     bestDistSq = dSq;

@@ -8,7 +8,6 @@ public class GroundCursor : MonoBehaviour
 
     [Header("Refs")]
     [SerializeField] private Transform player;
-    [SerializeField] private Transform cameraTransform;
     [SerializeField] private Transform marker;
 
     [Header("Input")]
@@ -19,11 +18,17 @@ public class GroundCursor : MonoBehaviour
     public Transform LockedTarget { get; private set; }
     public bool IsLocked => LockedTarget != null;
 
-    private Vector3 freeFlatPos; // world-space XZ cursor position (Y ignored, ground sampled)
-    private bool freePosInitialized;
+        public bool LockWithCursor => settings != null && settings.lockWithCursor;
+    public float LockRangeWithCursor => settings != null ? settings.lockRangeWithCursor : 0f;
+
     private Vector3 externalMoveDir = Vector3.zero;
     private Vector3 smoothedDir = Vector3.forward;
     private bool smoothedDirInit;
+    private bool blending;
+    private Vector3 blendTargetPos;
+    private float smoothedWallHeight01 = 0f;
+    private Transform aimAssistTarget;
+    private float aimCooldownTimer;
 
     public void SetMoveDirection(Vector3 worldMoveDir) => externalMoveDir = worldMoveDir;
     public bool IsAimingWithMouseKeyboard { get; private set; }
@@ -47,21 +52,34 @@ public class GroundCursor : MonoBehaviour
         smoothedDir = GetDesiredDirFlat();
         smoothedDirInit = true;
 
-        Vector3 startFlat = GetBasePointFlat();
-        freeFlatPos = startFlat;
-        freePosInitialized = true;
+        Vector3 dir = GetSmoothedDirFlat();
+        Vector3 desiredFlat = player.position + dir * settings.baseDistance;
+        desiredFlat.y = 0f;
 
-        WorldPos = SampleGroundPoint(freeFlatPos) + Vector3.up * settings.heightOffset;
-        ApplyVisuals(WorldPos);
+        desiredFlat = TryGetWallPoint(desiredFlat, out Vector3 wallPos, out Vector3 wallNormal) && settings.wallClimbEnabled ? wallPos + wallNormal * settings.wallSurfaceOffset : SampleGroundPoint(desiredFlat) + Vector3.up * settings.heightOffset;
+
+        WorldPos = SampleGroundPoint(desiredFlat) + Vector3.up * settings.heightOffset;
+        ApplyVisuals(WorldPos, Vector3.up);
     }
 
     private void LateUpdate()
     {
+        if (blending)
+        {
+            WorldPos = Vector3.MoveTowards(WorldPos, blendTargetPos, settings.lockMoveSpeed * Time.deltaTime);
+            ApplyVisuals(WorldPos, Vector3.up);
+
+            if ((WorldPos - blendTargetPos).sqrMagnitude < 0.0001f) blending = false;
+
+            return;
+        }
+
+        if (aimCooldownTimer > 0f) aimCooldownTimer -= Time.deltaTime;
+
         if (settings == null || !settings.cursorEnabled)
         {
             SetVisualsActive(false);
-            UnlockInternal(resetToPlayer: true);
-            return;
+            return; // IMPORTANT: do NOT reset/unlock here
         }
 
         SetVisualsActive(true);
@@ -82,8 +100,10 @@ public class GroundCursor : MonoBehaviour
             }
 
             Vector3 lockedPos = SampleGroundPoint(LockedTarget.position) + Vector3.up * settings.heightOffset;
-            WorldPos = lockedPos; // no smoothing while locked = stable aiming
-            ApplyVisuals(WorldPos);
+
+            if (settings.smoothLockTransition) WorldPos = Vector3.MoveTowards(WorldPos, lockedPos, settings.lockMoveSpeed * Time.deltaTime);
+            else WorldPos = lockedPos;
+            ApplyVisuals(WorldPos, Vector3.up);
             return;
         }
 
@@ -96,81 +116,32 @@ public class GroundCursor : MonoBehaviour
         Vector3 desiredFlat = player.position + dir * d;
         desiredFlat.y = 0f;
 
-        Vector3 desired = SampleGroundPoint(desiredFlat) + Vector3.up * settings.heightOffset;
+        bool wallHit = TryGetWallPoint(desiredFlat, out Vector3 wallPos, out Vector3 wallNormal);
 
-        // hard set (no smoothing) so it never lags behind the player
+        Vector3 desired;
+        Vector3 surfaceNormal;
+
+        if (settings.wallClimbEnabled && wallHit)
+        {
+            // On wall: keep wall Y, don’t sample ground.
+            desired = wallPos + wallNormal * settings.wallSurfaceOffset;
+            surfaceNormal = wallNormal;
+        }
+        else
+        {
+            // On ground
+            desired = SampleGroundPoint(desiredFlat) + Vector3.up * settings.heightOffset;
+            surfaceNormal = Vector3.up;
+        }
+
+        // Aim Assist may override cursor position entirely (so baseDistance can't pull it behind the enemy)
+        bool aimIsHolding;
+        desired = ApplyAutoSnapSimple(desired, out aimIsHolding);
+
+        // If aim assist is holding, the cursor must not be overwritten by baseDistance logic.
         WorldPos = desired;
 
-        // keep for future legacy/manual mode (world anchor)
-        freeFlatPos = new Vector3(desiredFlat.x, 0f, desiredFlat.z);
-        freePosInitialized = true;
-
-        ApplyVisuals(WorldPos);
-
-        /*
-        ================================================================================
-        LEGACY FEATURE (manual cursor movement) - intentionally disabled for now
-        Uncomment this block to restore mouse/right-stick cursor movement.
-        ================================================================================
-
-            // Inputs
-            bool extraPressedRaw = cursorExtraKeyAction != null && cursorExtraKeyAction.action != null && cursorExtraKeyAction.action.IsPressed();
-
-            Vector2 mouse = Mouse.current != null ? Mouse.current.delta.ReadValue() : Vector2.zero;
-            Vector2 gamepadStick = Gamepad.current != null ? Gamepad.current.rightStick.ReadValue() : Vector2.zero;
-            Vector2 kbStick = cursorMoveAction ? cursorMoveAction.action.ReadValue<Vector2>() : Vector2.zero;
-
-            IsAimingWithMouseKeyboard = settings.extraPressMouse && extraPressedRaw;
-            IsAimingWithGamepad = settings.extraPressGamepad && extraPressedRaw;
-
-            if (settings.extraPressMouse && !extraPressedRaw)
-            {
-                mouse = Vector2.zero;
-                kbStick = Vector2.zero;
-            }
-
-            if (settings.extraPressGamepad && !extraPressedRaw)
-            {
-                gamepadStick = Vector2.zero;
-            }
-
-            Vector2 stick = gamepadStick + kbStick;
-
-            Vector3 camFwd = cameraTransform.forward; camFwd.y = 0f;
-            if (camFwd.sqrMagnitude < 0.0001f) camFwd = player.forward;
-            camFwd.Normalize();
-
-            Vector3 camRight = cameraTransform.right; camRight.y = 0f; camRight.Normalize();
-
-            if (!freePosInitialized)
-            {
-                freeFlatPos = GetBasePointFlat();
-                freePosInitialized = true;
-            }
-
-            if (mouse.sqrMagnitude > 0.0001f)
-                freeFlatPos += (camRight * mouse.x + camFwd * mouse.y) * settings.mouseSpeed;
-
-            if (stick.sqrMagnitude > 0.0001f)
-                freeFlatPos += (camRight * stick.x + camFwd * stick.y) * (settings.stickSpeed * Time.deltaTime);
-
-            freeFlatPos = ClampDistanceFromPlayerFlat(freeFlatPos);
-
-            Vector3 desired = SampleGroundPoint(freeFlatPos) + Vector3.up * settings.heightOffset;
-
-            if (settings.smoothWhenFree)
-            {
-                float t = 1f - Mathf.Exp(-settings.followSmoothing * Time.deltaTime);
-                WorldPos = Vector3.Lerp(WorldPos, desired, t);
-            }
-            else
-            {
-                WorldPos = desired;
-            }
-
-            ApplyVisuals(WorldPos);
-
-        */
+        ApplyVisuals(WorldPos, surfaceNormal);
     }
     private Vector3 GetBasePointFlat()
     {
@@ -183,12 +154,11 @@ public class GroundCursor : MonoBehaviour
 
     private Vector3 GetDesiredDirFlat()
     {
-        Vector3 dir;
+        Vector3 inputDir = externalMoveDir;
+        inputDir.y = 0f;
 
-        dir = (externalMoveDir.sqrMagnitude > 0.0001f) ? externalMoveDir : player.forward;
-        dir.y = 0f;
-        if (dir.sqrMagnitude < 0.0001f) dir = Vector3.forward;
-        return dir.normalized;
+        if (inputDir.sqrMagnitude < 0.0001f) return smoothedDir;
+        return inputDir.normalized;
     }
 
     private Vector3 GetSmoothedDirFlat()
@@ -211,27 +181,10 @@ public class GroundCursor : MonoBehaviour
         return smoothedDir.normalized;
     }
 
-    private Vector3 ClampToRingFlat(Vector3 flatPos)
-    {
-        Vector3 from = flatPos - player.position;
-        from.y = 0f;
-
-        float dist = from.magnitude;
-        if (dist < 0.001f) from = GetSmoothedDirFlat();
-        else from /= dist;
-
-        float clamped = Mathf.Clamp(dist, settings.minDistance, settings.maxDistance);
-
-        Vector3 outPos = player.position + from * clamped;
-        outPos.y = 0f;
-        return outPos;
-    }
-
     private Vector3 SampleGroundPoint(Vector3 nearPos)
     {
         Vector3 origin = nearPos + Vector3.up * settings.groundRayStartHeight;
-        if (Physics.Raycast(origin, Vector3.down, out var hit, settings.groundRayLength, settings.groundMask, QueryTriggerInteraction.Ignore))
-            return hit.point;
+        if (Physics.Raycast(origin, Vector3.down, out var hit, settings.groundRayLength, settings.groundMask, QueryTriggerInteraction.Ignore)) return hit.point;
 
         // fallback: keep Y as is
         return nearPos;
@@ -240,27 +193,37 @@ public class GroundCursor : MonoBehaviour
     private void UnlockInternal(bool resetToPlayer)
     {
         LockedTarget = null;
+        SetAimAssistTarget(null);
 
         if (resetToPlayer)
         {
             Vector3 baseFlat = GetBasePointFlat();
-            freeFlatPos = baseFlat;
-            WorldPos = SampleGroundPoint(baseFlat) + Vector3.up * settings.heightOffset;
+            Vector3 backPos = SampleGroundPoint(baseFlat) + Vector3.up * settings.heightOffset;
+
+            if (settings.smoothLockTransition)
+            {
+                blending = true;
+                blendTargetPos = backPos;
+            }
+            else WorldPos = backPos;
+
             smoothedDir = GetDesiredDirFlat();
             smoothedDirInit = true;
-            ApplyVisuals(WorldPos);
+            ApplyVisuals(WorldPos, Vector3.up);
         }
     }
 
-    public void Unlock()
+    private void ApplyVisuals(Vector3 pos, Vector3 surfaceNormal)
     {
-        UnlockInternal(resetToPlayer: false);
-    }
+        if (!marker) return;
 
-    private void ApplyVisuals(Vector3 pos)
-    {
-        if (marker) marker.position = pos;
-        if (marker) marker.localScale = settings.markerScale;
+        marker.position = pos;
+        marker.localScale = settings.markerScale;
+
+        if (settings.rotateMarkerToSurface)
+        {
+            marker.rotation = Quaternion.FromToRotation(Vector3.up, surfaceNormal.normalized);
+        }
     }
 
     private void SetVisualsActive(bool active)
@@ -271,20 +234,215 @@ public class GroundCursor : MonoBehaviour
     public void LockTo(Transform target)
     {
         LockedTarget = target;
+        SetAimAssistTarget(target);
 
         if (LockedTarget)
         {
             Vector3 tPos = SampleGroundPoint(LockedTarget.position) + Vector3.up * settings.heightOffset;
             WorldPos = tPos;
-            freeFlatPos = new Vector3(tPos.x, 0f, tPos.z);
             smoothedDir = GetDesiredDirFlat();
             smoothedDirInit = true;
-            ApplyVisuals(WorldPos);
+            ApplyVisuals(WorldPos, Vector3.up);
         }
     }
 
     public void ForceUnlockToPlayer()
     {
         UnlockInternal(resetToPlayer: true);
+    }
+
+    private bool TryGetWallPoint(Vector3 desiredFlat, out Vector3 hitPos, out Vector3 hitNormal)
+    {
+        hitPos = desiredFlat;
+        hitNormal = Vector3.up;
+
+        if (settings.wallMask == 0) return false;
+
+        QueryTriggerInteraction qti = settings.wallHitTriggers ? QueryTriggerInteraction.Collide : QueryTriggerInteraction.Ignore;
+
+        // Stable cast height
+        Vector3 playerGround = SampleGroundPoint(player.position);
+        float h = playerGround.y + 0.6f;
+
+        Vector3 origin = new Vector3(player.position.x, h, player.position.z);
+        Vector3 target = new Vector3(desiredFlat.x, h, desiredFlat.z);
+
+        Vector3 dir = target - origin;
+        float dist = dir.magnitude;
+        if (dist < 0.001f) return false;
+        dir /= dist;
+
+        RaycastHit hit;
+        float r = Mathf.Max(0f, settings.wallProbeRadius);
+
+        bool hitSomething = (r > 0.001f) ? Physics.SphereCast(origin, r, dir, out hit, dist, settings.wallMask, qti) : Physics.Raycast(origin, dir, out hit, dist, settings.wallMask, qti);
+
+        Debug.DrawLine(origin, target, hitSomething ? Color.red : Color.green, 0.1f);
+        if (!hitSomething) return false;
+
+        hitNormal = hit.normal;
+
+        // Compute height on wall based on player distance (near = eye height, far = near ground)
+        float hitDist = hit.distance; // along the ray
+
+        // Convert distance to 0..1 where 1 = very close, 0 = far
+        float t = Mathf.InverseLerp(settings.wallFarDistance, settings.wallNearDistance, hitDist);
+        t = Mathf.Clamp01(t);
+
+        // Smooth it a bit so it doesn't jitter when strafing
+        float s = 1f - Mathf.Exp(-settings.wallHeightSmoothing * Time.deltaTime);
+        smoothedWallHeight01 = Mathf.Lerp(smoothedWallHeight01, t, s);
+
+        // Compute final height on wall (world Y)
+        float minY = playerGround.y + settings.wallMinHeight;
+        float eyeY = player.position.y + settings.wallEyeHeight; // relative to player body
+        float wallY = Mathf.Lerp(minY, eyeY, smoothedWallHeight01);
+
+        // Base point slightly in front of the wall
+        Vector3 p = hit.point + hit.normal * (settings.wallPadding + r);
+
+        // Override Y with our computed wall height
+        p.y = wallY;
+
+        hitPos = p;
+        return true;
+    }
+
+    private Vector3 ApplyAutoSnapSimple(Vector3 desiredWorldPos, out bool isHoldingTarget)
+    {
+        isHoldingTarget = false;
+
+        if (!settings.aimAssistEnabled)
+        {
+            SetAimAssistTarget(null);
+            return desiredWorldPos;
+        }
+
+        if (aimCooldownTimer > 0f) aimCooldownTimer -= Time.deltaTime;
+        Transform rayEnemy = GetForwardRayEnemy();
+
+        // Hold: If there is a target, keep it while inside EXIT radius 
+        if (aimAssistTarget != null)
+        {
+            Vector3 snapPos = GetEnemyGroundSnapPos(aimAssistTarget);
+
+            bool rayStillHitsSame = (rayEnemy == aimAssistTarget);
+            float dist = Vector3.Distance(desiredWorldPos, snapPos);
+
+            // hold if ray hits same enemy, OR still inside exit radius
+            if (rayStillHitsSame || dist <= settings.aimExitRadius)
+            {
+                isHoldingTarget = true;
+                return snapPos;
+            }
+
+            SetAimAssistTarget(null);
+            aimCooldownTimer = settings.aimCooldown;
+            return desiredWorldPos;
+        }
+
+        // Accquire: cooldown gate
+        if (aimCooldownTimer > 0f) return desiredWorldPos;
+
+        if (rayEnemy != null)
+        {
+            SetAimAssistTarget(rayEnemy);
+            isHoldingTarget = true;
+            return GetEnemyGroundSnapPos(rayEnemy);
+        }
+
+        // Find best enemy within ENTER radius (around cursor)
+        Collider[] hits = Physics.OverlapSphere(desiredWorldPos, settings.aimEnterRadius, settings.lockableMask, QueryTriggerInteraction.Ignore);
+
+        Transform best = null;
+        float bestDistSq = float.MaxValue;
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Transform t = hits[i].transform;
+
+            // Use the actual snap position for distance evaluation (stable)
+            Vector3 snapPos = GetEnemyGroundSnapPos(t);
+            float dSq = (snapPos - desiredWorldPos).sqrMagnitude;
+
+            if (dSq < bestDistSq)
+            {
+                bestDistSq = dSq;
+                best = t;
+            }
+        }
+
+        if (best == null) return desiredWorldPos;
+
+        // acquire -> highlight + hard snap
+        SetAimAssistTarget(best);
+        isHoldingTarget = true;
+        return GetEnemyGroundSnapPos(best);
+    }
+
+    private void SetAimAssistTarget(Transform t)
+    {
+        if (aimAssistTarget == t) return;
+
+        // turn off old
+        if (aimAssistTarget != null)
+        {
+            var oldH = aimAssistTarget.GetComponent<ICursorHighlight>();
+            oldH?.SetHighlighted(false);
+        }
+
+        aimAssistTarget = t;
+
+        // turn on new
+        if (aimAssistTarget != null && settings.highlightEnabled)
+        {
+            var newH = aimAssistTarget.GetComponent<ICursorHighlight>();
+            newH?.SetHighlighted(true);
+        }
+    }
+
+    private Vector3 GetEnemyGroundSnapPos(Transform t)
+    {
+        if (!t) return WorldPos;
+
+        var col = t.GetComponentInChildren<Collider>();
+        Vector3 xzCenter = t.position;
+
+        if (col != null)
+        {
+            Vector3 c = col.bounds.center;
+            xzCenter = new Vector3(c.x, col.bounds.max.y + 0.5f, c.z); // start above enemy
+        }
+        else
+        {
+            xzCenter = t.position + Vector3.up * 2f;
+        }
+
+        // Ray down onto ground
+        if (Physics.Raycast(xzCenter, Vector3.down, out var hit, settings.groundRayLength + 5f, settings.groundMask, QueryTriggerInteraction.Ignore)) return hit.point + Vector3.up * settings.heightOffset;
+
+        // fallback
+        return SampleGroundPoint(t.position) + Vector3.up * settings.heightOffset;
+    }
+
+    private Transform GetForwardRayEnemy()
+    {
+        if (!settings.aimHoldWhileRayHits) return null;
+        if (settings.lockableMask == 0) return null;
+
+        Vector3 playerGround = SampleGroundPoint(player.position);
+        float h = playerGround.y + 0.6f;
+
+        Vector3 origin = new Vector3(player.position.x, h, player.position.z);
+        Vector3 dir = GetSmoothedDirFlat();
+
+        float len = settings.baseDistance + settings.aimHoldRayExtraLength;
+
+        RaycastHit hit;
+        float r = Mathf.Max(0f, settings.aimHoldRayRadius);
+
+        bool hitSomething = (r > 0.001f) ? Physics.SphereCast(origin, r, dir, out hit, len, settings.lockableMask, QueryTriggerInteraction.Ignore) : Physics.Raycast(origin, dir, out hit, len, settings.lockableMask, QueryTriggerInteraction.Ignore);
+
+        return hitSomething ? hit.transform : null;
     }
 }

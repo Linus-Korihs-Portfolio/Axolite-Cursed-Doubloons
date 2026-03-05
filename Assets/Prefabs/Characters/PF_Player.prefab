@@ -61,6 +61,7 @@ MonoBehaviour:
   aim: {fileID: 6139243475645455793}
   dodge: {fileID: 7057111169574819622}
   punch: {fileID: 3479454713764566221}
+  cursor: {fileID: 3391111788512607623}
 --- !u!114 &1808837662234277016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,8 +321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GroundCursor
   settings: {fileID: 11400000, guid: 7494e66ad7244584dab0757be5b1c84d, type: 2}
-  player: {fileID: 1273055997037786594}
-  cameraTransform: {fileID: 4450673186202674228}
+  player: {fileID: 2151853351454571588}
   marker: {fileID: 2115973782352765185}
   cursorMoveAction: {fileID: 0}
   cursorExtraKeyAction: {fileID: 0}
