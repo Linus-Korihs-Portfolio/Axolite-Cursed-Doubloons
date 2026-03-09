@@ -1306,6 +1306,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CursorMove",
+                    "type": "Value",
+                    "id": "6de82036-808b-468c-9295-761a173a8569",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "CursorExtraKey",
+                    "type": "Button",
+                    "id": "93dfebb6-388b-4053-9f62-84d820b24452",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1345,7 +1363,7 @@
                 {
                     "name": "",
                     "id": "6d662165-5d96-4ce6-8439-3091fc630283",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "Scale",
                     "groups": ";Gamepad",
@@ -1356,7 +1374,7 @@
                 {
                     "name": "",
                     "id": "37888bbd-cb0a-46f9-9086-40bc5995472a",
-                    "path": "<Gamepad>/leftTrigger",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "Scale(factor=-1)",
                     "groups": ";Gamepad",
@@ -1400,7 +1418,7 @@
                 {
                     "name": "",
                     "id": "850300f0-9224-4e02-8b63-34030ad33cd1",
-                    "path": "<Gamepad>/leftStickPress",
+                    "path": "<Gamepad>/rightStickPress",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -1416,6 +1434,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "LockOn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "93b97e03-91ea-4f5f-9024-899fdc83ed4d",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "CursorMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d6e72b4-2613-498c-b711-ba051747c108",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "CursorMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "55694b5a-28ba-42a7-ae72-473d36f51fa2",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "CursorExtraKey",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "451bf231-6f54-4f64-b6e5-64f5febffb89",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "CursorExtraKey",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
