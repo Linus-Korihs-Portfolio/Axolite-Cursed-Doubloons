@@ -29,6 +29,9 @@ public class CameraCM : MonoBehaviour
     private bool isThird;
     private float targetRadius;
     private float targetVertical;
+    private Transform lockFramingTarget;
+    private Vector3 lockFramingVelocity;
+    private float baseModeRadius;
 
     private float ZoomSpeed => settings.zoomSpeed;
     private float TransitionSpeed => settings.transitionSpeed;
@@ -51,6 +54,14 @@ public class CameraCM : MonoBehaviour
     private float MouseSensX => settings.mouseSensitivityX;
     private float MouseSensY => settings.mouseSensitivityY;
     private bool MouseScaleWithDeltaTime => settings.mouseScaleWithDeltaTime;
+    private float LockOnPlayerBias => settings.lockOnPlayerBias;
+    private float LockOnHeightOffset => settings.lockOnHeightOffset;
+    private float LockOnLookTargetSmooth => settings.lockOnLookTargetSmooth;
+    private float LockOnRadiusPerMeter => settings.lockOnRadiusPerMeter;
+    private float LockOnMaxExtraRadius => settings.lockOnMaxExtraRadius;
+    private float LockOnVertical => settings.lockOnVertical;
+    private float LockOnVerticalSmooth => settings.lockOnVerticalSmooth;
+    private float LockOnMinDistance => settings.lockOnMinDistance;
 
     private void OnEnable()
     {
@@ -78,14 +89,19 @@ public class CameraCM : MonoBehaviour
     {
         if (!cmCamera) cmCamera = GetComponent<CinemachineCamera>();
         if (cmCamera) defaultLookAt = cmCamera.LookAt;
-
+        CreateLockFramingTarget();
         cursor = FindFirstObjectByType<GroundCursor>();
-
         SetMode(false, instant: true);
     }
 
     private void Update()
     {
+        if (ShouldBreakLockOn())
+        {
+            ClearLockOn();
+            return;
+        }
+
         if (zoomAction)
         {
             float z = zoomAction.action.ReadValue<float>();
@@ -141,6 +157,8 @@ public class CameraCM : MonoBehaviour
             }
         }
 
+        if (isLockedOn && lockTarget != null) UpdateLockOnFraming();
+
         // Smooth transition
         orbital.Radius = Mathf.Lerp(orbital.Radius, targetRadius, Time.deltaTime * settings.zoomSmoothing);
 
@@ -159,7 +177,8 @@ public class CameraCM : MonoBehaviour
     {
         isThird = third;
 
-        targetRadius = third ? ThirdRadius : TopRadius;
+        baseModeRadius = third ? ThirdRadius : TopRadius;
+        targetRadius = baseModeRadius;
         targetVertical = third ? ThirdVertical : TopVertical;
 
         if (!orbital)
@@ -204,7 +223,9 @@ public class CameraCM : MonoBehaviour
         lockTarget = best;
         isLockedOn = true;
 
-        cmCamera.LookAt = lockTarget;
+        UpdateLockOnFraming();
+        cmCamera.LookAt = lockFramingTarget;
+
         if (cursor) cursor.LockTo(lockTarget);
 
         if (settings.debugEnabled) Debug.Log($"[CameraCM] LockOn -> {lockTarget.name}");
@@ -215,6 +236,9 @@ public class CameraCM : MonoBehaviour
     {
         isLockedOn = false;
         lockTarget = null;
+
+        targetRadius = baseModeRadius;
+        targetVertical = isThird ? ThirdVertical : TopVertical;
 
         if (cmCamera) cmCamera.LookAt = defaultLookAt;
 
@@ -267,5 +291,60 @@ public class CameraCM : MonoBehaviour
             }
         }
         return best;
+    }
+
+    private bool ShouldBreakLockOn()
+    {
+        if (!isLockedOn) return false;
+        if (lockTarget == null || !lockTarget.gameObject.activeInHierarchy) return true;
+
+        // If cursor-based lock was lost, camera lock should also break
+        if (cursor != null && !cursor.IsLocked) return true;
+
+        if (cursor != null && cursor.IsLocked && cursor.LockedTarget != lockTarget) return true;
+
+        Transform playerTarget = (cmCamera != null && cmCamera.Follow != null) ? cmCamera.Follow : transform;
+
+        float distSq = (lockTarget.position - playerTarget.position).sqrMagnitude;
+        return distSq > LockOnMaxDistance * LockOnMaxDistance;
+    }
+
+    private void CreateLockFramingTarget()
+    {
+        if (lockFramingTarget != null) return;
+
+        GameObject go = new GameObject("LockOnFramingTarget");
+        go.hideFlags = HideFlags.HideInHierarchy;
+        lockFramingTarget = go.transform;
+
+        Vector3 startPos = transform.position + Vector3.up * LockOnHeightOffset;
+        lockFramingTarget.position = startPos;
+    }
+
+    private void UpdateLockOnFraming()
+    {
+        if (!cmCamera || !lockTarget || !lockFramingTarget) return;
+
+        Transform playerTarget = cmCamera.Follow != null ? cmCamera.Follow : transform;
+
+        Vector3 playerPos = playerTarget.position;
+        Vector3 enemyPos = lockTarget.position;
+
+        // Framing point between player and enemy, but slightly enemy-favored
+        Vector3 framedPos = Vector3.Lerp(playerPos, enemyPos, 1f - LockOnPlayerBias);
+        framedPos.y += LockOnHeightOffset;
+
+        float lookT = 1f - Mathf.Exp(-LockOnLookTargetSmooth * Time.deltaTime);
+        lockFramingTarget.position = Vector3.Lerp(lockFramingTarget.position, framedPos, lookT);
+
+        // Keep both visible by forcing a combat angle during lock-on
+        targetVertical = Mathf.Lerp(targetVertical, LockOnVertical, Time.deltaTime * LockOnVerticalSmooth);
+
+        // Zoom OUT only, based on player-enemy distance
+        float distance = Vector3.Distance(playerPos, enemyPos);
+        float extraRadius = Mathf.Min(distance * LockOnRadiusPerMeter, LockOnMaxExtraRadius);
+
+        float desiredRadius = Mathf.Max(LockOnMinDistance, baseModeRadius + extraRadius);
+        targetRadius = Mathf.Clamp(desiredRadius, baseModeRadius, MaxRadius);
     }
 }

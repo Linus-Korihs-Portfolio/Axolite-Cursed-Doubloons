@@ -43,6 +43,14 @@ MonoBehaviour:
   lockOnTags:
   - Enemy
   lockOnMaxDistance: 25
+  lockOnPlayerBias: 0.42
+  lockOnHeightOffset: 1.2
+  lockOnLookTargetSmooth: 10
+  lockOnRadiusPerMeter: 0.18
+  lockOnMaxExtraRadius: 3
+  lockOnVertical: 42
+  lockOnVerticalSmooth: 8
+  lockOnMinDistance: 6
   gamepadSensitivityX: 180
   gamepadSensitivityY: 120
   mouseSensitivityX: 0.1

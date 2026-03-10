@@ -49,6 +49,19 @@ public class CameraCMSettings : ScriptableObject
     public string[] lockOnTags = new[] { "Enemy" };
     public float lockOnMaxDistance = 25f;
 
+    [Header("Lock-On Framing")]
+    [Tooltip("0.5 = mid, <0.5 = more towards player, >0.5 = more towards target")]
+    [Range(0f, 1f)] public float lockOnPlayerBias = 0.42f; // 1 = target centered, 0 = player centered
+    public float lockOnHeightOffset = 1.25f;
+    public float lockOnLookTargetSmooth = 10f;
+    public float lockOnRadiusPerMeter = 0.18f;
+    public float lockOnMaxExtraRadius = 3f;
+
+    [Header("Lock-On Camera Angle")]
+    public float lockOnVertical = 42f;          // combat angle instead of top-down
+    public float lockOnVerticalSmooth = 8f;
+    public float lockOnMinDistance = 6f;        // minimum radius while locked on
+
     [Header("Look - Gamepad")]
     public float gamepadSensitivityX = 180f;
     public float gamepadSensitivityY = 120f;
