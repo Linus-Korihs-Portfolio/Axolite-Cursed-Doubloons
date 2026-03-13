@@ -118,8 +118,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
             return false;
         }
 
-        if (config.roomOverlapMask == 0)
-            Debug.LogWarning("roomOverlapMask is 0. Set it to your 'Generated' layer.");
+        if (config.roomOverlapMask == 0) Debug.LogWarning("roomOverlapMask is 0. Set it to your 'Generated' layer.");
 
         return true;
     }

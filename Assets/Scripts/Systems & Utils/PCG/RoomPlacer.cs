@@ -54,7 +54,7 @@ namespace PCG.RoomAssembler
                 return false;
             }
 
-            Shuffle(markers);
+            Shuffle(markers); // Randomize order of candidate sockets to try different placements on each run
 
             for (int i = 0; i < markers.Length; i++)
             {

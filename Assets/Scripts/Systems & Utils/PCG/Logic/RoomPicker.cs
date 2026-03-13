@@ -31,8 +31,7 @@ namespace PCG.RoomAssembler.Logic
             if (forceEnd) return endRoom;
 
             // 20% chance after minSteps
-            if (rng.Next(0, 100) < 20)
-                return endRoom;
+            if (rng.Next(0, 100) < 20) return endRoom;
 
             return WeightedPick(pool);
         }
@@ -50,7 +49,7 @@ namespace PCG.RoomAssembler.Logic
 
             if (total <= 0) return null;
 
-            int roll = rng.Next(0, total);
+            int roll = rng.Next(0, total); // Roll determines which room we pick, weighted by their individual weights
             int sum = 0;
 
             for (int i = 0; i < list.Count; i++)
