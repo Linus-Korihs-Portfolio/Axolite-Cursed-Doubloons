@@ -42,18 +42,18 @@ public class PlayerMovementCC : MonoBehaviour
 
     private void ApplyGravity()
     {
-        if (cc.isGrounded && verticalVelocity < 0f) verticalVelocity = GroundedStickForce; 
+        if (cc.isGrounded && verticalVelocity < 0f) verticalVelocity = GroundedStickForce; // Stick to ground when grounded (also helps with slopes)
         else
         {
             verticalVelocity += Gravity * Time.deltaTime;
-            if (verticalVelocity < TerminalVelocity) verticalVelocity = TerminalVelocity;
+            if (verticalVelocity < TerminalVelocity) verticalVelocity = TerminalVelocity; // Clamp to terminal velocity
         }
     }
 
     private void TickExternal()
     {
         if (externalTimer > 0f) externalTimer -= Time.deltaTime;
-        else externalVelocity = Vector3.zero;
+        else externalVelocity = Vector3.zero; // Reset external velocity when timer expires
     }
 
     private void Move()
@@ -70,7 +70,7 @@ public class PlayerMovementCC : MonoBehaviour
             right.y = 0f;
             right.Normalize();
 
-            move = right * move.x + forward * move.z;
+            move = right * move.x + forward * move.z; // Convert input to camera-relative movement
         }
 
         if (MovementLocked) move = Vector3.zero;
