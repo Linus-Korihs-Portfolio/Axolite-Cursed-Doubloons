@@ -5,7 +5,7 @@ public class PlayerBrain : MonoBehaviour
 {
     [SerializeField] private PlayerConfig config;
 
-    [Header("Input Actions")]
+    [Header("Input Actions")] // References for Editor display and runtime access
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference dodgeAction;
     [SerializeField] private InputActionReference punchAction;
@@ -22,6 +22,7 @@ public class PlayerBrain : MonoBehaviour
     [SerializeField] private PlayerPunch punch;
     [SerializeField] private GroundCursor cursor; // optional assign, otherwise auto-find
 
+    // Public getters for Editor and runtime access
     public InputActionReference MoveAction => moveAction;
     public InputActionReference DodgeAction => dodgeAction;
     public InputActionReference PunchAction => punchAction;

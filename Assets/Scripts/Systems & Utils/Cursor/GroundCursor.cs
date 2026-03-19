@@ -18,7 +18,7 @@ public class GroundCursor : MonoBehaviour
     public Transform LockedTarget { get; private set; }
     public bool IsLocked => LockedTarget != null;
 
-        public bool LockWithCursor => settings != null && settings.lockWithCursor;
+    public bool LockWithCursor => settings != null && settings.lockWithCursor;
     public float LockRangeWithCursor => settings != null ? settings.lockRangeWithCursor : 0f;
 
     private Vector3 externalMoveDir = Vector3.zero;
