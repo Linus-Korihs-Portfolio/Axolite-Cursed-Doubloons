@@ -1,5 +1,3 @@
-// High-level command issued to the minion
-using UnityEditor.EditorTools;
 using UnityEngine;
 
 public enum CommandType

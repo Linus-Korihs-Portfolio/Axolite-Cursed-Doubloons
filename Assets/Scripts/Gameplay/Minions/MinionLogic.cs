@@ -102,6 +102,11 @@ public class MinionStateMachine
                 break;
         }
     }
+
+    public void ForceState(MinionState forcedState)
+    {
+        CurrentState = forcedState;
+    }
 }
 
 // Resolves the current combat phase by asking the active role.
@@ -128,6 +133,11 @@ public class MinionCombatPhaseController
     public void Reset()
     {
         CurrentPhase = CombatPhase.None;
+    }
+
+    public void ForcePhase(CombatPhase forcedPhase)
+    {
+        CurrentPhase = forcedPhase;
     }
 }
 

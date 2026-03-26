@@ -6,10 +6,19 @@ public class MinionAgent : MonoBehaviour
     [SerializeField] private MinionSettings settings;
     [SerializeField] private MinionRoleType roleType = MinionRoleType.Melee;
 
-    [Header("Prototype Input")]
-    [SerializeField] private Transform currentTarget;
-    [SerializeField] private bool hasLineOfSight = true;
-    [SerializeField] private bool isAbilityReady = true;
+    private Transform currentTarget;
+    private bool hasLineOfSight = true;
+    private bool isAbilityReady = true;
+    private bool debugUseDistanceOverride;
+    private float debugDistanceOverride;
+
+    private bool debugForceState;
+    private MinionState debugForcedState;
+    private bool debugForceCombatPhase;
+    private CombatPhase debugForcedCombatPhase;
+
+    [Header("Debug Visuals")]
+    [SerializeField] private bool drawRoleRangeGizmos;
 
     [Header("Runtime Debug")]
     [SerializeField] private MinionState currentState;
@@ -80,6 +89,11 @@ public class MinionAgent : MonoBehaviour
         {
             currentIntent = decisionLayer.ResolveIntent(currentCommand, currentTime);
             stateMachine.UpdateState(currentIntent);
+
+            if (debugForceState)
+            {
+                stateMachine.ForceState(debugForcedState);
+            }
         }
 
         // Combat phase can be updated every frame for a smooth prototype.
@@ -91,7 +105,7 @@ public class MinionAgent : MonoBehaviour
 
     private void UpdateCombatPhase()
     {
-        currentDistanceToTarget = GetDistanceToTarget();
+        currentDistanceToTarget = debugUseDistanceOverride ? debugDistanceOverride : GetDistanceToTarget();
 
         combatPhaseController.UpdatePhase(
             stateMachine.CurrentState,
@@ -100,6 +114,11 @@ public class MinionAgent : MonoBehaviour
             hasLineOfSight,
             isAbilityReady
         );
+
+        if (debugForceCombatPhase)
+        {
+            combatPhaseController.ForcePhase(debugForcedCombatPhase);
+        }
     }
 
     private void UpdateDebugData()
@@ -240,5 +259,177 @@ public class MinionAgent : MonoBehaviour
     private void DebugClearCommand()
     {
         ClearCommand();
+    }
+
+    public void DebugFindNearestEnemyTarget()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        Transform nearest = null;
+        float nearestSq = float.MaxValue;
+
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            GameObject go = enemies[i];
+            if (go == null) continue;
+
+            float sq = (go.transform.position - transform.position).sqrMagnitude;
+            if (sq < nearestSq)
+            {
+                nearestSq = sq;
+                nearest = go.transform;
+            }
+        }
+
+        currentTarget = nearest;
+    }
+
+    public void DebugSetLineOfSight(bool value)
+    {
+        hasLineOfSight = value;
+    }
+
+    public void DebugSetAbilityReady(bool value)
+    {
+        isAbilityReady = value;
+    }
+
+    public void DebugSetDistanceStep(int distance)
+    {
+        debugUseDistanceOverride = true;
+        debugDistanceOverride = Mathf.Clamp(distance, 0f, 50f);
+    }
+
+    public void DebugClearDistanceOverride()
+    {
+        debugUseDistanceOverride = false;
+    }
+
+    public void DebugSetCommandType(CommandType type)
+    {
+        switch (type)
+        {
+            case CommandType.None:
+                ClearCommand();
+                break;
+            case CommandType.FollowPlayer:
+                SetFollowCommand();
+                break;
+            case CommandType.Recall:
+                SetRecallCommand();
+                break;
+            case CommandType.AttackEnemy:
+                if (currentTarget == null) DebugFindNearestEnemyTarget();
+                SetAttackEnemyCommand(currentTarget);
+                break;
+            case CommandType.AttackObject:
+                SetAttackObjectCommand(currentTarget);
+                break;
+            case CommandType.SupportTarget:
+                SetSupportCommand(currentTarget);
+                break;
+        }
+    }
+
+    public void DebugForceState(MinionState state)
+    {
+        debugForceState = true;
+        debugForcedState = state;
+        stateMachine.ForceState(state);
+    }
+
+    public void DebugClearForcedState()
+    {
+        debugForceState = false;
+    }
+
+    public void DebugForceCombatPhase(CombatPhase phase)
+    {
+        debugForceCombatPhase = true;
+        debugForcedCombatPhase = phase;
+        combatPhaseController.ForcePhase(phase);
+    }
+
+    public void DebugClearForcedCombatPhase()
+    {
+        debugForceCombatPhase = false;
+    }
+
+    public void DebugToggleRangeGizmos()
+    {
+        drawRoleRangeGizmos = !drawRoleRangeGizmos;
+    }
+
+    public bool DebugAreRangeGizmosEnabled()
+    {
+        return drawRoleRangeGizmos;
+    }
+
+    public void DebugRotateToTarget()
+    {
+        if (currentTarget == null) return;
+
+        Vector3 dir = currentTarget.position - transform.position;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.0001f) return;
+
+        transform.rotation = Quaternion.LookRotation(dir.normalized, Vector3.up);
+    }
+
+    public void DebugRunCommandFlowTest()
+    {
+        float now = Time.time;
+        CommandType before = currentCommand != null ? currentCommand.Type : CommandType.None;
+
+        SetFollowCommand();
+        MinionIntent intent = decisionLayer.ResolveIntent(currentCommand, now);
+        bool followOk = intent.CommandType == CommandType.FollowPlayer;
+
+        if (currentTarget == null) DebugFindNearestEnemyTarget();
+        SetAttackEnemyCommand(currentTarget);
+        intent = decisionLayer.ResolveIntent(currentCommand, now);
+        bool attackOk = intent.CommandType == CommandType.AttackEnemy;
+
+        ClearCommand();
+        intent = decisionLayer.ResolveIntent(currentCommand, now);
+        bool clearOk = intent.CommandType == CommandType.None;
+
+        Debug.Log($"[{name}] CommandFlowTest | Before:{before} Follow:{followOk} Attack:{attackOk} Clear:{clearOk}", this);
+    }
+
+    public bool DebugHasLineOfSight()
+    {
+        return hasLineOfSight;
+    }
+
+    public bool DebugIsAbilityReady()
+    {
+        return isAbilityReady;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!drawRoleRangeGizmos || settings == null) return;
+
+        RoleSettings roleSettings = settings.Melee;
+        if (roleType == MinionRoleType.Ranged) roleSettings = settings.Ranged;
+        else if (roleType == MinionRoleType.Support) roleSettings = settings.Support;
+
+        if (roleSettings == null || roleSettings.RangePolicy == null) return;
+
+        Vector3 p = transform.position;
+        RangePolicy rp = roleSettings.RangePolicy;
+
+        Gizmos.color = new Color(1f, 0.25f, 0.25f, 0.9f);
+        Gizmos.DrawWireSphere(p, rp.MinRange);
+        Gizmos.color = new Color(0.2f, 0.9f, 0.3f, 0.9f);
+        Gizmos.DrawWireSphere(p, rp.DesiredRange);
+        Gizmos.color = new Color(0.2f, 0.5f, 1f, 0.9f);
+        Gizmos.DrawWireSphere(p, rp.MaxRange);
+
+        if (currentTarget != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(p, currentTarget.position);
+        }
     }
 }

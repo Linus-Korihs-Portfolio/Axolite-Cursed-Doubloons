@@ -643,6 +643,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: 42f7ebc0-3729-48b7-98c6-26f182512052
+--- !u!1 &619068375 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 980464467663854597, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
+  m_PrefabInstance: {fileID: 2258811440091423805}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &619068377 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 37692261164110792, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
+  m_PrefabInstance: {fileID: 2258811440091423805}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 619068375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4962193c68c6183498c423576e9cd7cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MinionAgent
+--- !u!114 &619068378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 619068375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a3e8cf36e4dcea4ab24ac240f5ed2a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MinionDebugToolkit
+  agent: {fileID: 619068377}
 --- !u!114 &783548655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1330,6 +1359,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: 8dbbcb4b-38e9-43e3-a180-03bf6a447b78
+--- !u!4 &1690124304 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1273055997037786594, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+  m_PrefabInstance: {fileID: 2695888406797043093}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2258811440091423805
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1338,6 +1372,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 37692261164110792, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
+      propertyPath: followTarget
+      value: 
+      objectReference: {fileID: 1690124304}
     - target: {fileID: 980464467663854597, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
       propertyPath: m_Name
       value: PF_MinionMelee
@@ -1348,7 +1386,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5564108357955004293, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.597
       objectReference: {fileID: 0}
     - target: {fileID: 5564108357955004293, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1385,7 +1423,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 980464467663854597, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 619068378}
   m_SourcePrefab: {fileID: 100100000, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
 --- !u!1001 &2695888406797043093
 PrefabInstance:
