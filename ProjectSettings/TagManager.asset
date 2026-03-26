@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - Enemy
+  - MinionMelee
+  - MinionRanged
+  - MinionSupport
   layers:
   - Default
   - TransparentFX
@@ -15,9 +18,9 @@ TagManager:
   - Generated
   - Cap(Generated)
   - Enemy
-  - 
-  - 
-  - 
+  - MinionMelee
+  - MinionRanged
+  - MinionSupport
   - 
   - 
   - 

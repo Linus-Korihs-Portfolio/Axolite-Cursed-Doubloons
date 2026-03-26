@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// Main runtime entry point for a minion.
-// This class wires together settings, role, logic and debug state.
 public class MinionAgent : MonoBehaviour
 {
     [Header("Setup")]
