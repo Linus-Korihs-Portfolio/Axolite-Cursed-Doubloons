@@ -127,9 +127,9 @@ public static class MinionRoleFactory
 {
     public static IMinionRole Create(MinionRoleType roleType, MinionSettings settings)
     {
-        if (settings == null)
+        if (settings == null || settings.Melee == null || settings.Melee.RangePolicy == null)
         {
-            Debug.LogError("MinionSettings is NULL. Cannot create role.");
+            Debug.LogError("MinionSettings or Melee defaults are missing. Cannot create role.");
             return null;
         }
 
@@ -137,9 +137,23 @@ public static class MinionRoleFactory
         {
             case MinionRoleType.Melee: return new MeleeRole(CopyRangePolicy(settings.Melee.RangePolicy));
 
-            case MinionRoleType.Ranged: return new RangedRole(CopyRangePolicy(settings.Ranged.RangePolicy));
+            case MinionRoleType.Ranged:
+                if (settings.Ranged == null || settings.Ranged.RangePolicy == null)
+                {
+                    Debug.LogWarning("Ranged settings missing. Falling back to Melee defaults.");
+                    return new MeleeRole(CopyRangePolicy(settings.Melee.RangePolicy));
+                }
 
-            case MinionRoleType.Support: return new SupportRole(CopyRangePolicy(settings.Support.RangePolicy), settings.Support.StartMode);
+                return new RangedRole(CopyRangePolicy(settings.Ranged.RangePolicy));
+
+            case MinionRoleType.Support:
+                if (settings.Support == null || settings.Support.RangePolicy == null)
+                {
+                    Debug.LogWarning("Support settings missing. Falling back to Melee defaults.");
+                    return new MeleeRole(CopyRangePolicy(settings.Melee.RangePolicy));
+                }
+
+                return new SupportRole(CopyRangePolicy(settings.Support.RangePolicy), settings.Support.StartMode);
 
             default:
                 Debug.LogWarning("Unknown role type. Fallback to Melee.");
@@ -150,6 +164,11 @@ public static class MinionRoleFactory
     // Creates a safe runtime copy so ScriptableObject data is not modified. Each minion instance should have its own copy of the role data so they can diverge at runtime (e.g. support mode changes).
     private static RangePolicy CopyRangePolicy(RangePolicy source)
     {
+        if (source == null)
+        {
+            return new RangePolicy();
+        }
+
         return new RangePolicy
         {
             MinRange = source.MinRange,

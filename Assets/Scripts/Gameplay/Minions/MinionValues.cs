@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Centralized definitions for minion commands.
 public enum CommandType
 {
     None,
@@ -61,7 +62,7 @@ public enum InterruptPolicy
     Hard            // Can interrupt everything
 }
 
-// Used to track why something failed (super useful for debugging)
+// Used to track why something failed (useful for debugging)
 public enum FailureReason
 {
     None,
