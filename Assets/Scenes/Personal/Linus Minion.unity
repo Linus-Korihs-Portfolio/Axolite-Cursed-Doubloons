@@ -426,6 +426,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 144627119}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &188860362 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2151853351454571588, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+  m_PrefabInstance: {fileID: 2695888406797043093}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &203993410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -440,17 +445,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: 8dbbcb4b-38e9-43e3-a180-03bf6a447b78
---- !u!114 &219266891 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 37692261164110792, guid: 06a5cbf5c41792c4f858ab1266919769, type: 3}
-  m_PrefabInstance: {fileID: 1051907985}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4962193c68c6183498c423576e9cd7cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MinionAgent
 --- !u!114 &268978652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -465,17 +459,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: 9f800ebe-2e4c-4eb1-b517-a5f99e8898dc
---- !u!114 &275962754 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 37692261164110792, guid: 0d34c0dfc91fd0048a9dc2e3de14a115, type: 3}
-  m_PrefabInstance: {fileID: 2082919684}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4962193c68c6183498c423576e9cd7cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MinionAgent
 --- !u!1 &335878358
 GameObject:
   m_ObjectHideFlags: 0
@@ -1081,23 +1064,11 @@ PrefabInstance:
     - target: {fileID: 37692261164110792, guid: 06a5cbf5c41792c4f858ab1266919769, type: 3}
       propertyPath: followTarget
       value: 
-      objectReference: {fileID: 1690124304}
-    - target: {fileID: 37692261164110792, guid: 06a5cbf5c41792c4f858ab1266919769, type: 3}
-      propertyPath: groundMask.m_Bits
-      value: 192
-      objectReference: {fileID: 0}
-    - target: {fileID: 37692261164110792, guid: 06a5cbf5c41792c4f858ab1266919769, type: 3}
-      propertyPath: drawRoleRangeGizmos
-      value: 0
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 188860362}
     - target: {fileID: 980464467663854597, guid: 06a5cbf5c41792c4f858ab1266919769, type: 3}
       propertyPath: m_Name
       value: PF_MinionSupport
       objectReference: {fileID: 0}
-    - target: {fileID: 4390394429022210314, guid: 06a5cbf5c41792c4f858ab1266919769, type: 3}
-      propertyPath: agent
-      value: 
-      objectReference: {fileID: 219266891}
     - target: {fileID: 5564108357955004293, guid: 06a5cbf5c41792c4f858ab1266919769, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.25
@@ -1506,11 +1477,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: 8dbbcb4b-38e9-43e3-a180-03bf6a447b78
---- !u!4 &1690124304 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1273055997037786594, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
-  m_PrefabInstance: {fileID: 2695888406797043093}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2082919684
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1522,23 +1488,11 @@ PrefabInstance:
     - target: {fileID: 37692261164110792, guid: 0d34c0dfc91fd0048a9dc2e3de14a115, type: 3}
       propertyPath: followTarget
       value: 
-      objectReference: {fileID: 1690124304}
-    - target: {fileID: 37692261164110792, guid: 0d34c0dfc91fd0048a9dc2e3de14a115, type: 3}
-      propertyPath: groundMask.m_Bits
-      value: 192
-      objectReference: {fileID: 0}
-    - target: {fileID: 37692261164110792, guid: 0d34c0dfc91fd0048a9dc2e3de14a115, type: 3}
-      propertyPath: drawRoleRangeGizmos
-      value: 0
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 188860362}
     - target: {fileID: 980464467663854597, guid: 0d34c0dfc91fd0048a9dc2e3de14a115, type: 3}
       propertyPath: m_Name
       value: PF_MinionRange
       objectReference: {fileID: 0}
-    - target: {fileID: 1481406901911585056, guid: 0d34c0dfc91fd0048a9dc2e3de14a115, type: 3}
-      propertyPath: agent
-      value: 
-      objectReference: {fileID: 275962754}
     - target: {fileID: 5564108357955004293, guid: 0d34c0dfc91fd0048a9dc2e3de14a115, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.25
@@ -1595,19 +1549,7 @@ PrefabInstance:
     - target: {fileID: 37692261164110792, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
       propertyPath: followTarget
       value: 
-      objectReference: {fileID: 1690124304}
-    - target: {fileID: 37692261164110792, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
-      propertyPath: snapToGround
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 37692261164110792, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
-      propertyPath: groundMask.m_Bits
-      value: 192
-      objectReference: {fileID: 0}
-    - target: {fileID: 37692261164110792, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
-      propertyPath: drawRoleRangeGizmos
-      value: 0
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 188860362}
     - target: {fileID: 37692261164110792, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
       propertyPath: statModifiers.Array.size
       value: 0

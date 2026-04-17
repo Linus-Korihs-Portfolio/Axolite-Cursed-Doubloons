@@ -63,10 +63,13 @@ MonoBehaviour:
   snapToGround: 1
   groundMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 192
   groundRayStartHeight: 1.5
   groundRayLength: 8
   groundOffset: 0
+  useSimpleGravity: 1
+  gravityAcceleration: 25
+  maxFallSpeed: 40
   lineOfSightBlockMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -127,6 +130,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CombatantStats
   baseProfile: {fileID: 11400000, guid: 6384b8f9b043f3e4a8ec5a3af88cc5de, type: 2}
   currentHealth: 0
+  despawnOnDeath: 1
+  despawnDelay: 0
 --- !u!1001 &8250234263101299714
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -201,8 +201,50 @@ public class MinionAgent : MonoBehaviour
 
     private void ExecuteFollow()
     {
-        if (followTarget == null) return;
-        MoveTowardsDistance(followTarget.position, followStopDistance);
+        Transform target = ResolveFollowTarget();
+        if (!IsValidTarget(target))
+        {
+            Debug.Log($"[{name}] ExecuteFollow: target is invalid (null or inactive). Clearing command.");
+            ClearCommand();
+            stateMachine.ForceState(MinionState.Idle);
+            return;
+        }
+
+        // Calculate horizontal distance (ignore Y to match MoveTowardsDistance)
+        Vector3 toTarget = target.position - transform.position;
+        toTarget.y = 0f;
+        float distance = toTarget.magnitude;
+        Debug.Log($"[{name}] ExecuteFollow: distance={distance:F3}, followStopDistance={followStopDistance}, moveSpeed={GetRuntimeMoveSpeed():F3}");
+
+        if (distance <= Mathf.Max(0f, followStopDistance))
+        {
+            Debug.Log($"[{name}] ExecuteFollow: reached target. Clearing command and forcing Idle.");
+            ClearCommand();
+            stateMachine.ForceState(MinionState.Idle);
+            return;
+        }
+
+        Debug.Log($"[{name}] ExecuteFollow: moving towards target.");
+        MoveTowardsDistance(target.position, followStopDistance);
+    }
+
+    private Transform ResolveFollowTarget()
+    {
+        if (IsValidTarget(followTarget))
+        {
+            Debug.Log($"[{name}] ResolveFollowTarget: using followTarget");
+            return followTarget;
+        }
+
+        Transform commandTarget = AsTransform(currentCommand != null ? currentCommand.Target : null);
+        if (IsValidTarget(commandTarget))
+        {
+            Debug.Log($"[{name}] ResolveFollowTarget: using commandTarget (followTarget was invalid)");
+            return commandTarget;
+        }
+
+        Debug.Log($"[{name}] ResolveFollowTarget: both followTarget and commandTarget are invalid! followTarget={followTarget}, commandTarget={commandTarget}");
+        return null;
     }
 
     private void ExecuteCombat(float currentTime)
@@ -249,6 +291,7 @@ public class MinionAgent : MonoBehaviour
         float distance = toTarget.magnitude;
         if (distance <= Mathf.Max(0f, stopDistance))
         {
+            Debug.Log($"[{name}] MoveTowardsDistance: at stop distance. distance={distance:F3}, stopDistance={stopDistance}");
             if (distance > 0.0001f)
             {
                 SmoothFaceDirection(toTarget / distance);
@@ -257,6 +300,8 @@ public class MinionAgent : MonoBehaviour
         }
 
         Vector3 direction = toTarget / Mathf.Max(distance, 0.0001f);
+        float moveAmount = direction.magnitude > 0.0001f ? GetRuntimeMoveSpeed() * Time.deltaTime : 0f;
+        Debug.Log($"[{name}] MoveTowardsDistance: moving. distance={distance:F3}, moveSpeed={GetRuntimeMoveSpeed():F3}, moveAmount={moveAmount:F3}, deltaTime={Time.deltaTime:F4}");
         transform.position += direction * GetRuntimeMoveSpeed() * Time.deltaTime;
         SmoothFaceDirection(direction);
     }
@@ -497,8 +542,26 @@ public class MinionAgent : MonoBehaviour
 
         if (followTarget != null)
         {
-            SetFollowCommand();
+            if (ShouldFollowTarget())
+            {
+                Debug.Log($"[{name}] TryAssignAutoCommand: setting Follow command");
+                SetFollowCommand();
+            }
         }
+    }
+
+    private bool ShouldFollowTarget()
+    {
+        Transform target = ResolveFollowTarget();
+        if (!IsValidTarget(target)) return false;
+
+        // Calculate horizontal distance (ignore Y to match ExecuteFollow & MoveTowardsDistance)
+        Vector3 toTarget = target.position - transform.position;
+        toTarget.y = 0f;
+        float distance = toTarget.magnitude;
+        bool result = distance > Mathf.Max(0f, followStopDistance) + 0.2f;
+        Debug.Log($"[{name}] ShouldFollowTarget: distance={distance:F3}, threshold={Mathf.Max(0f, followStopDistance) + 0.2f:F3}, result={result}");
+        return result;
     }
 
     private bool IsSupportActionNeeded(Transform supportTarget)
@@ -622,11 +685,12 @@ public class MinionAgent : MonoBehaviour
     // Makes the minion return to the player/follow behavior.
     public void SetFollowCommand()
     {
+        Debug.Log($"[{name}] SetFollowCommand: followTarget={followTarget?.name ?? "null"}");
         currentCommand = new MinionCommand
         {
             Type = CommandType.FollowPlayer,
-            Target = null,
-            TargetPosition = transform.position,
+            Target = followTarget,
+            TargetPosition = followTarget != null ? followTarget.position : transform.position,
             Priority = 1,
             IssuedTime = Time.time,
             TimeToLive = 0f,
@@ -634,6 +698,8 @@ public class MinionAgent : MonoBehaviour
             InterruptPolicy = InterruptPolicy.Soft,
             LastFailureReason = FailureReason.None
         };
+        Transform targetTransform = AsTransform(currentCommand.Target);
+        Debug.Log($"[{name}] SetFollowCommand: command set. Command.Target={targetTransform?.name ?? "null"}");
     }
 
     // Makes the minion recall immediately.
@@ -642,8 +708,8 @@ public class MinionAgent : MonoBehaviour
         currentCommand = new MinionCommand
         {
             Type = CommandType.Recall,
-            Target = null,
-            TargetPosition = transform.position,
+            Target = followTarget,
+            TargetPosition = followTarget != null ? followTarget.position : transform.position,
             Priority = 100,
             IssuedTime = Time.time,
             TimeToLive = 0f,

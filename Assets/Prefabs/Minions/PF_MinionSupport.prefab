@@ -63,10 +63,13 @@ MonoBehaviour:
   snapToGround: 1
   groundMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 192
   groundRayStartHeight: 1.5
   groundRayLength: 8
   groundOffset: 0
+  useSimpleGravity: 1
+  gravityAcceleration: 25
+  maxFallSpeed: 40
   lineOfSightBlockMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -112,7 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a3e8cf36e4dcea4ab24ac240f5ed2a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MinionDebugToolkit
-  agent: {fileID: 0}
+  agent: {fileID: 37692261164110792}
 --- !u!114 &923669364683773200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,6 +130,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CombatantStats
   baseProfile: {fileID: 11400000, guid: 6384b8f9b043f3e4a8ec5a3af88cc5de, type: 2}
   currentHealth: 0
+  despawnOnDeath: 1
+  despawnDelay: 0
 --- !u!1001 &8250234263101299714
 PrefabInstance:
   m_ObjectHideFlags: 0
