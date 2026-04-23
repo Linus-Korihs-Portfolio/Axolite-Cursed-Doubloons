@@ -16,7 +16,20 @@ public class GroundCursor : MonoBehaviour
 
     public Vector3 WorldPos { get; private set; }
     public Transform LockedTarget { get; private set; }
+    public Transform AimAssistTarget => aimAssistTarget;
+    public Transform Marker => marker;
     public bool IsLocked => LockedTarget != null;
+
+    // Returns true when the layer belongs to ground or wall masks used by the cursor.
+    public bool IsEnvironmentLayer(int layer)
+    {
+        if (settings == null) return false;
+
+        int mask = 1 << layer;
+        bool isGround = (settings.groundMask.value & mask) != 0;
+        bool isWall = (settings.wallMask.value & mask) != 0;
+        return isGround || isWall;
+    }
 
     public bool LockWithCursor => settings != null && settings.lockWithCursor;
     public float LockRangeWithCursor => settings != null ? settings.lockRangeWithCursor : 0f;

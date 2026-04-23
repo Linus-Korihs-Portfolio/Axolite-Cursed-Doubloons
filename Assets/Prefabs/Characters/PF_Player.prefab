@@ -226,6 +226,7 @@ GameObject:
   - component: {fileID: 7057111169574819622}
   - component: {fileID: 3479454713764566221}
   - component: {fileID: 3391111788512607623}
+  - component: {fileID: 7467690400024141695}
   m_Layer: 3
   m_Name: P_PlayerScripts
   m_TagString: Player
@@ -325,6 +326,38 @@ MonoBehaviour:
   marker: {fileID: 2115973782352765185}
   cursorMoveAction: {fileID: 0}
   cursorExtraKeyAction: {fileID: 0}
+--- !u!114 &7467690400024141695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7597917926100717369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b6bd2052a8899145909cfa859ed9c05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMinionCommander
+  cursor: {fileID: 3391111788512607623}
+  player: {fileID: 1273055997037786594}
+  commandAction: {fileID: 0}
+  recallAction: {fileID: 0}
+  commandAcquireRadius: 1.1
+  commandTargetMask:
+    serializedVersion: 2
+    m_Bits: 968
+  includeTriggers: 0
+  enemyTag: Enemy
+  breakableTag: Breakable
+  controlledMinions: []
+  autoFindMinionsIfEmpty: 1
+  enableCommandPreview: 1
+  previewRenderers: []
+  previewNoTargetColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
+  previewAttackColor: {r: 1, g: 0.25, b: 0.25, a: 1}
+  previewSupportColor: {r: 0.2, g: 0.9, b: 0.45, a: 1}
+  previewInvalidColor: {r: 0.35, g: 0.55, b: 1, a: 1}
+  previewEmissionIntensity: 0.35
 --- !u!1 &8310995803334467285
 GameObject:
   m_ObjectHideFlags: 0

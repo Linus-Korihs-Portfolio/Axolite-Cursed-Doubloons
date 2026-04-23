@@ -11,7 +11,7 @@ public class MinionAgent : MonoBehaviour
     [SerializeField] private Transform followTarget;
 
     [Header("Auto Targeting")]
-    [SerializeField] private bool autoAssignCombatCommands = true;
+    [SerializeField] private bool autoAssignCombatCommands = false;
     [SerializeField] private float autoTargetRadius = 35f;
     [SerializeField] private string enemyTag = "Enemy";
     [SerializeField] private string allyTag = "Ally";
@@ -22,6 +22,13 @@ public class MinionAgent : MonoBehaviour
     [SerializeField] private float moveSpeed = 4f;
     [SerializeField] private float rotationSpeed = 10f;
     [SerializeField] private float followStopDistance = 1.75f;
+
+    [Header("Minion Separation")]
+    [SerializeField] private bool useLocalSeparation = true;
+    [SerializeField] private float separationRadius = 0.9f;
+    [SerializeField] private float separationStrength = 7f;
+    [SerializeField] private float maxSeparationStep = 0.3f;
+    [SerializeField] private LayerMask separationMask = ~0;
 
     [Header("Grounding")]
     [SerializeField] private bool snapToGround = true;
@@ -75,8 +82,12 @@ public class MinionAgent : MonoBehaviour
     private MinionTickScheduler tickScheduler;
     private MinionAbilitySystem abilitySystem;
     private CombatantStats sharedCombatStats;
+    private readonly Collider[] separationHits = new Collider[24];
 
     private MinionIntent currentIntent;
+
+    public MinionRoleType RoleType => roleType; // Exposed runtime metadata for commander/input systems.
+    public SupportMode? ActiveSupportMode => currentRole != null ? currentRole.GetSupportMode() : null;
 
     private void Awake()
     {
@@ -157,6 +168,9 @@ public class MinionAgent : MonoBehaviour
         // Execute the current state and combat phase.
         ExecuteCurrentState(currentTime);
 
+        // Keep nearby minions from stacking into the same spot.
+        ApplyLocalSeparation(Time.deltaTime);
+
         // Push debug values into inspector.
         UpdateDebugData();
     }
@@ -204,7 +218,6 @@ public class MinionAgent : MonoBehaviour
         Transform target = ResolveFollowTarget();
         if (!IsValidTarget(target))
         {
-            Debug.Log($"[{name}] ExecuteFollow: target is invalid (null or inactive). Clearing command.");
             ClearCommand();
             stateMachine.ForceState(MinionState.Idle);
             return;
@@ -214,36 +227,27 @@ public class MinionAgent : MonoBehaviour
         Vector3 toTarget = target.position - transform.position;
         toTarget.y = 0f;
         float distance = toTarget.magnitude;
-        Debug.Log($"[{name}] ExecuteFollow: distance={distance:F3}, followStopDistance={followStopDistance}, moveSpeed={GetRuntimeMoveSpeed():F3}");
 
         if (distance <= Mathf.Max(0f, followStopDistance))
         {
-            Debug.Log($"[{name}] ExecuteFollow: reached target. Clearing command and forcing Idle.");
-            ClearCommand();
-            stateMachine.ForceState(MinionState.Idle);
+            if (distance > 0.0001f)
+            {
+                SmoothFaceDirection(toTarget / Mathf.Max(distance, 0.0001f));
+            }
+
             return;
         }
 
-        Debug.Log($"[{name}] ExecuteFollow: moving towards target.");
         MoveTowardsDistance(target.position, followStopDistance);
     }
 
     private Transform ResolveFollowTarget()
     {
-        if (IsValidTarget(followTarget))
-        {
-            Debug.Log($"[{name}] ResolveFollowTarget: using followTarget");
-            return followTarget;
-        }
+        if (IsValidTarget(followTarget)) return followTarget;
 
         Transform commandTarget = AsTransform(currentCommand != null ? currentCommand.Target : null);
-        if (IsValidTarget(commandTarget))
-        {
-            Debug.Log($"[{name}] ResolveFollowTarget: using commandTarget (followTarget was invalid)");
-            return commandTarget;
-        }
+        if (IsValidTarget(commandTarget)) return commandTarget;
 
-        Debug.Log($"[{name}] ResolveFollowTarget: both followTarget and commandTarget are invalid! followTarget={followTarget}, commandTarget={commandTarget}");
         return null;
     }
 
@@ -291,7 +295,6 @@ public class MinionAgent : MonoBehaviour
         float distance = toTarget.magnitude;
         if (distance <= Mathf.Max(0f, stopDistance))
         {
-            Debug.Log($"[{name}] MoveTowardsDistance: at stop distance. distance={distance:F3}, stopDistance={stopDistance}");
             if (distance > 0.0001f)
             {
                 SmoothFaceDirection(toTarget / distance);
@@ -300,10 +303,59 @@ public class MinionAgent : MonoBehaviour
         }
 
         Vector3 direction = toTarget / Mathf.Max(distance, 0.0001f);
-        float moveAmount = direction.magnitude > 0.0001f ? GetRuntimeMoveSpeed() * Time.deltaTime : 0f;
-        Debug.Log($"[{name}] MoveTowardsDistance: moving. distance={distance:F3}, moveSpeed={GetRuntimeMoveSpeed():F3}, moveAmount={moveAmount:F3}, deltaTime={Time.deltaTime:F4}");
         transform.position += direction * GetRuntimeMoveSpeed() * Time.deltaTime;
         SmoothFaceDirection(direction);
+    }
+
+    private void ApplyLocalSeparation(float deltaTime)
+    {
+        if (!useLocalSeparation) return;
+
+        float radius = Mathf.Max(0.05f, separationRadius);
+        int hitCount = Physics.OverlapSphereNonAlloc(
+            transform.position,
+            radius,
+            separationHits,
+            separationMask,
+            QueryTriggerInteraction.Ignore
+        );
+
+        if (hitCount <= 0) return;
+
+        Vector3 push = Vector3.zero;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider hit = separationHits[i];
+            if (hit == null) continue;
+
+            MinionAgent other = hit.GetComponentInParent<MinionAgent>();
+            if (other == null || other == this) continue;
+
+            Vector3 away = transform.position - other.transform.position;
+            away.y = 0f;
+
+            float distance = away.magnitude;
+            if (distance >= radius) continue;
+
+            Vector3 dir = distance > 0.0001f ? away / distance : (transform.forward.sqrMagnitude > 0.0001f ? transform.forward : Vector3.right);
+            float overlap = radius - distance;
+            float weight = overlap / radius;
+            push += dir * weight;
+        }
+
+        if (push.sqrMagnitude <= 0.000001f) return;
+
+        Vector3 step = push * Mathf.Max(0f, separationStrength) * deltaTime;
+        step.y = 0f;
+
+        float maxStep = Mathf.Max(0.01f, maxSeparationStep);
+        if (step.magnitude > maxStep)
+        {
+            step = step.normalized * maxStep;
+        }
+
+        transform.position += step;
     }
 
     private void RepositionAroundTarget(Vector3 targetPosition, float desiredRange)
@@ -383,43 +435,7 @@ public class MinionAgent : MonoBehaviour
         Transform explicitTarget = AsTransform(currentCommand != null ? currentCommand.Target : null);
         if (IsValidTarget(explicitTarget)) return explicitTarget;
 
-        if (currentCommand == null) return null;
-
-        switch (currentCommand.Type)
-        {
-            case CommandType.AttackEnemy:
-                return FindNearestByTag(enemyTag, autoTargetRadius);
-
-            case CommandType.AttackObject:
-                return FindNearestByTag(breakableTag, autoTargetRadius);
-
-            case CommandType.SupportTarget:
-                return ResolveSupportTarget();
-
-            default:
-                return null;
-        }
-    }
-
-    private Transform ResolveSupportTarget()
-    {
-        if (currentRole == null) return followTarget;
-
-        SupportMode mode = currentRole.GetSupportMode() ?? SupportMode.Heal;
-        if (mode == SupportMode.Debuff)
-        {
-            return FindNearestByTag(enemyTag, autoTargetRadius);
-        }
-
-        Transform ally = FindNearestByTag(allyTag, autoTargetRadius, includeSelf: false);
-        Transform resolved = ally != null ? ally : followTarget;
-
-        if (resolved == transform)
-        {
-            return null;
-        }
-
-        return resolved;
+        return null;
     }
 
     private static Transform AsTransform(object target)
@@ -502,7 +518,7 @@ public class MinionAgent : MonoBehaviour
 
     private void TryAssignAutoCommand(float currentTime)
     {
-        if (!autoAssignCombatCommands || currentCommand == null) return;
+        if (currentCommand == null) return;
 
         if (currentCommand.IsExpired(currentTime))
         {
@@ -512,41 +528,19 @@ public class MinionAgent : MonoBehaviour
 
         if (currentCommand.Type == CommandType.SupportTarget)
         {
-            Transform supportTarget = ResolveSupportTarget();
-            if (!IsSupportActionNeeded(supportTarget))
+            Transform supportTarget = AsTransform(currentCommand.Target);
+            if (!IsSupportTargetValidForActiveMode(supportTarget))
             {
                 ClearCommand();
             }
         }
 
-        if (currentCommand.Type != CommandType.None) return;
+        // Optional legacy auto behavior for prototyping only.
+        if (!autoAssignCombatCommands) return;
 
-        if (roleType == MinionRoleType.Support)
+        if (currentCommand.Type == CommandType.None && followTarget != null && ShouldFollowTarget())
         {
-            Transform supportTarget = ResolveSupportTarget();
-            if (IsSupportActionNeeded(supportTarget))
-            {
-                SetSupportCommand(supportTarget);
-                return;
-            }
-        }
-        else
-        {
-            Transform enemy = FindNearestByTag(enemyTag, autoTargetRadius);
-            if (enemy != null)
-            {
-                SetAttackEnemyCommand(enemy);
-                return;
-            }
-        }
-
-        if (followTarget != null)
-        {
-            if (ShouldFollowTarget())
-            {
-                Debug.Log($"[{name}] TryAssignAutoCommand: setting Follow command");
-                SetFollowCommand();
-            }
+            SetFollowCommand();
         }
     }
 
@@ -559,36 +553,7 @@ public class MinionAgent : MonoBehaviour
         Vector3 toTarget = target.position - transform.position;
         toTarget.y = 0f;
         float distance = toTarget.magnitude;
-        bool result = distance > Mathf.Max(0f, followStopDistance) + 0.2f;
-        Debug.Log($"[{name}] ShouldFollowTarget: distance={distance:F3}, threshold={Mathf.Max(0f, followStopDistance) + 0.2f:F3}, result={result}");
-        return result;
-    }
-
-    private bool IsSupportActionNeeded(Transform supportTarget)
-    {
-        if (!IsValidTarget(supportTarget) || currentRole == null) return false;
-
-        SupportMode mode = currentRole.GetSupportMode() ?? SupportMode.Heal;
-        switch (mode)
-        {
-            case SupportMode.Heal:
-            {
-                CombatantStats targetStats = supportTarget.GetComponentInParent<CombatantStats>();
-                if (targetStats == null || targetStats.IsDead) return false;
-
-                float maxHealth = targetStats.GetStat(CombatStatType.MaxHealth);
-                return targetStats.CurrentHealth < maxHealth - 0.01f;
-            }
-
-            case SupportMode.Buff:
-                return supportBuffEffect != null;
-
-            case SupportMode.Debuff:
-                return supportDebuffEffect != null;
-
-            default:
-                return false;
-        }
+        return distance > Mathf.Max(0f, followStopDistance) + 0.2f;
     }
 
     private bool SnapToGround()
@@ -669,23 +634,13 @@ public class MinionAgent : MonoBehaviour
         }
 
         combatPhaseController.Reset();
-
-        if (followTarget != null)
-        {
-            SetFollowCommand();
-            stateMachine.ForceState(MinionState.Follow);
-        }
-        else
-        {
-            ClearCommand();
-            stateMachine.ForceState(MinionState.Idle);
-        }
+        ClearCommand();
+        stateMachine.ForceState(MinionState.Idle);
     }
 
     // Makes the minion return to the player/follow behavior.
     public void SetFollowCommand()
     {
-        Debug.Log($"[{name}] SetFollowCommand: followTarget={followTarget?.name ?? "null"}");
         currentCommand = new MinionCommand
         {
             Type = CommandType.FollowPlayer,
@@ -698,8 +653,6 @@ public class MinionAgent : MonoBehaviour
             InterruptPolicy = InterruptPolicy.Soft,
             LastFailureReason = FailureReason.None
         };
-        Transform targetTransform = AsTransform(currentCommand.Target);
-        Debug.Log($"[{name}] SetFollowCommand: command set. Command.Target={targetTransform?.name ?? "null"}");
     }
 
     // Makes the minion recall immediately.
@@ -722,6 +675,12 @@ public class MinionAgent : MonoBehaviour
     // Makes the minion attack an enemy target.
     public void SetAttackEnemyCommand(Transform target)
     {
+        if (!IsEnemyTarget(target))
+        {
+            ClearCommand();
+            return;
+        }
+
         currentTarget = target;
 
         currentCommand = new MinionCommand
@@ -741,6 +700,12 @@ public class MinionAgent : MonoBehaviour
     // Makes the minion attack a breakable object.
     public void SetAttackObjectCommand(Transform target)
     {
+        if (!IsBreakableTarget(target))
+        {
+            ClearCommand();
+            return;
+        }
+
         currentTarget = target;
 
         currentCommand = new MinionCommand
@@ -760,17 +725,9 @@ public class MinionAgent : MonoBehaviour
     // Makes the support minion act on a target.
     public void SetSupportCommand(Transform target)
     {
-        if (target == transform)
+        if (!IsSupportTargetValidForActiveMode(target))
         {
-            if (followTarget != null && followTarget != transform)
-            {
-                SetFollowCommand();
-            }
-            else
-            {
-                ClearCommand();
-            }
-
+            ClearCommand();
             return;
         }
 
@@ -788,6 +745,87 @@ public class MinionAgent : MonoBehaviour
             InterruptPolicy = InterruptPolicy.Soft,
             LastFailureReason = FailureReason.None
         };
+    }
+
+    // Allows command systems to preview if a target is valid for this support minion right now.
+    public bool CanAcceptSupportTarget(Transform target)
+    {
+        return IsSupportTargetValidForActiveMode(target);
+    }
+
+    // Switches the active support action and rebuilds support ability loadout.
+    public bool TrySetSupportMode(SupportMode newMode)
+    {
+        if (currentRole is not SupportRole supportRole)
+        {
+            return false;
+        }
+
+        supportRole.SetSupportMode(newMode);
+        abilitySystem.BuildDefaultLoadout(currentRole, supportBuffEffect, supportDebuffEffect);
+
+        // Invalidate current support command if target no longer matches the new mode.
+        if (currentCommand != null && currentCommand.Type == CommandType.SupportTarget)
+        {
+            Transform supportTarget = AsTransform(currentCommand.Target);
+            if (!IsSupportTargetValidForActiveMode(supportTarget))
+            {
+                ClearCommand();
+                stateMachine.ForceState(MinionState.Idle);
+            }
+        }
+
+        return true;
+    }
+
+    private bool IsEnemyTarget(Transform target)
+    {
+        if (!IsValidTarget(target)) return false;
+        return target.CompareTag(enemyTag);
+    }
+
+    private bool IsBreakableTarget(Transform target)
+    {
+        if (!IsValidTarget(target)) return false;
+        return target.CompareTag(breakableTag);
+    }
+
+    private bool IsAllyMinionTarget(Transform target)
+    {
+        if (!IsValidTarget(target)) return false;
+        if (target == transform) return false;
+        if (followTarget != null && target == followTarget) return false; // Player cannot be healed/buffed by support minions.
+        return target.CompareTag(allyTag);
+    }
+
+    // Validates target rules for the currently active support mode.
+    private bool IsSupportTargetValidForActiveMode(Transform target)
+    {
+        if (!IsValidTarget(target) || currentRole == null) return false;
+
+        SupportMode mode = currentRole.GetSupportMode() ?? SupportMode.Heal;
+        switch (mode)
+        {
+            case SupportMode.Heal:
+            {
+                if (!IsAllyMinionTarget(target)) return false;
+
+                CombatantStats targetStats = target.GetComponentInParent<CombatantStats>();
+                if (targetStats == null || targetStats.IsDead) return false;
+
+                float maxHealth = targetStats.GetStat(CombatStatType.MaxHealth);
+                return targetStats.CurrentHealth < maxHealth - 0.01f;
+            }
+
+            case SupportMode.Buff:
+                return supportBuffEffect != null && IsAllyMinionTarget(target);
+
+            case SupportMode.Debuff:
+                return supportDebuffEffect != null && IsEnemyTarget(target);
+
+            default:
+                return false;
+        }
     }
 
     // Clears the current command and returns to idle fallback.
