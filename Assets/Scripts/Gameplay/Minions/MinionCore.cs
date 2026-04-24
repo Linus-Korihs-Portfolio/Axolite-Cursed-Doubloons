@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(CombatantStats))]
 public class MinionAgent : MonoBehaviour
@@ -21,6 +24,14 @@ public class MinionAgent : MonoBehaviour
     [SerializeField] private float moveSpeed = 4f;
     [SerializeField] private float rotationSpeed = 10f;
     [SerializeField] private float followStopDistance = 1.75f;
+
+    [Header("Navigation (NavMesh)")]
+    [SerializeField] private bool useNavMeshNavigation = true;
+    [SerializeField] private float navRepathInterval = 0.2f;
+    [SerializeField] private float navTargetSampleRadius = 1.25f;
+    [SerializeField] private float navWaypointTolerance = 0.25f;
+    [SerializeField] private bool recallOnPathFailure = true;
+    [SerializeField] private float pathFailureCooldown = 0.75f;
 
     [Header("Minion Separation")]
     [SerializeField] private bool useLocalSeparation = true;
@@ -45,6 +56,8 @@ public class MinionAgent : MonoBehaviour
     [SerializeField] private LayerMask lineOfSightBlockMask = ~0;
     [SerializeField] private StatusEffectDefinition supportBuffEffect;
     [SerializeField] private StatusEffectDefinition supportDebuffEffect;
+    [SerializeField] private float lineOfSightHeightOffset = 0.8f;
+    [SerializeField] private bool requireLineOfSightForAllAttacks = true;
 
     private Transform currentTarget;
     private bool hasLineOfSight = true;
@@ -57,6 +70,13 @@ public class MinionAgent : MonoBehaviour
     private float debugDistanceOverride;
     private bool isGrounded;
     private float verticalVelocity;
+    private NavMeshPath navPath;
+    private int navCornerIndex;
+    private bool hasNavPath;
+    private float nextNavRepathTime;
+    private Vector3 navLastDestination;
+    private float nextPathFailureRecoveryTime;
+    private readonly RaycastHit[] lineOfSightHits = new RaycastHit[16];
 
     private bool debugForceState;
     private MinionState debugForcedState;
@@ -107,6 +127,7 @@ public class MinionAgent : MonoBehaviour
         tickScheduler = new MinionTickScheduler();
         abilitySystem = new MinionAbilitySystem();
         sharedCombatStats = GetComponent<CombatantStats>();
+        navPath = new NavMeshPath();
 
         currentRole = MinionRoleFactory.Create(roleType, settings);
 
@@ -277,7 +298,12 @@ public class MinionAgent : MonoBehaviour
             case CombatPhase.AttackWindow:
             case CombatPhase.Cast:
                 HoldRange(currentTarget.position, desiredRange);
-                abilitySystem.TryUseBestAbility(transform, currentTarget, currentTime, sharedCombatStats, roleType);
+
+                bool canAttack = !requireLineOfSightForAllAttacks || hasLineOfSight;
+                if (canAttack)
+                {
+                    abilitySystem.TryUseBestAbility(transform, currentTarget, currentTime, sharedCombatStats, roleType);
+                }
                 break;
 
             case CombatPhase.Recover:
@@ -298,12 +324,145 @@ public class MinionAgent : MonoBehaviour
             {
                 SmoothFaceDirection(toTarget / distance);
             }
+
+            ResetNavigationPath();
+            return;
+        }
+
+        // NavMesh drives around corners/obstacles while keeping command/state logic unchanged.
+        if (useNavMeshNavigation)
+        {
+            Vector3 stopPoint = targetPosition;
+
+            if (stopDistance > 0.001f)
+            {
+                stopPoint -= (toTarget / Mathf.Max(distance, 0.0001f)) * stopDistance;
+                stopPoint.y = targetPosition.y;
+            }
+
+            if (TryMoveAlongNavPath(stopPoint))
+            {
+                return;
+            }
+
+            HandleUnreachablePath();
             return;
         }
 
         Vector3 direction = toTarget / Mathf.Max(distance, 0.0001f);
         transform.position += direction * GetRuntimeMoveSpeed() * Time.deltaTime;
         SmoothFaceDirection(direction);
+    }
+
+    private bool TryMoveAlongNavPath(Vector3 desiredDestination)
+    {
+        float now = Time.time;
+        float repathInterval = Mathf.Max(0.05f, navRepathInterval);
+
+        if (!hasNavPath || now >= nextNavRepathTime || (navLastDestination - desiredDestination).sqrMagnitude > 0.35f * 0.35f)
+        {
+            if (!TryBuildNavPath(desiredDestination))
+            {
+                return false;
+            }
+        }
+
+        Vector3[] corners = navPath.corners;
+        if (corners == null || corners.Length == 0)
+        {
+            hasNavPath = false;
+            return false;
+        }
+
+        navCornerIndex = Mathf.Clamp(navCornerIndex, 1, corners.Length - 1);
+        float cornerTolerance = Mathf.Max(0.05f, navWaypointTolerance);
+
+        while (navCornerIndex < corners.Length)
+        {
+            Vector3 toCorner = corners[navCornerIndex] - transform.position;
+            toCorner.y = 0f;
+
+            if (toCorner.sqrMagnitude <= cornerTolerance * cornerTolerance)
+            {
+                navCornerIndex++;
+                continue;
+            }
+
+            Vector3 direction = toCorner.normalized;
+            transform.position += direction * GetRuntimeMoveSpeed() * Time.deltaTime;
+            SmoothFaceDirection(direction);
+            return true;
+        }
+
+        return true;
+    }
+
+    private bool TryBuildNavPath(Vector3 desiredDestination)
+    {
+        if (navPath == null)
+        {
+            navPath = new NavMeshPath();
+        }
+
+        nextNavRepathTime = Time.time + Mathf.Max(0.05f, navRepathInterval);
+
+        if (!NavMesh.SamplePosition(transform.position, out NavMeshHit startHit, 1.0f, NavMesh.AllAreas))
+        {
+            hasNavPath = false;
+            return false;
+        }
+
+        if (!NavMesh.SamplePosition(desiredDestination, out NavMeshHit destinationHit, Mathf.Max(0.1f, navTargetSampleRadius), NavMesh.AllAreas))
+        {
+            hasNavPath = false;
+            return false;
+        }
+
+        bool calculated = NavMesh.CalculatePath(startHit.position, destinationHit.position, NavMesh.AllAreas, navPath);
+        if (!calculated || navPath.status != NavMeshPathStatus.PathComplete || navPath.corners == null || navPath.corners.Length < 2)
+        {
+            hasNavPath = false;
+            return false;
+        }
+
+        hasNavPath = true;
+        navCornerIndex = 1;
+        navLastDestination = desiredDestination;
+        return true;
+    }
+
+    private void HandleUnreachablePath()
+    {
+        ResetNavigationPath();
+
+        if (Time.time < nextPathFailureRecoveryTime)
+        {
+            return;
+        }
+
+        nextPathFailureRecoveryTime = Time.time + Mathf.Max(0.1f, pathFailureCooldown);
+
+        if (currentCommand != null)
+        {
+            currentCommand.LastFailureReason = FailureReason.TargetLost;
+        }
+
+        if (recallOnPathFailure && currentCommand != null && currentCommand.Type != CommandType.Recall && IsValidTarget(followTarget))
+        {
+            SetRecallCommand();
+            return;
+        }
+
+        ClearCommand();
+        stateMachine.ForceState(MinionState.Idle);
+    }
+
+    private void ResetNavigationPath()
+    {
+        hasNavPath = false;
+        navCornerIndex = 0;
+        nextNavRepathTime = 0f;
+        navLastDestination = transform.position;
     }
 
     private void ApplyLocalSeparation(float deltaTime)
@@ -426,7 +585,9 @@ public class MinionAgent : MonoBehaviour
     {
         if (!IsValidTarget(target)) return 0f;
 
-        return Vector3.Distance(transform.position, target.position);
+        Vector3 toTarget = target.position - transform.position;
+        toTarget.y = 0f;
+        return toTarget.magnitude;
     }
 
     private Transform ResolveActiveTarget()
@@ -570,12 +731,40 @@ public class MinionAgent : MonoBehaviour
         if (debugOverrideLineOfSight) return debugLineOfSightValue;
         if (!IsValidTarget(target)) return false;
 
-        Vector3 start = transform.position + Vector3.up * 0.8f;
-        Vector3 end = target.position + Vector3.up * 0.8f;
+        Vector3 start = transform.position + Vector3.up * Mathf.Max(0f, lineOfSightHeightOffset);
+        Vector3 end = target.position + Vector3.up * Mathf.Max(0f, lineOfSightHeightOffset);
+        Vector3 direction = end - start;
+        float distance = direction.magnitude;
+        if (distance <= 0.0001f) return true;
 
-        if (Physics.Linecast(start, end, out RaycastHit hit, lineOfSightBlockMask, QueryTriggerInteraction.Ignore))
+        int hitCount = Physics.RaycastNonAlloc(
+            start,
+            direction / distance,
+            lineOfSightHits,
+            distance,
+            lineOfSightBlockMask,
+            QueryTriggerInteraction.Ignore);
+
+        if (hitCount <= 0) return true;
+
+        Array.Sort(lineOfSightHits, 0, hitCount, RaycastHitDistanceComparer.Instance);
+
+        for (int i = 0; i < hitCount; i++)
         {
-            return hit.transform == target || hit.transform.IsChildOf(target);
+            Transform hitTransform = lineOfSightHits[i].transform;
+            if (hitTransform == null) continue;
+
+            if (hitTransform == transform || hitTransform.IsChildOf(transform))
+            {
+                continue;
+            }
+
+            if (hitTransform == target || hitTransform.IsChildOf(target))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         return true;
@@ -602,6 +791,8 @@ public class MinionAgent : MonoBehaviour
 
     private void HandleMissingCombatTarget()
     {
+        ResetNavigationPath();
+
         if (currentCommand != null)
         {
             currentCommand.LastFailureReason = FailureReason.TargetLost;
@@ -615,6 +806,8 @@ public class MinionAgent : MonoBehaviour
     // Makes the minion return to the player/follow behavior.
     public void SetFollowCommand()
     {
+        ResetNavigationPath();
+
         currentCommand = new MinionCommand
         {
             Type = CommandType.FollowPlayer,
@@ -632,6 +825,8 @@ public class MinionAgent : MonoBehaviour
     // Makes the minion recall immediately.
     public void SetRecallCommand()
     {
+        ResetNavigationPath();
+
         currentCommand = new MinionCommand
         {
             Type = CommandType.Recall,
@@ -654,6 +849,8 @@ public class MinionAgent : MonoBehaviour
             ClearCommand();
             return;
         }
+
+        ResetNavigationPath();
 
         currentTarget = target;
 
@@ -680,6 +877,8 @@ public class MinionAgent : MonoBehaviour
             return;
         }
 
+        ResetNavigationPath();
+
         currentTarget = target;
 
         currentCommand = new MinionCommand
@@ -704,6 +903,8 @@ public class MinionAgent : MonoBehaviour
             ClearCommand();
             return;
         }
+
+        ResetNavigationPath();
 
         currentTarget = target;
 
@@ -805,6 +1006,8 @@ public class MinionAgent : MonoBehaviour
     // Clears the current command and returns to idle fallback.
     public void ClearCommand()
     {
+        ResetNavigationPath();
+
         currentCommand = new MinionCommand
         {
             Type = CommandType.None,
@@ -982,10 +1185,7 @@ public class MinionAgent : MonoBehaviour
         Vector3 p = transform.position;
         RangePolicy rp = roleSettings.RangePolicy;
 
-        Gizmos.color = new Color(1f, 0.25f, 0.25f, 0.9f);
-        Gizmos.DrawWireSphere(p, rp.MinRange);
-        Gizmos.color = new Color(0.2f, 0.9f, 0.3f, 0.9f);
-        Gizmos.DrawWireSphere(p, rp.DesiredRange);
+        // Draw only one circle for the active role to avoid mixed range visuals.
         Gizmos.color = new Color(0.2f, 0.5f, 1f, 0.9f);
         Gizmos.DrawWireSphere(p, rp.MaxRange);
 
@@ -993,6 +1193,16 @@ public class MinionAgent : MonoBehaviour
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawLine(p, currentTarget.position);
+        }
+    }
+
+    private sealed class RaycastHitDistanceComparer : IComparer<RaycastHit>
+    {
+        public static readonly RaycastHitDistanceComparer Instance = new RaycastHitDistanceComparer();
+
+        public int Compare(RaycastHit x, RaycastHit y)
+        {
+            return x.distance.CompareTo(y.distance);
         }
     }
 }

@@ -30,7 +30,9 @@ public abstract class AbilityBase
         if (caster == null || target == null) return false;
         if (!IsReady(currentTime, casterStats)) return false;
 
-        float distance = Vector3.Distance(caster.position, target.position);
+        Vector3 toTarget = target.position - caster.position;
+        toTarget.y = 0f;
+        float distance = toTarget.magnitude;
         return distance <= Range;
     }
 
@@ -289,7 +291,9 @@ public class MinionAbilitySystem
     // Very small scoring model for now.
     private float ScoreAbility(AbilityBase ability, Transform caster, Transform target, MinionRoleType roleType)
     {
-        float distance = Vector3.Distance(caster.position, target.position);
+        Vector3 toTarget = target.position - caster.position;
+        toTarget.y = 0f;
+        float distance = toTarget.magnitude;
         float score = 0f;
 
         // Prefer abilities that fit the current distance better.
