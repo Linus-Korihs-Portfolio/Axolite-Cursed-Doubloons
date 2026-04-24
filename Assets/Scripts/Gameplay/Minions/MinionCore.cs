@@ -16,7 +16,6 @@ public class MinionAgent : MonoBehaviour
     [SerializeField] private string enemyTag = "Enemy";
     [SerializeField] private string allyTag = "Ally";
     [SerializeField] private string breakableTag = "Breakable";
-    [SerializeField] private bool fallbackToNameSearch = true;
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 4f;
@@ -453,6 +452,8 @@ public class MinionAgent : MonoBehaviour
 
     private Transform FindNearestByTag(string tag, float maxDistance = float.PositiveInfinity, bool includeSelf = true)
     {
+        if (string.IsNullOrWhiteSpace(tag)) return null;
+
         GameObject[] objects = null;
 
         try
@@ -486,33 +487,6 @@ public class MinionAgent : MonoBehaviour
                 }
             }
         }
-
-        if (nearest != null || !fallbackToNameSearch || string.IsNullOrWhiteSpace(tag))
-        {
-            return nearest;
-        }
-
-        string match = tag.ToLowerInvariant();
-        Transform[] allTransforms = FindObjectsByType<Transform>(FindObjectsSortMode.None);
-        for (int i = 0; i < allTransforms.Length; i++)
-        {
-            Transform candidate = allTransforms[i];
-            if (candidate == null || candidate == transform) continue;
-            if (!candidate.gameObject.activeInHierarchy) continue;
-
-            string candidateName = candidate.name.ToLowerInvariant();
-            if (!candidateName.Contains(match)) continue;
-
-            float sqDistance = (candidate.position - transform.position).sqrMagnitude;
-            if (sqDistance > maxSqDistance) continue;
-
-            if (sqDistance < nearestSqDistance)
-            {
-                nearestSqDistance = sqDistance;
-                nearest = candidate;
-            }
-        }
-
         return nearest;
     }
 
@@ -690,7 +664,7 @@ public class MinionAgent : MonoBehaviour
             TargetPosition = target != null ? target.position : transform.position,
             Priority = 10,
             IssuedTime = Time.time,
-            TimeToLive = 5f,
+            TimeToLive = 999f, // After long time expire for safety. Should persist until enemy is dead or a new command is given.
             Source = CommandSource.Player,
             InterruptPolicy = InterruptPolicy.Soft,
             LastFailureReason = FailureReason.None
@@ -715,7 +689,7 @@ public class MinionAgent : MonoBehaviour
             TargetPosition = target != null ? target.position : transform.position,
             Priority = 10,
             IssuedTime = Time.time,
-            TimeToLive = 5f,
+            TimeToLive = 999f, // After long time expire for safety. Should persist until object is destroyed or a new command is given.
             Source = CommandSource.Player,
             InterruptPolicy = InterruptPolicy.Soft,
             LastFailureReason = FailureReason.None

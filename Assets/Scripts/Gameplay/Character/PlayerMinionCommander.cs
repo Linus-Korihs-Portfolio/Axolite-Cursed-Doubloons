@@ -12,6 +12,7 @@ public class PlayerMinionCommander : MonoBehaviour
     }
 
     [Header("References")]
+    [SerializeField] private PlayerMinionCommanderSettings settings;
     [SerializeField] private GroundCursor cursor;
     [SerializeField] private Transform player;
 
@@ -19,28 +20,19 @@ public class PlayerMinionCommander : MonoBehaviour
     [SerializeField] private InputActionReference commandAction;
     [SerializeField] private InputActionReference recallAction;
 
-    [Header("Target Query")]
-    [SerializeField] private float commandAcquireRadius = 1.1f;
-    [SerializeField] private LayerMask commandTargetMask = ~0;
-    [SerializeField] private bool includeTriggers = false;
-    [SerializeField] private string enemyTag = "Enemy";
-    [SerializeField] private string breakableTag = "Breakable";
 
     [Header("Minion Selection")]
     [SerializeField] private MinionAgent[] controlledMinions;
     [SerializeField] private bool autoFindMinionsIfEmpty = true;
-
     [Header("Command Preview")]
-    [SerializeField] private bool enableCommandPreview = true;
     [SerializeField] private Renderer[] previewRenderers;
-    [SerializeField] private Color previewNoTargetColor = new Color(0.65f, 0.65f, 0.65f, 1f);
-    [SerializeField] private Color previewAttackColor = new Color(1f, 0.25f, 0.25f, 1f);
-    [SerializeField] private Color previewSupportColor = new Color(0.2f, 0.9f, 0.45f, 1f);
-    [SerializeField] private Color previewInvalidColor = new Color(0.35f, 0.55f, 1f, 1f);
-    [SerializeField, Range(0f, 4f)] private float previewEmissionIntensity = 0.35f;
 
     private readonly Collider[] commandHits = new Collider[32];
+    private MinionAgent[] cachedAutoMinions;
+    private float nextAutoFindRefreshTime;
     private MaterialPropertyBlock previewPropertyBlock;
+    private Color lastAppliedPreviewColor;
+    private bool hasAppliedPreviewColor;
     private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
     private static readonly int ColorId = Shader.PropertyToID("_Color");
     private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
@@ -49,7 +41,6 @@ public class PlayerMinionCommander : MonoBehaviour
     {
         if (cursor == null) cursor = GetComponentInChildren<GroundCursor>();
         if (player == null) player = transform;
-
         // Auto-pick preview renderers from cursor hierarchy if none were assigned.
         if ((previewRenderers == null || previewRenderers.Length == 0) && cursor != null)
         {
@@ -63,6 +54,21 @@ public class PlayerMinionCommander : MonoBehaviour
         }
 
         previewPropertyBlock = new MaterialPropertyBlock();
+    }
+
+    // Exposed for editor display only.
+    public InputActionReference CommandAction => commandAction;
+    public InputActionReference RecallAction => recallAction;
+
+    private void Start()
+    {
+        // Auto-populate the controlled minions list so it's visible in the inspector at runtime.
+        if (autoFindMinionsIfEmpty && (controlledMinions == null || controlledMinions.Length == 0))
+        {
+            controlledMinions = FindObjectsByType<MinionAgent>(FindObjectsSortMode.None);
+            cachedAutoMinions = controlledMinions;
+            nextAutoFindRefreshTime = Time.time + Mathf.Max(0.05f, settings != null ? settings.autoFindRefreshInterval : 5f);
+        }
     }
 
     private void OnEnable()
@@ -114,8 +120,10 @@ public class PlayerMinionCommander : MonoBehaviour
         Transform target = ResolveCommandTarget();
         if (target == null) return;
 
-        bool isEnemy = HasTag(target, enemyTag);
-        bool isBreakable = HasTag(target, breakableTag);
+        string enemyTagValue = settings.enemyTag;
+        string breakableTagValue = settings.breakableTag;
+        bool isEnemy = HasTag(target, enemyTagValue);
+        bool isBreakable = HasTag(target, breakableTagValue);
         bool isAllyMinion = target.GetComponentInParent<MinionAgent>() != null && target != player;
 
         for (int i = 0; i < minions.Length; i++)
@@ -174,19 +182,33 @@ public class PlayerMinionCommander : MonoBehaviour
     // Resolves the best command target from lock-on, aim assist, and local cursor overlap.
     private Transform ResolveCommandTarget()
     {
-        if (cursor.IsLocked && IsValidTarget(cursor.LockedTarget))
+        return ResolveTargetFromCursor(includeLockTarget: true, includeAimAssistTarget: true, acquireRadius: settings.commandAcquireRadius);
+    }
+
+    // Resolves preview target strictly from the cursor position (no lock/aim-assist shortcuts).
+    private Transform ResolvePreviewTarget()
+    {
+        return ResolveTargetFromCursor(includeLockTarget: false, includeAimAssistTarget: false, acquireRadius: settings.previewAcquireRadius);
+    }
+
+    // Shared target resolution for both command issuing and preview modes.
+    private Transform ResolveTargetFromCursor(bool includeLockTarget, bool includeAimAssistTarget, float acquireRadius)
+    {
+        if (includeLockTarget && cursor.IsLocked && IsValidTarget(cursor.LockedTarget))
         {
             return cursor.LockedTarget;
         }
 
-        if (IsValidTarget(cursor.AimAssistTarget))
+        if (includeAimAssistTarget && IsValidTarget(cursor.AimAssistTarget))
         {
             return cursor.AimAssistTarget;
         }
 
         Vector3 origin = cursor.WorldPos;
-        QueryTriggerInteraction qti = includeTriggers ? QueryTriggerInteraction.Collide : QueryTriggerInteraction.Ignore;
-        int hitCount = Physics.OverlapSphereNonAlloc(origin, Mathf.Max(0.05f, commandAcquireRadius), commandHits, commandTargetMask, qti);
+        string enemyTagValue = settings.enemyTag;
+        string breakableTagValue = settings.breakableTag;
+        QueryTriggerInteraction qti = settings.includeTriggers ? QueryTriggerInteraction.Collide : QueryTriggerInteraction.Ignore;
+        int hitCount = Physics.OverlapSphereNonAlloc(origin, Mathf.Max(0.05f, acquireRadius), commandHits, settings.commandTargetMask, qti);
         if (hitCount <= 0) return null;
 
         Transform bestEnemy = null;
@@ -208,7 +230,7 @@ public class PlayerMinionCommander : MonoBehaviour
 
             float sq = (candidate.position - origin).sqrMagnitude;
 
-            if (HasTag(candidate, enemyTag))
+            if (HasTag(candidate, enemyTagValue))
             {
                 if (sq < bestEnemySq)
                 {
@@ -218,7 +240,7 @@ public class PlayerMinionCommander : MonoBehaviour
                 continue;
             }
 
-            if (HasTag(candidate, breakableTag) && breakableTag != enemyTag)
+            if (HasTag(candidate, breakableTagValue) && breakableTagValue != enemyTagValue)
             {
                 if (sq < bestBreakableSq)
                 {
@@ -263,7 +285,7 @@ public class PlayerMinionCommander : MonoBehaviour
     // Computes and applies command-preview color to cursor visuals.
     private void UpdateCommandPreview()
     {
-        if (!enableCommandPreview)
+        if (!settings.enableCommandPreview)
         {
             return;
         }
@@ -271,14 +293,14 @@ public class PlayerMinionCommander : MonoBehaviour
         MinionAgent[] minions = ResolveControlledMinions();
         if (cursor == null || minions.Length == 0)
         {
-            ApplyPreviewColor(previewNoTargetColor);
+            ApplyPreviewColor(settings.previewNoTargetColor);
             return;
         }
 
-        Transform target = ResolveCommandTarget();
+        Transform target = ResolvePreviewTarget();
         if (!IsValidTarget(target))
         {
-            ApplyPreviewColor(previewNoTargetColor);
+            ApplyPreviewColor(settings.previewNoTargetColor);
             return;
         }
 
@@ -286,27 +308,29 @@ public class PlayerMinionCommander : MonoBehaviour
         switch (previewType)
         {
             case CommandPreviewType.Attack:
-                ApplyPreviewColor(previewAttackColor);
+                ApplyPreviewColor(settings.previewAttackColor);
                 break;
 
             case CommandPreviewType.Support:
-                ApplyPreviewColor(previewSupportColor);
+                ApplyPreviewColor(settings.previewSupportColor);
                 break;
 
             case CommandPreviewType.Invalid:
-                ApplyPreviewColor(previewInvalidColor);
+                ApplyPreviewColor(settings.previewInvalidColor);
                 break;
 
             default:
-                ApplyPreviewColor(previewNoTargetColor);
+                ApplyPreviewColor(settings.previewNoTargetColor);
                 break;
         }
     }
 
     private CommandPreviewType EvaluatePreviewType(Transform target, MinionAgent[] minions)
     {
-        bool isEnemy = HasTag(target, enemyTag);
-        bool isBreakable = HasTag(target, breakableTag);
+        string enemyTagValue = settings.enemyTag;
+        string breakableTagValue = settings.breakableTag;
+        bool isEnemy = HasTag(target, enemyTagValue);
+        bool isBreakable = HasTag(target, breakableTagValue);
         bool isAllyMinion = target.GetComponentInParent<MinionAgent>() != null && target != player;
 
         if (isEnemy)
@@ -377,7 +401,15 @@ public class PlayerMinionCommander : MonoBehaviour
             return;
         }
 
-        Color emission = color * Mathf.Max(0f, previewEmissionIntensity);
+        if (hasAppliedPreviewColor && ColorsAlmostEqual(lastAppliedPreviewColor, color))
+        {
+            return;
+        }
+
+        hasAppliedPreviewColor = true;
+        lastAppliedPreviewColor = color;
+
+        Color emission = color * Mathf.Max(0f, settings.previewEmissionIntensity);
 
         for (int i = 0; i < previewRenderers.Length; i++)
         {
@@ -416,6 +448,15 @@ public class PlayerMinionCommander : MonoBehaviour
         }
     }
 
+    private static bool ColorsAlmostEqual(Color a, Color b)
+    {
+        const float epsilon = 0.001f;
+        return Mathf.Abs(a.r - b.r) < epsilon
+               && Mathf.Abs(a.g - b.g) < epsilon
+               && Mathf.Abs(a.b - b.b) < epsilon
+               && Mathf.Abs(a.a - b.a) < epsilon;
+    }
+
     private static bool HasTag(Transform target, string tag)
     {
         if (!IsValidTarget(target)) return false;
@@ -442,7 +483,13 @@ public class PlayerMinionCommander : MonoBehaviour
             return System.Array.Empty<MinionAgent>();
         }
 
-        return FindObjectsByType<MinionAgent>(FindObjectsSortMode.None);
+        if (cachedAutoMinions == null || Time.time >= nextAutoFindRefreshTime)
+        {
+            cachedAutoMinions = FindObjectsByType<MinionAgent>(FindObjectsSortMode.None);
+            nextAutoFindRefreshTime = Time.time + Mathf.Max(0.05f, settings.autoFindRefreshInterval);
+        }
+
+        return cachedAutoMinions;
     }
 
     private bool WasCommandPressedThisFrame()

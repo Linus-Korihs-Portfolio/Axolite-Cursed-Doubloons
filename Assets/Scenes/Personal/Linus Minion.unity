@@ -1574,17 +1574,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6083767334897502394, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7a0a5cceaa7a82c4f90cc3a2fc233fbd, type: 2}
     - target: {fileID: 6785440792654272444, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
       propertyPath: highlightColor.b
-      value: 0.0766139
+      value: 0.11648912
       objectReference: {fileID: 0}
     - target: {fileID: 6785440792654272444, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
       propertyPath: highlightColor.g
-      value: 0
+      value: 0.0758722
       objectReference: {fileID: 0}
     - target: {fileID: 6785440792654272444, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
       propertyPath: highlightColor.r
-      value: 1
+      value: 0.2924528
       objectReference: {fileID: 0}
     - target: {fileID: 7789994379486185424, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
       propertyPath: m_Name
@@ -1816,6 +1820,10 @@ PrefabInstance:
       propertyPath: commandAction
       value: 
       objectReference: {fileID: 1790028326}
+    - target: {fileID: 7467690400024141695, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: commandTargetMask.m_Bits
+      value: 768
+      objectReference: {fileID: 0}
     - target: {fileID: 8642570167466743387, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: moveAction
       value: 

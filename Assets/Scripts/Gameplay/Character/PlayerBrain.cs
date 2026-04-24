@@ -107,7 +107,6 @@ public class PlayerBrain : MonoBehaviour
         if (movement != null)
         {
             Vector3 facing = GetFacingDir();
-            var cursor = GetComponentInChildren<GroundCursor>();
             if (cursor != null) cursor.SetMoveDirection(facing);
         }
     }
