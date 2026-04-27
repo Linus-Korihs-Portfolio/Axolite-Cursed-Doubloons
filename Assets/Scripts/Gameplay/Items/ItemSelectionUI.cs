@@ -1,0 +1,36 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ItemSelectionUI : MonoBehaviour
+{
+    public static ItemSelectionUI Instance;
+
+    public ItemCardUI[] cards;
+
+    private void Awake()
+    {
+        Instance = this;
+        gameObject.SetActive(false);
+    }
+
+    public void Open()
+    {
+        gameObject.SetActive(true);
+        Time.timeScale = 0f;
+
+        List<ItemData> items = ItemDatabase.Instance.GetRandomItems(3);
+
+        for (int i = 0; i < cards.Length; i++)
+        {
+            cards[i].Setup(items[i]);
+        }
+    }
+
+    public void SelectItem(ItemData item)
+    {
+        ItemDatabase.Instance.RemoveIfNeeded(item);
+
+        Time.timeScale = 1f;
+        gameObject.SetActive(false);
+    }
+}
