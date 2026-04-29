@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "PCG/Room Assembler/Generator Config", fileName = "RoomAssemblerConfig")]
+[CreateAssetMenu(menuName = "SO/PCG/Room Assembler", fileName = "RoomAssemblerConfig")]
 public class RoomAssemblerConfig : ScriptableObject
 {
     [Header("Rooms")]

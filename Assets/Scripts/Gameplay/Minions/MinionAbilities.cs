@@ -30,6 +30,7 @@ public abstract class AbilityBase
         if (caster == null || target == null) return false;
         if (!IsReady(currentTime, casterStats)) return false;
 
+        // Match movement/combat logic by ignoring vertical offset when checking range.
         Vector3 toTarget = target.position - caster.position;
         toTarget.y = 0f;
         float distance = toTarget.magnitude;
@@ -134,30 +135,20 @@ public class SupportAbility : AbilityBase
             }
 
             case SupportMode.Buff:
-                if (supportEffect != null)
-                {
-                    CombatantStats buffTarget = target != null ? target.GetComponentInParent<CombatantStats>() : null;
-                    if (buffTarget != null)
-                    {
-                        buffTarget.ApplyStatusEffect(supportEffect);
-                    }
-                }
-
-                Debug.Log($"[{caster.name}] cast Buff on [{target.name}].");
-                break;
-
             case SupportMode.Debuff:
+            {
                 if (supportEffect != null)
                 {
-                    CombatantStats debuffTarget = target != null ? target.GetComponentInParent<CombatantStats>() : null;
-                    if (debuffTarget != null)
+                    CombatantStats targetStats = target != null ? target.GetComponentInParent<CombatantStats>() : null;
+                    if (targetStats != null)
                     {
-                        debuffTarget.ApplyStatusEffect(supportEffect);
+                        targetStats.ApplyStatusEffect(supportEffect);
                     }
                 }
 
-                Debug.Log($"[{caster.name}] cast Debuff on [{target.name}].");
+                Debug.Log($"[{caster.name}] cast {supportMode} on [{target.name}].");
                 break;
+            }
         }
     }
 }
@@ -184,7 +175,8 @@ public class MinionAbilitySystem
     public void BuildDefaultLoadout(
         IMinionRole role,
         StatusEffectDefinition supportBuffEffect = null,
-        StatusEffectDefinition supportDebuffEffect = null)
+        StatusEffectDefinition supportDebuffEffect = null,
+        float abilityCooldown = 1f)
     {
         Clear();
 
@@ -196,11 +188,11 @@ public class MinionAbilitySystem
         switch (role.RoleType)
         {
             case MinionRoleType.Melee:
-                AddAbility(new MeleeAttackAbility(policy.MaxRange, 1.0f));
+                AddAbility(new MeleeAttackAbility(policy.MaxRange, abilityCooldown));
                 break;
 
             case MinionRoleType.Ranged:
-                AddAbility(new RangedAttackAbility(policy.MaxRange, 1.25f));
+                AddAbility(new RangedAttackAbility(policy.MaxRange, abilityCooldown));
                 break;
 
             case MinionRoleType.Support:
@@ -210,7 +202,7 @@ public class MinionAbilitySystem
                 if (mode == SupportMode.Buff) effect = supportBuffEffect;
                 else if (mode == SupportMode.Debuff) effect = supportDebuffEffect;
 
-                AddAbility(new SupportAbility(policy.MaxRange, 2.0f, mode, effect));
+                AddAbility(new SupportAbility(policy.MaxRange, abilityCooldown, mode, effect));
                 break;
             }
         }
@@ -291,6 +283,7 @@ public class MinionAbilitySystem
     // Very small scoring model for now.
     private float ScoreAbility(AbilityBase ability, Transform caster, Transform target, MinionRoleType roleType)
     {
+        // Use the same horizontal distance metric here so scoring stays aligned with CanUse.
         Vector3 toTarget = target.position - caster.position;
         toTarget.y = 0f;
         float distance = toTarget.magnitude;

@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5564108357955004293}
-  - component: {fileID: 37692261164110792}
   - component: {fileID: 1197607494259493259}
-  - component: {fileID: 1481406901911585056}
+  - component: {fileID: 6766769260842065333}
   - component: {fileID: 923669364683773200}
+  - component: {fileID: 1481406901911585056}
   m_Layer: 9
   m_Name: PF_MinionRange
   m_TagString: Ally
@@ -36,57 +36,6 @@ Transform:
   - {fileID: 8499419654028377065}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &37692261164110792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 980464467663854597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4962193c68c6183498c423576e9cd7cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MinionAgent
-  settings: {fileID: 11400000, guid: 44941301b654e83499bf94b8a3b883e6, type: 2}
-  roleType: 1
-  followTarget: {fileID: 0}
-  autoAssignCombatCommands: 1
-  autoTargetRadius: 35
-  enemyTag: Enemy
-  allyTag: Ally
-  breakableTag: Breakable
-  fallbackToNameSearch: 1
-  moveSpeed: 4
-  rotationSpeed: 10
-  followStopDistance: 1.75
-  useLocalSeparation: 1
-  separationRadius: 0.9
-  separationStrength: 7
-  maxSeparationStep: 0.3
-  separationMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  snapToGround: 1
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 192
-  groundRayStartHeight: 1.5
-  groundRayLength: 8
-  groundOffset: 0
-  useSimpleGravity: 1
-  gravityAcceleration: 25
-  maxFallSpeed: 40
-  lineOfSightBlockMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  supportBuffEffect: {fileID: 0}
-  supportDebuffEffect: {fileID: 0}
-  drawRoleRangeGizmos: 0
-  currentState: 0
-  currentCombatPhase: 0
-  currentCommandType: 0
-  currentDistanceToTarget: 0
 --- !u!136 &1197607494259493259
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -110,7 +59,7 @@ CapsuleCollider:
   m_Height: 0
   m_Direction: 1
   m_Center: {x: 0, y: 0.11, z: 0}
---- !u!114 &1481406901911585056
+--- !u!114 &6766769260842065333
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -119,10 +68,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 980464467663854597}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a3e8cf36e4dcea4ab24ac240f5ed2a6, type: 3}
+  m_Script: {fileID: 11500000, guid: 4962193c68c6183498c423576e9cd7cc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MinionDebugToolkit
-  agent: {fileID: 37692261164110792}
+  m_EditorClassIdentifier: Assembly-CSharp::MinionCore
+  settings: {fileID: 11400000, guid: 44941301b654e83499bf94b8a3b883e6, type: 2}
+  roleType: 1
+  followTarget: {fileID: 0}
+  drawRoleRangeGizmos: 0
+  currentState: 0
+  currentCombatPhase: 0
+  currentCommandType: 0
+  currentDistanceToTarget: 0
 --- !u!114 &923669364683773200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,6 +95,19 @@ MonoBehaviour:
   currentHealth: 0
   despawnOnDeath: 1
   despawnDelay: 0
+--- !u!114 &1481406901911585056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980464467663854597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a3e8cf36e4dcea4ab24ac240f5ed2a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MinionDebugToolkit
+  agent: {fileID: 6766769260842065333}
 --- !u!1001 &8250234263101299714
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -5,13 +5,13 @@ using UnityEditor;
 
 public class MinionDebugToolkit : MonoBehaviour
 {
-    [SerializeField] private MinionAgent agent;
+    [SerializeField] private MinionCore agent;
 
     private void Awake()
     {
         if (agent == null)
         {
-            agent = GetComponent<MinionAgent>();
+            agent = GetComponent<MinionCore>();
         }
     }
 

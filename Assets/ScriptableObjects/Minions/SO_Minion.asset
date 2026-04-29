@@ -14,24 +14,137 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SO_MinionSettings
   TickRates:
     DecisionTickRate: 0.2
-    TargetingTickRate: 0.25
-    SensorTickRate: 0.25
+    TargetingTickRate: 0.15
+    SensorTickRate: 0.15
+  EnemyTag: Enemy
+  AllyTag: Ally
+  BreakableTag: 
   Melee:
     RangePolicy:
       MinRange: 0.1
-      DesiredRange: 1.25
+      DesiredRange: 1.2
       MaxRange: 1.75
       RepositionTolerance: 0.25
+    Behaviour:
+      AbilityCooldown: 1
+      MoveSpeed: 5
+      RotationSpeed: 13
+      FollowStopDistance: 1.5
+      UseNavMeshNavigation: 1
+      NavRepathInterval: 0.15
+      NavTargetSampleRadius: 1
+      NavWaypointTolerance: 0.2
+      RecallOnPathFailure: 1
+      PathFailureCooldown: 0.6
+      UseLocalSeparation: 1
+      SeparationRadius: 0.8
+      SeparationStrength: 8
+      MaxSeparationStep: 0.35
+      SeparationMask:
+        serializedVersion: 2
+        m_Bits: 512
+      SnapToGround: 1
+      GroundMask:
+        serializedVersion: 2
+        m_Bits: 193
+      GroundRayStartHeight: 1.5
+      GroundRayLength: 8
+      GroundOffset: 0
+      UseSimpleGravity: 1
+      GravityAcceleration: 25
+      MaxFallSpeed: 40
+      LineOfSightBlockMask:
+        serializedVersion: 2
+        m_Bits: 193
+      LineOfSightHeightOffset: 0.8
+      RequireLineOfSightForAllAttacks: 0
+      ReturnToFollowWhenLineOfSightBlocked: 0
+      AutoAssignCombatCommands: 0
+      AutoTargetRadius: 18
   Ranged:
     RangePolicy:
-      MinRange: 5
+      MinRange: 4
       DesiredRange: 7
-      MaxRange: 9
-      RepositionTolerance: 0.5
+      MaxRange: 10
+      RepositionTolerance: 0.6
+    Behaviour:
+      AbilityCooldown: 1.5
+      MoveSpeed: 4
+      RotationSpeed: 10
+      FollowStopDistance: 2
+      UseNavMeshNavigation: 1
+      NavRepathInterval: 0.2
+      NavTargetSampleRadius: 1.25
+      NavWaypointTolerance: 0.25
+      RecallOnPathFailure: 1
+      PathFailureCooldown: 0.75
+      UseLocalSeparation: 1
+      SeparationRadius: 0.9
+      SeparationStrength: 7
+      MaxSeparationStep: 0.3
+      SeparationMask:
+        serializedVersion: 2
+        m_Bits: 512
+      SnapToGround: 1
+      GroundMask:
+        serializedVersion: 2
+        m_Bits: 193
+      GroundRayStartHeight: 1.5
+      GroundRayLength: 8
+      GroundOffset: 0
+      UseSimpleGravity: 1
+      GravityAcceleration: 25
+      MaxFallSpeed: 40
+      LineOfSightBlockMask:
+        serializedVersion: 2
+        m_Bits: 193
+      LineOfSightHeightOffset: 0.8
+      RequireLineOfSightForAllAttacks: 1
+      ReturnToFollowWhenLineOfSightBlocked: 0
+      AutoAssignCombatCommands: 0
+      AutoTargetRadius: 28
   Support:
     RangePolicy:
       MinRange: 2
-      DesiredRange: 3.5
-      MaxRange: 5
-      RepositionTolerance: 0.35
+      DesiredRange: 4
+      MaxRange: 7
+      RepositionTolerance: 0.75
+    Behaviour:
+      AbilityCooldown: 2
+      MoveSpeed: 3.5
+      RotationSpeed: 9
+      FollowStopDistance: 2
+      UseNavMeshNavigation: 1
+      NavRepathInterval: 0.2
+      NavTargetSampleRadius: 1.25
+      NavWaypointTolerance: 0.25
+      RecallOnPathFailure: 1
+      PathFailureCooldown: 0.75
+      UseLocalSeparation: 1
+      SeparationRadius: 1
+      SeparationStrength: 6
+      MaxSeparationStep: 0.25
+      SeparationMask:
+        serializedVersion: 2
+        m_Bits: 512
+      SnapToGround: 1
+      GroundMask:
+        serializedVersion: 2
+        m_Bits: 193
+      GroundRayStartHeight: 1.5
+      GroundRayLength: 8
+      GroundOffset: 0
+      UseSimpleGravity: 1
+      GravityAcceleration: 25
+      MaxFallSpeed: 40
+      LineOfSightBlockMask:
+        serializedVersion: 2
+        m_Bits: 385
+      LineOfSightHeightOffset: 0.8
+      RequireLineOfSightForAllAttacks: 1
+      ReturnToFollowWhenLineOfSightBlocked: 0
+      AutoAssignCombatCommands: 0
+      AutoTargetRadius: 16
     StartMode: 0
+    SupportBuffEffect: {fileID: 0}
+    SupportDebuffEffect: {fileID: 11400000, guid: a214a31e51b46cd408e6e828a3f70a00, type: 2}

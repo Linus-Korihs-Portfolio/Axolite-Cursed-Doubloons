@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Camera/Cursor Settings")]
+[CreateAssetMenu(menuName = "SO/Camera/Cursor Settings")]
 public class GroundCursorSettings : ScriptableObject
 {
     [Header("Enable")]

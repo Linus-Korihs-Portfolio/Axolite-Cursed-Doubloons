@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "PCG/Room Definition")]
+[CreateAssetMenu(menuName = "SO/PCG/Room Definition")]
 public class RoomDefinition : ScriptableObject
 {
     public string id;

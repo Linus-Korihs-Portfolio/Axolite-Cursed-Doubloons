@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Player/Minion Commander Settings", fileName = "PlayerMinionCommanderSettings")]
+[CreateAssetMenu(menuName = "SO/Minions/Minion Commander Settings", fileName = "PlayerMinionCommanderSettings")]
 public class PlayerMinionCommanderSettings : ScriptableObject
 {
     [Header("Target Query")]

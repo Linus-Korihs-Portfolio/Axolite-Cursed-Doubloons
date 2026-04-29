@@ -239,7 +239,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7394644768930550252, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 144627120}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7914195162752748374, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 451086936}
   m_SourcePrefab: {fileID: 100100000, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
 --- !u!4 &119383944 stripped
 Transform:
@@ -360,8 +363,8 @@ Transform:
   m_GameObject: {fileID: 144627119}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.89, y: 0, z: 5.43}
-  m_LocalScale: {x: 10, y: 10, z: 2}
+  m_LocalPosition: {x: -2.89, y: 2.72, z: 5.43}
+  m_LocalScale: {x: 10, y: 6.0797, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 119383944}
@@ -527,6 +530,43 @@ Transform:
   - {fileID: 960661844}
   m_Father: {fileID: 1092750262}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &451086933 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7914195162752748374, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
+  m_PrefabInstance: {fileID: 119383943}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &451086936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451086933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 1
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 424d47a32875f9449ba6f03ccaf9ceee, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &495508305 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7789994379486185424, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
@@ -1065,7 +1105,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 971666737}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
   m_Name: 
@@ -1080,7 +1120,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   m_UseGeometry: 0
   m_DefaultArea: 0
-  m_GenerateLinks: 0
+  m_GenerateLinks: 1
   m_IgnoreNavMeshAgent: 1
   m_IgnoreNavMeshObstacle: 1
   m_OverrideTileSize: 0
@@ -1203,6 +1243,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_MinionSupport
       objectReference: {fileID: 0}
+    - target: {fileID: 5307100721791720367, guid: 06a5cbf5c41792c4f858ab1266919769, type: 3}
+      propertyPath: followTarget
+      value: 
+      objectReference: {fileID: 188860362}
     - target: {fileID: 5564108357955004293, guid: 06a5cbf5c41792c4f858ab1266919769, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.25
@@ -1266,7 +1310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 719474136854500826, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 8.32
+      value: 10.04
       objectReference: {fileID: 0}
     - target: {fileID: 719474136854500826, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1705,7 +1749,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7789994379486185424, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
       propertyPath: m_Name
-      value: PF_TestEnemy (1)
+      value: PF_TestEnemyWithPlayerTag
       objectReference: {fileID: 0}
     - target: {fileID: 7789994379486185424, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
       propertyPath: m_TagString
@@ -1787,6 +1831,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6766769260842065333, guid: 0d34c0dfc91fd0048a9dc2e3de14a115, type: 3}
+      propertyPath: followTarget
+      value: 
+      objectReference: {fileID: 188860362}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1824,6 +1872,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_MinionMelee
       objectReference: {fileID: 0}
+    - target: {fileID: 3058194316114911422, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
+      propertyPath: followTarget
+      value: 
+      objectReference: {fileID: 188860362}
     - target: {fileID: 5564108357955004293, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

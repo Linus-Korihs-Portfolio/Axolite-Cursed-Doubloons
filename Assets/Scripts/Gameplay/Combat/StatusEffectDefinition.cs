@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Combat/Status Effect")]
+[CreateAssetMenu(menuName = "SO/Combat/Status Effect")]
 // Buffs and Debuffs defined as ScriptableObjects for easy creation & tweaking.
 public class StatusEffectDefinition : ScriptableObject 
 {

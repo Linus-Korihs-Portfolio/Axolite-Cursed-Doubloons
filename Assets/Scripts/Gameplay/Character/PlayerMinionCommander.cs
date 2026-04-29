@@ -22,13 +22,13 @@ public class PlayerMinionCommander : MonoBehaviour
 
 
     [Header("Minion Selection")]
-    [SerializeField] private MinionAgent[] controlledMinions;
+    [SerializeField] private MinionCore[] controlledMinions;
     [SerializeField] private bool autoFindMinionsIfEmpty = true;
     [Header("Command Preview")]
     [SerializeField] private Renderer[] previewRenderers;
 
     private readonly Collider[] commandHits = new Collider[32];
-    private MinionAgent[] cachedAutoMinions;
+    private MinionCore[] cachedAutoMinions;
     private float nextAutoFindRefreshTime;
     private MaterialPropertyBlock previewPropertyBlock;
     private Color lastAppliedPreviewColor;
@@ -65,7 +65,7 @@ public class PlayerMinionCommander : MonoBehaviour
         // Auto-populate the controlled minions list so it's visible in the inspector at runtime.
         if (autoFindMinionsIfEmpty && (controlledMinions == null || controlledMinions.Length == 0))
         {
-            controlledMinions = FindObjectsByType<MinionAgent>(FindObjectsSortMode.None);
+            controlledMinions = FindObjectsByType<MinionCore>(FindObjectsSortMode.None);
             cachedAutoMinions = controlledMinions;
             nextAutoFindRefreshTime = Time.time + Mathf.Max(0.05f, settings != null ? settings.autoFindRefreshInterval : 5f);
         }
@@ -102,10 +102,10 @@ public class PlayerMinionCommander : MonoBehaviour
     // Switches the active support action (Heal/Buff/Debuff) for all support minions.
     public void SetSupportModeForAll(SupportMode mode)
     {
-        MinionAgent[] minions = ResolveControlledMinions();
+        MinionCore[] minions = ResolveControlledMinions();
         for (int i = 0; i < minions.Length; i++)
         {
-            MinionAgent minion = minions[i];
+            MinionCore minion = minions[i];
             if (minion == null || minion.RoleType != MinionRoleType.Support) continue;
             minion.TrySetSupportMode(mode);
         }
@@ -114,7 +114,7 @@ public class PlayerMinionCommander : MonoBehaviour
     // Issues a command based on the currently hovered/locked cursor target.
     public void IssueCommandFromCursor()
     {
-        MinionAgent[] minions = ResolveControlledMinions();
+        MinionCore[] minions = ResolveControlledMinions();
         if (minions.Length == 0 || cursor == null) return;
 
         Transform target = ResolveCommandTarget();
@@ -124,11 +124,11 @@ public class PlayerMinionCommander : MonoBehaviour
         string breakableTagValue = settings.breakableTag;
         bool isEnemy = HasTag(target, enemyTagValue);
         bool isBreakable = HasTag(target, breakableTagValue);
-        bool isAllyMinion = target.GetComponentInParent<MinionAgent>() != null && target != player;
+        bool isAllyMinion = target.GetComponentInParent<MinionCore>() != null && target != player;
 
         for (int i = 0; i < minions.Length; i++)
         {
-            MinionAgent minion = minions[i];
+            MinionCore minion = minions[i];
             if (minion == null) continue;
 
             if (isEnemy)
@@ -171,7 +171,7 @@ public class PlayerMinionCommander : MonoBehaviour
     // Recalls all controlled minions to the player.
     public void RecallAll()
     {
-        MinionAgent[] minions = ResolveControlledMinions();
+        MinionCore[] minions = ResolveControlledMinions();
         for (int i = 0; i < minions.Length; i++)
         {
             if (minions[i] == null) continue;
@@ -251,7 +251,7 @@ public class PlayerMinionCommander : MonoBehaviour
                 continue;
             }
 
-            MinionAgent ally = candidate.GetComponentInParent<MinionAgent>();
+            MinionCore ally = candidate.GetComponentInParent<MinionCore>();
             if (ally != null && candidate != player)
             {
                 if (sq < bestAllySq)
@@ -290,7 +290,7 @@ public class PlayerMinionCommander : MonoBehaviour
             return;
         }
 
-        MinionAgent[] minions = ResolveControlledMinions();
+        MinionCore[] minions = ResolveControlledMinions();
         if (cursor == null || minions.Length == 0)
         {
             ApplyPreviewColor(settings.previewNoTargetColor);
@@ -325,13 +325,13 @@ public class PlayerMinionCommander : MonoBehaviour
         }
     }
 
-    private CommandPreviewType EvaluatePreviewType(Transform target, MinionAgent[] minions)
+    private CommandPreviewType EvaluatePreviewType(Transform target, MinionCore[] minions)
     {
         string enemyTagValue = settings.enemyTag;
         string breakableTagValue = settings.breakableTag;
         bool isEnemy = HasTag(target, enemyTagValue);
         bool isBreakable = HasTag(target, breakableTagValue);
-        bool isAllyMinion = target.GetComponentInParent<MinionAgent>() != null && target != player;
+        bool isAllyMinion = target.GetComponentInParent<MinionCore>() != null && target != player;
 
         if (isEnemy)
         {
@@ -339,7 +339,7 @@ public class PlayerMinionCommander : MonoBehaviour
 
             for (int i = 0; i < minions.Length; i++)
             {
-                MinionAgent minion = minions[i];
+                MinionCore minion = minions[i];
                 if (minion == null) continue;
 
                 if (minion.RoleType != MinionRoleType.Support)
@@ -361,7 +361,7 @@ public class PlayerMinionCommander : MonoBehaviour
         {
             for (int i = 0; i < minions.Length; i++)
             {
-                MinionAgent minion = minions[i];
+                MinionCore minion = minions[i];
                 if (minion == null) continue;
                 if (minion.RoleType != MinionRoleType.Support) return CommandPreviewType.Attack;
             }
@@ -375,7 +375,7 @@ public class PlayerMinionCommander : MonoBehaviour
 
             for (int i = 0; i < minions.Length; i++)
             {
-                MinionAgent minion = minions[i];
+                MinionCore minion = minions[i];
                 if (minion == null || minion.RoleType != MinionRoleType.Support) continue;
 
                 hasSupport = true;
@@ -471,7 +471,7 @@ public class PlayerMinionCommander : MonoBehaviour
         return cursor.IsEnvironmentLayer(target.gameObject.layer);
     }
 
-    private MinionAgent[] ResolveControlledMinions()
+    private MinionCore[] ResolveControlledMinions()
     {
         if (controlledMinions != null && controlledMinions.Length > 0)
         {
@@ -480,12 +480,12 @@ public class PlayerMinionCommander : MonoBehaviour
 
         if (!autoFindMinionsIfEmpty)
         {
-            return System.Array.Empty<MinionAgent>();
+            return System.Array.Empty<MinionCore>();
         }
 
         if (cachedAutoMinions == null || Time.time >= nextAutoFindRefreshTime)
         {
-            cachedAutoMinions = FindObjectsByType<MinionAgent>(FindObjectsSortMode.None);
+            cachedAutoMinions = FindObjectsByType<MinionCore>(FindObjectsSortMode.None);
             nextAutoFindRefreshTime = Time.time + Mathf.Max(0.05f, settings.autoFindRefreshInterval);
         }
 

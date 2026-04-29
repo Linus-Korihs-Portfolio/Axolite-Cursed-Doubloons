@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Player/PlayerConfig", fileName = "PlayerConfig")]
+[CreateAssetMenu(menuName = "SO/Player/PlayerConfig", fileName = "PlayerConfig")]
 public class PlayerConfig : ScriptableObject
 {
     [Header("Movement / Physics")]

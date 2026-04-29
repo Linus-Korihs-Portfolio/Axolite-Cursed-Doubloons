@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Camera/CM Settings", fileName = "CameraCMSettings")]
+[CreateAssetMenu(menuName = "SO/Camera/CM Settings", fileName = "CameraCMSettings")]
 public class CameraCMSettings : ScriptableObject
 {
     [Header("Presets")]

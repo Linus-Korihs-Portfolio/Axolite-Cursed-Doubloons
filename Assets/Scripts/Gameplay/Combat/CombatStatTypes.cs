@@ -37,7 +37,7 @@ public struct CombatStatModifierData
     public float Value; // E.g., 5 for Additive (+5 Dmg), 1.2 for Multiplicative (+20% Dmg)
 }
 
-[CreateAssetMenu(menuName = "Combat/Stats Profile")]
+[CreateAssetMenu(menuName = "SO/Combat/Stats Profile")]
 public class CombatStatsProfile : ScriptableObject
 {
     public List<CombatStatValue> BaseStats = new List<CombatStatValue> // Default base stats (can be overridden by specific profiles)
