@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 781ab187d01c3be45bcb4a4722f54833, type: 3}
+  m_Name: SO_EnemyAI_Melee
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAISettings
+  EnemyType: 0
+  PlayerTag: Player
+  MinionTag: Ally
+  DetectRadius: 12
+  ForgetRadius: 18
+  DetectMask:
+    serializedVersion: 2
+    m_Bits: 520
+  MeleeAttackRange: 1.5
+  MeleeAttackCooldown: 1.2
+  MeleeDamage: 10
+  RangedMinRange: 4
+  RangedMaxRange: 10
+  RangedAttackCooldown: 2
+  RangedDamage: 8
+  ProjectileSpeed: 8
+  UseHomingProjectile: 0
+  ProjectilePrefab: {fileID: 0}
+  MoveSpeed: 3.5
+  RotationSpeed: 8
+  PrioritizeRangedMinions: 0
+  EnablePursuit: 1
+  PursuitRadius: 15
+  UseNavMesh: 1
+  NavRepathInterval: 0.3
+  NavTargetSampleRadius: 1.5
+  NavWaypointTolerance: 0.3
+  LosBlockMask:
+    serializedVersion: 2
+    m_Bits: 192
+  LosHeightOffset: 0.8
+  RequireLOSToDetect: 1
+  RequireLOSToAttack: 1

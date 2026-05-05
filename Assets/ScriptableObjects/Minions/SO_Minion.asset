@@ -18,7 +18,7 @@ MonoBehaviour:
     SensorTickRate: 0.15
   EnemyTag: Enemy
   AllyTag: Ally
-  BreakableTag: 
+  BreakableTag: Breakable
   Melee:
     RangePolicy:
       MinRange: 0.1
@@ -46,7 +46,7 @@ MonoBehaviour:
       SnapToGround: 1
       GroundMask:
         serializedVersion: 2
-        m_Bits: 193
+        m_Bits: 192
       GroundRayStartHeight: 1.5
       GroundRayLength: 8
       GroundOffset: 0
@@ -55,12 +55,15 @@ MonoBehaviour:
       MaxFallSpeed: 40
       LineOfSightBlockMask:
         serializedVersion: 2
-        m_Bits: 193
+        m_Bits: 192
       LineOfSightHeightOffset: 0.8
       RequireLineOfSightForAllAttacks: 0
       ReturnToFollowWhenLineOfSightBlocked: 0
       AutoAssignCombatCommands: 0
       AutoTargetRadius: 18
+      ProjectilePrefab: {fileID: 0}
+      UseHomingProjectiles: 1
+      ProjectileSpeed: 10
   Ranged:
     RangePolicy:
       MinRange: 4
@@ -88,7 +91,7 @@ MonoBehaviour:
       SnapToGround: 1
       GroundMask:
         serializedVersion: 2
-        m_Bits: 193
+        m_Bits: 192
       GroundRayStartHeight: 1.5
       GroundRayLength: 8
       GroundOffset: 0
@@ -97,12 +100,15 @@ MonoBehaviour:
       MaxFallSpeed: 40
       LineOfSightBlockMask:
         serializedVersion: 2
-        m_Bits: 193
+        m_Bits: 192
       LineOfSightHeightOffset: 0.8
       RequireLineOfSightForAllAttacks: 1
       ReturnToFollowWhenLineOfSightBlocked: 0
       AutoAssignCombatCommands: 0
       AutoTargetRadius: 28
+      ProjectilePrefab: {fileID: 2292455647490666795, guid: ba4bfcecd66597f438d6879262eae445, type: 3}
+      UseHomingProjectiles: 1
+      ProjectileSpeed: 10
   Support:
     RangePolicy:
       MinRange: 2
@@ -130,7 +136,7 @@ MonoBehaviour:
       SnapToGround: 1
       GroundMask:
         serializedVersion: 2
-        m_Bits: 193
+        m_Bits: 192
       GroundRayStartHeight: 1.5
       GroundRayLength: 8
       GroundOffset: 0
@@ -139,12 +145,15 @@ MonoBehaviour:
       MaxFallSpeed: 40
       LineOfSightBlockMask:
         serializedVersion: 2
-        m_Bits: 385
+        m_Bits: 384
       LineOfSightHeightOffset: 0.8
       RequireLineOfSightForAllAttacks: 1
       ReturnToFollowWhenLineOfSightBlocked: 0
       AutoAssignCombatCommands: 0
       AutoTargetRadius: 16
+      ProjectilePrefab: {fileID: 0}
+      UseHomingProjectiles: 1
+      ProjectileSpeed: 10
     StartMode: 0
     SupportBuffEffect: {fileID: 0}
     SupportDebuffEffect: {fileID: 11400000, guid: a214a31e51b46cd408e6e828a3f70a00, type: 2}

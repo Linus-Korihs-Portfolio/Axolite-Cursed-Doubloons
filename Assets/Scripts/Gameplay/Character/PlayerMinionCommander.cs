@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -28,7 +29,12 @@ public class PlayerMinionCommander : MonoBehaviour
     [SerializeField] private Renderer[] previewRenderers;
 
     private readonly Collider[] commandHits = new Collider[32];
-    private MinionCore[] cachedAutoMinions;
+
+    // Runtime list of live minions — cleared/updated as minions die or are registered.
+    private readonly List<MinionCore> runtimeMinions = new List<MinionCore>();
+    private MinionCore[] cachedRuntimeArray = System.Array.Empty<MinionCore>();
+    private bool runtimeListDirty = true;
+
     private float nextAutoFindRefreshTime;
     private MaterialPropertyBlock previewPropertyBlock;
     private Color lastAppliedPreviewColor;
@@ -62,13 +68,53 @@ public class PlayerMinionCommander : MonoBehaviour
 
     private void Start()
     {
-        // Auto-populate the controlled minions list so it's visible in the inspector at runtime.
-        if (autoFindMinionsIfEmpty && (controlledMinions == null || controlledMinions.Length == 0))
+        // Register manually assigned minions first.
+        if (controlledMinions != null)
         {
-            controlledMinions = FindObjectsByType<MinionCore>(FindObjectsSortMode.None);
-            cachedAutoMinions = controlledMinions;
-            nextAutoFindRefreshTime = Time.time + Mathf.Max(0.05f, settings != null ? settings.autoFindRefreshInterval : 5f);
+            for (int i = 0; i < controlledMinions.Length; i++)
+                RegisterMinion(controlledMinions[i]);
         }
+
+        // Auto-find minions only when none were manually assigned.
+        if (autoFindMinionsIfEmpty && runtimeMinions.Count == 0)
+            RefreshAutoFoundMinions();
+    }
+
+    private void OnDestroy()
+    {
+        for (int i = runtimeMinions.Count - 1; i >= 0; i--)
+            UnregisterMinion(runtimeMinions[i]);
+    }
+
+    // Register a minion and subscribe to its death event.
+    public void RegisterMinion(MinionCore minion)
+    {
+        if (minion == null || runtimeMinions.Contains(minion)) return;
+        runtimeMinions.Add(minion);
+        runtimeListDirty = true;
+        minion.Died += OnMinionDied;
+    }
+
+    private void UnregisterMinion(MinionCore minion)
+    {
+        if (minion == null) return;
+        if (runtimeMinions.Remove(minion))
+            runtimeListDirty = true;
+        minion.Died -= OnMinionDied;
+    }
+
+    private void OnMinionDied(MinionCore minion)
+    {
+        UnregisterMinion(minion);
+    }
+
+    private void RefreshAutoFoundMinions()
+    {
+        MinionCore[] found = FindObjectsByType<MinionCore>(FindObjectsSortMode.None);
+        for (int i = 0; i < found.Length; i++)
+            RegisterMinion(found[i]);
+
+        nextAutoFindRefreshTime = Time.time + Mathf.Max(0.05f, settings != null ? settings.autoFindRefreshInterval : 5f);
     }
 
     private void OnEnable()
@@ -118,7 +164,16 @@ public class PlayerMinionCommander : MonoBehaviour
         if (minions.Length == 0 || cursor == null) return;
 
         Transform target = ResolveCommandTarget();
-        if (target == null) return;
+        if (target == null)
+        {
+            // Player clicked on empty space with no valid target → stop all minions (go idle).
+            for (int i = 0; i < minions.Length; i++)
+            {
+                if (minions[i] != null) minions[i].SetIdleCommand();
+            }
+
+            return;
+        }
 
         string enemyTagValue = settings.enemyTag;
         string breakableTagValue = settings.breakableTag;
@@ -227,6 +282,9 @@ public class PlayerMinionCommander : MonoBehaviour
 
             Transform candidate = hit.transform;
             if (!IsValidTarget(candidate)) continue;
+
+            // Skip candidates behind walls.
+            if (!HasLineOfSightToTarget(candidate)) continue;
 
             float sq = (candidate.position - origin).sqrMagnitude;
 
@@ -473,23 +531,22 @@ public class PlayerMinionCommander : MonoBehaviour
 
     private MinionCore[] ResolveControlledMinions()
     {
-        if (controlledMinions != null && controlledMinions.Length > 0)
+        // If auto-find is on and we still have no minions, try a periodic refresh.
+        if (autoFindMinionsIfEmpty && controlledMinions == null || (controlledMinions != null && controlledMinions.Length == 0))
         {
-            return controlledMinions;
+            if (runtimeMinions.Count == 0 && Time.time >= nextAutoFindRefreshTime)
+                RefreshAutoFoundMinions();
         }
 
-        if (!autoFindMinionsIfEmpty)
+        if (runtimeListDirty)
         {
-            return System.Array.Empty<MinionCore>();
+            cachedRuntimeArray = runtimeMinions.Count > 0
+                ? runtimeMinions.ToArray()
+                : System.Array.Empty<MinionCore>();
+            runtimeListDirty = false;
         }
 
-        if (cachedAutoMinions == null || Time.time >= nextAutoFindRefreshTime)
-        {
-            cachedAutoMinions = FindObjectsByType<MinionCore>(FindObjectsSortMode.None);
-            nextAutoFindRefreshTime = Time.time + Mathf.Max(0.05f, settings.autoFindRefreshInterval);
-        }
-
-        return cachedAutoMinions;
+        return cachedRuntimeArray;
     }
 
     private bool WasCommandPressedThisFrame()
@@ -502,6 +559,27 @@ public class PlayerMinionCommander : MonoBehaviour
     {
         if (recallAction != null) return recallAction.action.WasPressedThisFrame();
         return Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame;
+    }
+
+    // LOS check from the player to a potential command target.
+    private bool HasLineOfSightToTarget(Transform target)
+    {
+        if (settings == null || !settings.requireLineOfSightForCursorTargets) return true;
+        if (player == null || target == null) return true;
+
+        float heightOffset = settings.cursorLOSHeightOffset;
+        Vector3 start = player.position + Vector3.up * heightOffset;
+        Vector3 end   = target.position + Vector3.up * heightOffset;
+        Vector3 dir   = end - start;
+        float   dist  = dir.magnitude;
+        if (dist <= 0.0001f) return true;
+
+        if (Physics.Raycast(start, dir / dist, out RaycastHit hit, dist, settings.cursorLOSBlockMask, QueryTriggerInteraction.Ignore))
+        {
+            return hit.transform == target || hit.transform.IsChildOf(target);
+        }
+
+        return true;
     }
 
     private static bool IsValidTarget(Transform target)

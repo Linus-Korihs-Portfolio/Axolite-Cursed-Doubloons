@@ -75,27 +75,56 @@ public class MeleeAttackAbility : AbilityBase
     }
 }
 
-// Simple ranged damage ability.
+// Ranged damage ability. When a projectilePrefab is assigned, spawns a MinionProjectile;
+// otherwise falls back to instant-hit damage.
 public class RangedAttackAbility : AbilityBase
 {
-    public RangedAttackAbility(float range, float cooldown)
+    private readonly GameObject projectilePrefab;
+    private readonly bool       useHoming;
+    private readonly float      projectileSpeed;
+
+    public RangedAttackAbility(
+        float      range,
+        float      cooldown,
+        GameObject projectilePrefab = null,
+        bool       useHoming        = true,
+        float      projectileSpeed  = 10f)
     {
-        Id = "RangedAttack";
-        Range = range;
-        Cooldown = cooldown;
-        TargetType = TargetType.Enemy;
+        Id                   = "RangedAttack";
+        Range                = range;
+        Cooldown             = cooldown;
+        TargetType           = TargetType.Enemy;
+        this.projectilePrefab = projectilePrefab;
+        this.useHoming        = useHoming;
+        this.projectileSpeed  = projectileSpeed;
     }
 
     protected override void Execute(Transform caster, Transform target, CombatantStats casterStats)
     {
         float damage = casterStats != null ? casterStats.GetStat(CombatStatType.Damage) : 0f;
+
+        if (projectilePrefab != null)
+        {
+            Vector3 spawnPos            = caster.position + Vector3.up * 0.5f;
+            MinionProjectile projectile = Object.Instantiate(projectilePrefab, spawnPos, Quaternion.identity)
+                .GetComponent<MinionProjectile>();
+
+            if (projectile != null)
+            {
+                // ownerTag = "Ally" so the projectile won't damage other ally minions.
+                projectile.Initialize(target, damage, projectileSpeed, useHoming, "Ally", 6f);
+                return;
+            }
+        }
+
+        // Instant-hit fallback when no prefab is assigned.
         CombatantStats targetStats = target != null ? target.GetComponentInParent<CombatantStats>() : null;
         if (targetStats != null)
         {
             targetStats.ApplyDamage(damage);
         }
 
-        Debug.Log($"[{caster.name}] fired {Id} at [{target.name}] for {damage} damage.");
+        Debug.Log($"[{caster.name}] fired {Id} at [{target.name}] for {damage} damage (instant fallback).");
     }
 }
 
@@ -174,9 +203,12 @@ public class MinionAbilitySystem
     // Rebuilds a very small default loadout based on role.
     public void BuildDefaultLoadout(
         IMinionRole role,
-        StatusEffectDefinition supportBuffEffect = null,
-        StatusEffectDefinition supportDebuffEffect = null,
-        float abilityCooldown = 1f)
+        StatusEffectDefinition supportBuffEffect    = null,
+        StatusEffectDefinition supportDebuffEffect  = null,
+        float      abilityCooldown                  = 1f,
+        GameObject rangedProjectilePrefab          = null,
+        bool       useHomingProjectiles             = true,
+        float      projectileSpeed                  = 10f)
     {
         Clear();
 
@@ -192,7 +224,9 @@ public class MinionAbilitySystem
                 break;
 
             case MinionRoleType.Ranged:
-                AddAbility(new RangedAttackAbility(policy.MaxRange, abilityCooldown));
+                AddAbility(new RangedAttackAbility(
+                    policy.MaxRange, abilityCooldown,
+                    rangedProjectilePrefab, useHomingProjectiles, projectileSpeed));
                 break;
 
             case MinionRoleType.Support:

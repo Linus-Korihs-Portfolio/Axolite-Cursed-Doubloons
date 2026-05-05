@@ -113,6 +113,14 @@ public class MinionBehaviourSettings
     public bool AutoAssignCombatCommands = false;
     [Tooltip("Search radius used when auto-assigning a combat target.")]
     public float AutoTargetRadius = 35f;
+
+    [Header("Ranged Projectile")]
+    [Tooltip("Prefab spawned when this minion fires a ranged attack. Requires a MinionProjectile component. Leave empty for instant-hit damage.")]
+    public GameObject ProjectilePrefab;
+    [Tooltip("When true, spawned projectiles home in on the target until they hit.")]
+    public bool UseHomingProjectiles = true;
+    [Tooltip("Travel speed of spawned projectiles in units per second.")]
+    public float ProjectileSpeed = 10f;
 }
 
 // Base settings shared by all roles.

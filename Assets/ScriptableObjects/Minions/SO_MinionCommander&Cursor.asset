@@ -21,6 +21,11 @@ MonoBehaviour:
   enemyTag: Enemy
   breakableTag: 
   autoFindRefreshInterval: 0.5
+  cursorLOSBlockMask:
+    serializedVersion: 2
+    m_Bits: 192
+  requireLineOfSightForCursorTargets: 1
+  cursorLOSHeightOffset: 0.8
   enableCommandPreview: 1
   previewNoTargetColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
   previewAttackColor: {r: 1, g: 0.25, b: 0.25, a: 1}

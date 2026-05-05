@@ -72,8 +72,7 @@ public partial class MinionCore
 
                 if (!hasLineOfSight)
                 {
-                    // When LOS is blocked but we should keep fighting, path toward the commanded target
-                    // and stop at min range so ranged/support units do not collapse into melee distance.
+                    // When LOS is blocked but we should keep fighting, path toward the commanded target position but stop short of the desired range so the minion does not get stuck trying to reach an unreachable point.
                     float losRecoveryStopDistance = rangePolicy != null ? Mathf.Max(0f, rangePolicy.MinRange) : 0f;
                     MoveTowardsDistance(currentTarget.position, losRecoveryStopDistance);
                     break;
@@ -303,7 +302,20 @@ public partial class MinionCore
             step = step.normalized * maxStep;
         }
 
-        transform.position += step;
+        // When using NavMesh, snap the result back onto the walkable surface so separation does not push the minion into an unwalkable area. Otherwise, just apply the separation step directly.
+        if (useNavMeshNavigation)
+        {
+            Vector3 newPos = transform.position + step;
+            if (NavMesh.SamplePosition(newPos, out NavMeshHit navHit, Mathf.Max(0.15f, separationRadius * 0.5f), NavMesh.AllAreas))
+            {
+                transform.position = navHit.position;
+            }
+            // else: no valid NavMesh point nearby — skip this step to stay on the navmesh.
+        }
+        else
+        {
+            transform.position += step;
+        }
     }
 
     private void RepositionAroundTarget(Vector3 targetPosition, float desiredRange)
@@ -317,8 +329,11 @@ public partial class MinionCore
 
         if (distance < Mathf.Max(0.01f, desiredRange - 0.25f))
         {
+            // Compute a point at desiredRange from the target in the direction away from it, and move toward that point to maintain spacing if the minion got too close.
             Vector3 away = offset.sqrMagnitude > 0.0001f ? offset.normalized : -transform.forward;
-            transform.position += away * GetRuntimeMoveSpeed() * Time.deltaTime;
+            Vector3 retreatPoint = targetPosition + away * Mathf.Max(0.1f, desiredRange);
+            retreatPoint.y = targetPosition.y;
+            MoveTowardsDistance(retreatPoint, 0f);
         }
         else if (distance > desiredRange + 0.25f)
         {

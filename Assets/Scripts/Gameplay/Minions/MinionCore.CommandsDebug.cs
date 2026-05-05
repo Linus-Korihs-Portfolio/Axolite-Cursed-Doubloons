@@ -5,9 +5,13 @@ public partial class MinionCore
     private Transform ResolveActiveTarget()
     {
         Transform explicitTarget = AsTransform(currentCommand != null ? currentCommand.Target : null);
-        if (IsValidTarget(explicitTarget)) return explicitTarget;
+        if (!IsValidTarget(explicitTarget)) return null;
 
-        return null;
+        // Reject dead combatants so the minion transitions to Idle instead of continuing to attack a corpse.
+        CombatantStats targetStats = explicitTarget.GetComponentInParent<CombatantStats>();
+        if (targetStats != null && targetStats.IsDead) return null;
+
+        return explicitTarget;
     }
 
     private static Transform AsTransform(object target)
@@ -91,6 +95,147 @@ public partial class MinionCore
 
         // Combat auto-targeting is optional; follow fallback above always keeps the minion attached to its owner.
         if (!autoAssignCombatCommands) return;
+
+        // Only auto-assign when the minion has no active combat command.
+        bool isIdleOrFollowing = currentCommand.Type == CommandType.None
+            || currentCommand.Type == CommandType.FollowPlayer
+            || currentCommand.Type == CommandType.Recall;
+
+        if (!isIdleOrFollowing) return;
+
+        if (roleType == MinionRoleType.Support)
+        {
+            TryAutoAssignSupportTarget();
+        }
+        else
+        {
+            Transform autoEnemy = FindNearestAliveByTag(enemyTag, autoTargetRadius);
+            if (autoEnemy != null)
+            {
+                SetAttackEnemyCommand(autoEnemy);
+            }
+        }
+    }
+
+    // Auto-selects the best support target based on the active support mode.
+    private void TryAutoAssignSupportTarget()
+    {
+        SupportMode mode = currentRole.GetSupportMode() ?? SupportMode.Heal;
+        Transform bestTarget = null;
+
+        switch (mode)
+        {
+            case SupportMode.Heal:
+                bestTarget = FindLowestHealthAlly();
+                break;
+
+            case SupportMode.Buff:
+                bestTarget = FindNearestAliveByTag(allyTag, autoTargetRadius, includeSelf: false);
+                break;
+
+            case SupportMode.Debuff:
+                bestTarget = FindNearestAliveByTag(enemyTag, autoTargetRadius);
+                break;
+        }
+
+        if (bestTarget != null && IsSupportTargetValidForActiveMode(bestTarget))
+        {
+            SetSupportCommand(bestTarget);
+        }
+    }
+
+    // Like FindNearestByTag but skips dead combatants (CombatantStats.IsDead).
+    private Transform FindNearestAliveByTag(string tag, float maxDistance = float.PositiveInfinity, bool includeSelf = true)
+    {
+        if (string.IsNullOrWhiteSpace(tag)) return null;
+
+        GameObject[] objects = null;
+
+        try
+        {
+            objects = GameObject.FindGameObjectsWithTag(tag);
+        }
+        catch
+        {
+            objects = null;
+        }
+
+        Transform nearest = null;
+        float nearestSqDistance = float.PositiveInfinity;
+        float maxSqDistance = float.IsPositiveInfinity(maxDistance) ? float.PositiveInfinity : maxDistance * maxDistance;
+
+        if (objects != null)
+        {
+            for (int i = 0; i < objects.Length; i++)
+            {
+                GameObject candidate = objects[i];
+                if (candidate == null) continue;
+                if (!includeSelf && candidate.transform == transform) continue;
+
+                CombatantStats stats = candidate.GetComponentInParent<CombatantStats>();
+                if (stats != null && stats.IsDead) continue;
+
+                float sqDistance = (candidate.transform.position - transform.position).sqrMagnitude;
+                if (sqDistance > maxSqDistance) continue;
+
+                if (sqDistance < nearestSqDistance)
+                {
+                    nearestSqDistance = sqDistance;
+                    nearest = candidate.transform;
+                }
+            }
+        }
+
+        return nearest;
+    }
+
+    // Finds the ally minion with the lowest health ratio within autoTargetRadius. Excludes self and the player (followTarget).
+    private Transform FindLowestHealthAlly()
+    {
+        GameObject[] allies = null;
+
+        try
+        {
+            allies = GameObject.FindGameObjectsWithTag(allyTag);
+        }
+        catch
+        {
+            allies = null;
+        }
+
+        if (allies == null) return null;
+
+        Transform lowest = null;
+        float lowestRatio = float.PositiveInfinity;
+        float maxSqDistance = autoTargetRadius * autoTargetRadius;
+
+        for (int i = 0; i < allies.Length; i++)
+        {
+            GameObject candidate = allies[i];
+            if (candidate == null) continue;
+            if (candidate.transform == transform) continue;
+            if (followTarget != null && candidate.transform == followTarget) continue;
+
+            float sqDist = (candidate.transform.position - transform.position).sqrMagnitude;
+            if (sqDist > maxSqDistance) continue;
+
+            CombatantStats stats = candidate.GetComponentInParent<CombatantStats>();
+            if (stats == null || stats.IsDead) continue;
+
+            float maxHp = stats.GetStat(CombatStatType.MaxHealth);
+            if (maxHp <= 0f) continue;
+
+            float ratio = stats.CurrentHealth / maxHp;
+            if (ratio >= 1f - 0.01f) continue; // already full health, skip
+
+            if (ratio < lowestRatio)
+            {
+                lowestRatio = ratio;
+                lowest = candidate.transform;
+            }
+        }
+
+        return lowest;
     }
 
     private bool ShouldFollowTarget()
@@ -103,6 +248,14 @@ public partial class MinionCore
         toTarget.y = 0f;
         float distance = toTarget.magnitude;
         return distance > Mathf.Max(0f, followStopDistance) + 0.2f;
+    }
+
+    // Immediately stops the minion and puts it into Idle.
+    public void SetIdleCommand()
+    {
+        ResetNavigationPath();
+        ClearCommand();
+        stateMachine.ForceState(MinionState.Idle);
     }
 
     // Makes the minion return to the player/follow behavior.

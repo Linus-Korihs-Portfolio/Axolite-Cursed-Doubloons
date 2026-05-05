@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(CombatantStats))]
@@ -18,6 +19,9 @@ public partial class MinionCore : MonoBehaviour
     private string allyTag;
     private string breakableTag;
     private float abilityCooldown;
+    private GameObject rangedProjectilePrefab;
+    private bool useHomingProjectiles;
+    private float projectileSpeed;
 
     private float moveSpeed;
     private float rotationSpeed;
@@ -98,9 +102,24 @@ public partial class MinionCore : MonoBehaviour
     public MinionRoleType RoleType => roleType; // Exposed runtime metadata for commander/input systems.
     public SupportMode? ActiveSupportMode => currentRole != null ? currentRole.GetSupportMode() : null;
 
+    // Fired just before the GameObject is destroyed due to death.
+    public event Action<MinionCore> Died;
+
     private void Awake()
     {
         Initialize();
+    }
+
+    private void OnDestroy()
+    {
+        if (sharedCombatStats != null) sharedCombatStats.Died -= OnCombatantDied;
+    }
+
+    private void OnCombatantDied()
+    {
+        ClearCommand();
+        stateMachine.ForceState(MinionState.Idle);
+        Died?.Invoke(this);
     }
 
     private void Initialize()
@@ -118,6 +137,8 @@ public partial class MinionCore : MonoBehaviour
         abilitySystem = new MinionAbilitySystem();
         sharedCombatStats = GetComponent<CombatantStats>();
         navPath = new NavMeshPath();
+
+        if (sharedCombatStats != null) sharedCombatStats.Died += OnCombatantDied;
 
         // Load per-role behaviour values from the ScriptableObject.
         RoleSettings rs = settings.GetForRole(roleType);
@@ -156,6 +177,9 @@ public partial class MinionCore : MonoBehaviour
         returnToFollowWhenLineOfSightBlocked = b.ReturnToFollowWhenLineOfSightBlocked;
         autoAssignCombatCommands        = b.AutoAssignCombatCommands;
         autoTargetRadius                = b.AutoTargetRadius;
+        rangedProjectilePrefab          = b.ProjectilePrefab;
+        useHomingProjectiles            = b.UseHomingProjectiles;
+        projectileSpeed                 = b.ProjectileSpeed;
 
         // Tags are shared across roles and live on the root MinionSettings.
         enemyTag     = settings.EnemyTag;
@@ -180,7 +204,9 @@ public partial class MinionCore : MonoBehaviour
             return;
         }
 
-        abilitySystem.BuildDefaultLoadout(currentRole, supportBuffEffect, supportDebuffEffect, abilityCooldown);
+        abilitySystem.BuildDefaultLoadout(
+            currentRole, supportBuffEffect, supportDebuffEffect, abilityCooldown,
+            rangedProjectilePrefab, useHomingProjectiles, projectileSpeed);
 
         currentCommand = new MinionCommand
         {
@@ -201,6 +227,7 @@ public partial class MinionCore : MonoBehaviour
     private void Update()
     {
         if (settings == null || currentRole == null) return;
+        if (sharedCombatStats != null && sharedCombatStats.IsDead) return;
 
         if (snapToGround)
         {

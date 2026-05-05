@@ -14,6 +14,14 @@ public class PlayerMinionCommanderSettings : ScriptableObject
     [Header("Auto Find")]
     public float autoFindRefreshInterval = 0.5f;
 
+    [Header("Target Visibility")]
+    [Tooltip("Layers that block LOS between player and command targets (walls, terrain). Exclude character layers.")]
+    public LayerMask cursorLOSBlockMask = ~0;
+    [Tooltip("When true, targets behind walls cannot be commanded even if the cursor overlap detects them.")]
+    public bool requireLineOfSightForCursorTargets = true;
+    [Tooltip("Height offset used for the LOS ray from the player.")]
+    public float cursorLOSHeightOffset = 0.8f;
+
     [Header("Command Preview")]
     public bool enableCommandPreview = true;
     public Color previewNoTargetColor = new Color(0.65f, 0.65f, 0.65f, 1f);
