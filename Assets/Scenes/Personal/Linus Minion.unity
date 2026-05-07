@@ -346,6 +346,7 @@ GameObject:
   - component: {fileID: 144627124}
   - component: {fileID: 144627125}
   - component: {fileID: 144627126}
+  - component: {fileID: 144627127}
   m_Layer: 6
   m_Name: BreakableWall
   m_TagString: Breakable
@@ -492,6 +493,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BreakableWall
   deathFxPrefab: {fileID: 144627119}
   deathFxDuration: 2
+--- !u!114 &144627127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144627119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c0a968e169a2054bbd52398182abfa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageFlash
+  renderers: []
+  flashColor: {r: 1, g: 0.05, b: 0.05, a: 1}
+  flashIntensity: 3
+  flashDuration: 0.2
+  stats: {fileID: 144627125}
 --- !u!4 &188860362 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2151853351454571588, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
@@ -872,7 +890,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7789994379486185424, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1972936864}
   m_SourcePrefab: {fileID: 100100000, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
 --- !u!114 &937409393
 MonoBehaviour:
@@ -1382,7 +1403,10 @@ PrefabInstance:
     - {fileID: 5872113602843132357, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7789994379486185424, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1403310053}
   m_SourcePrefab: {fileID: 100100000, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
 --- !u!1 &1092750261
 GameObject:
@@ -1478,6 +1502,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: bf05e879-54bb-4fac-8b17-84547e4eda49
+--- !u!1 &1403310039 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7789994379486185424, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
+  m_PrefabInstance: {fileID: 1086666925}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1403310045 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6167974990188645855, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
+  m_PrefabInstance: {fileID: 1086666925}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1403310039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 222ca75e431e4124e8bd8faa9890b56f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatantStats
+--- !u!114 &1403310053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1403310039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c0a968e169a2054bbd52398182abfa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageFlash
+  renderers: []
+  flashColor: {r: 1, g: 0.05, b: 0.05, a: 1}
+  flashIntensity: 3
+  flashDuration: 0.2
+  stats: {fileID: 1403310045}
 --- !u!114 &1470147231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1722,6 +1779,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: ab012deb-8daf-41a8-9466-35956f62bbaf
+--- !u!1 &1972936849 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7789994379486185424, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
+  m_PrefabInstance: {fileID: 936502445}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1972936855 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6167974990188645855, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
+  m_PrefabInstance: {fileID: 936502445}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972936849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 222ca75e431e4124e8bd8faa9890b56f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatantStats
+--- !u!114 &1972936864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972936849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c0a968e169a2054bbd52398182abfa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageFlash
+  renderers: []
+  flashColor: {r: 1, g: 0.05, b: 0.05, a: 1}
+  flashIntensity: 3
+  flashDuration: 0.2
+  stats: {fileID: 1972936855}
 --- !u!1001 &1990118774
 PrefabInstance:
   m_ObjectHideFlags: 0
