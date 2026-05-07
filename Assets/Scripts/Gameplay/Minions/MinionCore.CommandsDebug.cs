@@ -87,6 +87,25 @@ public partial class MinionCore
             }
         }
 
+        // Dismissed minions: block all auto-assignment while waiting at formation. If player moves too far, auto-resume follow command.
+        if (isDismissed)
+        {
+            if (currentCommand.Type == CommandType.None && followTarget != null)
+            {
+                Vector3 toPlayer = followTarget.position - transform.position;
+                toPlayer.y = 0f;
+                if (toPlayer.sqrMagnitude > dismissResumeRange * dismissResumeRange)
+                {
+                    Debug.Log($"[{name}] Dismiss: player out of range — resuming follow.");
+                    SetFollowCommand();
+                    return;
+                }
+            }
+            return;
+        }
+
+        // Recall complete is now handled in ExecuteFollow on physical arrival — no premature
+
         if (currentCommand.Type == CommandType.None && followTarget != null && ShouldFollowTarget())
         {
             SetFollowCommand();
@@ -258,9 +277,31 @@ public partial class MinionCore
         stateMachine.ForceState(MinionState.Idle);
     }
 
+    // Sends the minion to a world-space formation position, then idles it there.
+    public void SetDismissCommand(Vector3 formationPosition, float resumeRange = 10f)
+    {
+        isDismissed = true;
+        dismissResumeRange = Mathf.Max(0.5f, resumeRange);
+        ResetNavigationPath();
+
+        currentCommand = new MinionCommand
+        {
+            Type = CommandType.Dismiss,
+            Target = null,
+            TargetPosition = formationPosition,
+            Priority = 100,
+            IssuedTime = Time.time,
+            TimeToLive = 0f,
+            Source = CommandSource.Player,
+            InterruptPolicy = InterruptPolicy.Hard,
+            LastFailureReason = FailureReason.None
+        };
+    }
+
     // Makes the minion return to the player/follow behavior.
     public void SetFollowCommand()
     {
+        isDismissed = false;
         ResetNavigationPath();
 
         currentCommand = new MinionCommand
@@ -280,6 +321,7 @@ public partial class MinionCore
     // Makes the minion recall immediately.
     public void SetRecallCommand()
     {
+        isDismissed = false;
         ResetNavigationPath();
 
         currentCommand = new MinionCommand
@@ -299,6 +341,8 @@ public partial class MinionCore
     // Makes the minion attack an enemy target.
     public void SetAttackEnemyCommand(Transform target)
     {
+        isDismissed = false;
+
         if (!IsEnemyTarget(target))
         {
             ClearCommand();
@@ -324,6 +368,8 @@ public partial class MinionCore
     // Makes the minion attack a breakable object.
     public void SetAttackObjectCommand(Transform target)
     {
+        isDismissed = false;
+
         if (!IsBreakableTarget(target))
         {
             ClearCommand();
@@ -349,6 +395,8 @@ public partial class MinionCore
     // Makes the support minion act on a target.
     public void SetSupportCommand(Transform target)
     {
+        isDismissed = false;
+
         if (!IsSupportTargetValidForActiveMode(target))
         {
             ClearCommand();
@@ -375,6 +423,14 @@ public partial class MinionCore
     public bool CanAcceptSupportTarget(Transform target)
     {
         return IsSupportTargetValidForActiveMode(target);
+    }
+
+    // Returns true if this minion's current command is already targeting the given transform.
+    public bool IsTargeting(Transform target)
+    {
+        if (target == null || currentCommand == null) return false;
+        Transform commandTarget = AsTransform(currentCommand.Target);
+        return commandTarget == target;
     }
 
     // Switches the active support action and rebuilds support ability loadout.

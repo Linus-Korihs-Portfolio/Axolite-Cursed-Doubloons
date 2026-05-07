@@ -22,6 +22,18 @@ public class PlayerMinionCommanderSettings : ScriptableObject
     [Tooltip("Height offset used for the LOS ray from the player.")]
     public float cursorLOSHeightOffset = 0.8f;
 
+    [Header("Call / Dismiss")]
+    [Tooltip("Radius of the Call impulse wave and the maximum range for Dismiss to affect minions.")]
+    public float callRange = 10f;
+    [Tooltip("When a dismissed minion is farther than this from the player it automatically starts following again (should equal callRange).")]
+    public float dismissResumeFollowRange = 10f;
+    [Tooltip("Distance between each role group's centre point in the dismiss formation (Melee / Ranged / Support spread sideways).")]
+    public float dismissFormationGroupSpacing = 2f;
+    [Tooltip("Spacing between individual minions within the same role group.")]
+    public float dismissFormationMemberSpacing = 1.2f;
+    [Tooltip("Color of the call/dismiss range Gizmo sphere drawn in the editor.")]
+    public Color callRangeGizmoColor = new Color(0.2f, 0.7f, 1f, 0.25f);
+
     [Header("Command Preview")]
     public bool enableCommandPreview = true;
     public Color previewNoTargetColor = new Color(0.65f, 0.65f, 0.65f, 1f);

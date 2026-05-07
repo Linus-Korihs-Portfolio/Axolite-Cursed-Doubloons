@@ -99,8 +99,14 @@ public partial class MinionCore : MonoBehaviour
 
     private MinionIntent currentIntent;
 
+    // Set by SetDismissCommand; prevents auto-combat while the minion is dismissed to a formation position.
+    private bool isDismissed;
+    // How far the player must move from the minion before the minion resumes following (set at dismiss time).
+    private float dismissResumeRange;
+
     public MinionRoleType RoleType => roleType; // Exposed runtime metadata for commander/input systems.
     public SupportMode? ActiveSupportMode => currentRole != null ? currentRole.GetSupportMode() : null;
+    public bool IsDismissed => isDismissed;
 
     // Fired just before the GameObject is destroyed due to death.
     public event Action<MinionCore> Died;

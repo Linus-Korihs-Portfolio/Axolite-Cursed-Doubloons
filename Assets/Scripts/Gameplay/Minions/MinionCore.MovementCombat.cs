@@ -7,6 +7,26 @@ public partial class MinionCore
 {
     private void ExecuteFollow()
     {
+        // Dismiss: move toward the commanded formation position, idle when arrived.
+        if (currentCommand != null && currentCommand.Type == CommandType.Dismiss)
+        {
+            Vector3 toFormation = currentCommand.TargetPosition - transform.position;
+            toFormation.y = 0f;
+            float dist = toFormation.magnitude;
+
+            if (dist <= Mathf.Max(0f, followStopDistance))
+            {
+                // Arrived at formation position — stay put in idle. If player moves away, command will be re-issued to move back to formation.
+                ResetNavigationPath();
+                ClearCommand();
+                stateMachine.ForceState(MinionState.Idle);
+                return;
+            }
+
+            MoveTowardsDistance(currentCommand.TargetPosition, followStopDistance);
+            return;
+        }
+
         Transform target = ResolveFollowTarget();
         if (!IsValidTarget(target))
         {
@@ -25,6 +45,13 @@ public partial class MinionCore
             if (distance > 0.0001f)
             {
                 SmoothFaceDirection(toTarget / Mathf.Max(distance, 0.0001f));
+            }
+
+            // Recall complete: minion has physically reached the player — switch to steady Follow.
+            if (currentCommand != null && currentCommand.Type == CommandType.Recall)
+            {
+                Debug.Log($"[{name}] Recall complete — switching to Follow.");
+                SetFollowCommand();
             }
 
             return;
@@ -236,7 +263,28 @@ public partial class MinionCore
             currentCommand.LastFailureReason = FailureReason.TargetLost;
         }
 
-        if (recallOnPathFailure && currentCommand != null && currentCommand.Type != CommandType.Recall && IsValidTarget(followTarget))
+        // Combat commands: keep the command alive and reset nav so it retries next interval.
+        if (currentCommand != null
+            && (currentCommand.Type == CommandType.AttackEnemy
+                || currentCommand.Type == CommandType.AttackObject
+                || currentCommand.Type == CommandType.SupportTarget))
+        {
+            return;
+        }
+
+        // Dismiss: path to formation failed — keep dismissed flag, go idle at current position.
+        if (isDismissed)
+        {
+            ClearCommand();
+            stateMachine.ForceState(MinionState.Idle);
+            return;
+        }
+
+        // Follow-type commands: recall to player if configured, otherwise idle.
+        if (recallOnPathFailure
+            && currentCommand != null
+            && currentCommand.Type != CommandType.Recall
+            && IsValidTarget(followTarget))
         {
             SetRecallCommand();
             return;

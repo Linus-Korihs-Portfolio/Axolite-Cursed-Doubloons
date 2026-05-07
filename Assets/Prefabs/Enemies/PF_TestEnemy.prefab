@@ -17,10 +17,7 @@ GameObject:
   - component: {fileID: 6785440792654272444}
   - component: {fileID: 6167974990188645855}
   - component: {fileID: 4992015245920299561}
-  - component: {fileID: 3960385818267718078}
-  - component: {fileID: 2924757238371493495}
   - component: {fileID: 5407022031266298792}
-  - component: {fileID: 5872113602843132357}
   m_Layer: 8
   m_Name: PF_TestEnemy
   m_TagString: Enemy
@@ -209,35 +206,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   settings: {fileID: 11400000, guid: b377ddbbc68e3c44e90bcff351997c63, type: 2}
---- !u!114 &3960385818267718078
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7789994379486185424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 222ca75e431e4124e8bd8faa9890b56f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CombatantStats
-  baseProfile: {fileID: 11400000, guid: 6384b8f9b043f3e4a8ec5a3af88cc5de, type: 2}
-  currentHealth: 0
-  despawnOnDeath: 1
-  despawnDelay: 0
---- !u!114 &2924757238371493495
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7789994379486185424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37f7fe34b4bf3674e845dd190f421541, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
-  settings: {fileID: 11400000, guid: 5edd2d9462861cb418369ba5b3745812, type: 2}
 --- !u!195 &5407022031266298792
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -260,19 +228,3 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &5872113602843132357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7789994379486185424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 222ca75e431e4124e8bd8faa9890b56f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CombatantStats
-  baseProfile: {fileID: 11400000, guid: 6384b8f9b043f3e4a8ec5a3af88cc5de, type: 2}
-  currentHealth: 0
-  despawnOnDeath: 1
-  despawnDelay: 0

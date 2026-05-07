@@ -861,6 +861,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4992015245920299561, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
+      propertyPath: settings
+      value: 
+      objectReference: {fileID: 11400000, guid: 5edd2d9462861cb418369ba5b3745812, type: 2}
     - target: {fileID: 7789994379486185424, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
       propertyPath: m_Name
       value: PF_TestEnemy(Ranged)
@@ -1372,7 +1376,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_TestEnemy(Melee)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3960385818267718078, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
+    - {fileID: 2924757238371493495, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
+    - {fileID: 5872113602843132357, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1443,6 +1450,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: 21acf2c7-ef3f-4ebf-afb0-083f5d5980d6
+--- !u!114 &1218917802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Player/MinionCall
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 21acf2c7-ef3f-4ebf-afb0-083f5d5980d6
 --- !u!114 &1345023574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1457,6 +1478,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: bf05e879-54bb-4fac-8b17-84547e4eda49
+--- !u!114 &1470147231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Player/MinionDismiss
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 04585ffd-4565-4e0e-a0f8-3e9c0934d72c
 --- !u!114 &1514403787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1756,6 +1791,10 @@ PrefabInstance:
       value: PF_TestEnemyWithPlayerTag
       objectReference: {fileID: 0}
     - target: {fileID: 7789994379486185424, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789994379486185424, guid: 46b2a8c5fdfe36e468be371eaf97d52d, type: 3}
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
@@ -1999,6 +2038,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 576771823}
     - target: {fileID: 7467690400024141695, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: callAction
+      value: 
+      objectReference: {fileID: 1218917802}
+    - target: {fileID: 7467690400024141695, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: breakableTag
       value: 
       objectReference: {fileID: 0}
@@ -2010,6 +2053,10 @@ PrefabInstance:
       propertyPath: commandAction
       value: 
       objectReference: {fileID: 1790028326}
+    - target: {fileID: 7467690400024141695, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: dismissAction
+      value: 
+      objectReference: {fileID: 1470147231}
     - target: {fileID: 7467690400024141695, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: commandTargetMask.m_Bits
       value: 768

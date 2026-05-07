@@ -19,7 +19,8 @@ public class PlayerMinionCommander : MonoBehaviour
 
     [Header("Input")]
     [SerializeField] private InputActionReference commandAction;
-    [SerializeField] private InputActionReference recallAction;
+    [SerializeField] private InputActionReference callAction;
+    [SerializeField] private InputActionReference dismissAction;
 
 
     [Header("Minion Selection")]
@@ -64,7 +65,8 @@ public class PlayerMinionCommander : MonoBehaviour
 
     // Exposed for editor display only.
     public InputActionReference CommandAction => commandAction;
-    public InputActionReference RecallAction => recallAction;
+    public InputActionReference CallAction    => callAction;
+    public InputActionReference DismissAction => dismissAction;
 
     private void Start()
     {
@@ -120,13 +122,15 @@ public class PlayerMinionCommander : MonoBehaviour
     private void OnEnable()
     {
         if (commandAction != null) commandAction.action.Enable();
-        if (recallAction != null) recallAction.action.Enable();
+        if (callAction    != null) callAction.action.Enable();
+        if (dismissAction != null) dismissAction.action.Enable();
     }
 
     private void OnDisable()
     {
         if (commandAction != null) commandAction.action.Disable();
-        if (recallAction != null) recallAction.action.Disable();
+        if (callAction    != null) callAction.action.Disable();
+        if (dismissAction != null) dismissAction.action.Disable();
     }
 
     private void Update()
@@ -136,13 +140,20 @@ public class PlayerMinionCommander : MonoBehaviour
 
         if (WasCommandPressedThisFrame())
         {
-            IssueCommandFromCursor();
+            OrderNextMinion();
         }
 
-        if (WasRecallPressedThisFrame())
+        if (WasCallPressedThisFrame())
         {
-            RecallAll();
+            CallMinions();
         }
+
+        if (WasDismissPressedThisFrame())
+        {
+            DismissMinions();
+        }
+
+        // Re-enable follow for dismissed minions that have wandered out of dismiss range.
     }
 
     // Switches the active support action (Heal/Buff/Debuff) for all support minions.
@@ -157,8 +168,8 @@ public class PlayerMinionCommander : MonoBehaviour
         }
     }
 
-    // Issues a command based on the currently hovered/locked cursor target.
-    public void IssueCommandFromCursor()
+    // Issues an attack order to ONE minion per press. Priority is Melee → Ranged → Support, then nearest to farthest within each role. Cycles through available targets on repeated presses.
+    public void OrderNextMinion()
     {
         MinionCore[] minions = ResolveControlledMinions();
         if (minions.Length == 0 || cursor == null) return;
@@ -166,72 +177,227 @@ public class PlayerMinionCommander : MonoBehaviour
         Transform target = ResolveCommandTarget();
         if (target == null)
         {
-            // Player clicked on empty space with no valid target → stop all minions (go idle).
+            // No valid target — stop all minions.
             for (int i = 0; i < minions.Length; i++)
             {
                 if (minions[i] != null) minions[i].SetIdleCommand();
             }
 
+            Debug.Log("[MinionCommander] Order: no target — all minions set to idle.");
             return;
         }
 
         string enemyTagValue = settings.enemyTag;
         string breakableTagValue = settings.breakableTag;
-        bool isEnemy = HasTag(target, enemyTagValue);
+        bool isEnemy     = HasTag(target, enemyTagValue);
         bool isBreakable = HasTag(target, breakableTagValue);
         bool isAllyMinion = target.GetComponentInParent<MinionCore>() != null && target != player;
+
+        if (isEnemy)
+        {
+            MinionCore chosen = PickNextAttacker(minions, target);
+            if (chosen != null)
+            {
+                chosen.SetAttackEnemyCommand(target);
+                Debug.Log($"[MinionCommander] Order: {chosen.name} ({chosen.RoleType}) → attack enemy '{target.name}'.");
+            }
+            else
+            {
+                Debug.Log($"[MinionCommander] Order: no available minion to attack '{target.name}' (all already engaged).");
+            }
+
+            return;
+        }
+
+        if (isBreakable)
+        {
+            MinionCore chosen = PickNextAttacker(minions, target, requireEnemy: false);
+            if (chosen != null)
+            {
+                chosen.SetAttackObjectCommand(target);
+                Debug.Log($"[MinionCommander] Order: {chosen.name} ({chosen.RoleType}) → attack object '{target.name}'.");
+            }
+
+            return;
+        }
+
+        if (isAllyMinion)
+        {
+            // Support minions can be ordered to support an ally.
+            for (int i = 0; i < minions.Length; i++)
+            {
+                MinionCore minion = minions[i];
+                if (minion == null || minion.RoleType != MinionRoleType.Support) continue;
+
+                if (minion.CanAcceptSupportTarget(target))
+                {
+                    minion.SetSupportCommand(target);
+                    Debug.Log($"[MinionCommander] Order: {minion.name} (Support) → support ally '{target.name}'.");
+                    return;
+                }
+            }
+        }
+    }
+
+    // Returns the nearest available attacker in Melee → Ranged → Support priority.
+    private MinionCore PickNextAttacker(MinionCore[] minions, Transform target, bool requireEnemy = true)
+    {
+        MinionCore bestMelee   = null;
+        float bestMeleeSq      = float.PositiveInfinity;
+        MinionCore bestRanged  = null;
+        float bestRangedSq     = float.PositiveInfinity;
+        MinionCore bestSupport = null;
+        float bestSupportSq    = float.PositiveInfinity;
 
         for (int i = 0; i < minions.Length; i++)
         {
             MinionCore minion = minions[i];
             if (minion == null) continue;
 
-            if (isEnemy)
-            {
-                if (minion.RoleType == MinionRoleType.Support)
-                {
-                    if (minion.ActiveSupportMode == SupportMode.Debuff)
-                    {
-                        minion.SetSupportCommand(target);
-                    }
-                }
-                else
-                {
-                    minion.SetAttackEnemyCommand(target);
-                }
+            // Skip minions already attacking this exact target.
+            if (minion.IsTargeting(target)) continue;
 
-                continue;
+            // Support minions can only attack in debuff mode when requireEnemy is true.
+            if (requireEnemy && minion.RoleType == MinionRoleType.Support)
+            {
+                if (minion.ActiveSupportMode != SupportMode.Debuff) continue;
             }
 
-            if (isBreakable)
-            {
-                if (minion.RoleType != MinionRoleType.Support)
-                {
-                    minion.SetAttackObjectCommand(target);
-                }
+            float sq = (minion.transform.position - target.position).sqrMagnitude;
 
-                continue;
-            }
-
-            if (isAllyMinion)
+            switch (minion.RoleType)
             {
-                if (minion.RoleType == MinionRoleType.Support)
-                {
-                    minion.SetSupportCommand(target);
-                }
+                case MinionRoleType.Melee:
+                    if (sq < bestMeleeSq)  { bestMeleeSq   = sq; bestMelee   = minion; }
+                    break;
+                case MinionRoleType.Ranged:
+                    if (sq < bestRangedSq) { bestRangedSq  = sq; bestRanged  = minion; }
+                    break;
+                case MinionRoleType.Support:
+                    if (sq < bestSupportSq){ bestSupportSq = sq; bestSupport = minion; }
+                    break;
             }
+        }
+
+        return bestMelee ?? bestRanged ?? bestSupport;
+    }
+
+    // Sends an impulse wave: all minions within callRange resume following the player.
+    public void CallMinions()
+    {
+        MinionCore[] minions = ResolveControlledMinions();
+        if (minions.Length == 0) return;
+
+        float rangeSq = settings.callRange * settings.callRange;
+        int count = 0;
+
+        for (int i = 0; i < minions.Length; i++)
+        {
+            MinionCore minion = minions[i];
+            if (minion == null) continue;
+
+            Vector3 delta = minion.transform.position - player.position;
+            delta.y = 0f;
+            if (delta.sqrMagnitude > rangeSq) continue;
+
+            minion.SetRecallCommand();
+            count++;
+            Debug.Log($"[MinionCommander] Call: {minion.name} ({minion.RoleType}) recalled to player.");
+        }
+
+        Debug.Log($"[MinionCommander] Call wave fired — {count} minion(s) recalled (range: {settings.callRange}m).");
+    }
+
+    // Sends all in-range minions to typed formation positions around the player, then idles them.
+    public void DismissMinions()
+    {
+        MinionCore[] minions = ResolveControlledMinions();
+        if (minions.Length == 0) return;
+
+        float rangeSq = settings.callRange * settings.callRange;
+
+        // Collect affected minions per role.
+        var meleeGroup   = new List<MinionCore>();
+        var rangedGroup  = new List<MinionCore>();
+        var supportGroup = new List<MinionCore>();
+
+        for (int i = 0; i < minions.Length; i++)
+        {
+            MinionCore minion = minions[i];
+            if (minion == null) continue;
+
+            Vector3 delta = minion.transform.position - player.position;
+            delta.y = 0f;
+            if (delta.sqrMagnitude > rangeSq) continue;
+
+            switch (minion.RoleType)
+            {
+                case MinionRoleType.Melee:   meleeGroup.Add(minion);   break;
+                case MinionRoleType.Ranged:  rangedGroup.Add(minion);  break;
+                case MinionRoleType.Support: supportGroup.Add(minion); break;
+            }
+        }
+
+        int totalCount = meleeGroup.Count + rangedGroup.Count + supportGroup.Count;
+        if (totalCount == 0)
+        {
+            Debug.Log("[MinionCommander] Dismiss: no minions within range.");
+            return;
+        }
+
+        // Formation: three group centres spread sideways relative to player facing. Melee left, Ranged middle, Support right.
+        Vector3 forward = player.forward;
+        forward.y = 0f;
+        if (forward.sqrMagnitude < 0.001f) forward = Vector3.forward;
+        forward.Normalize();
+        Vector3 right = Vector3.Cross(Vector3.up, forward).normalized;
+        float gs = settings.dismissFormationGroupSpacing;
+
+        Vector3 meleeCentre   = player.position - right * gs;
+        Vector3 rangedCentre  = player.position;
+        Vector3 supportCentre = player.position + right * gs;
+
+        SendGroupToFormation(meleeGroup,   meleeCentre,   forward, right);
+        SendGroupToFormation(rangedGroup,  rangedCentre,  forward, right);
+        SendGroupToFormation(supportGroup, supportCentre, forward, right);
+
+        Debug.Log($"[MinionCommander] Dismiss: {totalCount} minion(s) sent to formation " +
+                  $"(Melee: {meleeGroup.Count}, Ranged: {rangedGroup.Count}, Support: {supportGroup.Count}).");
+    }
+
+    // Distributes a group of minions to staggered positions around a centre point.
+    private void SendGroupToFormation(List<MinionCore> group, Vector3 centre, Vector3 forward, Vector3 right)
+    {
+        if (group.Count == 0) return;
+
+        float spacing = settings.dismissFormationMemberSpacing;
+        // Offset each member alternately: 0, +1, -1, +2, -2, ...
+        for (int i = 0; i < group.Count; i++)
+        {
+            MinionCore minion = group[i];
+            int slot = i / 2 + 1;
+            float sign = (i % 2 == 0) ? -1f : 1f;
+            Vector3 offset = i == 0 ? Vector3.zero : right * (slot * sign * spacing);
+            Vector3 formationPos = centre + offset;
+            // Push formation slightly behind the player so minions don't end up inside the player.
+            formationPos -= forward * 1.5f;
+
+            minion.SetDismissCommand(formationPos, settings.dismissResumeFollowRange);
+            Debug.Log($"[MinionCommander] Dismiss: {minion.name} ({minion.RoleType}) → formation pos {formationPos}.");
         }
     }
 
-    // Recalls all controlled minions to the player.
-    public void RecallAll()
+    // Draws the call/dismiss range sphere in the editor for tuning.
+    private void OnDrawGizmosSelected()
     {
-        MinionCore[] minions = ResolveControlledMinions();
-        for (int i = 0; i < minions.Length; i++)
-        {
-            if (minions[i] == null) continue;
-            minions[i].SetRecallCommand();
-        }
+        if (settings == null) return;
+
+        Transform origin = player != null ? player : transform;
+        Color c = settings.callRangeGizmoColor;
+        Gizmos.color = c;
+        Gizmos.DrawWireSphere(origin.position, settings.callRange);
+        Gizmos.color = new Color(c.r, c.g, c.b, c.a * 0.15f);
+        Gizmos.DrawSphere(origin.position, settings.callRange);
     }
 
     // Resolves the best command target from lock-on, aim assist, and local cursor overlap.
@@ -555,10 +721,16 @@ public class PlayerMinionCommander : MonoBehaviour
         return Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
     }
 
-    private bool WasRecallPressedThisFrame()
+    private bool WasCallPressedThisFrame()
     {
-        if (recallAction != null) return recallAction.action.WasPressedThisFrame();
+        if (callAction != null) return callAction.action.WasPressedThisFrame();
         return Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame;
+    }
+
+    private bool WasDismissPressedThisFrame()
+    {
+        if (dismissAction != null) return dismissAction.action.WasPressedThisFrame();
+        return Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame;
     }
 
     // LOS check from the player to a potential command target.
