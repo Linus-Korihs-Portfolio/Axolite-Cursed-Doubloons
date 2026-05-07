@@ -144,7 +144,10 @@ public partial class MinionCore
         }
 
         // NavMesh drives around corners/obstacles while keeping command/state logic unchanged.
-        if (useNavMeshNavigation)
+        // AttackObject targets are solid NavMesh obstacles (breakable walls). Always use direct movement so the minion walks straight toward the wall and reaches melee range.
+        bool isAttackObjectCommand = currentCommand != null && currentCommand.Type == CommandType.AttackObject;
+
+        if (useNavMeshNavigation && !isAttackObjectCommand)
         {
             Vector3 stopPoint = targetPosition;
 

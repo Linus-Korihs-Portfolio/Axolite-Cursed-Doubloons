@@ -301,7 +301,8 @@ public class MinionAbilitySystem
         switch (ability.TargetType)
         {
             case TargetType.Enemy:
-                return target.CompareTag("Enemy");
+                // Enemy-type abilities can also be used on breakable objects — they deal damage the same way.
+                return target.CompareTag("Enemy") || target.CompareTag("Breakable");
 
             case TargetType.Ally:
                 return target.CompareTag("Ally") || (caster != null && target == caster);
