@@ -298,6 +298,7 @@ public partial class MinionCore
         };
     }
 
+
     // Makes the minion return to the player/follow behavior.
     public void SetFollowCommand()
     {

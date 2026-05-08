@@ -34,6 +34,12 @@ public class PlayerMinionCommanderSettings : ScriptableObject
     [Tooltip("Color of the call/dismiss range Gizmo sphere drawn in the editor.")]
     public Color callRangeGizmoColor = new Color(0.2f, 0.7f, 1f, 0.25f);
 
+    [Header("Formation Tracking")]
+    [Tooltip("How often (in seconds) dismissed formation slots are recomputed to track player movement and rotation.")]
+    public float formationUpdateInterval = 0.1f;
+    [Tooltip("Minimum distance (metres) a slot must move before its target position is updated. Reduces micro-jitter.")]
+    public float formationUpdateThreshold = 0.05f;
+
     [Header("Command Preview")]
     public bool enableCommandPreview = true;
     public Color previewNoTargetColor = new Color(0.65f, 0.65f, 0.65f, 1f);

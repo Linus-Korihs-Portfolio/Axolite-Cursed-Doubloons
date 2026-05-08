@@ -12,6 +12,14 @@ public class PlayerMinionCommander : MonoBehaviour
         Invalid
     }
 
+    // Stores a dismissed minion's local-space offset so it can track the player's movement and rotation.
+    private struct FormationSlot
+    {
+        public MinionCore Minion;
+        public Vector2 LocalXZ;           // x = right-axis offset, y = forward-axis offset, relative to player
+        public Vector3 LastIssuedWorldPos;
+    }
+
     [Header("References")]
     [SerializeField] private PlayerMinionCommanderSettings settings;
     [SerializeField] private GroundCursor cursor;
@@ -36,7 +44,12 @@ public class PlayerMinionCommander : MonoBehaviour
     private MinionCore[] cachedRuntimeArray = System.Array.Empty<MinionCore>();
     private bool runtimeListDirty = true;
 
+    // Formation tracking: dismissed minion slots relative to player position/facing.
+    private readonly List<FormationSlot> activeFormationSlots = new List<FormationSlot>();
+    private float nextFormationUpdateTime;
+
     private float nextAutoFindRefreshTime;
+    private PlayerAim playerAim;
     private MaterialPropertyBlock previewPropertyBlock;
     private Color lastAppliedPreviewColor;
     private bool hasAppliedPreviewColor;
@@ -48,6 +61,9 @@ public class PlayerMinionCommander : MonoBehaviour
     {
         if (cursor == null) cursor = GetComponentInChildren<GroundCursor>();
         if (player == null) player = transform;
+        // Resolve PlayerAim for formation facing. Search the player hierarchy first, then the scene.
+        playerAim = player.GetComponentInParent<PlayerAim>();
+        if (playerAim == null) playerAim = player.GetComponentInChildren<PlayerAim>();
         // Auto-pick preview renderers from cursor hierarchy if none were assigned.
         if ((previewRenderers == null || previewRenderers.Length == 0) && cursor != null)
         {
@@ -103,6 +119,14 @@ public class PlayerMinionCommander : MonoBehaviour
         if (runtimeMinions.Remove(minion))
             runtimeListDirty = true;
         minion.Died -= OnMinionDied;
+        for (int i = activeFormationSlots.Count - 1; i >= 0; i--)
+        {
+            if (activeFormationSlots[i].Minion == minion)
+            {
+                activeFormationSlots.RemoveAt(i);
+                break;
+            }
+        }
     }
 
     private void OnMinionDied(MinionCore minion)
@@ -153,7 +177,7 @@ public class PlayerMinionCommander : MonoBehaviour
             DismissMinions();
         }
 
-        // Re-enable follow for dismissed minions that have wandered out of dismiss range.
+        UpdateFormationSlots();
     }
 
     // Switches the active support action (Heal/Buff/Debuff) for all support minions.
@@ -306,6 +330,7 @@ public class PlayerMinionCommander : MonoBehaviour
         }
 
         Debug.Log($"[MinionCommander] Call wave fired — {count} minion(s) recalled (range: {settings.callRange}m).");
+        activeFormationSlots.Clear();
     }
 
     // Sends all in-range minions to typed formation positions around the player, then idles them.
@@ -346,10 +371,7 @@ public class PlayerMinionCommander : MonoBehaviour
         }
 
         // Formation: three group centres spread sideways relative to player facing. Melee left, Ranged middle, Support right.
-        Vector3 forward = player.forward;
-        forward.y = 0f;
-        if (forward.sqrMagnitude < 0.001f) forward = Vector3.forward;
-        forward.Normalize();
+        Vector3 forward = GetFormationForward();
         Vector3 right = Vector3.Cross(Vector3.up, forward).normalized;
         float gs = settings.dismissFormationGroupSpacing;
 
@@ -357,16 +379,17 @@ public class PlayerMinionCommander : MonoBehaviour
         Vector3 rangedCentre  = player.position;
         Vector3 supportCentre = player.position + right * gs;
 
-        SendGroupToFormation(meleeGroup,   meleeCentre,   forward, right);
-        SendGroupToFormation(rangedGroup,  rangedCentre,  forward, right);
-        SendGroupToFormation(supportGroup, supportCentre, forward, right);
+        activeFormationSlots.Clear();
+        SendGroupToFormation(meleeGroup,   meleeCentre,   forward, right, -gs);
+        SendGroupToFormation(rangedGroup,  rangedCentre,  forward, right,  0f);
+        SendGroupToFormation(supportGroup, supportCentre, forward, right, +gs);
 
         Debug.Log($"[MinionCommander] Dismiss: {totalCount} minion(s) sent to formation " +
                   $"(Melee: {meleeGroup.Count}, Ranged: {rangedGroup.Count}, Support: {supportGroup.Count}).");
     }
 
-    // Distributes a group of minions to staggered positions around a centre point.
-    private void SendGroupToFormation(List<MinionCore> group, Vector3 centre, Vector3 forward, Vector3 right)
+    // Distributes a group of minions to staggered positions around a centre point and records their local slots.
+    private void SendGroupToFormation(List<MinionCore> group, Vector3 centre, Vector3 forward, Vector3 right, float centreLateralOffset)
     {
         if (group.Count == 0) return;
 
@@ -377,14 +400,70 @@ public class PlayerMinionCommander : MonoBehaviour
             MinionCore minion = group[i];
             int slot = i / 2 + 1;
             float sign = (i % 2 == 0) ? -1f : 1f;
-            Vector3 offset = i == 0 ? Vector3.zero : right * (slot * sign * spacing);
-            Vector3 formationPos = centre + offset;
-            // Push formation slightly behind the player so minions don't end up inside the player.
-            formationPos -= forward * 1.5f;
+            float memberLateral = i == 0 ? 0f : slot * sign * spacing;
+            Vector3 formationPos = centre + right * memberLateral - forward * 1.5f;
 
             minion.SetDismissCommand(formationPos, settings.dismissResumeFollowRange);
             Debug.Log($"[MinionCommander] Dismiss: {minion.name} ({minion.RoleType}) → formation pos {formationPos}.");
+
+            activeFormationSlots.Add(new FormationSlot
+            {
+                Minion             = minion,
+                LocalXZ            = new Vector2(centreLateralOffset + memberLateral, -1.5f),
+                LastIssuedWorldPos = formationPos,
+            });
         }
+    }
+
+    // Recomputes world-space slot positions at formationUpdateInterval and pushes them to dismissed minions.
+    private void UpdateFormationSlots()
+    {
+        if (activeFormationSlots.Count == 0 || settings == null) return;
+        if (Time.time < nextFormationUpdateTime) return;
+        nextFormationUpdateTime = Time.time + settings.formationUpdateInterval;
+
+        Vector3 forward = GetFormationForward();
+        if (forward == Vector3.zero) return;
+        Vector3 right = Vector3.Cross(Vector3.up, forward).normalized;
+
+        float thresholdSq = settings.formationUpdateThreshold * settings.formationUpdateThreshold;
+
+        for (int i = activeFormationSlots.Count - 1; i >= 0; i--)
+        {
+            FormationSlot slot = activeFormationSlots[i];
+            if (slot.Minion == null)
+            {
+                activeFormationSlots.RemoveAt(i);
+                continue;
+            }
+
+            Vector3 newTarget = player.position
+                + right   * slot.LocalXZ.x
+                + forward * slot.LocalXZ.y;
+
+            if ((newTarget - slot.LastIssuedWorldPos).sqrMagnitude < thresholdSq) continue;
+
+            slot.Minion.SetDismissCommand(newTarget, settings.dismissResumeFollowRange);
+            slot.LastIssuedWorldPos = newTarget;
+            activeFormationSlots[i] = slot;
+        }
+    }
+
+    // Returns the player's movement-facing direction (XZ normalized) used for formation placement.
+    private Vector3 GetFormationForward()
+    {
+        Vector3 dir;
+        if (playerAim != null)
+        {
+            dir = playerAim.FacingDirection;
+        }
+        else
+        {
+            dir = player.forward;
+        }
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.001f) dir = Vector3.forward;
+        return dir.normalized;
     }
 
     // Draws the call/dismiss range sphere in the editor for tuning.
