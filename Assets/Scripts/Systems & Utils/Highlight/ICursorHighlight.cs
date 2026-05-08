@@ -1,2 +1,5 @@
 public interface ICursorHighlight
-{void SetHighlighted(bool on);}
+{
+    void SetHighlighted(bool on);
+    bool IsHighlighted { get; }
+}

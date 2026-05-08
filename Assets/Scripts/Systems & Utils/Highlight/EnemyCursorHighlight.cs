@@ -15,6 +15,9 @@ public class EnemyCursorHighlight : MonoBehaviour, ICursorHighlight
     // Cached ORIGINAL emission per renderer per sub-material
     private Color[][] originalEmission;
 
+    private bool isHighlighted;
+    public bool IsHighlighted => isHighlighted;
+
     private void Awake()
     {
         mpb = new MaterialPropertyBlock();
@@ -47,18 +50,21 @@ public class EnemyCursorHighlight : MonoBehaviour, ICursorHighlight
 
     public void SetHighlighted(bool on)
     {
+        isHighlighted = on;
+
         for (int r = 0; r < renderers.Length; r++)
         {
             var ren = renderers[r];
             if (!ren) continue;
 
-            // PropertyBlock is per renderer; we set emission for each material slot
-            ren.GetPropertyBlock(mpb);
-
             int matCount = ren.sharedMaterials != null ? ren.sharedMaterials.Length : 1;
 
             for (int m = 0; m < matCount; m++)
             {
+                // Use per-material blocks (same as DamageFlash) so both systems write to the
+                // same layer and the last writer wins cleanly.
+                ren.GetPropertyBlock(mpb, m);
+
                 Color baseE = (originalEmission[r] != null && m < originalEmission[r].Length) ? originalEmission[r][m] : Color.black;
                 Color addE  = highlightColor * intensity;
 
@@ -67,9 +73,8 @@ public class EnemyCursorHighlight : MonoBehaviour, ICursorHighlight
                     : baseE;
 
                 mpb.SetColor(EmissionColor, final);
+                ren.SetPropertyBlock(mpb, m);
             }
-
-            ren.SetPropertyBlock(mpb);
         }
     }
 }

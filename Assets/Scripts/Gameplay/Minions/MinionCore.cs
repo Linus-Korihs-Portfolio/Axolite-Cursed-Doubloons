@@ -77,6 +77,10 @@ public partial class MinionCore : MonoBehaviour
     private bool debugForceCombatPhase;
     private CombatPhase debugForcedCombatPhase;
 
+    // Tracks movement direction this frame so separation can allow sliding past other minions.
+    private bool wasMovingThisFrame;
+    private Vector3 lastMoveDir;
+
     [Header("Debug Visuals")]
     [SerializeField] private bool drawRoleRangeGizmos;
 
@@ -262,6 +266,7 @@ public partial class MinionCore : MonoBehaviour
         UpdateCombatPhase();
 
         // Execute the current state and combat phase.
+        wasMovingThisFrame = false;
         ExecuteCurrentState(currentTime);
 
         // Keep nearby minions from stacking into the same spot.

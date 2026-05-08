@@ -68,4 +68,10 @@ public class EnemyAISettings : ScriptableObject
     public bool RequireLOSToDetect = true;
     [Tooltip("Enemy will not attack targets it cannot see.")]
     public bool RequireLOSToAttack = true;
+
+    [Header("Physics")]
+    [Tooltip("Layers the enemy's Rigidbody should pass through (e.g. the Minion layer). " +
+             "Set this to the layer(s) used by minion colliders so the enemy is not blocked " +
+             "when approaching the player through a group of minions.")]
+    public LayerMask IgnoreCollisionMask;
 }

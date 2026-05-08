@@ -42,6 +42,18 @@ public class EnemyAI : MonoBehaviour
             // Freeze rotation only — Y position stays free so gravity pulls the enemy to the ground.
             rb.constraints = RigidbodyConstraints.FreezeRotation;
         }
+
+        // Allow the enemy to pass through minion colliders (configured via IgnoreCollisionMask)
+        // so it is never physically blocked when approaching the player through a group.
+        if (settings != null && settings.IgnoreCollisionMask != 0)
+        {
+            int myLayer = gameObject.layer;
+            for (int i = 0; i < 32; i++)
+            {
+                if ((settings.IgnoreCollisionMask.value & (1 << i)) != 0)
+                    Physics.IgnoreLayerCollision(myLayer, i, true);
+            }
+        }
     }
 
     private void OnDestroy()

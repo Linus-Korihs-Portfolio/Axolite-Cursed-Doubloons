@@ -168,6 +168,8 @@ public partial class MinionCore
 
         Vector3 direction = toTarget / Mathf.Max(distance, 0.0001f);
         transform.position += direction * GetRuntimeMoveSpeed() * Time.deltaTime;
+        wasMovingThisFrame = true;
+        lastMoveDir = direction;
         SmoothFaceDirection(direction);
     }
 
@@ -208,6 +210,8 @@ public partial class MinionCore
 
             Vector3 direction = toCorner.normalized;
             transform.position += direction * GetRuntimeMoveSpeed() * Time.deltaTime;
+            wasMovingThisFrame = true;
+            lastMoveDir = direction;
             SmoothFaceDirection(direction);
             return true;
         }
@@ -340,6 +344,19 @@ public partial class MinionCore
             float overlap = radius - distance;
             float weight = overlap / radius;
             push += dir * weight;
+        }
+
+        if (push.sqrMagnitude <= 0.000001f) return;
+
+        // When the minion is actively moving, remove the component of the separation push
+        // that directly opposes its movement direction. This lets minions slide past each
+        // other instead of blocking head-on, without disabling separation when idle.
+        if (wasMovingThisFrame && lastMoveDir.sqrMagnitude > 0.001f)
+        {
+            Vector3 md = lastMoveDir.normalized;
+            float along = Vector3.Dot(push, md);
+            if (along < 0f)
+                push -= md * along; // Strip anti-movement component
         }
 
         if (push.sqrMagnitude <= 0.000001f) return;

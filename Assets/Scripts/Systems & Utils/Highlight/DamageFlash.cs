@@ -21,6 +21,7 @@ public class DamageFlash : MonoBehaviour
     private Color[][] originalEmission;
     private float flashTimer;
     private bool isFlashing;
+    private ICursorHighlight cursorHighlight;
 
     private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
 
@@ -35,6 +36,8 @@ public class DamageFlash : MonoBehaviour
 
         if (stats == null)
             stats = GetComponentInParent<CombatantStats>() ?? GetComponentInChildren<CombatantStats>();
+
+        cursorHighlight = GetComponentInParent<ICursorHighlight>() ?? GetComponentInChildren<ICursorHighlight>();
     }
 
     private void OnEnable()
@@ -59,7 +62,9 @@ public class DamageFlash : MonoBehaviour
         if (flashTimer <= 0f)
         {
             isFlashing = false;
-            ApplyEmission(0f); // Ensure we land exactly on the original color
+            ApplyEmission(0f); // Restore to original emission
+            // Re-apply cursor highlight (per-material blocks) so it is not wiped by the flash restore.
+            cursorHighlight?.SetHighlighted(cursorHighlight.IsHighlighted);
         }
     }
 
