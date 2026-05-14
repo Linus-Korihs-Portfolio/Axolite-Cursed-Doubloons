@@ -96,7 +96,7 @@ public partial class MinionCore
                 toPlayer.y = 0f;
                 if (toPlayer.sqrMagnitude > dismissResumeRange * dismissResumeRange)
                 {
-                    Debug.Log($"[{name}] Dismiss: player out of range — resuming follow.");
+                    Log("Dismiss: player out of range — resuming follow.");
                     SetFollowCommand();
                     return;
                 }
@@ -131,6 +131,7 @@ public partial class MinionCore
             Transform autoEnemy = FindNearestAliveByTag(enemyTag, autoTargetRadius);
             if (autoEnemy != null)
             {
+                Log($"Auto-targeting enemy: {autoEnemy.name}");
                 SetAttackEnemyCommand(autoEnemy);
             }
         }
@@ -159,6 +160,7 @@ public partial class MinionCore
 
         if (bestTarget != null && IsSupportTargetValidForActiveMode(bestTarget))
         {
+            Log($"Auto-support target ({mode}): {bestTarget.name}");
             SetSupportCommand(bestTarget);
         }
     }
@@ -272,6 +274,7 @@ public partial class MinionCore
     // Immediately stops the minion and puts it into Idle.
     public void SetIdleCommand()
     {
+        Log("Command: Idle");
         ResetNavigationPath();
         ClearCommand();
         stateMachine.ForceState(MinionState.Idle);
@@ -280,6 +283,7 @@ public partial class MinionCore
     // Sends the minion to a world-space formation position, then idles it there.
     public void SetDismissCommand(Vector3 formationPosition, float resumeRange = 10f)
     {
+        Log($"Command: Dismiss to {formationPosition}");
         isDismissed = true;
         dismissResumeRange = Mathf.Max(0.5f, resumeRange);
         ResetNavigationPath();
@@ -302,6 +306,7 @@ public partial class MinionCore
     // Makes the minion return to the player/follow behavior.
     public void SetFollowCommand()
     {
+        Log($"Command: Follow {(followTarget != null ? followTarget.name : "null")}");
         isDismissed = false;
         ResetNavigationPath();
 
@@ -322,6 +327,7 @@ public partial class MinionCore
     // Makes the minion recall immediately.
     public void SetRecallCommand()
     {
+        Log("Command: Recall");
         isDismissed = false;
         ResetNavigationPath();
 
@@ -350,6 +356,7 @@ public partial class MinionCore
             return;
         }
 
+        Log($"Command: AttackEnemy → {target.name}");
         ResetNavigationPath();
 
         currentCommand = new MinionCommand
@@ -377,6 +384,7 @@ public partial class MinionCore
             return;
         }
 
+        Log($"Command: AttackObject → {target.name}");
         ResetNavigationPath();
 
         currentCommand = new MinionCommand
@@ -404,6 +412,7 @@ public partial class MinionCore
             return;
         }
 
+        Log($"Command: Support ({currentRole?.GetSupportMode()}) → {target.name}");
         ResetNavigationPath();
 
         currentCommand = new MinionCommand

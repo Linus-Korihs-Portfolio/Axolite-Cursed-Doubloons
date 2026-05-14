@@ -9,6 +9,9 @@ public abstract class AbilityBase
     public float Range { get; protected set; }
     public TargetType TargetType { get; protected set; }
 
+    // Set by MinionAbilitySystem; gates all Debug output inside Execute.
+    internal System.Action<string> Logger;
+
     protected float lastUseTime = -999f;
 
     // Checks if cooldown is ready. Attack speed shortens cooldowns.
@@ -71,7 +74,7 @@ public class MeleeAttackAbility : AbilityBase
             targetStats.ApplyDamage(damage);
         }
 
-        Debug.Log($"[{caster.name}] used {Id} on [{target.name}] for {damage} damage.");
+        Logger?.Invoke($"used {Id} on [{target.name}] for {damage} damage.");
     }
 }
 
@@ -124,7 +127,7 @@ public class RangedAttackAbility : AbilityBase
             targetStats.ApplyDamage(damage);
         }
 
-        Debug.Log($"[{caster.name}] fired {Id} at [{target.name}] for {damage} damage (instant fallback).");
+        Logger?.Invoke($"fired {Id} at [{target.name}] for {damage} damage (instant fallback).");
     }
 }
 
@@ -159,7 +162,7 @@ public class SupportAbility : AbilityBase
                     targetStats.Heal(healAmount);
                 }
 
-                Debug.Log($"[{caster.name}] cast Heal on [{target.name}] for {healAmount} HP.");
+                Logger?.Invoke($"cast Heal on [{target.name}] for {healAmount} HP.");
                 break;
             }
 
@@ -175,7 +178,7 @@ public class SupportAbility : AbilityBase
                     }
                 }
 
-                Debug.Log($"[{caster.name}] cast {supportMode} on [{target.name}].");
+                Logger?.Invoke($"cast {supportMode} on [{target.name}].");
                 break;
             }
         }
@@ -189,6 +192,19 @@ public class MinionAbilitySystem
 
     public IReadOnlyList<AbilityBase> EquippedAbilities => equippedAbilities;
 
+    // Assigned by MinionCore.Initialize(); calls Log() when enableLogs is true.
+    // Setting this propagates the logger to all currently equipped abilities.
+    private System.Action<string> _logger;
+    public System.Action<string> Logger
+    {
+        get => _logger;
+        set
+        {
+            _logger = value;
+            foreach (AbilityBase a in equippedAbilities) a.Logger = value;
+        }
+    }
+
     public void Clear()
     {
         equippedAbilities.Clear();
@@ -197,6 +213,7 @@ public class MinionAbilitySystem
     public void AddAbility(AbilityBase ability)
     {
         if (ability == null) return;
+        ability.Logger = _logger;
         equippedAbilities.Add(ability);
     }
 

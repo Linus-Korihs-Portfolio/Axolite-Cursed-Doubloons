@@ -3,7 +3,7 @@ using UnityEngine;
 // Top-level enum shared by EnemyAISettings and EnemyAI.
 public enum EnemyType { Melee, Ranged }
 
-[CreateAssetMenu(menuName = "SO/Combat/Enemy AI Settings")]
+[CreateAssetMenu(menuName = "SO/Combat/Enemy/Test")]
 public class EnemyAISettings : ScriptableObject
 {
     [Header("Type")]

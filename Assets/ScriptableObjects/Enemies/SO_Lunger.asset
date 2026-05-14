@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc8be10b75ec98e42a5646a6583331b4, type: 3}
+  m_Name: SO_Lunger
+  m_EditorClassIdentifier: Assembly-CSharp::LungerEnemySettings
+  PlayerTag: Player
+  MinionTag: Ally
+  DetectRadius: 12
+  ForgetRadius: 18
+  DetectMask:
+    serializedVersion: 2
+    m_Bits: 520
+  RequireLOSToDetect: 1
+  LosBlockMask:
+    serializedVersion: 2
+    m_Bits: 192
+  LosHeightOffset: 0.8
+  RequireLOSToAttack: 1
+  MoveSpeed: 3.5
+  RotationSpeed: 8
+  BiteRange: 1.5
+  BiteDamage: 10
+  BiteCooldown: 1.2
+  LungeMinDistance: 3.5
+  LungeSpeed: 12
+  LungeMaxDistance: 8
+  LungeDamage: 15
+  LungeHitRadius: 1.6
+  LungeWindupDuration: 0.4
+  LungeRecoveryDuration: 1.2
+  LungeCooldown: 4
+  UseNavMesh: 1
+  NavRepathInterval: 0.3
+  NavTargetSampleRadius: 1.5
+  NavWaypointTolerance: 0.3
+  IgnoreCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  WallMask:
+    serializedVersion: 2
+    m_Bits: 192

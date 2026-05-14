@@ -50,7 +50,7 @@ public partial class MinionCore
             // Recall complete: minion has physically reached the player — switch to steady Follow.
             if (currentCommand != null && currentCommand.Type == CommandType.Recall)
             {
-                Debug.Log($"[{name}] Recall complete — switching to Follow.");
+                Log("Recall complete — switching to Follow.");
                 SetFollowCommand();
             }
 
@@ -282,6 +282,7 @@ public partial class MinionCore
         // Dismiss: path to formation failed — keep dismissed flag, go idle at current position.
         if (isDismissed)
         {
+            Log("Path failure (Dismiss) — going Idle at current position.");
             ClearCommand();
             stateMachine.ForceState(MinionState.Idle);
             return;
@@ -293,10 +294,12 @@ public partial class MinionCore
             && currentCommand.Type != CommandType.Recall
             && IsValidTarget(followTarget))
         {
+            Log("Path failure — recalling to player.");
             SetRecallCommand();
             return;
         }
 
+        Log("Path failure — clearing command, going Idle.");
         ClearCommand();
         stateMachine.ForceState(MinionState.Idle);
     }
@@ -439,6 +442,7 @@ public partial class MinionCore
 
     private void HandleBlockedLineOfSight()
     {
+        Log("Line of sight blocked — returning to Follow.");
         ResetNavigationPath();
 
         if (currentCommand != null)
@@ -490,9 +494,28 @@ public partial class MinionCore
 
     private void UpdateDebugData()
     {
-        currentState = stateMachine.CurrentState;
+        currentState       = stateMachine.CurrentState;
         currentCombatPhase = combatPhaseController.CurrentPhase;
         currentCommandType = currentCommand != null ? currentCommand.Type : CommandType.None;
+
+        if (currentState != _prevLogState)
+        {
+            Log($"State: {_prevLogState} → {currentState}");
+            _prevLogState = currentState;
+        }
+
+        if (currentCombatPhase != _prevLogPhase)
+        {
+            Log($"CombatPhase: {_prevLogPhase} → {currentCombatPhase}");
+            _prevLogPhase = currentCombatPhase;
+        }
+
+        if (currentCommandType != _prevLogCommand)
+        {
+            string targetName = currentCommand?.Target is UnityEngine.Object obj ? obj.name : "none";
+            Log($"Command: {_prevLogCommand} → {currentCommandType} (target: {targetName})");
+            _prevLogCommand = currentCommandType;
+        }
     }
 
     private float GetDistanceToTarget(Transform target)
@@ -605,6 +628,7 @@ public partial class MinionCore
 
     private void HandleMissingCombatTarget()
     {
+        Log("Combat target missing or dead — clearing command, going Idle.");
         ResetNavigationPath();
 
         if (currentCommand != null)

@@ -84,11 +84,19 @@ public partial class MinionCore : MonoBehaviour
     [Header("Debug Visuals")]
     [SerializeField] private bool drawRoleRangeGizmos;
 
+    [Header("Debug")]
+    [SerializeField] private bool enableLogs;
+
     [Header("Runtime Debug")]
     [SerializeField] private MinionState currentState;
     [SerializeField] private CombatPhase currentCombatPhase;
     [SerializeField] private CommandType currentCommandType;
     [SerializeField] private float currentDistanceToTarget;
+
+    // Previous-frame values used solely to detect and log transitions.
+    private MinionState      _prevLogState   = MinionState.Idle;
+    private CombatPhase      _prevLogPhase   = CombatPhase.None;
+    private CommandType      _prevLogCommand = CommandType.None;
 
     private IMinionRole currentRole;
     private MinionCommand currentCommand;
@@ -127,9 +135,15 @@ public partial class MinionCore : MonoBehaviour
 
     private void OnCombatantDied()
     {
+        Log("Died.");
         ClearCommand();
         stateMachine.ForceState(MinionState.Idle);
         Died?.Invoke(this);
+    }
+
+    internal void Log(string msg)
+    {
+        if (enableLogs) Debug.Log($"[Minion:{name}] {msg}");
     }
 
     private void Initialize()
@@ -145,6 +159,7 @@ public partial class MinionCore : MonoBehaviour
         combatPhaseController = new MinionCombatPhaseController();
         tickScheduler = new MinionTickScheduler();
         abilitySystem = new MinionAbilitySystem();
+        abilitySystem.Logger = Log;
         sharedCombatStats = GetComponent<CombatantStats>();
         navPath = new NavMeshPath();
 

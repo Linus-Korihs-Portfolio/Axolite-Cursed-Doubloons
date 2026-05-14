@@ -21,6 +21,9 @@ public class CameraCM : MonoBehaviour
     [SerializeField] public InputActionReference lookAction;
     [SerializeField] public InputActionReference lockOnAction;
 
+    [Header("Debug")]
+    [SerializeField] private bool enableLogs;
+
     private bool isLockedOn;
     private GroundCursor cursor; // reference to GroundCursor for optional interaction (e.g. force unlock when player teleports)
     private Transform lockTarget;
@@ -62,6 +65,8 @@ public class CameraCM : MonoBehaviour
     private float LockOnVertical => settings.lockOnVertical;
     private float LockOnVerticalSmooth => settings.lockOnVerticalSmooth;
     private float LockOnMinDistance => settings.lockOnMinDistance;
+
+    private void Log(string msg) { if (enableLogs) Debug.Log(msg); }
 
     private void OnEnable()
     {
@@ -170,7 +175,7 @@ public class CameraCM : MonoBehaviour
     private void OnToggle(InputAction.CallbackContext _)
     {
         SetMode(!isThird, instant: false);
-        Debug.Log($"Camera mode toggled. Now in {(isThird ? "third-person" : "top-down")} mode.");
+        Log($"Camera mode toggled. Now in {(isThird ? "third-person" : "top-down")} mode.");
     }
 
     private void SetMode(bool third, bool instant)
@@ -194,7 +199,7 @@ public class CameraCM : MonoBehaviour
             v.Value = targetVertical;
             orbital.VerticalAxis = v;
         }
-        Debug.Log($"SetMode -> targetRadius:{targetRadius}, targetVertical:{targetVertical} | currentRadius:{orbital.Radius}, currentVertical:{orbital.VerticalAxis.Value}");
+        Log($"SetMode -> targetRadius:{targetRadius}, targetVertical:{targetVertical} | currentRadius:{orbital.Radius}, currentVertical:{orbital.VerticalAxis.Value}");
     }
 
     private void OnLockOn(InputAction.CallbackContext _)

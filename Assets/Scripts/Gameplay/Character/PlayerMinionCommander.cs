@@ -37,6 +37,9 @@ public class PlayerMinionCommander : MonoBehaviour
     [Header("Command Preview")]
     [SerializeField] private Renderer[] previewRenderers;
 
+    [Header("Debug")]
+    [SerializeField] private bool enableLogs;
+
     private readonly Collider[] commandHits = new Collider[32];
 
     // Runtime list of live minions — cleared/updated as minions die or are registered.
@@ -56,6 +59,8 @@ public class PlayerMinionCommander : MonoBehaviour
     private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
     private static readonly int ColorId = Shader.PropertyToID("_Color");
     private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
+
+    private void Log(string msg) { if (enableLogs) Debug.Log(msg); }
 
     private void Awake()
     {
@@ -207,7 +212,7 @@ public class PlayerMinionCommander : MonoBehaviour
                 if (minions[i] != null) minions[i].SetIdleCommand();
             }
 
-            Debug.Log("[MinionCommander] Order: no target — all minions set to idle.");
+            Log("[MinionCommander] Order: no target — all minions set to idle.");
             return;
         }
 
@@ -223,11 +228,11 @@ public class PlayerMinionCommander : MonoBehaviour
             if (chosen != null)
             {
                 chosen.SetAttackEnemyCommand(target);
-                Debug.Log($"[MinionCommander] Order: {chosen.name} ({chosen.RoleType}) → attack enemy '{target.name}'.");
+                Log($"[MinionCommander] Order: {chosen.name} ({chosen.RoleType}) → attack enemy '{target.name}'.");
             }
             else
             {
-                Debug.Log($"[MinionCommander] Order: no available minion to attack '{target.name}' (all already engaged).");
+                Log($"[MinionCommander] Order: no available minion to attack '{target.name}' (all already engaged).");
             }
 
             return;
@@ -239,7 +244,7 @@ public class PlayerMinionCommander : MonoBehaviour
             if (chosen != null)
             {
                 chosen.SetAttackObjectCommand(target);
-                Debug.Log($"[MinionCommander] Order: {chosen.name} ({chosen.RoleType}) → attack object '{target.name}'.");
+                Log($"[MinionCommander] Order: {chosen.name} ({chosen.RoleType}) → attack object '{target.name}'.");
             }
 
             return;
@@ -256,7 +261,7 @@ public class PlayerMinionCommander : MonoBehaviour
                 if (minion.CanAcceptSupportTarget(target))
                 {
                     minion.SetSupportCommand(target);
-                    Debug.Log($"[MinionCommander] Order: {minion.name} (Support) → support ally '{target.name}'.");
+                    Log($"[MinionCommander] Order: {minion.name} (Support) → support ally '{target.name}'.");
                     return;
                 }
             }
@@ -326,10 +331,10 @@ public class PlayerMinionCommander : MonoBehaviour
 
             minion.SetRecallCommand();
             count++;
-            Debug.Log($"[MinionCommander] Call: {minion.name} ({minion.RoleType}) recalled to player.");
+            Log($"[MinionCommander] Call: {minion.name} ({minion.RoleType}) recalled to player.");
         }
 
-        Debug.Log($"[MinionCommander] Call wave fired — {count} minion(s) recalled (range: {settings.callRange}m).");
+        Log($"[MinionCommander] Call wave fired — {count} minion(s) recalled (range: {settings.callRange}m).");
         activeFormationSlots.Clear();
     }
 
@@ -366,7 +371,7 @@ public class PlayerMinionCommander : MonoBehaviour
         int totalCount = meleeGroup.Count + rangedGroup.Count + supportGroup.Count;
         if (totalCount == 0)
         {
-            Debug.Log("[MinionCommander] Dismiss: no minions within range.");
+            Log("[MinionCommander] Dismiss: no minions within range.");
             return;
         }
 
@@ -384,8 +389,8 @@ public class PlayerMinionCommander : MonoBehaviour
         SendGroupToFormation(rangedGroup,  rangedCentre,  forward, right,  0f);
         SendGroupToFormation(supportGroup, supportCentre, forward, right, +gs);
 
-        Debug.Log($"[MinionCommander] Dismiss: {totalCount} minion(s) sent to formation " +
-                  $"(Melee: {meleeGroup.Count}, Ranged: {rangedGroup.Count}, Support: {supportGroup.Count}).");
+        Log($"[MinionCommander] Dismiss: {totalCount} minion(s) sent to formation " +
+            $"(Melee: {meleeGroup.Count}, Ranged: {rangedGroup.Count}, Support: {supportGroup.Count}).");
     }
 
     // Distributes a group of minions to staggered positions around a centre point and records their local slots.
@@ -404,7 +409,7 @@ public class PlayerMinionCommander : MonoBehaviour
             Vector3 formationPos = centre + right * memberLateral - forward * 1.5f;
 
             minion.SetDismissCommand(formationPos, settings.dismissResumeFollowRange);
-            Debug.Log($"[MinionCommander] Dismiss: {minion.name} ({minion.RoleType}) → formation pos {formationPos}.");
+            Log($"[MinionCommander] Dismiss: {minion.name} ({minion.RoleType}) → formation pos {formationPos}.");
 
             activeFormationSlots.Add(new FormationSlot
             {

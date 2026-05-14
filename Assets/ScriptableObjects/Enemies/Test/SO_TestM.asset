@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 781ab187d01c3be45bcb4a4722f54833, type: 3}
-  m_Name: SO_EnemyAI_Melee
+  m_Name: SO_TestM
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAISettings
   EnemyType: 0
   PlayerTag: Player
