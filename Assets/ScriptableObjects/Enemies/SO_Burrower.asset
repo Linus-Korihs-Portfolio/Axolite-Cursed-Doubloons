@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae27029cc3df2f747bf0180f76123367, type: 3}
+  m_Name: SO_Burrower
+  m_EditorClassIdentifier: Assembly-CSharp::BurrowerEnemySettings
+  PlayerTag: Player
+  MinionTag: Ally
+  DetectRadius: 14
+  ForgetRadius: 20
+  DetectMask:
+    serializedVersion: 2
+    m_Bits: 520
+  SnapRadius: 1.2
+  SnapDamage: 8
+  SnapPauseDuration: 0.3
+  EmergeRiseSpeed: 5
+  FlySpeed: 7
+  HoverHeight: 5
+  RotationSpeed: 8
+  DiveSpeed: 9
+  DiveDamage: 12
+  DiveHitDistance: 1.2
+  DiveLandedDuration: 0.8
+  GrabDescentSpeed: 8
+  GrabDamagePerSecond: 20
+  GrabDuration: 4
+  CarryHeight: 6
+  BurrowHealthThreshold: 0.3
+  BurrowDescentSpeed: 5
+  BurrowRestDuration: 3
+  BurrowDepth: 1.5

@@ -8,7 +8,8 @@ public enum CommandType
     Recall,
     AttackEnemy,
     AttackObject,
-    SupportTarget
+    SupportTarget,
+    Dismiss  // Player dismissed the minion to a formation position; blocks auto-combat.
 }
 
 // Global state of the minion (very small on purpose)

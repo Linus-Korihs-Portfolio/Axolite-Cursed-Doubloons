@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +12,14 @@ public class PlayerMinionCommander : MonoBehaviour
         Invalid
     }
 
+    // Stores a dismissed minion's local-space offset so it can track the player's movement and rotation.
+    private struct FormationSlot
+    {
+        public MinionCore Minion;
+        public Vector2 LocalXZ;           // x = right-axis offset, y = forward-axis offset, relative to player
+        public Vector3 LastIssuedWorldPos;
+    }
+
     [Header("References")]
     [SerializeField] private PlayerMinionCommanderSettings settings;
     [SerializeField] private GroundCursor cursor;
@@ -18,7 +27,8 @@ public class PlayerMinionCommander : MonoBehaviour
 
     [Header("Input")]
     [SerializeField] private InputActionReference commandAction;
-    [SerializeField] private InputActionReference recallAction;
+    [SerializeField] private InputActionReference callAction;
+    [SerializeField] private InputActionReference dismissAction;
 
 
     [Header("Minion Selection")]
@@ -27,9 +37,22 @@ public class PlayerMinionCommander : MonoBehaviour
     [Header("Command Preview")]
     [SerializeField] private Renderer[] previewRenderers;
 
+    [Header("Debug")]
+    [SerializeField] private bool enableLogs;
+
     private readonly Collider[] commandHits = new Collider[32];
-    private MinionCore[] cachedAutoMinions;
+
+    // Runtime list of live minions — cleared/updated as minions die or are registered.
+    private readonly List<MinionCore> runtimeMinions = new List<MinionCore>();
+    private MinionCore[] cachedRuntimeArray = System.Array.Empty<MinionCore>();
+    private bool runtimeListDirty = true;
+
+    // Formation tracking: dismissed minion slots relative to player position/facing.
+    private readonly List<FormationSlot> activeFormationSlots = new List<FormationSlot>();
+    private float nextFormationUpdateTime;
+
     private float nextAutoFindRefreshTime;
+    private PlayerAim playerAim;
     private MaterialPropertyBlock previewPropertyBlock;
     private Color lastAppliedPreviewColor;
     private bool hasAppliedPreviewColor;
@@ -37,10 +60,15 @@ public class PlayerMinionCommander : MonoBehaviour
     private static readonly int ColorId = Shader.PropertyToID("_Color");
     private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
 
+    private void Log(string msg) { if (enableLogs) Debug.Log(msg); }
+
     private void Awake()
     {
         if (cursor == null) cursor = GetComponentInChildren<GroundCursor>();
         if (player == null) player = transform;
+        // Resolve PlayerAim for formation facing. Search the player hierarchy first, then the scene.
+        playerAim = player.GetComponentInParent<PlayerAim>();
+        if (playerAim == null) playerAim = player.GetComponentInChildren<PlayerAim>();
         // Auto-pick preview renderers from cursor hierarchy if none were assigned.
         if ((previewRenderers == null || previewRenderers.Length == 0) && cursor != null)
         {
@@ -58,29 +86,80 @@ public class PlayerMinionCommander : MonoBehaviour
 
     // Exposed for editor display only.
     public InputActionReference CommandAction => commandAction;
-    public InputActionReference RecallAction => recallAction;
+    public InputActionReference CallAction    => callAction;
+    public InputActionReference DismissAction => dismissAction;
 
     private void Start()
     {
-        // Auto-populate the controlled minions list so it's visible in the inspector at runtime.
-        if (autoFindMinionsIfEmpty && (controlledMinions == null || controlledMinions.Length == 0))
+        // Register manually assigned minions first.
+        if (controlledMinions != null)
         {
-            controlledMinions = FindObjectsByType<MinionCore>(FindObjectsSortMode.None);
-            cachedAutoMinions = controlledMinions;
-            nextAutoFindRefreshTime = Time.time + Mathf.Max(0.05f, settings != null ? settings.autoFindRefreshInterval : 5f);
+            for (int i = 0; i < controlledMinions.Length; i++)
+                RegisterMinion(controlledMinions[i]);
         }
+
+        // Auto-find minions only when none were manually assigned.
+        if (autoFindMinionsIfEmpty && runtimeMinions.Count == 0)
+            RefreshAutoFoundMinions();
+    }
+
+    private void OnDestroy()
+    {
+        for (int i = runtimeMinions.Count - 1; i >= 0; i--)
+            UnregisterMinion(runtimeMinions[i]);
+    }
+
+    // Register a minion and subscribe to its death event.
+    public void RegisterMinion(MinionCore minion)
+    {
+        if (minion == null || runtimeMinions.Contains(minion)) return;
+        runtimeMinions.Add(minion);
+        runtimeListDirty = true;
+        minion.Died += OnMinionDied;
+    }
+
+    private void UnregisterMinion(MinionCore minion)
+    {
+        if (minion == null) return;
+        if (runtimeMinions.Remove(minion))
+            runtimeListDirty = true;
+        minion.Died -= OnMinionDied;
+        for (int i = activeFormationSlots.Count - 1; i >= 0; i--)
+        {
+            if (activeFormationSlots[i].Minion == minion)
+            {
+                activeFormationSlots.RemoveAt(i);
+                break;
+            }
+        }
+    }
+
+    private void OnMinionDied(MinionCore minion)
+    {
+        UnregisterMinion(minion);
+    }
+
+    private void RefreshAutoFoundMinions()
+    {
+        MinionCore[] found = FindObjectsByType<MinionCore>(FindObjectsSortMode.None);
+        for (int i = 0; i < found.Length; i++)
+            RegisterMinion(found[i]);
+
+        nextAutoFindRefreshTime = Time.time + Mathf.Max(0.05f, settings != null ? settings.autoFindRefreshInterval : 5f);
     }
 
     private void OnEnable()
     {
         if (commandAction != null) commandAction.action.Enable();
-        if (recallAction != null) recallAction.action.Enable();
+        if (callAction    != null) callAction.action.Enable();
+        if (dismissAction != null) dismissAction.action.Enable();
     }
 
     private void OnDisable()
     {
         if (commandAction != null) commandAction.action.Disable();
-        if (recallAction != null) recallAction.action.Disable();
+        if (callAction    != null) callAction.action.Disable();
+        if (dismissAction != null) dismissAction.action.Disable();
     }
 
     private void Update()
@@ -90,13 +169,20 @@ public class PlayerMinionCommander : MonoBehaviour
 
         if (WasCommandPressedThisFrame())
         {
-            IssueCommandFromCursor();
+            OrderNextMinion();
         }
 
-        if (WasRecallPressedThisFrame())
+        if (WasCallPressedThisFrame())
         {
-            RecallAll();
+            CallMinions();
         }
+
+        if (WasDismissPressedThisFrame())
+        {
+            DismissMinions();
+        }
+
+        UpdateFormationSlots();
     }
 
     // Switches the active support action (Heal/Buff/Debuff) for all support minions.
@@ -111,72 +197,291 @@ public class PlayerMinionCommander : MonoBehaviour
         }
     }
 
-    // Issues a command based on the currently hovered/locked cursor target.
-    public void IssueCommandFromCursor()
+    // Issues an attack order to ONE minion per press. Priority is Melee → Ranged → Support, then nearest to farthest within each role. Cycles through available targets on repeated presses.
+    public void OrderNextMinion()
     {
         MinionCore[] minions = ResolveControlledMinions();
         if (minions.Length == 0 || cursor == null) return;
 
         Transform target = ResolveCommandTarget();
-        if (target == null) return;
+        if (target == null)
+        {
+            // No valid target — stop all minions.
+            for (int i = 0; i < minions.Length; i++)
+            {
+                if (minions[i] != null) minions[i].SetIdleCommand();
+            }
+
+            Log("[MinionCommander] Order: no target — all minions set to idle.");
+            return;
+        }
 
         string enemyTagValue = settings.enemyTag;
         string breakableTagValue = settings.breakableTag;
-        bool isEnemy = HasTag(target, enemyTagValue);
+        bool isEnemy     = HasTag(target, enemyTagValue);
         bool isBreakable = HasTag(target, breakableTagValue);
         bool isAllyMinion = target.GetComponentInParent<MinionCore>() != null && target != player;
+
+        if (isEnemy)
+        {
+            MinionCore chosen = PickNextAttacker(minions, target);
+            if (chosen != null)
+            {
+                chosen.SetAttackEnemyCommand(target);
+                Log($"[MinionCommander] Order: {chosen.name} ({chosen.RoleType}) → attack enemy '{target.name}'.");
+            }
+            else
+            {
+                Log($"[MinionCommander] Order: no available minion to attack '{target.name}' (all already engaged).");
+            }
+
+            return;
+        }
+
+        if (isBreakable)
+        {
+            MinionCore chosen = PickNextAttacker(minions, target, requireEnemy: false);
+            if (chosen != null)
+            {
+                chosen.SetAttackObjectCommand(target);
+                Log($"[MinionCommander] Order: {chosen.name} ({chosen.RoleType}) → attack object '{target.name}'.");
+            }
+
+            return;
+        }
+
+        if (isAllyMinion)
+        {
+            // Support minions can be ordered to support an ally.
+            for (int i = 0; i < minions.Length; i++)
+            {
+                MinionCore minion = minions[i];
+                if (minion == null || minion.RoleType != MinionRoleType.Support) continue;
+
+                if (minion.CanAcceptSupportTarget(target))
+                {
+                    minion.SetSupportCommand(target);
+                    Log($"[MinionCommander] Order: {minion.name} (Support) → support ally '{target.name}'.");
+                    return;
+                }
+            }
+        }
+    }
+
+    // Returns the nearest available attacker in Melee → Ranged → Support priority.
+    private MinionCore PickNextAttacker(MinionCore[] minions, Transform target, bool requireEnemy = true)
+    {
+        MinionCore bestMelee   = null;
+        float bestMeleeSq      = float.PositiveInfinity;
+        MinionCore bestRanged  = null;
+        float bestRangedSq     = float.PositiveInfinity;
+        MinionCore bestSupport = null;
+        float bestSupportSq    = float.PositiveInfinity;
 
         for (int i = 0; i < minions.Length; i++)
         {
             MinionCore minion = minions[i];
             if (minion == null) continue;
 
-            if (isEnemy)
-            {
-                if (minion.RoleType == MinionRoleType.Support)
-                {
-                    if (minion.ActiveSupportMode == SupportMode.Debuff)
-                    {
-                        minion.SetSupportCommand(target);
-                    }
-                }
-                else
-                {
-                    minion.SetAttackEnemyCommand(target);
-                }
+            // Skip minions already attacking this exact target.
+            if (minion.IsTargeting(target)) continue;
 
-                continue;
+            // Support minions can only attack in debuff mode when requireEnemy is true.
+            if (requireEnemy && minion.RoleType == MinionRoleType.Support)
+            {
+                if (minion.ActiveSupportMode != SupportMode.Debuff) continue;
             }
 
-            if (isBreakable)
-            {
-                if (minion.RoleType != MinionRoleType.Support)
-                {
-                    minion.SetAttackObjectCommand(target);
-                }
+            float sq = (minion.transform.position - target.position).sqrMagnitude;
 
-                continue;
-            }
-
-            if (isAllyMinion)
+            switch (minion.RoleType)
             {
-                if (minion.RoleType == MinionRoleType.Support)
-                {
-                    minion.SetSupportCommand(target);
-                }
+                case MinionRoleType.Melee:
+                    if (sq < bestMeleeSq)  { bestMeleeSq   = sq; bestMelee   = minion; }
+                    break;
+                case MinionRoleType.Ranged:
+                    if (sq < bestRangedSq) { bestRangedSq  = sq; bestRanged  = minion; }
+                    break;
+                case MinionRoleType.Support:
+                    if (sq < bestSupportSq){ bestSupportSq = sq; bestSupport = minion; }
+                    break;
             }
+        }
+
+        return bestMelee ?? bestRanged ?? bestSupport;
+    }
+
+    // Sends an impulse wave: all minions within callRange resume following the player.
+    public void CallMinions()
+    {
+        MinionCore[] minions = ResolveControlledMinions();
+        if (minions.Length == 0) return;
+
+        float rangeSq = settings.callRange * settings.callRange;
+        int count = 0;
+
+        for (int i = 0; i < minions.Length; i++)
+        {
+            MinionCore minion = minions[i];
+            if (minion == null) continue;
+
+            Vector3 delta = minion.transform.position - player.position;
+            delta.y = 0f;
+            if (delta.sqrMagnitude > rangeSq) continue;
+
+            minion.SetRecallCommand();
+            count++;
+            Log($"[MinionCommander] Call: {minion.name} ({minion.RoleType}) recalled to player.");
+        }
+
+        Log($"[MinionCommander] Call wave fired — {count} minion(s) recalled (range: {settings.callRange}m).");
+        activeFormationSlots.Clear();
+    }
+
+    // Sends all in-range minions to typed formation positions around the player, then idles them.
+    public void DismissMinions()
+    {
+        MinionCore[] minions = ResolveControlledMinions();
+        if (minions.Length == 0) return;
+
+        float rangeSq = settings.callRange * settings.callRange;
+
+        // Collect affected minions per role.
+        var meleeGroup   = new List<MinionCore>();
+        var rangedGroup  = new List<MinionCore>();
+        var supportGroup = new List<MinionCore>();
+
+        for (int i = 0; i < minions.Length; i++)
+        {
+            MinionCore minion = minions[i];
+            if (minion == null) continue;
+
+            Vector3 delta = minion.transform.position - player.position;
+            delta.y = 0f;
+            if (delta.sqrMagnitude > rangeSq) continue;
+
+            switch (minion.RoleType)
+            {
+                case MinionRoleType.Melee:   meleeGroup.Add(minion);   break;
+                case MinionRoleType.Ranged:  rangedGroup.Add(minion);  break;
+                case MinionRoleType.Support: supportGroup.Add(minion); break;
+            }
+        }
+
+        int totalCount = meleeGroup.Count + rangedGroup.Count + supportGroup.Count;
+        if (totalCount == 0)
+        {
+            Log("[MinionCommander] Dismiss: no minions within range.");
+            return;
+        }
+
+        // Formation: three group centres spread sideways relative to player facing. Melee left, Ranged middle, Support right.
+        Vector3 forward = GetFormationForward();
+        Vector3 right = Vector3.Cross(Vector3.up, forward).normalized;
+        float gs = settings.dismissFormationGroupSpacing;
+
+        Vector3 meleeCentre   = player.position - right * gs;
+        Vector3 rangedCentre  = player.position;
+        Vector3 supportCentre = player.position + right * gs;
+
+        activeFormationSlots.Clear();
+        SendGroupToFormation(meleeGroup,   meleeCentre,   forward, right, -gs);
+        SendGroupToFormation(rangedGroup,  rangedCentre,  forward, right,  0f);
+        SendGroupToFormation(supportGroup, supportCentre, forward, right, +gs);
+
+        Log($"[MinionCommander] Dismiss: {totalCount} minion(s) sent to formation " +
+            $"(Melee: {meleeGroup.Count}, Ranged: {rangedGroup.Count}, Support: {supportGroup.Count}).");
+    }
+
+    // Distributes a group of minions to staggered positions around a centre point and records their local slots.
+    private void SendGroupToFormation(List<MinionCore> group, Vector3 centre, Vector3 forward, Vector3 right, float centreLateralOffset)
+    {
+        if (group.Count == 0) return;
+
+        float spacing = settings.dismissFormationMemberSpacing;
+        // Offset each member alternately: 0, +1, -1, +2, -2, ...
+        for (int i = 0; i < group.Count; i++)
+        {
+            MinionCore minion = group[i];
+            int slot = i / 2 + 1;
+            float sign = (i % 2 == 0) ? -1f : 1f;
+            float memberLateral = i == 0 ? 0f : slot * sign * spacing;
+            Vector3 formationPos = centre + right * memberLateral - forward * 1.5f;
+
+            minion.SetDismissCommand(formationPos, settings.dismissResumeFollowRange);
+            Log($"[MinionCommander] Dismiss: {minion.name} ({minion.RoleType}) → formation pos {formationPos}.");
+
+            activeFormationSlots.Add(new FormationSlot
+            {
+                Minion             = minion,
+                LocalXZ            = new Vector2(centreLateralOffset + memberLateral, -1.5f),
+                LastIssuedWorldPos = formationPos,
+            });
         }
     }
 
-    // Recalls all controlled minions to the player.
-    public void RecallAll()
+    // Recomputes world-space slot positions at formationUpdateInterval and pushes them to dismissed minions.
+    private void UpdateFormationSlots()
     {
-        MinionCore[] minions = ResolveControlledMinions();
-        for (int i = 0; i < minions.Length; i++)
+        if (activeFormationSlots.Count == 0 || settings == null) return;
+        if (Time.time < nextFormationUpdateTime) return;
+        nextFormationUpdateTime = Time.time + settings.formationUpdateInterval;
+
+        Vector3 forward = GetFormationForward();
+        if (forward == Vector3.zero) return;
+        Vector3 right = Vector3.Cross(Vector3.up, forward).normalized;
+
+        float thresholdSq = settings.formationUpdateThreshold * settings.formationUpdateThreshold;
+
+        for (int i = activeFormationSlots.Count - 1; i >= 0; i--)
         {
-            if (minions[i] == null) continue;
-            minions[i].SetRecallCommand();
+            FormationSlot slot = activeFormationSlots[i];
+            if (slot.Minion == null)
+            {
+                activeFormationSlots.RemoveAt(i);
+                continue;
+            }
+
+            Vector3 newTarget = player.position
+                + right   * slot.LocalXZ.x
+                + forward * slot.LocalXZ.y;
+
+            if ((newTarget - slot.LastIssuedWorldPos).sqrMagnitude < thresholdSq) continue;
+
+            slot.Minion.SetDismissCommand(newTarget, settings.dismissResumeFollowRange);
+            slot.LastIssuedWorldPos = newTarget;
+            activeFormationSlots[i] = slot;
         }
+    }
+
+    // Returns the player's movement-facing direction (XZ normalized) used for formation placement.
+    private Vector3 GetFormationForward()
+    {
+        Vector3 dir;
+        if (playerAim != null)
+        {
+            dir = playerAim.FacingDirection;
+        }
+        else
+        {
+            dir = player.forward;
+        }
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.001f) dir = Vector3.forward;
+        return dir.normalized;
+    }
+
+    // Draws the call/dismiss range sphere in the editor for tuning.
+    private void OnDrawGizmosSelected()
+    {
+        if (settings == null) return;
+
+        Transform origin = player != null ? player : transform;
+        Color c = settings.callRangeGizmoColor;
+        Gizmos.color = c;
+        Gizmos.DrawWireSphere(origin.position, settings.callRange);
+        Gizmos.color = new Color(c.r, c.g, c.b, c.a * 0.15f);
+        Gizmos.DrawSphere(origin.position, settings.callRange);
     }
 
     // Resolves the best command target from lock-on, aim assist, and local cursor overlap.
@@ -227,6 +532,9 @@ public class PlayerMinionCommander : MonoBehaviour
 
             Transform candidate = hit.transform;
             if (!IsValidTarget(candidate)) continue;
+
+            // Skip candidates behind walls.
+            if (!HasLineOfSightToTarget(candidate)) continue;
 
             float sq = (candidate.position - origin).sqrMagnitude;
 
@@ -473,23 +781,21 @@ public class PlayerMinionCommander : MonoBehaviour
 
     private MinionCore[] ResolveControlledMinions()
     {
-        if (controlledMinions != null && controlledMinions.Length > 0)
+        // If auto-find is on and we still have no minions, try a periodic refresh.
+        if (autoFindMinionsIfEmpty && (controlledMinions == null || controlledMinions.Length == 0))
         {
-            return controlledMinions;
+            if (runtimeMinions.Count == 0 && Time.time >= nextAutoFindRefreshTime) RefreshAutoFoundMinions();
         }
 
-        if (!autoFindMinionsIfEmpty)
+        if (runtimeListDirty)
         {
-            return System.Array.Empty<MinionCore>();
+            cachedRuntimeArray = runtimeMinions.Count > 0
+                ? runtimeMinions.ToArray()
+                : System.Array.Empty<MinionCore>();
+            runtimeListDirty = false;
         }
 
-        if (cachedAutoMinions == null || Time.time >= nextAutoFindRefreshTime)
-        {
-            cachedAutoMinions = FindObjectsByType<MinionCore>(FindObjectsSortMode.None);
-            nextAutoFindRefreshTime = Time.time + Mathf.Max(0.05f, settings.autoFindRefreshInterval);
-        }
-
-        return cachedAutoMinions;
+        return cachedRuntimeArray;
     }
 
     private bool WasCommandPressedThisFrame()
@@ -498,10 +804,37 @@ public class PlayerMinionCommander : MonoBehaviour
         return Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
     }
 
-    private bool WasRecallPressedThisFrame()
+    private bool WasCallPressedThisFrame()
     {
-        if (recallAction != null) return recallAction.action.WasPressedThisFrame();
+        if (callAction != null) return callAction.action.WasPressedThisFrame();
         return Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame;
+    }
+
+    private bool WasDismissPressedThisFrame()
+    {
+        if (dismissAction != null) return dismissAction.action.WasPressedThisFrame();
+        return Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame;
+    }
+
+    // LOS check from the player to a potential command target.
+    private bool HasLineOfSightToTarget(Transform target)
+    {
+        if (settings == null || !settings.requireLineOfSightForCursorTargets) return true;
+        if (player == null || target == null) return true;
+
+        float heightOffset = settings.cursorLOSHeightOffset;
+        Vector3 start = player.position + Vector3.up * heightOffset;
+        Vector3 end   = target.position + Vector3.up * heightOffset;
+        Vector3 dir   = end - start;
+        float   dist  = dir.magnitude;
+        if (dist <= 0.0001f) return true;
+
+        if (Physics.Raycast(start, dir / dist, out RaycastHit hit, dist, settings.cursorLOSBlockMask, QueryTriggerInteraction.Ignore))
+        {
+            return hit.transform == target || hit.transform.IsChildOf(target);
+        }
+
+        return true;
     }
 
     private static bool IsValidTarget(Transform target)

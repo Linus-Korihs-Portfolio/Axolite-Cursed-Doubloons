@@ -5,9 +5,13 @@ public partial class MinionCore
     private Transform ResolveActiveTarget()
     {
         Transform explicitTarget = AsTransform(currentCommand != null ? currentCommand.Target : null);
-        if (IsValidTarget(explicitTarget)) return explicitTarget;
+        if (!IsValidTarget(explicitTarget)) return null;
 
-        return null;
+        // Reject dead combatants so the minion transitions to Idle instead of continuing to attack a corpse.
+        CombatantStats targetStats = explicitTarget.GetComponentInParent<CombatantStats>();
+        if (targetStats != null && targetStats.IsDead) return null;
+
+        return explicitTarget;
     }
 
     private static Transform AsTransform(object target)
@@ -83,6 +87,25 @@ public partial class MinionCore
             }
         }
 
+        // Dismissed minions: block all auto-assignment while waiting at formation. If player moves too far, auto-resume follow command.
+        if (isDismissed)
+        {
+            if (currentCommand.Type == CommandType.None && followTarget != null)
+            {
+                Vector3 toPlayer = followTarget.position - transform.position;
+                toPlayer.y = 0f;
+                if (toPlayer.sqrMagnitude > dismissResumeRange * dismissResumeRange)
+                {
+                    Log("Dismiss: player out of range — resuming follow.");
+                    SetFollowCommand();
+                    return;
+                }
+            }
+            return;
+        }
+
+        // Recall complete is now handled in ExecuteFollow on physical arrival — no premature
+
         if (currentCommand.Type == CommandType.None && followTarget != null && ShouldFollowTarget())
         {
             SetFollowCommand();
@@ -91,6 +114,149 @@ public partial class MinionCore
 
         // Combat auto-targeting is optional; follow fallback above always keeps the minion attached to its owner.
         if (!autoAssignCombatCommands) return;
+
+        // Only auto-assign when the minion has no active combat command.
+        bool isIdleOrFollowing = currentCommand.Type == CommandType.None
+            || currentCommand.Type == CommandType.FollowPlayer
+            || currentCommand.Type == CommandType.Recall;
+
+        if (!isIdleOrFollowing) return;
+
+        if (roleType == MinionRoleType.Support)
+        {
+            TryAutoAssignSupportTarget();
+        }
+        else
+        {
+            Transform autoEnemy = FindNearestAliveByTag(enemyTag, autoTargetRadius);
+            if (autoEnemy != null)
+            {
+                Log($"Auto-targeting enemy: {autoEnemy.name}");
+                SetAttackEnemyCommand(autoEnemy);
+            }
+        }
+    }
+
+    // Auto-selects the best support target based on the active support mode.
+    private void TryAutoAssignSupportTarget()
+    {
+        SupportMode mode = currentRole.GetSupportMode() ?? SupportMode.Heal;
+        Transform bestTarget = null;
+
+        switch (mode)
+        {
+            case SupportMode.Heal:
+                bestTarget = FindLowestHealthAlly();
+                break;
+
+            case SupportMode.Buff:
+                bestTarget = FindNearestAliveByTag(allyTag, autoTargetRadius, includeSelf: false);
+                break;
+
+            case SupportMode.Debuff:
+                bestTarget = FindNearestAliveByTag(enemyTag, autoTargetRadius);
+                break;
+        }
+
+        if (bestTarget != null && IsSupportTargetValidForActiveMode(bestTarget))
+        {
+            Log($"Auto-support target ({mode}): {bestTarget.name}");
+            SetSupportCommand(bestTarget);
+        }
+    }
+
+    // Like FindNearestByTag but skips dead combatants (CombatantStats.IsDead).
+    private Transform FindNearestAliveByTag(string tag, float maxDistance = float.PositiveInfinity, bool includeSelf = true)
+    {
+        if (string.IsNullOrWhiteSpace(tag)) return null;
+
+        GameObject[] objects = null;
+
+        try
+        {
+            objects = GameObject.FindGameObjectsWithTag(tag);
+        }
+        catch
+        {
+            objects = null;
+        }
+
+        Transform nearest = null;
+        float nearestSqDistance = float.PositiveInfinity;
+        float maxSqDistance = float.IsPositiveInfinity(maxDistance) ? float.PositiveInfinity : maxDistance * maxDistance;
+
+        if (objects != null)
+        {
+            for (int i = 0; i < objects.Length; i++)
+            {
+                GameObject candidate = objects[i];
+                if (candidate == null) continue;
+                if (!includeSelf && candidate.transform == transform) continue;
+
+                CombatantStats stats = candidate.GetComponentInParent<CombatantStats>();
+                if (stats != null && stats.IsDead) continue;
+
+                float sqDistance = (candidate.transform.position - transform.position).sqrMagnitude;
+                if (sqDistance > maxSqDistance) continue;
+
+                if (sqDistance < nearestSqDistance)
+                {
+                    nearestSqDistance = sqDistance;
+                    nearest = candidate.transform;
+                }
+            }
+        }
+
+        return nearest;
+    }
+
+    // Finds the ally minion with the lowest health ratio within autoTargetRadius. Excludes self and the player (followTarget).
+    private Transform FindLowestHealthAlly()
+    {
+        GameObject[] allies = null;
+
+        try
+        {
+            allies = GameObject.FindGameObjectsWithTag(allyTag);
+        }
+        catch
+        {
+            allies = null;
+        }
+
+        if (allies == null) return null;
+
+        Transform lowest = null;
+        float lowestRatio = float.PositiveInfinity;
+        float maxSqDistance = autoTargetRadius * autoTargetRadius;
+
+        for (int i = 0; i < allies.Length; i++)
+        {
+            GameObject candidate = allies[i];
+            if (candidate == null) continue;
+            if (candidate.transform == transform) continue;
+            if (followTarget != null && candidate.transform == followTarget) continue;
+
+            float sqDist = (candidate.transform.position - transform.position).sqrMagnitude;
+            if (sqDist > maxSqDistance) continue;
+
+            CombatantStats stats = candidate.GetComponentInParent<CombatantStats>();
+            if (stats == null || stats.IsDead) continue;
+
+            float maxHp = stats.GetStat(CombatStatType.MaxHealth);
+            if (maxHp <= 0f) continue;
+
+            float ratio = stats.CurrentHealth / maxHp;
+            if (ratio >= 1f - 0.01f) continue; // already full health, skip
+
+            if (ratio < lowestRatio)
+            {
+                lowestRatio = ratio;
+                lowest = candidate.transform;
+            }
+        }
+
+        return lowest;
     }
 
     private bool ShouldFollowTarget()
@@ -105,9 +271,43 @@ public partial class MinionCore
         return distance > Mathf.Max(0f, followStopDistance) + 0.2f;
     }
 
+    // Immediately stops the minion and puts it into Idle.
+    public void SetIdleCommand()
+    {
+        Log("Command: Idle");
+        ResetNavigationPath();
+        ClearCommand();
+        stateMachine.ForceState(MinionState.Idle);
+    }
+
+    // Sends the minion to a world-space formation position, then idles it there.
+    public void SetDismissCommand(Vector3 formationPosition, float resumeRange = 10f)
+    {
+        Log($"Command: Dismiss to {formationPosition}");
+        isDismissed = true;
+        dismissResumeRange = Mathf.Max(0.5f, resumeRange);
+        ResetNavigationPath();
+
+        currentCommand = new MinionCommand
+        {
+            Type = CommandType.Dismiss,
+            Target = null,
+            TargetPosition = formationPosition,
+            Priority = 100,
+            IssuedTime = Time.time,
+            TimeToLive = 0f,
+            Source = CommandSource.Player,
+            InterruptPolicy = InterruptPolicy.Hard,
+            LastFailureReason = FailureReason.None
+        };
+    }
+
+
     // Makes the minion return to the player/follow behavior.
     public void SetFollowCommand()
     {
+        Log($"Command: Follow {(followTarget != null ? followTarget.name : "null")}");
+        isDismissed = false;
         ResetNavigationPath();
 
         currentCommand = new MinionCommand
@@ -127,6 +327,8 @@ public partial class MinionCore
     // Makes the minion recall immediately.
     public void SetRecallCommand()
     {
+        Log("Command: Recall");
+        isDismissed = false;
         ResetNavigationPath();
 
         currentCommand = new MinionCommand
@@ -146,12 +348,15 @@ public partial class MinionCore
     // Makes the minion attack an enemy target.
     public void SetAttackEnemyCommand(Transform target)
     {
+        isDismissed = false;
+
         if (!IsEnemyTarget(target))
         {
             ClearCommand();
             return;
         }
 
+        Log($"Command: AttackEnemy → {target.name}");
         ResetNavigationPath();
 
         currentCommand = new MinionCommand
@@ -171,12 +376,15 @@ public partial class MinionCore
     // Makes the minion attack a breakable object.
     public void SetAttackObjectCommand(Transform target)
     {
+        isDismissed = false;
+
         if (!IsBreakableTarget(target))
         {
             ClearCommand();
             return;
         }
 
+        Log($"Command: AttackObject → {target.name}");
         ResetNavigationPath();
 
         currentCommand = new MinionCommand
@@ -196,12 +404,15 @@ public partial class MinionCore
     // Makes the support minion act on a target.
     public void SetSupportCommand(Transform target)
     {
+        isDismissed = false;
+
         if (!IsSupportTargetValidForActiveMode(target))
         {
             ClearCommand();
             return;
         }
 
+        Log($"Command: Support ({currentRole?.GetSupportMode()}) → {target.name}");
         ResetNavigationPath();
 
         currentCommand = new MinionCommand
@@ -222,6 +433,14 @@ public partial class MinionCore
     public bool CanAcceptSupportTarget(Transform target)
     {
         return IsSupportTargetValidForActiveMode(target);
+    }
+
+    // Returns true if this minion's current command is already targeting the given transform.
+    public bool IsTargeting(Transform target)
+    {
+        if (target == null || currentCommand == null) return false;
+        Transform commandTarget = AsTransform(currentCommand.Target);
+        return commandTarget == target;
     }
 
     // Switches the active support action and rebuilds support ability loadout.
