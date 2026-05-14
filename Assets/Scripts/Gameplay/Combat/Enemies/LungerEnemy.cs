@@ -35,15 +35,20 @@ public class LungerEnemy : MonoBehaviour
     [SerializeField] private LungerState currentState = LungerState.Idle;
     private float       stateTimer;
 
+    // ── Behaviour flags ────────────────────────────────────────────────────────
+    private bool isAsleep = true;            // stands still until hit or player spotted
+    private bool hasBeenAttacked;            // set true on first damage hit
+    private bool hasLungedThisEncounter;     // blocks re-lunge until target is fully lost
+
     // ── Lunge data ─────────────────────────────────────────────────────────────
     private Vector3 lungeDirection;
     private Vector3 lungeStartPos;
+    private float   lungeDistance;           // dist-to-target + overshoot, locked at windup
     private bool    hitWallDuringLunge;
     private float   lastLungeTime = -999f;
-
-    // ── Attack history ─────────────────────────────────────────────────────────
-    private bool hasBeenAttacked;    // true once this enemy has taken any damage
-    private bool hasUsedOpenerLunge; // true once the first-detection lunge fires
+    // Each instanceID added here has already taken lunge damage this sweep.
+    private readonly System.Collections.Generic.HashSet<int> lungeHitIds =
+        new System.Collections.Generic.HashSet<int>();
 
     // ── Bite cooldown ──────────────────────────────────────────────────────────
     private float lastBiteTime = -999f;
@@ -68,7 +73,7 @@ public class LungerEnemy : MonoBehaviour
     {
         stats              = GetComponent<CombatantStats>();
         stats.Died        += OnDied;
-        stats.DamageTaken += _ => hasBeenAttacked = true;
+        stats.DamageTaken += OnDamageTaken;
 
         rb = GetComponent<Rigidbody>();
         if (rb != null)
@@ -93,7 +98,7 @@ public class LungerEnemy : MonoBehaviour
         if (stats != null)
         {
             stats.Died        -= OnDied;
-            stats.DamageTaken -= _ => hasBeenAttacked = true;
+            stats.DamageTaken -= OnDamageTaken;
         }
     }
 
@@ -115,16 +120,34 @@ public class LungerEnemy : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (currentState == LungerState.Lunging && settings != null)
-        {
-            if ((settings.WallMask.value & (1 << collision.gameObject.layer)) != 0)
-                hitWallDuringLunge = true;
-        }
+        if (currentState != LungerState.Lunging || settings == null) return;
+        if ((settings.WallMask.value & (1 << collision.gameObject.layer)) == 0) return;
+
+        // Targets are handled by sweep damage — don't stop the lunge on their colliders.
+        Transform root = collision.transform.root;
+        if (root.CompareTag(settings.PlayerTag) || collision.transform.CompareTag(settings.MinionTag)) return;
+
+        hitWallDuringLunge = true;
     }
 
     // ──────────────────────────────────────────────────────────────────────────
     //  Target tracking
     // ──────────────────────────────────────────────────────────────────────────
+
+    // Searches the transform itself, then up, then down — handles any hierarchy layout.
+    private static CombatantStats GetStats(Transform t)
+    {
+        if (t == null) return null;
+        return t.GetComponent<CombatantStats>()
+            ?? t.GetComponentInParent<CombatantStats>()
+            ?? t.GetComponentInChildren<CombatantStats>();
+    }
+
+    private void OnDamageTaken(float _)
+    {
+        hasBeenAttacked = true;
+        isAsleep        = false;
+    }
 
     private void RefreshTarget()
     {
@@ -133,15 +156,16 @@ public class LungerEnemy : MonoBehaviour
         // Drop stale / dead targets.
         if (currentTarget != null)
         {
-            CombatantStats ts = currentTarget.GetComponentInParent<CombatantStats>();
+            CombatantStats ts = GetStats(currentTarget);
             bool dead = ts != null && ts.IsDead;
             bool far  = HorizontalDistance(currentTarget.position) > forgetRadius;
 
             if (dead || far || !currentTarget.gameObject.activeInHierarchy)
             {
                 Log($"Target lost: {currentTarget.name}");
-                currentTarget   = null;
-                hasLastKnownPos = false;
+                currentTarget          = null;
+                hasLastKnownPos        = false;
+                hasLungedThisEncounter = false; // new encounter → lunge allowed again
                 ResetNavPath();
             }
         }
@@ -155,23 +179,54 @@ public class LungerEnemy : MonoBehaviour
 
         if (currentTarget != null) return;
 
-        // Search for a new target.
-        Transform found = FindBestTarget();
-
-        // Opener lunge: first detection before this enemy has been hit.
-        if (found != null && !hasBeenAttacked && !hasUsedOpenerLunge)
+        // Asleep and never hit: only wake on direct player sight.
+        if (isAsleep && !hasBeenAttacked)
         {
-            hasUsedOpenerLunge = true;
-            currentTarget      = found;
-            Log($"Opener lunge triggered — first target spotted: {found.name}");
-            BeginPreLunge();
+            Transform player = FindPlayerInSight();
+            if (player != null)
+            {
+                isAsleep      = false;
+                currentTarget = player;
+                Log($"Player spotted — waking, lunging at: {player.name}");
+                BeginPreLunge();
+            }
             return;
         }
 
-        if (found != null && currentTarget == null)
-            Log($"Target acquired: {found.name}");
+        // Woken by damage (isAsleep was cleared by OnDamageTaken): target nearest threat.
+        if (currentTarget == null)
+        {
+            Transform found = FindBestTarget();
+            if (found != null) Log($"Target acquired: {found.name}");
+            currentTarget = found;
+        }
+    }
 
-        currentTarget = found;
+    // Returns the player root transform if visible; null otherwise.
+    private Transform FindPlayerInSight()
+    {
+        if (settings == null) return null;
+
+        int count = Physics.OverlapSphereNonAlloc(
+            transform.position, settings.DetectRadius, overlapBuffer, settings.DetectMask, QueryTriggerInteraction.Ignore);
+
+        for (int i = 0; i < count; i++)
+        {
+            Collider col = overlapBuffer[i];
+            if (col == null) continue;
+
+            Transform root = col.transform.root;
+            if (!root.gameObject.activeInHierarchy) continue;
+            if (!root.CompareTag(settings.PlayerTag)) continue;
+
+            CombatantStats cs = GetStats(col.transform);
+            if (cs != null && cs.IsDead) continue;
+
+            if (!HasLineOfSight(col.transform)) continue;
+
+            return root;
+        }
+        return null;
     }
 
     private Transform FindBestTarget()
@@ -189,20 +244,22 @@ public class LungerEnemy : MonoBehaviour
             Collider col = overlapBuffer[i];
             if (col == null) continue;
 
-            Transform t = col.transform;
-            if (!t.gameObject.activeInHierarchy) continue;
+            Transform t    = col.transform;
+            Transform root = t.root;
+            if (!root.gameObject.activeInHierarchy) continue;
 
-            CombatantStats cs = t.GetComponentInParent<CombatantStats>();
+            CombatantStats cs = GetStats(t);
             if (cs != null && cs.IsDead) continue;
 
-            bool isPlayer = t.CompareTag(settings.PlayerTag);
+            // Check both the collider's own tag and the root tag to handle nested hierarchies.
+            bool isPlayer = t.CompareTag(settings.PlayerTag) || root.CompareTag(settings.PlayerTag);
             bool isMinion = t.CompareTag(settings.MinionTag);
             if (!isPlayer && !isMinion) continue;
 
             if (settings.RequireLOSToDetect && !HasLineOfSight(t)) continue;
 
-            float sq = (t.position - transform.position).sqrMagnitude;
-            if (sq < bestSq) { bestSq = sq; best = t; }
+            float sq = (root.position - transform.position).sqrMagnitude;
+            if (sq < bestSq) { bestSq = sq; best = root; }
         }
 
         return best;
@@ -214,6 +271,9 @@ public class LungerEnemy : MonoBehaviour
 
     private void UpdateState()
     {
+        // Sleeping: do nothing.
+        if (isAsleep) { SetState(LungerState.Idle); return; }
+
         // These states self-terminate via their own timers or events.
         if (currentState == LungerState.PreLunge  ||
             currentState == LungerState.Lunging    ||
@@ -234,17 +294,16 @@ public class LungerEnemy : MonoBehaviour
             return;
         }
 
-        // Beyond lunge threshold → attempt lunge (has cooldown guard).
-        if (dist > settings.LungeMinDistance)
+        // Beyond lunge threshold AND haven't lunged this encounter → lunge.
+        if (!hasLungedThisEncounter && dist > settings.LungeMinDistance)
         {
             BeginPreLunge();
-            // If on cooldown, BeginPreLunge is a no-op → fall through to Approach.
             if (currentState != LungerState.PreLunge)
                 SetState(LungerState.Approach);
             return;
         }
 
-        // In-between: close in for bite.
+        // Post-lunge or within lunge threshold: close in to bite.
         SetState(LungerState.Approach);
     }
 
@@ -267,21 +326,22 @@ public class LungerEnemy : MonoBehaviour
                 FaceTowards(lungeDirection);
                 if (stateTimer <= 0f)
                 {
-                    SetState(LungerState.Lunging);
-                    lungeStartPos      = transform.position;
                     hitWallDuringLunge = false;
+                    SetState(LungerState.Lunging); // lungeStartPos + lungeHitIds reset inside SetState
                 }
                 break;
             }
 
             case LungerState.Lunging:
             {
-                float traveled   = HorizontalDistance(lungeStartPos);
-                bool  reachedMax = traveled >= settings.LungeMaxDistance;
+                // Deal damage to every player/minion the body overlaps (once per target this lunge).
+                DealLungeSweepDamage();
 
-                if (hitWallDuringLunge || reachedMax)
+                float traveled   = HorizontalDistance(lungeStartPos);
+                bool  reachedEnd = traveled >= lungeDistance;
+
+                if (hitWallDuringLunge || reachedEnd)
                 {
-                    DealLungeLandingDamage();
                     BeginRecovery();
                     break;
                 }
@@ -296,8 +356,8 @@ public class LungerEnemy : MonoBehaviour
                 stateTimer -= Time.deltaTime;
                 if (stateTimer <= 0f)
                 {
-                    // Stand up: find the closest target and transition to approaching it.
-                    currentTarget = FindBestTarget();
+                    // After recovery bite loop: find nearest alive threat and close in.
+                    if (currentTarget == null) currentTarget = FindBestTarget();
                     SetState(currentTarget != null ? LungerState.Approach : LungerState.Idle);
                 }
                 break;
@@ -307,13 +367,26 @@ public class LungerEnemy : MonoBehaviour
             {
                 if (currentTarget == null) { SetState(LungerState.Idle); break; }
 
+                // Target walked out of range — close in.
+                if (HorizontalDistance(currentTarget.position) > settings.BiteRange)
+                {
+                    SetState(LungerState.Approach);
+                    break;
+                }
+
                 FaceTarget();
-                if (settings.RequireLOSToAttack && !HasLineOfSight(currentTarget)) break;
+
+                // LOS blocked — approach until visible again.
+                if (settings.RequireLOSToAttack && !HasLineOfSight(currentTarget))
+                {
+                    SetState(LungerState.Approach);
+                    break;
+                }
 
                 if (Time.time >= lastBiteTime + settings.BiteCooldown)
                 {
                     lastBiteTime = Time.time;
-                    CombatantStats ts = currentTarget.GetComponentInParent<CombatantStats>();
+                    CombatantStats ts = GetStats(currentTarget);
                     if (ts != null && !ts.IsDead)
                     {
                         ts.ApplyDamage(settings.BiteDamage);
@@ -350,6 +423,9 @@ public class LungerEnemy : MonoBehaviour
         if (dir.sqrMagnitude < 0.0001f) return;
 
         lungeDirection = dir.normalized;
+        // Lunge exactly to target + overshoot so the player must sidestep.
+        float overshoot = settings != null ? settings.LungeOvershootDistance : 2f;
+        lungeDistance  = dir.magnitude + overshoot;
         lastLungeTime  = Time.time;
         stateTimer     = settings != null ? settings.LungeWindupDuration : 0.4f;
         SetState(LungerState.PreLunge);
@@ -357,12 +433,15 @@ public class LungerEnemy : MonoBehaviour
 
     private void BeginRecovery()
     {
-        frameVelocity = Vector3.zero;
-        stateTimer    = settings != null ? settings.LungeRecoveryDuration : 1.2f;
+        frameVelocity          = Vector3.zero;
+        hasLungedThisEncounter = true;
+        stateTimer             = settings != null ? settings.LungeRecoveryDuration : 1.2f;
         SetState(LungerState.Recovering);
     }
 
-    private void DealLungeLandingDamage()
+    // Deals lunge damage to every player/minion currently overlapping the body hitbox.
+    // Uses lungeHitIds so each target is damaged at most once per lunge sweep.
+    private void DealLungeSweepDamage()
     {
         if (settings == null) return;
 
@@ -374,14 +453,20 @@ public class LungerEnemy : MonoBehaviour
             Collider col = overlapBuffer[i];
             if (col == null) continue;
 
-            bool valid = col.CompareTag(settings.PlayerTag) || col.CompareTag(settings.MinionTag);
-            if (!valid) continue;
+            Transform root = col.transform.root;
+            bool isPlayer  = col.transform.CompareTag(settings.PlayerTag) || root.CompareTag(settings.PlayerTag);
+            bool isMinion  = col.transform.CompareTag(settings.MinionTag);
+            if (!isPlayer && !isMinion) continue;
 
-            CombatantStats ts = col.GetComponentInParent<CombatantStats>();
+            int id = root.GetInstanceID();
+            if (lungeHitIds.Contains(id)) continue; // already hit this target this lunge
+
+            CombatantStats ts = GetStats(col.transform);
             if (ts != null && !ts.IsDead)
             {
+                lungeHitIds.Add(id);
                 ts.ApplyDamage(settings.LungeDamage);
-                Log($"Lunge landing hit {col.name} for {settings.LungeDamage} damage");
+                Log($"Lunge sweep hit {root.name} for {settings.LungeDamage} damage");
             }
         }
     }
@@ -413,7 +498,8 @@ public class LungerEnemy : MonoBehaviour
     private bool TryMoveAlongNavPath(Vector3 destination, float stopDistance, float speed)
     {
         float now             = Time.time;
-        bool  destinationMoved = (navLastDestination - destination).sqrMagnitude > 0.35f * 0.35f;
+        // Only repath when the target has moved significantly, to prevent per-frame path recalculation wobble.
+        bool  destinationMoved = (navLastDestination - destination).sqrMagnitude > 2f * 2f;
 
         if (!hasNavPath || now >= nextNavRepathTime || destinationMoved)
         {
@@ -439,8 +525,20 @@ public class LungerEnemy : MonoBehaviour
                 return true;
             }
 
+            Vector3 moveDir = toCorner.normalized;
+
+            // Blend facing toward the next corner early to smooth out sharp turns.
+            if (navCornerIndex + 1 < corners.Length)
+            {
+                float blend = 1f - Mathf.Clamp01(toCorner.magnitude / 1.5f);
+                Vector3 toNext = corners[navCornerIndex + 1] - transform.position;
+                toNext.y = 0f;
+                if (toNext.sqrMagnitude > 0.01f)
+                    moveDir = Vector3.Slerp(moveDir, toNext.normalized, blend).normalized;
+            }
+
             frameVelocity = toCorner.normalized * speed;
-            SmoothFaceDirection(toCorner.normalized);
+            SmoothFaceDirection(moveDir);
             return true;
         }
 
@@ -538,6 +636,11 @@ public class LungerEnemy : MonoBehaviour
     {
         if (newState == currentState) return;
         Log($"State: {currentState} → {newState}");
+        if (newState == LungerState.Lunging)
+        {
+            lungeStartPos = transform.position;
+            lungeHitIds.Clear();
+        }
         currentState = newState;
     }
 

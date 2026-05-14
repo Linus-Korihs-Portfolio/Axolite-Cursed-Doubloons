@@ -41,16 +41,16 @@ public class LungerEnemySettings : ScriptableObject
     [Tooltip("If the target is farther than this the Lunger will lunge rather than walk.")]
     public float LungeMinDistance      = 3.5f;
     public float LungeSpeed            = 12f;
-    [Tooltip("Maximum distance the Lunger travels during a single lunge.")]
-    public float LungeMaxDistance      = 8f;
-    public float LungeDamage           = 15f;
-    [Tooltip("Radius of the impact hit-sphere at the lunge landing point.")]
+    [Tooltip("Extra distance added beyond the target so the player must sidestep, not just stand still.")]
+    public float LungeOvershootDistance = 2f;
+    [Tooltip("Radius of the body hit-sphere swept during the lunge (continuous damage).")]
     public float LungeHitRadius        = 1.6f;
+    public float LungeDamage           = 15f;
     [Tooltip("Duration of the pre-lunge wind-up before launching.")]
     public float LungeWindupDuration   = 0.4f;
     [Tooltip("Duration the Lunger is stunned on the ground after landing.")]
     public float LungeRecoveryDuration = 1.2f;
-    [Tooltip("Minimum time between two consecutive lunges.")]
+    [Tooltip("Minimum time between two consecutive lunges (new encounter).")]
     public float LungeCooldown         = 4f;
 
     [Header("Navigation")]

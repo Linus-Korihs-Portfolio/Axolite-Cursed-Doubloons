@@ -31,10 +31,10 @@ MonoBehaviour:
   BiteDamage: 10
   BiteCooldown: 1.2
   LungeMinDistance: 3.5
-  LungeSpeed: 12
-  LungeMaxDistance: 8
-  LungeDamage: 15
+  LungeSpeed: 20
+  LungeOvershootDistance: 3
   LungeHitRadius: 1.6
+  LungeDamage: 15
   LungeWindupDuration: 0.4
   LungeRecoveryDuration: 1.2
   LungeCooldown: 4

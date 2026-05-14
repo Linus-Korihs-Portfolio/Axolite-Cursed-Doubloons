@@ -139,7 +139,11 @@ public class CombatantStats : MonoBehaviour
             Died?.Invoke(); // Notify listeners that the combatant has died
             if (despawnOnDeath)
             {
-                Destroy(gameObject, Mathf.Max(0f, despawnDelay));
+                // If the root is the player, destroy the whole hierarchy, not just this child.
+                GameObject toDestroy = transform.root.CompareTag("Player")
+                    ? transform.root.gameObject
+                    : gameObject;
+                Destroy(toDestroy, Mathf.Max(0f, despawnDelay));
             }
         }
     }

@@ -865,27 +865,6 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
---- !u!1 &887150068 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7597917926100717369, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
-  m_PrefabInstance: {fileID: 2695888406797043093}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &887150076
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 887150068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 222ca75e431e4124e8bd8faa9890b56f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CombatantStats
-  baseProfile: {fileID: 11400000, guid: 6384b8f9b043f3e4a8ec5a3af88cc5de, type: 2}
-  currentHealth: 0
-  despawnOnDeath: 1
-  despawnDelay: 2
 --- !u!1001 &936502445
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1356,6 +1335,10 @@ PrefabInstance:
       propertyPath: lineOfSightBlockMask.m_Bits
       value: 192
       objectReference: {fileID: 0}
+    - target: {fileID: 923669364683773200, guid: 06a5cbf5c41792c4f858ab1266919769, type: 3}
+      propertyPath: baseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: b8715e1f703ebf5419cbaab49ec3f5b6, type: 2}
     - target: {fileID: 980464467663854597, guid: 06a5cbf5c41792c4f858ab1266919769, type: 3}
       propertyPath: m_Name
       value: PF_MinionSupport
@@ -2038,6 +2021,10 @@ PrefabInstance:
       propertyPath: lineOfSightBlockMask.m_Bits
       value: 192
       objectReference: {fileID: 0}
+    - target: {fileID: 923669364683773200, guid: 0d34c0dfc91fd0048a9dc2e3de14a115, type: 3}
+      propertyPath: baseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: b8715e1f703ebf5419cbaab49ec3f5b6, type: 2}
     - target: {fileID: 980464467663854597, guid: 0d34c0dfc91fd0048a9dc2e3de14a115, type: 3}
       propertyPath: m_Name
       value: PF_MinionRange
@@ -2192,6 +2179,10 @@ PrefabInstance:
       propertyPath: lineOfSightBlockMask.m_Bits
       value: 192
       objectReference: {fileID: 0}
+    - target: {fileID: 923669364683773200, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
+      propertyPath: baseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: b8715e1f703ebf5419cbaab49ec3f5b6, type: 2}
     - target: {fileID: 980464467663854597, guid: abbf8a3296401ee4783a5b360911857e, type: 3}
       propertyPath: m_Name
       value: PF_MinionMelee
@@ -2330,6 +2321,10 @@ PrefabInstance:
       propertyPath: cursorExtraKeyAction
       value: 
       objectReference: {fileID: 576771823}
+    - target: {fileID: 5543834454630587138, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: baseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: 9f77fc40fa84261479be4a2be489bea9, type: 2}
     - target: {fileID: 7467690400024141695, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: callAction
       value: 
@@ -2397,10 +2392,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7597917926100717369, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 887150076}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
 --- !u!1001 &2837341898456449613
 PrefabInstance:

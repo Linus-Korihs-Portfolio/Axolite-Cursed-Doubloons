@@ -221,12 +221,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6544723552472895210}
+  - component: {fileID: 5543834454630587138}
+  - component: {fileID: 7467690400024141695}
   - component: {fileID: 4558954818387464348}
   - component: {fileID: 6139243475645455793}
   - component: {fileID: 7057111169574819622}
   - component: {fileID: 3479454713764566221}
   - component: {fileID: 3391111788512607623}
-  - component: {fileID: 7467690400024141695}
   m_Layer: 3
   m_Name: P_PlayerScripts
   m_TagString: Player
@@ -249,6 +250,44 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2151853351454571588}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5543834454630587138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7597917926100717369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 222ca75e431e4124e8bd8faa9890b56f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatantStats
+  baseProfile: {fileID: 11400000, guid: 6384b8f9b043f3e4a8ec5a3af88cc5de, type: 2}
+  currentHealth: 0
+  despawnOnDeath: 1
+  despawnDelay: 0
+--- !u!114 &7467690400024141695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7597917926100717369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b6bd2052a8899145909cfa859ed9c05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMinionCommander
+  settings: {fileID: 11400000, guid: 7b9a1e875b094dd4f841959d9b1b60a6, type: 2}
+  cursor: {fileID: 3391111788512607623}
+  player: {fileID: 1273055997037786594}
+  commandAction: {fileID: 0}
+  callAction: {fileID: 0}
+  dismissAction: {fileID: 0}
+  controlledMinions: []
+  autoFindMinionsIfEmpty: 1
+  previewRenderers: []
+  enableLogs: 0
 --- !u!114 &4558954818387464348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,26 +365,6 @@ MonoBehaviour:
   marker: {fileID: 2115973782352765185}
   cursorMoveAction: {fileID: 0}
   cursorExtraKeyAction: {fileID: 0}
---- !u!114 &7467690400024141695
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7597917926100717369}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b6bd2052a8899145909cfa859ed9c05, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMinionCommander
-  settings: {fileID: 11400000, guid: 7b9a1e875b094dd4f841959d9b1b60a6, type: 2}
-  cursor: {fileID: 3391111788512607623}
-  player: {fileID: 1273055997037786594}
-  commandAction: {fileID: 0}
-  recallAction: {fileID: 0}
-  controlledMinions: []
-  autoFindMinionsIfEmpty: 1
-  previewRenderers: []
 --- !u!1 &8310995803334467285
 GameObject:
   m_ObjectHideFlags: 0
