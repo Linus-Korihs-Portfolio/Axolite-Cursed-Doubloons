@@ -471,7 +471,8 @@ public class EnemyAI : MonoBehaviour
         if (Physics.Raycast(start, dir / dist, out RaycastHit hit, dist, settings.LosBlockMask, QueryTriggerInteraction.Ignore))
         {
             // Hit something — LOS only if it’s the target itself.
-            return hit.transform == target || hit.transform.IsChildOf(target);
+            if (hit.transform == target || hit.transform.IsChildOf(target)) return true;
+            return false;
         }
 
         return true;

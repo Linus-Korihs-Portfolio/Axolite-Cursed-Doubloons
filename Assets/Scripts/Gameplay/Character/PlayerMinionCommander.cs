@@ -777,10 +777,9 @@ public class PlayerMinionCommander : MonoBehaviour
     private MinionCore[] ResolveControlledMinions()
     {
         // If auto-find is on and we still have no minions, try a periodic refresh.
-        if (autoFindMinionsIfEmpty && controlledMinions == null || (controlledMinions != null && controlledMinions.Length == 0))
+        if (autoFindMinionsIfEmpty && (controlledMinions == null || controlledMinions.Length == 0))
         {
-            if (runtimeMinions.Count == 0 && Time.time >= nextAutoFindRefreshTime)
-                RefreshAutoFoundMinions();
+            if (runtimeMinions.Count == 0 && Time.time >= nextAutoFindRefreshTime) RefreshAutoFoundMinions();
         }
 
         if (runtimeListDirty)

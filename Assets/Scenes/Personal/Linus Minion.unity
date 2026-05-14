@@ -2941,6 +2941,10 @@ PrefabInstance:
       propertyPath: commandTargetMask.m_Bits
       value: 768
       objectReference: {fileID: 0}
+    - target: {fileID: 7575410052766950279, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
+      propertyPath: m_IncludeLayers.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8642570167466743387, guid: e72bb5ab3a57424408c939924b8a72f0, type: 3}
       propertyPath: moveAction
       value: 

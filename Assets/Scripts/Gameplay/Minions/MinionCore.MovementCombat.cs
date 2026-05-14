@@ -313,6 +313,10 @@ public partial class MinionCore
     {
         if (!useLocalSeparation) return;
 
+        // During active pursuit (Approach) and post-attack recovery (Recover), separation must not interfere with the minions movement toward the target.
+        CombatPhase phase = combatPhaseController.CurrentPhase;
+        if (phase == CombatPhase.Approach || phase == CombatPhase.Recover) return;
+
         float radius = Mathf.Max(0.05f, separationRadius);
         int hitCount = Physics.OverlapSphereNonAlloc(
             transform.position,
@@ -402,6 +406,7 @@ public partial class MinionCore
             Vector3 retreatPoint = targetPosition + away * Mathf.Max(0.1f, desiredRange);
             retreatPoint.y = targetPosition.y;
             MoveTowardsDistance(retreatPoint, 0f);
+            return;
         }
         else if (distance > desiredRange + 0.25f)
         {

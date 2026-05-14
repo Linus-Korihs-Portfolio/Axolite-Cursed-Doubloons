@@ -28,9 +28,11 @@ MonoBehaviour:
   cursorLOSHeightOffset: 0.8
   callRange: 12
   dismissResumeFollowRange: 12
-  dismissFormationGroupSpacing: 4
-  dismissFormationMemberSpacing: 2
+  dismissFormationGroupSpacing: 50
+  dismissFormationMemberSpacing: 20
   callRangeGizmoColor: {r: 0.2, g: 0.7, b: 1, a: 0.25}
+  formationUpdateInterval: 0.1
+  formationUpdateThreshold: 0.05
   enableCommandPreview: 1
   previewNoTargetColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
   previewAttackColor: {r: 1, g: 0.25, b: 0.25, a: 1}

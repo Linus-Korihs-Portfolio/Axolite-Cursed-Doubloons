@@ -45,3 +45,6 @@ MonoBehaviour:
   LosHeightOffset: 0.8
   RequireLOSToDetect: 1
   RequireLOSToAttack: 1
+  IgnoreCollisionMask:
+    serializedVersion: 2
+    m_Bits: 512
