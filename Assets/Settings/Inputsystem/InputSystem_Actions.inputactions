@@ -52,9 +52,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "MinionRecall",
+                    "name": "MinionCall",
                     "type": "Button",
                     "id": "21acf2c7-ef3f-4ebf-afb0-083f5d5980d6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MinionDismiss",
+                    "type": "Button",
+                    "id": "04585ffd-4565-4e0e-a0f8-3e9c0934d72c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -322,7 +331,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "MinionRecall",
+                    "action": "MinionCall",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -333,7 +342,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MinionRecall",
+                    "action": "MinionCall",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d288ec10-7e58-4f97-ace7-9d6497fef259",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "MinionDismiss",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "81e0a394-553c-48a5-864a-03f98fb0ac12",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MinionDismiss",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

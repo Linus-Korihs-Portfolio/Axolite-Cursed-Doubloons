@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b74501dd4fe64974d964bf8838834d3e, type: 3}
+  m_Name: SO_ShellSpinner
+  m_EditorClassIdentifier: Assembly-CSharp::ShellSpinnerEnemySettings
+  PlayerTag: Player
+  MinionTag: Ally
+  DetectRadius: 10
+  ForgetRadius: 16
+  DetectMask:
+    serializedVersion: 2
+    m_Bits: 520
+  RequireLOSToDetect: 1
+  LosBlockMask:
+    serializedVersion: 2
+    m_Bits: 520
+  LosHeightOffset: 0.8
+  MoveSpeed: 2.5
+  RotationSpeed: 6
+  RetractDuration: 0.5
+  SpinSpeed: 14
+  SpinMaxDistance: 12
+  SpinDamagePerSecond: 20
+  SpinHitRadius: 0.9
+  SpinDamageInterval: 0.15
+  DazedDuration: 3
+  UseNavMesh: 1
+  NavRepathInterval: 0.3
+  NavTargetSampleRadius: 1.5
+  NavWaypointTolerance: 0.3
+  IgnoreCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  WallMask:
+    serializedVersion: 2
+    m_Bits: 520

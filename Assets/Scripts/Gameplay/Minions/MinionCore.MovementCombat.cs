@@ -7,6 +7,26 @@ public partial class MinionCore
 {
     private void ExecuteFollow()
     {
+        // Dismiss: move toward the commanded formation position, idle when arrived.
+        if (currentCommand != null && currentCommand.Type == CommandType.Dismiss)
+        {
+            Vector3 toFormation = currentCommand.TargetPosition - transform.position;
+            toFormation.y = 0f;
+            float dist = toFormation.magnitude;
+
+            if (dist <= Mathf.Max(0f, followStopDistance))
+            {
+                // Arrived at formation position — stay put in idle. If player moves away, command will be re-issued to move back to formation.
+                ResetNavigationPath();
+                ClearCommand();
+                stateMachine.ForceState(MinionState.Idle);
+                return;
+            }
+
+            MoveTowardsDistance(currentCommand.TargetPosition, followStopDistance);
+            return;
+        }
+
         Transform target = ResolveFollowTarget();
         if (!IsValidTarget(target))
         {
@@ -25,6 +45,13 @@ public partial class MinionCore
             if (distance > 0.0001f)
             {
                 SmoothFaceDirection(toTarget / Mathf.Max(distance, 0.0001f));
+            }
+
+            // Recall complete: minion has physically reached the player — switch to steady Follow.
+            if (currentCommand != null && currentCommand.Type == CommandType.Recall)
+            {
+                Log("Recall complete — switching to Follow.");
+                SetFollowCommand();
             }
 
             return;
@@ -72,8 +99,7 @@ public partial class MinionCore
 
                 if (!hasLineOfSight)
                 {
-                    // When LOS is blocked but we should keep fighting, path toward the commanded target
-                    // and stop at min range so ranged/support units do not collapse into melee distance.
+                    // When LOS is blocked but we should keep fighting, path toward the commanded target position but stop short of the desired range so the minion does not get stuck trying to reach an unreachable point.
                     float losRecoveryStopDistance = rangePolicy != null ? Mathf.Max(0f, rangePolicy.MinRange) : 0f;
                     MoveTowardsDistance(currentTarget.position, losRecoveryStopDistance);
                     break;
@@ -118,7 +144,10 @@ public partial class MinionCore
         }
 
         // NavMesh drives around corners/obstacles while keeping command/state logic unchanged.
-        if (useNavMeshNavigation)
+        // AttackObject targets are solid NavMesh obstacles (breakable walls). Always use direct movement so the minion walks straight toward the wall and reaches melee range.
+        bool isAttackObjectCommand = currentCommand != null && currentCommand.Type == CommandType.AttackObject;
+
+        if (useNavMeshNavigation && !isAttackObjectCommand)
         {
             Vector3 stopPoint = targetPosition;
 
@@ -139,6 +168,8 @@ public partial class MinionCore
 
         Vector3 direction = toTarget / Mathf.Max(distance, 0.0001f);
         transform.position += direction * GetRuntimeMoveSpeed() * Time.deltaTime;
+        wasMovingThisFrame = true;
+        lastMoveDir = direction;
         SmoothFaceDirection(direction);
     }
 
@@ -179,6 +210,8 @@ public partial class MinionCore
 
             Vector3 direction = toCorner.normalized;
             transform.position += direction * GetRuntimeMoveSpeed() * Time.deltaTime;
+            wasMovingThisFrame = true;
+            lastMoveDir = direction;
             SmoothFaceDirection(direction);
             return true;
         }
@@ -237,12 +270,36 @@ public partial class MinionCore
             currentCommand.LastFailureReason = FailureReason.TargetLost;
         }
 
-        if (recallOnPathFailure && currentCommand != null && currentCommand.Type != CommandType.Recall && IsValidTarget(followTarget))
+        // Combat commands: keep the command alive and reset nav so it retries next interval.
+        if (currentCommand != null
+            && (currentCommand.Type == CommandType.AttackEnemy
+                || currentCommand.Type == CommandType.AttackObject
+                || currentCommand.Type == CommandType.SupportTarget))
         {
+            return;
+        }
+
+        // Dismiss: path to formation failed — keep dismissed flag, go idle at current position.
+        if (isDismissed)
+        {
+            Log("Path failure (Dismiss) — going Idle at current position.");
+            ClearCommand();
+            stateMachine.ForceState(MinionState.Idle);
+            return;
+        }
+
+        // Follow-type commands: recall to player if configured, otherwise idle.
+        if (recallOnPathFailure
+            && currentCommand != null
+            && currentCommand.Type != CommandType.Recall
+            && IsValidTarget(followTarget))
+        {
+            Log("Path failure — recalling to player.");
             SetRecallCommand();
             return;
         }
 
+        Log("Path failure — clearing command, going Idle.");
         ClearCommand();
         stateMachine.ForceState(MinionState.Idle);
     }
@@ -258,6 +315,10 @@ public partial class MinionCore
     private void ApplyLocalSeparation(float deltaTime)
     {
         if (!useLocalSeparation) return;
+
+        // During active pursuit (Approach) and post-attack recovery (Recover), separation must not interfere with the minions movement toward the target.
+        CombatPhase phase = combatPhaseController.CurrentPhase;
+        if (phase == CombatPhase.Approach || phase == CombatPhase.Recover) return;
 
         float radius = Mathf.Max(0.05f, separationRadius);
         int hitCount = Physics.OverlapSphereNonAlloc(
@@ -294,6 +355,19 @@ public partial class MinionCore
 
         if (push.sqrMagnitude <= 0.000001f) return;
 
+        // When the minion is actively moving, remove the component of the separation push
+        // that directly opposes its movement direction. This lets minions slide past each
+        // other instead of blocking head-on, without disabling separation when idle.
+        if (wasMovingThisFrame && lastMoveDir.sqrMagnitude > 0.001f)
+        {
+            Vector3 md = lastMoveDir.normalized;
+            float along = Vector3.Dot(push, md);
+            if (along < 0f)
+                push -= md * along; // Strip anti-movement component
+        }
+
+        if (push.sqrMagnitude <= 0.000001f) return;
+
         Vector3 step = push * Mathf.Max(0f, separationStrength) * deltaTime;
         step.y = 0f;
 
@@ -303,7 +377,20 @@ public partial class MinionCore
             step = step.normalized * maxStep;
         }
 
-        transform.position += step;
+        // When using NavMesh, snap the result back onto the walkable surface so separation does not push the minion into an unwalkable area. Otherwise, just apply the separation step directly.
+        if (useNavMeshNavigation)
+        {
+            Vector3 newPos = transform.position + step;
+            if (NavMesh.SamplePosition(newPos, out NavMeshHit navHit, Mathf.Max(0.15f, separationRadius * 0.5f), NavMesh.AllAreas))
+            {
+                transform.position = navHit.position;
+            }
+            // else: no valid NavMesh point nearby — skip this step to stay on the navmesh.
+        }
+        else
+        {
+            transform.position += step;
+        }
     }
 
     private void RepositionAroundTarget(Vector3 targetPosition, float desiredRange)
@@ -317,8 +404,12 @@ public partial class MinionCore
 
         if (distance < Mathf.Max(0.01f, desiredRange - 0.25f))
         {
+            // Compute a point at desiredRange from the target in the direction away from it, and move toward that point to maintain spacing if the minion got too close.
             Vector3 away = offset.sqrMagnitude > 0.0001f ? offset.normalized : -transform.forward;
-            transform.position += away * GetRuntimeMoveSpeed() * Time.deltaTime;
+            Vector3 retreatPoint = targetPosition + away * Mathf.Max(0.1f, desiredRange);
+            retreatPoint.y = targetPosition.y;
+            MoveTowardsDistance(retreatPoint, 0f);
+            return;
         }
         else if (distance > desiredRange + 0.25f)
         {
@@ -351,6 +442,7 @@ public partial class MinionCore
 
     private void HandleBlockedLineOfSight()
     {
+        Log("Line of sight blocked — returning to Follow.");
         ResetNavigationPath();
 
         if (currentCommand != null)
@@ -402,9 +494,28 @@ public partial class MinionCore
 
     private void UpdateDebugData()
     {
-        currentState = stateMachine.CurrentState;
+        currentState       = stateMachine.CurrentState;
         currentCombatPhase = combatPhaseController.CurrentPhase;
         currentCommandType = currentCommand != null ? currentCommand.Type : CommandType.None;
+
+        if (currentState != _prevLogState)
+        {
+            Log($"State: {_prevLogState} → {currentState}");
+            _prevLogState = currentState;
+        }
+
+        if (currentCombatPhase != _prevLogPhase)
+        {
+            Log($"CombatPhase: {_prevLogPhase} → {currentCombatPhase}");
+            _prevLogPhase = currentCombatPhase;
+        }
+
+        if (currentCommandType != _prevLogCommand)
+        {
+            string targetName = currentCommand?.Target is UnityEngine.Object obj ? obj.name : "none";
+            Log($"Command: {_prevLogCommand} → {currentCommandType} (target: {targetName})");
+            _prevLogCommand = currentCommandType;
+        }
     }
 
     private float GetDistanceToTarget(Transform target)
@@ -517,6 +628,7 @@ public partial class MinionCore
 
     private void HandleMissingCombatTarget()
     {
+        Log("Combat target missing or dead — clearing command, going Idle.");
         ResetNavigationPath();
 
         if (currentCommand != null)

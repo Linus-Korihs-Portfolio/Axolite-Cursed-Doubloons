@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: SO_StatusProfile(Base)
+  m_Name: SO_StatProfile(Minion)
   m_EditorClassIdentifier: Assembly-CSharp::CombatStatsProfile
   BaseStats:
   - Type: 0
-    Value: 1000
+    Value: 20
   - Type: 1
-    Value: 10
+    Value: 3
   - Type: 2
-    Value: 8
+    Value: 5
   - Type: 3
-    Value: 4
+    Value: 5
   - Type: 4
     Value: 1
   - Type: 5

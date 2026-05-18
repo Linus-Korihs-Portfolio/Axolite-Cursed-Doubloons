@@ -33,8 +33,9 @@ public class PlayerBrainEditor : Editor
         {
             EditorGUILayout.Space(6);
             EditorGUILayout.LabelField("Minion Commander Bindings", EditorStyles.boldLabel);
-            DrawBinding("Command (Issue)", commander.CommandAction);
-            DrawBinding("Recall All", commander.RecallAction);
+            DrawBinding("Command (Order Next)", commander.CommandAction);
+            DrawBinding("Call (Impulse Wave)",  commander.CallAction);
+            DrawBinding("Dismiss (Formation)",  commander.DismissAction);
         }
     }
 
@@ -141,8 +142,9 @@ public class PlayerMinionCommanderEditor : Editor
         EditorGUILayout.Space(10);
         EditorGUILayout.LabelField("Current Bindings", EditorStyles.boldLabel);
 
-        DrawBinding("Command (Issue)", commander.CommandAction);
-        DrawBinding("Recall All", commander.RecallAction);
+        DrawBinding("Command (Order Next)", commander.CommandAction);
+        DrawBinding("Call (Impulse Wave)",  commander.CallAction);
+        DrawBinding("Dismiss (Formation)",  commander.DismissAction);
     }
 
     private void DrawBinding(string label, InputActionReference actionRef)

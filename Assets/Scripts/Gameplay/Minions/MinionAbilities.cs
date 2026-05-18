@@ -9,6 +9,9 @@ public abstract class AbilityBase
     public float Range { get; protected set; }
     public TargetType TargetType { get; protected set; }
 
+    // Set by MinionAbilitySystem; gates all Debug output inside Execute.
+    internal System.Action<string> Logger;
+
     protected float lastUseTime = -999f;
 
     // Checks if cooldown is ready. Attack speed shortens cooldowns.
@@ -71,31 +74,60 @@ public class MeleeAttackAbility : AbilityBase
             targetStats.ApplyDamage(damage);
         }
 
-        Debug.Log($"[{caster.name}] used {Id} on [{target.name}] for {damage} damage.");
+        Logger?.Invoke($"used {Id} on [{target.name}] for {damage} damage.");
     }
 }
 
-// Simple ranged damage ability.
+// Ranged damage ability. When a projectilePrefab is assigned, spawns a MinionProjectile;
+// otherwise falls back to instant-hit damage.
 public class RangedAttackAbility : AbilityBase
 {
-    public RangedAttackAbility(float range, float cooldown)
+    private readonly GameObject projectilePrefab;
+    private readonly bool       useHoming;
+    private readonly float      projectileSpeed;
+
+    public RangedAttackAbility(
+        float      range,
+        float      cooldown,
+        GameObject projectilePrefab = null,
+        bool       useHoming        = true,
+        float      projectileSpeed  = 10f)
     {
-        Id = "RangedAttack";
-        Range = range;
-        Cooldown = cooldown;
-        TargetType = TargetType.Enemy;
+        Id                   = "RangedAttack";
+        Range                = range;
+        Cooldown             = cooldown;
+        TargetType           = TargetType.Enemy;
+        this.projectilePrefab = projectilePrefab;
+        this.useHoming        = useHoming;
+        this.projectileSpeed  = projectileSpeed;
     }
 
     protected override void Execute(Transform caster, Transform target, CombatantStats casterStats)
     {
         float damage = casterStats != null ? casterStats.GetStat(CombatStatType.Damage) : 0f;
+
+        if (projectilePrefab != null)
+        {
+            Vector3 spawnPos            = caster.position + Vector3.up * 0.5f;
+            MinionProjectile projectile = Object.Instantiate(projectilePrefab, spawnPos, Quaternion.identity)
+                .GetComponent<MinionProjectile>();
+
+            if (projectile != null)
+            {
+                // ownerTag = "Ally" so the projectile won't damage other ally minions.
+                projectile.Initialize(target, damage, projectileSpeed, useHoming, "Ally", 6f);
+                return;
+            }
+        }
+
+        // Instant-hit fallback when no prefab is assigned.
         CombatantStats targetStats = target != null ? target.GetComponentInParent<CombatantStats>() : null;
         if (targetStats != null)
         {
             targetStats.ApplyDamage(damage);
         }
 
-        Debug.Log($"[{caster.name}] fired {Id} at [{target.name}] for {damage} damage.");
+        Logger?.Invoke($"fired {Id} at [{target.name}] for {damage} damage (instant fallback).");
     }
 }
 
@@ -130,7 +162,7 @@ public class SupportAbility : AbilityBase
                     targetStats.Heal(healAmount);
                 }
 
-                Debug.Log($"[{caster.name}] cast Heal on [{target.name}] for {healAmount} HP.");
+                Logger?.Invoke($"cast Heal on [{target.name}] for {healAmount} HP.");
                 break;
             }
 
@@ -146,7 +178,7 @@ public class SupportAbility : AbilityBase
                     }
                 }
 
-                Debug.Log($"[{caster.name}] cast {supportMode} on [{target.name}].");
+                Logger?.Invoke($"cast {supportMode} on [{target.name}].");
                 break;
             }
         }
@@ -160,6 +192,19 @@ public class MinionAbilitySystem
 
     public IReadOnlyList<AbilityBase> EquippedAbilities => equippedAbilities;
 
+    // Assigned by MinionCore.Initialize(); calls Log() when enableLogs is true.
+    // Setting this propagates the logger to all currently equipped abilities.
+    private System.Action<string> _logger;
+    public System.Action<string> Logger
+    {
+        get => _logger;
+        set
+        {
+            _logger = value;
+            foreach (AbilityBase a in equippedAbilities) a.Logger = value;
+        }
+    }
+
     public void Clear()
     {
         equippedAbilities.Clear();
@@ -168,15 +213,19 @@ public class MinionAbilitySystem
     public void AddAbility(AbilityBase ability)
     {
         if (ability == null) return;
+        ability.Logger = _logger;
         equippedAbilities.Add(ability);
     }
 
     // Rebuilds a very small default loadout based on role.
     public void BuildDefaultLoadout(
         IMinionRole role,
-        StatusEffectDefinition supportBuffEffect = null,
-        StatusEffectDefinition supportDebuffEffect = null,
-        float abilityCooldown = 1f)
+        StatusEffectDefinition supportBuffEffect    = null,
+        StatusEffectDefinition supportDebuffEffect  = null,
+        float      abilityCooldown                  = 1f,
+        GameObject rangedProjectilePrefab          = null,
+        bool       useHomingProjectiles             = true,
+        float      projectileSpeed                  = 10f)
     {
         Clear();
 
@@ -192,7 +241,9 @@ public class MinionAbilitySystem
                 break;
 
             case MinionRoleType.Ranged:
-                AddAbility(new RangedAttackAbility(policy.MaxRange, abilityCooldown));
+                AddAbility(new RangedAttackAbility(
+                    policy.MaxRange, abilityCooldown,
+                    rangedProjectilePrefab, useHomingProjectiles, projectileSpeed));
                 break;
 
             case MinionRoleType.Support:
@@ -267,7 +318,8 @@ public class MinionAbilitySystem
         switch (ability.TargetType)
         {
             case TargetType.Enemy:
-                return target.CompareTag("Enemy");
+                // Enemy-type abilities can also be used on breakable objects — they deal damage the same way.
+                return target.CompareTag("Enemy") || target.CompareTag("Breakable");
 
             case TargetType.Ally:
                 return target.CompareTag("Ally") || (caster != null && target == caster);

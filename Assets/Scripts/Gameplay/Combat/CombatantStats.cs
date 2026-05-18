@@ -21,6 +21,7 @@ public class CombatantStats : MonoBehaviour
     public bool IsDead => currentHealth <= 0f;
 
     public event Action<float, float> HealthChanged; // (currentHealth, maxHealth)
+    public event Action<float> DamageTaken;          // (finalDamage) — fired after each successful hit
     public event Action Died;
 
     private void Awake()
@@ -138,7 +139,11 @@ public class CombatantStats : MonoBehaviour
             Died?.Invoke(); // Notify listeners that the combatant has died
             if (despawnOnDeath)
             {
-                Destroy(gameObject, Mathf.Max(0f, despawnDelay));
+                // If the root is the player, destroy the whole hierarchy, not just this child.
+                GameObject toDestroy = transform.root.CompareTag("Player")
+                    ? transform.root.gameObject
+                    : gameObject;
+                Destroy(toDestroy, Mathf.Max(0f, despawnDelay));
             }
         }
     }
@@ -150,6 +155,7 @@ public class CombatantStats : MonoBehaviour
         float defense = GetStat(CombatStatType.Defense);
         float finalDamage = amount / defense; // Defense acts as a divisor (e.g., 10 damage with 2 defense results in 5 final damage)
         SetHealth(currentHealth - finalDamage);
+        DamageTaken?.Invoke(finalDamage);
         return finalDamage;
     }
 

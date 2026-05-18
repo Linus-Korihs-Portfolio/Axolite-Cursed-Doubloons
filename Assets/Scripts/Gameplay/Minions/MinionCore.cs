@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(CombatantStats))]
@@ -18,6 +19,9 @@ public partial class MinionCore : MonoBehaviour
     private string allyTag;
     private string breakableTag;
     private float abilityCooldown;
+    private GameObject rangedProjectilePrefab;
+    private bool useHomingProjectiles;
+    private float projectileSpeed;
 
     private float moveSpeed;
     private float rotationSpeed;
@@ -73,14 +77,26 @@ public partial class MinionCore : MonoBehaviour
     private bool debugForceCombatPhase;
     private CombatPhase debugForcedCombatPhase;
 
+    // Tracks movement direction this frame so separation can allow sliding past other minions.
+    private bool wasMovingThisFrame;
+    private Vector3 lastMoveDir;
+
     [Header("Debug Visuals")]
     [SerializeField] private bool drawRoleRangeGizmos;
+
+    [Header("Debug")]
+    [SerializeField] private bool enableLogs;
 
     [Header("Runtime Debug")]
     [SerializeField] private MinionState currentState;
     [SerializeField] private CombatPhase currentCombatPhase;
     [SerializeField] private CommandType currentCommandType;
     [SerializeField] private float currentDistanceToTarget;
+
+    // Previous-frame values used solely to detect and log transitions.
+    private MinionState      _prevLogState   = MinionState.Idle;
+    private CombatPhase      _prevLogPhase   = CombatPhase.None;
+    private CommandType      _prevLogCommand = CommandType.None;
 
     private IMinionRole currentRole;
     private MinionCommand currentCommand;
@@ -95,12 +111,39 @@ public partial class MinionCore : MonoBehaviour
 
     private MinionIntent currentIntent;
 
+    // Set by SetDismissCommand; prevents auto-combat while the minion is dismissed to a formation position.
+    private bool isDismissed;
+    // How far the player must move from the minion before the minion resumes following (set at dismiss time).
+    private float dismissResumeRange;
+
     public MinionRoleType RoleType => roleType; // Exposed runtime metadata for commander/input systems.
     public SupportMode? ActiveSupportMode => currentRole != null ? currentRole.GetSupportMode() : null;
+    public bool IsDismissed => isDismissed;
+
+    // Fired just before the GameObject is destroyed due to death.
+    public event Action<MinionCore> Died;
 
     private void Awake()
     {
         Initialize();
+    }
+
+    private void OnDestroy()
+    {
+        if (sharedCombatStats != null) sharedCombatStats.Died -= OnCombatantDied;
+    }
+
+    private void OnCombatantDied()
+    {
+        Log("Died.");
+        ClearCommand();
+        stateMachine.ForceState(MinionState.Idle);
+        Died?.Invoke(this);
+    }
+
+    internal void Log(string msg)
+    {
+        if (enableLogs) Debug.Log($"[Minion:{name}] {msg}");
     }
 
     private void Initialize()
@@ -116,8 +159,11 @@ public partial class MinionCore : MonoBehaviour
         combatPhaseController = new MinionCombatPhaseController();
         tickScheduler = new MinionTickScheduler();
         abilitySystem = new MinionAbilitySystem();
+        abilitySystem.Logger = Log;
         sharedCombatStats = GetComponent<CombatantStats>();
         navPath = new NavMeshPath();
+
+        if (sharedCombatStats != null) sharedCombatStats.Died += OnCombatantDied;
 
         // Load per-role behaviour values from the ScriptableObject.
         RoleSettings rs = settings.GetForRole(roleType);
@@ -156,6 +202,9 @@ public partial class MinionCore : MonoBehaviour
         returnToFollowWhenLineOfSightBlocked = b.ReturnToFollowWhenLineOfSightBlocked;
         autoAssignCombatCommands        = b.AutoAssignCombatCommands;
         autoTargetRadius                = b.AutoTargetRadius;
+        rangedProjectilePrefab          = b.ProjectilePrefab;
+        useHomingProjectiles            = b.UseHomingProjectiles;
+        projectileSpeed                 = b.ProjectileSpeed;
 
         // Tags are shared across roles and live on the root MinionSettings.
         enemyTag     = settings.EnemyTag;
@@ -180,7 +229,9 @@ public partial class MinionCore : MonoBehaviour
             return;
         }
 
-        abilitySystem.BuildDefaultLoadout(currentRole, supportBuffEffect, supportDebuffEffect, abilityCooldown);
+        abilitySystem.BuildDefaultLoadout(
+            currentRole, supportBuffEffect, supportDebuffEffect, abilityCooldown,
+            rangedProjectilePrefab, useHomingProjectiles, projectileSpeed);
 
         currentCommand = new MinionCommand
         {
@@ -201,6 +252,7 @@ public partial class MinionCore : MonoBehaviour
     private void Update()
     {
         if (settings == null || currentRole == null) return;
+        if (sharedCombatStats != null && sharedCombatStats.IsDead) return;
 
         if (snapToGround)
         {
@@ -229,6 +281,7 @@ public partial class MinionCore : MonoBehaviour
         UpdateCombatPhase();
 
         // Execute the current state and combat phase.
+        wasMovingThisFrame = false;
         ExecuteCurrentState(currentTime);
 
         // Keep nearby minions from stacking into the same spot.
