@@ -4,12 +4,11 @@ using UnityEngine.AI;
 /// <summary>
 /// Enemy 1 — Lunger (Goomba-like).
 ///
-/// Attacks:
-///   • Bite  — short-range melee hit on the current target.
-///   • Lunge — triggered on first detection (before being attacked), OR whenever the
-///             target is beyond <see cref="LungerEnemySettings.LungeMinDistance"/>.
-///             The enemy winds up briefly, charges forward at high speed, deals
-///             impact damage at the landing zone, then recovers before biting again.
+/// State flow:  Idle → PreLunge → Lunging → Recovering → Approach ↔ Bite
+///   • Sleeps until player enters LOS or lunger takes damage.
+///   • Lunge is always the opening move; afterwards the lunger walks to the nearest
+///     target, switches to a closer one if found, and bites in a loop.
+///   • Returns to sleep when all targets are dead or out of range.
 /// </summary>
 [RequireComponent(typeof(CombatantStats))]
 public class LungerEnemy : MonoBehaviour
@@ -17,6 +16,10 @@ public class LungerEnemy : MonoBehaviour
     private enum LungerState { Idle, Approach, PreLunge, Lunging, Recovering, Bite }
 
     [SerializeField] private LungerEnemySettings settings;
+
+    [Tooltip("Assign the player's actual moving transform (the object that physically moves). " +
+             "Required when the player prefab root is a static anchor above the moving body.")]
+    [SerializeField] private Transform playerTransform;
 
     [Header("Debug")]
     [SerializeField] private bool enableLogs;
@@ -37,7 +40,6 @@ public class LungerEnemy : MonoBehaviour
 
     // ── Behaviour flags ────────────────────────────────────────────────────────
     private bool isAsleep = true;            // stands still until hit or player spotted
-    private bool hasBeenAttacked;            // set true on first damage hit
     private bool hasLungedThisEncounter;     // blocks re-lunge until target is fully lost
 
     // ── Lunge data ─────────────────────────────────────────────────────────────
@@ -120,14 +122,22 @@ public class LungerEnemy : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (currentState != LungerState.Lunging || settings == null) return;
-        if ((settings.WallMask.value & (1 << collision.gameObject.layer)) == 0) return;
+        if (currentState != LungerState.Lunging) return;
 
-        // Targets are handled by sweep damage — don't stop the lunge on their colliders.
+        // Targets are handled by sweep damage — never stop the lunge on them.
         Transform root = collision.transform.root;
         if (root.CompareTag(settings.PlayerTag) || collision.transform.CompareTag(settings.MinionTag)) return;
 
-        hitWallDuringLunge = true;
+        // Use contact normal to distinguish walls from floor/ceiling.
+        // Floor normals point mostly up (|Y| > 0.5); wall normals are mostly horizontal (|Y| <= 0.5).
+        for (int i = 0; i < collision.contactCount; i++)
+        {
+            if (Mathf.Abs(collision.GetContact(i).normal.y) <= 0.5f)
+            {
+                hitWallDuringLunge = true;
+                return;
+            }
+        }
     }
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -145,8 +155,7 @@ public class LungerEnemy : MonoBehaviour
 
     private void OnDamageTaken(float _)
     {
-        hasBeenAttacked = true;
-        isAsleep        = false;
+        isAsleep = false;
     }
 
     private void RefreshTarget()
@@ -161,13 +170,7 @@ public class LungerEnemy : MonoBehaviour
             bool far  = HorizontalDistance(currentTarget.position) > forgetRadius;
 
             if (dead || far || !currentTarget.gameObject.activeInHierarchy)
-            {
-                Log($"Target lost: {currentTarget.name}");
-                currentTarget          = null;
-                hasLastKnownPos        = false;
-                hasLungedThisEncounter = false; // new encounter → lunge allowed again
-                ResetNavPath();
-            }
+                LoseTarget(targetDied: dead);
         }
 
         // Update last known position while we have LOS.
@@ -179,8 +182,8 @@ public class LungerEnemy : MonoBehaviour
 
         if (currentTarget != null) return;
 
-        // Asleep and never hit: only wake on direct player sight.
-        if (isAsleep && !hasBeenAttacked)
+        // Asleep: only player in direct sight wakes the lunger.
+        if (isAsleep)
         {
             Transform player = FindPlayerInSight();
             if (player != null)
@@ -193,13 +196,49 @@ public class LungerEnemy : MonoBehaviour
             return;
         }
 
-        // Woken by damage (isAsleep was cleared by OnDamageTaken): target nearest threat.
-        if (currentTarget == null)
+        // Awake but no target: find nearest threat or return to sleep.
+        Transform found = FindBestTarget();
+        if (found != null)
         {
-            Transform found = FindBestTarget();
-            if (found != null) Log($"Target acquired: {found.name}");
             currentTarget = found;
+            Log($"Target acquired: {found.name}");
+            if (!hasLungedThisEncounter)
+                BeginPreLunge();
         }
+        else
+        {
+            isAsleep = true;
+            Log("No targets in range — returning to sleep");
+        }
+    }
+
+    // Drops the current target. If it died, immediately looks for a replacement.
+    // Otherwise resets the encounter and returns to sleep.
+    private void LoseTarget(bool targetDied = false)
+    {
+        string lost = currentTarget != null ? currentTarget.name : "?";
+        currentTarget   = null;
+        hasLastKnownPos = false;
+        ResetNavPath();
+
+        if (targetDied)
+        {
+            Transform next = FindBestTarget();
+            if (next != null)
+            {
+                currentTarget = next;
+                Log($"Target {lost} died \u2192 next target: {next.name}");
+                return;
+            }
+            // No replacement found this frame — stay awake so RefreshTarget retries next frame.
+            Log($"Target {lost} died \u2014 no replacement found, staying alert");
+            return;
+        }
+
+        hasLungedThisEncounter = false;
+        lastLungeTime          = -999f;
+        isAsleep               = true;
+        Log($"Target lost ({lost}) \u2014 returning to sleep");
     }
 
     // Returns the player root transform if visible; null otherwise.
@@ -224,7 +263,7 @@ public class LungerEnemy : MonoBehaviour
 
             if (!HasLineOfSight(col.transform)) continue;
 
-            return root;
+            return playerTransform != null ? playerTransform : root;
         }
         return null;
     }
@@ -258,8 +297,19 @@ public class LungerEnemy : MonoBehaviour
 
             if (settings.RequireLOSToDetect && !HasLineOfSight(t)) continue;
 
-            float sq = (root.position - transform.position).sqrMagnitude;
-            if (sq < bestSq) { bestSq = sq; best = root; }
+            // For the player, use the explicit playerTransform override if set.
+            // For minions, use cs.transform (the individual minion that has CombatantStats),
+            // NOT t.root — which would resolve to a shared container and mask individual deaths.
+            Transform trackTarget;
+            if (isPlayer && playerTransform != null)
+                trackTarget = playerTransform;
+            else if (cs != null)
+                trackTarget = cs.transform;
+            else
+                trackTarget = t;
+
+            float sq = (trackTarget.position - transform.position).sqrMagnitude;
+            if (sq < bestSq) { bestSq = sq; best = trackTarget; }
         }
 
         return best;
@@ -279,31 +329,16 @@ public class LungerEnemy : MonoBehaviour
             currentState == LungerState.Lunging    ||
             currentState == LungerState.Recovering) return;
 
-        if (currentTarget == null)
-        {
-            SetState(LungerState.Idle);
-            return;
-        }
+        if (currentTarget == null) { SetState(LungerState.Idle); return; }
 
-        float dist = HorizontalDistance(currentTarget.position);
+        float dist = Vector3.Distance(transform.position, currentTarget.position);
 
-        // Within bite range → bite.
-        if (dist <= settings.BiteRange)
+        if (dist <= settings.BiteMaxRange)
         {
             SetState(LungerState.Bite);
             return;
         }
 
-        // Beyond lunge threshold AND haven't lunged this encounter → lunge.
-        if (!hasLungedThisEncounter && dist > settings.LungeMinDistance)
-        {
-            BeginPreLunge();
-            if (currentState != LungerState.PreLunge)
-                SetState(LungerState.Approach);
-            return;
-        }
-
-        // Post-lunge or within lunge threshold: close in to bite.
         SetState(LungerState.Approach);
     }
 
@@ -316,7 +351,22 @@ public class LungerEnemy : MonoBehaviour
             case LungerState.Approach:
             {
                 if (currentTarget == null) break;
-                MoveTowards(currentTarget.position, settings.BiteRange * 0.9f);
+
+                // Switch to a nearer target if one exists (0.5 m hysteresis avoids flip-flop).
+                Transform nearest = FindBestTarget();
+                if (nearest != null && nearest != currentTarget)
+                {
+                    float dNearest = Vector3.Distance(transform.position, nearest.position);
+                    float dCurrent = Vector3.Distance(transform.position, currentTarget.position);
+                    if (dNearest < dCurrent - 0.5f)
+                    {
+                        Log($"Closer target: switching {currentTarget.name} \u2192 {nearest.name}");
+                        currentTarget = nearest;
+                        ResetNavPath();
+                    }
+                }
+
+                MoveTowards(currentTarget.position, settings.BiteDesiredRange);
                 break;
             }
 
@@ -356,8 +406,15 @@ public class LungerEnemy : MonoBehaviour
                 stateTimer -= Time.deltaTime;
                 if (stateTimer <= 0f)
                 {
-                    // After recovery bite loop: find nearest alive threat and close in.
-                    if (currentTarget == null) currentTarget = FindBestTarget();
+                    // Re-evaluate who to chase after the lunge — a minion may be closer than
+                    // the player who was lunged at.
+                    Transform best = FindBestTarget();
+                    if (best != null && best != currentTarget)
+                    {
+                        Log($"Post-lunge retarget: {currentTarget?.name} \u2192 {best.name}");
+                        currentTarget = best;
+                        ResetNavPath();
+                    }
                     SetState(currentTarget != null ? LungerState.Approach : LungerState.Idle);
                 }
                 break;
@@ -368,7 +425,7 @@ public class LungerEnemy : MonoBehaviour
                 if (currentTarget == null) { SetState(LungerState.Idle); break; }
 
                 // Target walked out of range — close in.
-                if (HorizontalDistance(currentTarget.position) > settings.BiteRange)
+                if (Vector3.Distance(transform.position, currentTarget.position) > settings.BiteMaxRange)
                 {
                     SetState(LungerState.Approach);
                     break;
@@ -391,6 +448,20 @@ public class LungerEnemy : MonoBehaviour
                     {
                         ts.ApplyDamage(settings.BiteDamage);
                         Log($"Bite hit {currentTarget.name} for {settings.BiteDamage} damage");
+                    }
+
+                    // After each bite, switch to a nearer target if one exists (0.5 m hysteresis).
+                    Transform nearest = FindBestTarget();
+                    if (nearest != null && nearest != currentTarget)
+                    {
+                        float dNearest = Vector3.Distance(transform.position, nearest.position);
+                        float dCurrent = Vector3.Distance(transform.position, currentTarget.position);
+                        if (dNearest < dCurrent - 0.5f)
+                        {
+                            Log($"Post-bite: closer target — switching {currentTarget.name} → {nearest.name}");
+                            currentTarget = nearest;
+                            ResetNavPath();
+                        }
                     }
                 }
                 break;
@@ -635,7 +706,8 @@ public class LungerEnemy : MonoBehaviour
     private void SetState(LungerState newState)
     {
         if (newState == currentState) return;
-        Log($"State: {currentState} → {newState}");
+        string targetInfo = newState == LungerState.Approach && currentTarget != null ? $" [{currentTarget.name}]" : "";
+        Log($"State: {currentState} → {newState}{targetInfo}");
         if (newState == LungerState.Lunging)
         {
             lungeStartPos = transform.position;

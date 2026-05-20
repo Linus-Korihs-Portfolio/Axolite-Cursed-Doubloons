@@ -32,8 +32,10 @@ public class LungerEnemySettings : ScriptableObject
     public float RotationSpeed = 8f;
 
     [Header("Bite Attack")]
-    [Tooltip("Range at which the bite can connect.")]
-    public float BiteRange    = 1.5f;
+    [Tooltip("Desired combat distance: the lunger stops approaching at this range.")]
+    public float BiteDesiredRange = 1.0f;
+    [Tooltip("Maximum range at which the bite can connect and the Bite state is entered.")]
+    public float BiteMaxRange     = 1.8f;
     public float BiteDamage   = 10f;
     public float BiteCooldown = 1.2f;
 
@@ -62,6 +64,4 @@ public class LungerEnemySettings : ScriptableObject
     [Header("Physics")]
     [Tooltip("Layers the Lunger's Rigidbody should pass through (e.g. the Minion layer).")]
     public LayerMask IgnoreCollisionMask;
-    [Tooltip("Layers treated as walls for lunge collision detection.")]
-    public LayerMask WallMask = ~0;
 }

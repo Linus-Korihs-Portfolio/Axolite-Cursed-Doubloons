@@ -169,6 +169,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 335878359}
     m_Modifications:
+    - target: {fileID: 2076487513594705184, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3376846885205554992, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3683564820223073212, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6675801216401174827, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7394644768930550252, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -221,28 +237,20 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6675801216401174827, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 7394644768930550252, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 135393052}
-    - targetCorrespondingSourceObject: {fileID: 7394644768930550252, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1034202327}
-    - targetCorrespondingSourceObject: {fileID: 7394644768930550252, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 861075206}
     - targetCorrespondingSourceObject: {fileID: 7394644768930550252, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 144627120}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3683564820223073212, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 119383946}
+      addedObject: {fileID: 119383947}
     - targetCorrespondingSourceObject: {fileID: 3683564820223073212, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 119383947}
+      addedObject: {fileID: 1265450080}
   m_SourcePrefab: {fileID: 100100000, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
 --- !u!4 &119383944 stripped
 Transform:
@@ -254,38 +262,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3683564820223073212, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
   m_PrefabInstance: {fileID: 119383943}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &119383946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 119383945}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
-  m_SerializedVersion: 0
-  m_AgentTypeID: 0
-  m_CollectObjects: 0
-  m_Size: {x: 10, y: 10, z: 10}
-  m_Center: {x: 0, y: 2, z: 0}
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_UseGeometry: 0
-  m_DefaultArea: 0
-  m_GenerateLinks: 1
-  m_IgnoreNavMeshAgent: 1
-  m_IgnoreNavMeshObstacle: 1
-  m_OverrideTileSize: 0
-  m_TileSize: 256
-  m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
-  m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: dd6f1ee37e04e4245b43741a704eefef, type: 2}
-  m_BuildHeightMesh: 0
 --- !u!65 &119383947
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -305,93 +281,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.3, y: 0.2999999, z: 0.0029390368}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &135393051
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 135393052}
-  - component: {fileID: 135393053}
-  - component: {fileID: 135393054}
-  - component: {fileID: 135393055}
-  m_Layer: 6
-  m_Name: ColliderWall1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &135393052
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 135393051}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 119383944}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &135393053
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 135393051}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 3, y: 5, z: 30}
-  m_Center: {x: -14, y: 2.5, z: 0}
---- !u!114 &135393054
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 135393051}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6026336b2bc14624c883302eb6313a15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Comment
-  commentText: Trigger Collider needed for Camera Occlusion. Needs the correct layer
-    to be made transparent/hide
---- !u!208 &135393055
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 135393051}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0, z: 0}
-  m_TimeToStationary: 0.5
+  m_Size: {x: 30, y: 0.29390368, z: 29.999996}
+  m_Center: {x: -0.000002861023, y: 0.14695193, z: -0.0000052452087}
 --- !u!1 &144627119
 GameObject:
   m_ObjectHideFlags: 0
@@ -800,9 +691,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 620045636}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Minions
-  m_TagString: Untagged
+  m_TagString: Ally
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -816,7 +707,7 @@ Transform:
   m_GameObject: {fileID: 620045635}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.83915, y: 0.26, z: 3.37334}
+  m_LocalPosition: {x: 1.83915, y: 0.548, z: 3.37334}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -839,91 +730,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: 9f800ebe-2e4c-4eb1-b517-a5f99e8898dc
---- !u!1 &861075205
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 861075206}
-  - component: {fileID: 861075207}
-  - component: {fileID: 861075208}
-  - component: {fileID: 861075209}
-  m_Layer: 6
-  m_Name: ColliderWall3
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &861075206
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 861075205}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -0.75}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 119383944}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!65 &861075207
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 861075205}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 3, y: 5, z: 30}
-  m_Center: {x: -14, y: 2.5, z: 0}
---- !u!114 &861075208
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 861075205}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6026336b2bc14624c883302eb6313a15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Comment
-  commentText: Trigger Collider needed for Camera Occlusion. Needs the correct layer
-    to be made transparent/hide
---- !u!208 &861075209
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 861075205}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!1001 &936502445
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1025,91 +831,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: 2940cdc9-efe2-4e3d-a66f-eb176506b668
---- !u!1 &1034202326
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1034202327}
-  - component: {fileID: 1034202328}
-  - component: {fileID: 1034202329}
-  - component: {fileID: 1034202330}
-  m_Layer: 6
-  m_Name: ColliderWall2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1034202327
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1034202326}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 27, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 119383944}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1034202328
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1034202326}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 3, y: 5, z: 30}
-  m_Center: {x: -14, y: 2.5, z: 0}
---- !u!114 &1034202329
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1034202326}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6026336b2bc14624c883302eb6313a15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Comment
-  commentText: Trigger Collider needed for Camera Occlusion. Needs the correct layer
-    to be made transparent/hide
---- !u!208 &1034202330
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1034202326}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!1001 &1051907985
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1352,6 +1073,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: 21acf2c7-ef3f-4ebf-afb0-083f5d5980d6
+--- !u!114 &1265450080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 119383945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 192
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 1
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: dd6f1ee37e04e4245b43741a704eefef, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!114 &1345023574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1728,9 +1481,13 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2634980963408571480, guid: 516acb0300f70694fa480808d3db79ae, type: 3}
+      propertyPath: baseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: 1389f37c1949b734090441596fb326fd, type: 2}
     - target: {fileID: 5823449065388456636, guid: 516acb0300f70694fa480808d3db79ae, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.12643
+      value: 2.53
       objectReference: {fileID: 0}
     - target: {fileID: 5823449065388456636, guid: 516acb0300f70694fa480808d3db79ae, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1738,7 +1495,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5823449065388456636, guid: 516acb0300f70694fa480808d3db79ae, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 10.72
+      value: 12.43
       objectReference: {fileID: 0}
     - target: {fileID: 5823449065388456636, guid: 516acb0300f70694fa480808d3db79ae, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2178,6 +1935,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LungerEnemy
   settings: {fileID: 11400000, guid: b46d192e859f5144788bdfddb71ebc65, type: 2}
+  playerTransform: {fileID: 188860362}
   enableLogs: 1
   currentState: 0
 --- !u!1001 &8778253564183133839
