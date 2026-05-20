@@ -45,4 +45,7 @@ MonoBehaviour:
   NavWaypointTolerance: 0.3
   IgnoreCollisionMask:
     serializedVersion: 2
+    m_Bits: 512
+  LungeIgnoreCollisionMask:
+    serializedVersion: 2
     m_Bits: 520

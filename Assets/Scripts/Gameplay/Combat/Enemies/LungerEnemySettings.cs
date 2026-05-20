@@ -62,6 +62,8 @@ public class LungerEnemySettings : ScriptableObject
     public float NavWaypointTolerance    = 0.3f;
 
     [Header("Physics")]
-    [Tooltip("Layers the Lunger's Rigidbody should pass through (e.g. the Minion layer).")]
+    [Tooltip("Layers the Lunger's Rigidbody should pass through at all times (e.g. the Minion layer).")]
     public LayerMask IgnoreCollisionMask;
+    [Tooltip("Extra layers to pass through ONLY during the lunge (e.g. the Player layer). Restored to normal on lunge end.")]
+    public LayerMask LungeIgnoreCollisionMask;
 }

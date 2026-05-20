@@ -57,6 +57,7 @@ public class LungerEnemy : MonoBehaviour
 
     // ── Physics (horizontal velocity set in Update, applied in FixedUpdate) ────
     private Vector3 frameVelocity;
+    private int     myLayer;
 
     // ── NavMesh ────────────────────────────────────────────────────────────────
     private NavMeshPath navPath;
@@ -84,9 +85,10 @@ public class LungerEnemy : MonoBehaviour
             rb.constraints = RigidbodyConstraints.FreezeRotation;
         }
 
+        myLayer = gameObject.layer;
+
         if (settings != null && settings.IgnoreCollisionMask != 0)
         {
-            int myLayer = gameObject.layer;
             for (int i = 0; i < 32; i++)
             {
                 if ((settings.IgnoreCollisionMask.value & (1 << i)) != 0)
@@ -507,6 +509,18 @@ public class LungerEnemy : MonoBehaviour
         frameVelocity          = Vector3.zero;
         hasLungedThisEncounter = true;
         stateTimer             = settings != null ? settings.LungeRecoveryDuration : 1.2f;
+        // Restore lunge-only pass-through layers (skip any that are permanently ignored).
+        if (settings != null)
+        {
+            for (int i = 0; i < 32; i++)
+            {
+                if ((settings.LungeIgnoreCollisionMask.value & (1 << i)) != 0 &&
+                    (settings.IgnoreCollisionMask.value      & (1 << i)) == 0)
+                {
+                    Physics.IgnoreLayerCollision(myLayer, i, false);
+                }
+            }
+        }
         SetState(LungerState.Recovering);
     }
 
@@ -712,6 +726,15 @@ public class LungerEnemy : MonoBehaviour
         {
             lungeStartPos = transform.position;
             lungeHitIds.Clear();
+            // Enable lunge-only pass-through (e.g. player layer) so the lunger flies through targets.
+            if (settings != null)
+            {
+                for (int i = 0; i < 32; i++)
+                {
+                    if ((settings.LungeIgnoreCollisionMask.value & (1 << i)) != 0)
+                        Physics.IgnoreLayerCollision(myLayer, i, true);
+                }
+            }
         }
         currentState = newState;
     }
