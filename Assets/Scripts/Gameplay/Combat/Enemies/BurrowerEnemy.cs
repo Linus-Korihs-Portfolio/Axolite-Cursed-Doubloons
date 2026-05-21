@@ -27,7 +27,7 @@ using UnityEngine;
 ///      After GrabDuration: release minion (it is dead or near-dead).
 ///      Then: check HP → BurrowingDown (below threshold) or FlyingUp (repeat).
 ///
-///   8. LANDED    — short stun on the ground after hitting a player.
+///   8. LANDED    — (unused for player hits; kept for future use).
 ///      After DiveLandedDuration: check HP → BurrowingDown or FlyingUp.
 ///
 ///   9. BURROWING DOWN — descends to burrowedY (BurrowDepth below spawn),
@@ -52,6 +52,10 @@ public class BurrowerEnemy : MonoBehaviour
 
     [SerializeField] private BurrowerEnemySettings settings;
 
+    [Tooltip("Assign the player's actual moving transform. " +
+             "Required when the player prefab root is a static anchor above the moving body.")]
+    [SerializeField] private Transform playerTransform;
+
     [Header("Debug")]
     [SerializeField] private bool enableLogs;
 
@@ -73,13 +77,19 @@ public class BurrowerEnemy : MonoBehaviour
     private bool           divingAtMinion;
     private CombatantStats grabbedMinionStats;
     private Transform      grabbedMinionTransform;
+    private MinionCore     grabbedMinionAI;   // disabled during grab so the minion stops moving
     private float          grabTimer;
+    private float          postGrabDelayTimer;
 
     // ── Re-emerge flag ────────────────────────────────────────────────────────
     private bool isInitialBurrow = true; // true = wait for snap; false = auto-emerge after rest
 
     // ── Physics (full 3D velocity set in Update, applied in FixedUpdate) ───────
     private Vector3 frame3DVelocity;
+
+    // ── Dive collision bypass ─────────────────────────────────────────────────
+    private Collider myCollider;          // own collider cached for Physics.IgnoreCollision
+    private Collider activeDiveCollider;  // target's collider; collision is restored after dive
 
     private static readonly Collider[] overlapBuffer = new Collider[32];
 
@@ -89,13 +99,19 @@ public class BurrowerEnemy : MonoBehaviour
 
     private void Awake()
     {
-        stats       = GetComponent<CombatantStats>();
-        stats.Died += OnDied;
+        // The Burrower uses manual position/velocity — NavMeshAgent must not override transform.
+        var nma = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (nma != null) nma.enabled = false;
 
-        rb = GetComponent<Rigidbody>();
+        stats              = GetComponent<CombatantStats>();
+        stats.Died        += OnDied;
+        stats.DamageTaken += OnDamageTaken;
+
+        rb         = GetComponent<Rigidbody>();
+        myCollider = GetComponent<Collider>();
         if (rb != null)
         {
-            rb.isKinematic = false;
+            rb.isKinematic = true;  // ground phases use direct position; toggled to false when airborne
             rb.useGravity  = false;
             rb.constraints = RigidbodyConstraints.FreezeRotation;
         }
@@ -111,7 +127,11 @@ public class BurrowerEnemy : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (stats != null) stats.Died -= OnDied;
+        if (stats != null)
+        {
+            stats.Died        -= OnDied;
+            stats.DamageTaken -= OnDamageTaken;
+        }
     }
 
     private void Update()
@@ -125,7 +145,16 @@ public class BurrowerEnemy : MonoBehaviour
     private void FixedUpdate()
     {
         if (rb == null || stats == null || stats.IsDead) return;
-        rb.linearVelocity = frame3DVelocity;
+        if (!rb.isKinematic) rb.linearVelocity = frame3DVelocity;
+    }
+
+    // Wake up immediately when damaged while burrowed.
+    private void OnDamageTaken(float _)
+    {
+        if (currentState != BurrowerState.Burrowed) return;
+        Log("Damaged while burrowed — snapping awake!");
+        stateTimer = settings != null ? settings.SnapPauseDuration : 0.3f;
+        SetState(BurrowerState.Triggered);
     }
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -140,6 +169,10 @@ public class BurrowerEnemy : MonoBehaviour
             case BurrowerState.Burrowed:
             {
                 PinToGround();
+
+                // Regenerate HP while underground.
+                if (settings != null && settings.HpRegenPerSecond > 0f)
+                    stats.Heal(settings.HpRegenPerSecond * Time.deltaTime);
 
                 if (isInitialBurrow)
                 {
@@ -185,7 +218,9 @@ public class BurrowerEnemy : MonoBehaviour
                 }
 
                 float speed = settings != null ? settings.EmergeRiseSpeed : 5f;
-                frame3DVelocity = new Vector3(0f, speed, 0f);
+                Vector3 ePos = transform.position;
+                ePos.y = Mathf.MoveTowards(ePos.y, targetY, speed * Time.deltaTime);
+                transform.position = ePos;
                 break;
             }
 
@@ -197,6 +232,10 @@ public class BurrowerEnemy : MonoBehaviour
 
                 if (diff <= 0.05f)
                 {
+                    // Restore collision only here — the burrower is now at hover height and
+                    // cannot be overlapping the player. Restoring it any earlier (while still
+                    // near the player) causes physics depenetration that lifts the player.
+                    RestoreDiveCollision();
                     SnapYTo(hoverY);
                     SetState(BurrowerState.Hovering);
                     break;
@@ -216,6 +255,13 @@ public class BurrowerEnemy : MonoBehaviour
                 if (diveTarget != null)
                 {
                     divingAtMinion = diveTarget.CompareTag(settings != null ? settings.MinionTag : "Ally");
+                    // Bypass physical contact so the burrower can reach DiveHitDistance.
+                    if (myCollider != null)
+                    {
+                        activeDiveCollider = diveTarget.GetComponentInParent<Collider>();
+                        if (activeDiveCollider != null)
+                            Physics.IgnoreCollision(myCollider, activeDiveCollider, true);
+                    }
                     Log($"Target found: {diveTarget.name} (diving at minion: {divingAtMinion})");
                     SetState(BurrowerState.Diving);
                 }
@@ -228,6 +274,7 @@ public class BurrowerEnemy : MonoBehaviour
                 if (diveTarget == null || IsDead(diveTarget))
                 {
                     Log("Dive target gone — flying back up");
+                    RestoreDiveCollision();
                     SetState(BurrowerState.FlyingUp);
                     break;
                 }
@@ -256,6 +303,15 @@ public class BurrowerEnemy : MonoBehaviour
             // ── Grabbing Minion ───────────────────────────────────────────────
             case BurrowerState.GrabbingMinion:
             {
+                // Post-kill cooldown: hover briefly before flying off.
+                if (postGrabDelayTimer > 0f)
+                {
+                    postGrabDelayTimer -= Time.deltaTime;
+                    frame3DVelocity = Vector3.zero;
+                    if (postGrabDelayTimer <= 0f) TransitionAfterAttack();
+                    break;
+                }
+
                 float carryY = spawnY + (settings != null ? settings.CarryHeight : 6f);
                 float speed  = settings != null ? settings.FlySpeed : 7f;
 
@@ -264,6 +320,10 @@ public class BurrowerEnemy : MonoBehaviour
                 float yVel  = Mathf.Sign(yDiff) * speed;
                 if (Mathf.Abs(yDiff) < 0.05f) { yVel = 0f; SnapYTo(carryY); }
                 frame3DVelocity = new Vector3(0f, yVel, 0f);
+
+                // Drag the minion along — keep it hanging just below the burrower.
+                if (grabbedMinionTransform != null)
+                    grabbedMinionTransform.position = transform.position + Vector3.down * 1.5f;
 
                 // Apply grab damage to the minion.
                 grabTimer -= Time.deltaTime;
@@ -279,7 +339,16 @@ public class BurrowerEnemy : MonoBehaviour
                 {
                     Log(minionDead ? "Grabbed minion died — releasing" : "Grab duration ended — releasing minion");
                     ReleaseGrabbedMinion();
-                    TransitionAfterAttack();
+                    if (minionDead)
+                    {
+                        // Brief visual pause before flying off.
+                        postGrabDelayTimer = settings != null ? settings.PostGrabCooldown : 0.3f;
+                        frame3DVelocity    = Vector3.zero;
+                    }
+                    else
+                    {
+                        TransitionAfterAttack();
+                    }
                 }
                 break;
             }
@@ -287,12 +356,17 @@ public class BurrowerEnemy : MonoBehaviour
             // ── Landed ────────────────────────────────────────────────────────
             case BurrowerState.Landed:
             {
+                // Ensure no residual dive velocity keeps pushing into the player.
+                frame3DVelocity = Vector3.zero;
+
                 // Re-enable gravity so the enemy actually rests on the ground.
                 if (rb != null) rb.useGravity = true;
 
                 stateTimer -= Time.deltaTime;
                 if (stateTimer <= 0f)
                 {
+                    // Safe to restore collision now — burrower has settled, no longer overlapping player.
+                    RestoreDiveCollision();
                     if (rb != null) rb.useGravity = false;
                     Log("Recovered from landing stun");
                     TransitionAfterAttack();
@@ -316,7 +390,9 @@ public class BurrowerEnemy : MonoBehaviour
                     break;
                 }
 
-                frame3DVelocity = new Vector3(0f, -speed, 0f);
+                Vector3 bPos = transform.position;
+                bPos.y = Mathf.MoveTowards(bPos.y, burrowedY, speed * Time.deltaTime);
+                transform.position = bPos;
                 break;
             }
         }
@@ -360,19 +436,32 @@ public class BurrowerEnemy : MonoBehaviour
     {
         if (divingAtMinion && diveTarget != null && !IsDead(diveTarget))
         {
+            RestoreDiveCollision();  // safe to restore now — minion is being grabbed, not physics-pushed
+
             // Grab the minion.
-            grabbedMinionStats    = diveTarget.GetComponentInParent<CombatantStats>();
+            grabbedMinionStats     = diveTarget.GetComponentInParent<CombatantStats>();
             grabbedMinionTransform = diveTarget;
-            grabTimer             = settings != null ? settings.GrabDuration : 4f;
+            grabTimer              = settings != null ? settings.GrabDuration : 4f;
+
+            // Disable the minion's AI so it freezes in place while carried.
+            grabbedMinionAI = diveTarget.GetComponentInParent<MinionCore>();
+            if (grabbedMinionAI != null) grabbedMinionAI.enabled = false;
+
             Log($"Grabbed minion: {diveTarget.name}");
             SetState(BurrowerState.GrabbingMinion);
         }
         else
         {
-            // Dive-attack the player (or any non-minion target).
+            // Phantom-style: deal damage on contact, then immediately fly back up.
+            // Do NOT restore collision here — the burrower may still be overlapping the player.
+            // Collision is restored at the start of FlyingUp, once the burrower is moving away.
+            frame3DVelocity = Vector3.zero;
+
             if (diveTarget != null)
             {
-                CombatantStats ts = diveTarget.GetComponentInParent<CombatantStats>();
+                CombatantStats ts = diveTarget.GetComponent<CombatantStats>()
+                                 ?? diveTarget.GetComponentInParent<CombatantStats>()
+                                 ?? diveTarget.GetComponentInChildren<CombatantStats>();
                 if (ts != null && !ts.IsDead)
                 {
                     ts.ApplyDamage(settings != null ? settings.DiveDamage : 12f);
@@ -380,8 +469,7 @@ public class BurrowerEnemy : MonoBehaviour
                 }
             }
 
-            stateTimer   = settings != null ? settings.DiveLandedDuration : 0.8f;
-            SetState(BurrowerState.Landed);
+            SetState(BurrowerState.FlyingUp);
         }
 
         diveTarget = null;
@@ -413,7 +501,12 @@ public class BurrowerEnemy : MonoBehaviour
 
     private void ReleaseGrabbedMinion()
     {
-        grabbedMinionStats    = null;
+        if (grabbedMinionAI != null)
+        {
+            grabbedMinionAI.enabled = true;
+            grabbedMinionAI = null;
+        }
+        grabbedMinionStats     = null;
         grabbedMinionTransform = null;
     }
 
@@ -439,20 +532,31 @@ public class BurrowerEnemy : MonoBehaviour
             Collider col = overlapBuffer[i];
             if (col == null) continue;
 
-            Transform t = col.transform;
-            if (!t.gameObject.activeInHierarchy) continue;
+            Transform t    = col.transform;
+            Transform root = t.root;
+            if (!root.gameObject.activeInHierarchy) continue;
 
-            CombatantStats cs = t.GetComponentInParent<CombatantStats>();
+            CombatantStats cs = t.GetComponentInParent<CombatantStats>()
+                             ?? t.GetComponentInChildren<CombatantStats>();
             if (cs != null && cs.IsDead) continue;
 
-            bool isMinion = t.CompareTag(settings.MinionTag);
-            bool isPlayer = t.CompareTag(settings.PlayerTag);
+            // Check collider transform AND the hierarchy root for the tag.
+            bool isMinion = t.CompareTag(settings.MinionTag) || root.CompareTag(settings.MinionTag);
+            bool isPlayer = t.CompareTag(settings.PlayerTag) || root.CompareTag(settings.PlayerTag);
             if (!isMinion && !isPlayer) continue;
 
-            float sq = (t.position - transform.position).sqrMagnitude;
+            // For players, use the explicit playerTransform override if assigned.
+            // For minions, use cs.transform (the individual minion, not a shared container root).
+            Transform trackTarget;
+            if (isPlayer)
+                trackTarget = playerTransform != null ? playerTransform : root;
+            else
+                trackTarget = cs != null ? cs.transform : t;
 
-            if (isMinion && sq < bestMinionSq) { bestMinionSq = sq; bestMinion = t; }
-            else if (isPlayer && sq < bestOtherSq) { bestOtherSq = sq; bestOther = t; }
+            float sq = (trackTarget.position - transform.position).sqrMagnitude;
+
+            if (isMinion && sq < bestMinionSq) { bestMinionSq = sq; bestMinion = trackTarget; }
+            else if (isPlayer && sq < bestOtherSq) { bestOtherSq = sq; bestOther = trackTarget; }
         }
 
         // Prefer minions for grabbing; attack player if no minion is available.
@@ -480,7 +584,11 @@ public class BurrowerEnemy : MonoBehaviour
 
     private bool IsDead(Transform t)
     {
-        CombatantStats cs = t.GetComponentInParent<CombatantStats>();
+        // Mirror the Lunger's GetStats: search self, parents, then children
+        // so any hierarchy layout (tag on root, CS on child, etc.) is handled.
+        CombatantStats cs = t.GetComponent<CombatantStats>()
+                         ?? t.GetComponentInParent<CombatantStats>()
+                         ?? t.GetComponentInChildren<CombatantStats>();
         return cs == null || cs.IsDead;
     }
 
@@ -500,6 +608,17 @@ public class BurrowerEnemy : MonoBehaviour
     {
         if (newState == currentState) return;
         Log($"State: {currentState} → {newState}");
+        // Ground / underground phases move via direct transform — keep kinematic so the
+        // ground collider cannot block vertical movement.  Airborne phases use Rigidbody velocity.
+        if (rb != null)
+        {
+            bool kinematic = newState == BurrowerState.Burrowed     ||
+                             newState == BurrowerState.Triggered    ||
+                             newState == BurrowerState.Emerging     ||
+                             newState == BurrowerState.BurrowingDown;
+            rb.isKinematic = kinematic;
+            if (!kinematic) rb.linearVelocity = Vector3.zero;
+        }
         currentState = newState;
     }
 
@@ -512,5 +631,18 @@ public class BurrowerEnemy : MonoBehaviour
     //  Death
     // ──────────────────────────────────────────────────────────────────────────
 
-    private void OnDied() => Destroy(gameObject);
+    private void RestoreDiveCollision()
+    {
+        if (myCollider != null && activeDiveCollider != null)
+        {
+            Physics.IgnoreCollision(myCollider, activeDiveCollider, false);
+            activeDiveCollider = null;
+        }
+    }
+
+    private void OnDied()
+    {
+        RestoreDiveCollision();
+        Destroy(gameObject);
+    }
 }

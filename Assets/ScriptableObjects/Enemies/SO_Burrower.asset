@@ -34,7 +34,9 @@ MonoBehaviour:
   GrabDamagePerSecond: 20
   GrabDuration: 4
   CarryHeight: 6
+  PostGrabCooldown: 0.5
   BurrowHealthThreshold: 0.3
   BurrowDescentSpeed: 5
   BurrowRestDuration: 4.26
   BurrowDepth: 1.5
+  HpRegenPerSecond: 5

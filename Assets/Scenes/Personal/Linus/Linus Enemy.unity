@@ -1479,7 +1479,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1121785977838751573, guid: 516acb0300f70694fa480808d3db79ae, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2330723755618707652, guid: 516acb0300f70694fa480808d3db79ae, type: 3}
       propertyPath: playerTransform
@@ -1966,13 +1966,25 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4429001998879775507, guid: 161504828638b6842a22c92bce3a7c43, type: 3}
+      propertyPath: baseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: 8ca9e1900083b3c4583dd7d9ce1d00fc, type: 2}
+    - target: {fileID: 6408903094951696038, guid: 161504828638b6842a22c92bce3a7c43, type: 3}
+      propertyPath: enableLogs
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6408903094951696038, guid: 161504828638b6842a22c92bce3a7c43, type: 3}
+      propertyPath: playerTransform
+      value: 
+      objectReference: {fileID: 188860362}
     - target: {fileID: 6750168503334378764, guid: 161504828638b6842a22c92bce3a7c43, type: 3}
       propertyPath: m_Name
       value: PF_Burrower
       objectReference: {fileID: 0}
     - target: {fileID: 6750168503334378764, guid: 161504828638b6842a22c92bce3a7c43, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -55,6 +55,8 @@ public class BurrowerEnemySettings : ScriptableObject
     public float GrabDuration        = 4f;
     [Tooltip("Height above spawn point the enemy ascends to while carrying a minion.")]
     public float CarryHeight         = 6f;
+    [Tooltip("How long the burrower hovers in place after the grabbed minion dies before flying off.")]
+    public float PostGrabCooldown    = 0.3f;
 
     [Header("Burrowing (HP Retreat)")]
     [Tooltip("Normalised HP percentage (0–1) at which the enemy retreats underground.")]
@@ -66,4 +68,6 @@ public class BurrowerEnemySettings : ScriptableObject
     public float BurrowRestDuration    = 3f;
     [Tooltip("Vertical distance below the spawn Y the enemy sinks to when fully burrowed.")]
     public float BurrowDepth           = 1.5f;
+    [Tooltip("HP regenerated per second while fully burrowed underground.")]
+    public float HpRegenPerSecond      = 5f;
 }
