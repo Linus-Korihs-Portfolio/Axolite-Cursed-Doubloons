@@ -1,5 +1,50 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4417148983301424791
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3261952189200151757}
+  - component: {fileID: 998965203499915897}
+  m_Layer: 8
+  m_Name: PF_HeadPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3261952189200151757
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4417148983301424791}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.6, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 721135282602917425}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &998965203499915897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4417148983301424791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6026336b2bc14624c883302eb6313a15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Comment
+  commentText: The Head Point where the Aim Minions shoot when Enemy is underground
 --- !u!1 &6750168503334378764
 GameObject:
   m_ObjectHideFlags: 0
@@ -37,7 +82,8 @@ Transform:
   m_LocalPosition: {x: -0.12643, y: 0.26, z: 0.66187}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 3261952189200151757}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3802237239954049014
@@ -189,10 +235,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 222ca75e431e4124e8bd8faa9890b56f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatantStats
-  baseProfile: {fileID: 11400000, guid: 6384b8f9b043f3e4a8ec5a3af88cc5de, type: 2}
+  baseProfile: {fileID: 11400000, guid: 8ca9e1900083b3c4583dd7d9ce1d00fc, type: 2}
   currentHealth: 0
   despawnOnDeath: 1
-  despawnDelay: 0
+  despawnDelay: 2
 --- !u!195 &6759725934791779539
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -228,5 +274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BurrowerEnemy
   settings: {fileID: 11400000, guid: f3f01acde258ee74cb55705d5037f4e8, type: 2}
-  burrowedVisual: {fileID: 0}
-  activeVisual: {fileID: 0}
+  playerTransform: {fileID: 0}
+  headAimPoint: {fileID: 3261952189200151757}
+  enableLogs: 1
+  currentState: 0

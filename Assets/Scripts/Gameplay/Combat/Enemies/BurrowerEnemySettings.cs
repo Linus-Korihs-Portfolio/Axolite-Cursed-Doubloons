@@ -35,6 +35,8 @@ public class BurrowerEnemySettings : ScriptableObject
     [Tooltip("Height above spawn point the enemy hovers at between attacks.")]
     public float HoverHeight   = 5f;
     public float RotationSpeed = 8f;
+    [Tooltip("Seconds the burrower hovers with no targets in range before retreating underground and resetting to step 1.")]
+    public float NoTargetTimeout = 3f;
 
     [Header("Dive Attack (Player / any target)")]
     [Tooltip("Vertical speed during the dive.")]

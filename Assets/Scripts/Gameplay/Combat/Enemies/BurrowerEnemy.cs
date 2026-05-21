@@ -35,7 +35,7 @@ using UnityEngine;
 ///
 /// </summary>
 [RequireComponent(typeof(CombatantStats))]
-public class BurrowerEnemy : MonoBehaviour
+public class BurrowerEnemy : MonoBehaviour, IAimTarget
 {
     private enum BurrowerState
     {
@@ -55,6 +55,18 @@ public class BurrowerEnemy : MonoBehaviour
     [Tooltip("Assign the player's actual moving transform. " +
              "Required when the player prefab root is a static anchor above the moving body.")]
     [SerializeField] private Transform playerTransform;
+
+    [Header("Aim Point")]
+    [Tooltip("The visible head / tip that sticks out of the ground when burrowed. " +
+             "Projectiles will home toward this point instead of the buried root. " +
+             "Leave empty to fall back to the root transform.")]
+    [SerializeField] private Transform headAimPoint;
+
+    /// <summary>
+    /// Returns the head aim point while burrowed (root is underground); the root otherwise.
+    /// </summary>
+    public Transform GetAimTransform() =>
+        (currentState == BurrowerState.Burrowed && headAimPoint != null) ? headAimPoint : transform;
 
     [Header("Debug")]
     [SerializeField] private bool enableLogs;
@@ -83,6 +95,9 @@ public class BurrowerEnemy : MonoBehaviour
 
     // ── Re-emerge flag ────────────────────────────────────────────────────────
     private bool isInitialBurrow = true; // true = wait for snap; false = auto-emerge after rest
+
+    // ── Hover idle timer (no targets in range) ────────────────────────────────
+    private float noTargetHoverTimer;
 
     // ── Physics (full 3D velocity set in Update, applied in FixedUpdate) ───────
     private Vector3 frame3DVelocity;
@@ -181,12 +196,13 @@ public class BurrowerEnemy : MonoBehaviour
                 }
                 else
                 {
-                    // Automatic re-emerge after rest period.
+                    // Fallback: count down the rest timer then switch to passive-wait mode
+                    // (step 1) instead of auto-emerging. Emergence only via snap or damage.
                     stateTimer -= Time.deltaTime;
                     if (stateTimer <= 0f)
                     {
-                        isInitialBurrow = false;
-                        SetState(BurrowerState.Emerging);
+                        isInitialBurrow = true;
+                        Log("Rest timer expired — resetting to step-1 (waiting for snap/damage).");
                     }
                 }
                 break;
@@ -254,6 +270,7 @@ public class BurrowerEnemy : MonoBehaviour
 
                 if (diveTarget != null)
                 {
+                    noTargetHoverTimer = 0f;
                     divingAtMinion = diveTarget.CompareTag(settings != null ? settings.MinionTag : "Ally");
                     // Bypass physical contact so the burrower can reach DiveHitDistance.
                     if (myCollider != null)
@@ -264,6 +281,18 @@ public class BurrowerEnemy : MonoBehaviour
                     }
                     Log($"Target found: {diveTarget.name} (diving at minion: {divingAtMinion})");
                     SetState(BurrowerState.Diving);
+                }
+                else
+                {
+                    // No targets in range — count down and retreat underground (full step-1 reset).
+                    noTargetHoverTimer += Time.deltaTime;
+                    float timeout = settings != null ? settings.NoTargetTimeout : 3f;
+                    if (noTargetHoverTimer >= timeout)
+                    {
+                        noTargetHoverTimer = 0f;
+                        Log("No targets in range — retreating underground (step-1 reset).");
+                        SetState(BurrowerState.BurrowingDown);
+                    }
                 }
                 break;
             }
@@ -377,15 +406,19 @@ public class BurrowerEnemy : MonoBehaviour
             // ── Burrowing Down ────────────────────────────────────────────────
             case BurrowerState.BurrowingDown:
             {
+                // If a player-dive collision was deferred, restore it once safely underground.
+                if (activeDiveCollider != null && transform.position.y < spawnY)
+                    RestoreDiveCollision();
+
                 float diff  = transform.position.y - burrowedY;
                 float speed = settings != null ? settings.BurrowDescentSpeed : 5f;
 
                 if (diff <= 0.05f)
                 {
                     SnapYTo(burrowedY);
-                    isInitialBurrow = false;
-                    stateTimer      = settings != null ? settings.BurrowRestDuration : 3f;
-                    Log($"Fully burrowed. Resting for {stateTimer}s");
+                    // Always reset to step-1 mode: wait for snap or damage, never auto-emerge.
+                    isInitialBurrow = true;
+                    Log("Fully burrowed. Waiting for snap trigger or damage to re-emerge.");
                     SetState(BurrowerState.Burrowed);
                     break;
                 }
@@ -469,7 +502,8 @@ public class BurrowerEnemy : MonoBehaviour
                 }
             }
 
-            SetState(BurrowerState.FlyingUp);
+            // Check HP — may retreat underground instead of flying back up.
+            TransitionAfterAttack();
         }
 
         diveTarget = null;
@@ -478,6 +512,18 @@ public class BurrowerEnemy : MonoBehaviour
     // ──────────────────────────────────────────────────────────────────────────
     //  Post-attack HP check
     // ──────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Test helper: forces the burrower to emerge from the ground immediately.
+    /// Only has an effect when the enemy is in the Burrowed state.
+    /// </summary>
+    public void ForceEmerge()
+    {
+        if (currentState != BurrowerState.Burrowed) return;
+        Log("[Test] Force-emerge triggered.");
+        stateTimer = 0f;
+        SetState(BurrowerState.Emerging);
+    }
 
     private void TransitionAfterAttack()
     {

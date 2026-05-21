@@ -1962,18 +1962,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1693474767898271205, guid: 161504828638b6842a22c92bce3a7c43, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4429001998879775507, guid: 161504828638b6842a22c92bce3a7c43, type: 3}
-      propertyPath: baseProfile
-      value: 
-      objectReference: {fileID: 11400000, guid: 8ca9e1900083b3c4583dd7d9ce1d00fc, type: 2}
-    - target: {fileID: 6408903094951696038, guid: 161504828638b6842a22c92bce3a7c43, type: 3}
-      propertyPath: enableLogs
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6408903094951696038, guid: 161504828638b6842a22c92bce3a7c43, type: 3}
       propertyPath: playerTransform
       value: 

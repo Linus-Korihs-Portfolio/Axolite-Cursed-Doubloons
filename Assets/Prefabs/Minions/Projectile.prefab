@@ -127,4 +127,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MinionProjectile
   wallBlockMask:
     serializedVersion: 2
-    m_Bits: 968
+    m_Bits: 448
