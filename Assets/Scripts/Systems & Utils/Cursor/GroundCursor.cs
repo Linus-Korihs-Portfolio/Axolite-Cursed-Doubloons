@@ -364,6 +364,16 @@ public class GroundCursor : MonoBehaviour
             return GetEnemyGroundSnapPos(rayEnemy);
         }
 
+        // Acquire via forward path sweep: catch enemies at any range between player and cursor,
+        // even when they are closer than baseDistance (independent of aimHoldWhileRayHits).
+        Transform pathEnemy = GetForwardPathEnemy(desiredWorldPos);
+        if (pathEnemy != null)
+        {
+            SetAimAssistTarget(pathEnemy);
+            isHoldingTarget = true;
+            return GetEnemyGroundSnapPos(pathEnemy);
+        }
+
         // Find best enemy within ENTER radius (around cursor)
         Collider[] hits = Physics.OverlapSphere(desiredWorldPos, settings.aimEnterRadius, settings.lockableMask, QueryTriggerInteraction.Ignore);
 
@@ -436,6 +446,33 @@ public class GroundCursor : MonoBehaviour
 
         // fallback
         return SampleGroundPoint(t.position) + Vector3.up * settings.heightOffset;
+    }
+
+    // Sweeps from player toward the cursor position to find a lockable enemy at any distance
+    // up to baseDistance. Used for acquisition so nearby enemies (closer than baseDistance)
+    // are always reachable with the cursor.
+    private Transform GetForwardPathEnemy(Vector3 cursorWorldPos)
+    {
+        if (settings.lockableMask == 0) return null;
+
+        Vector3 playerGround = SampleGroundPoint(player.position);
+        float h = playerGround.y + 0.6f;
+
+        Vector3 origin = new Vector3(player.position.x, h, player.position.z);
+        Vector3 flat   = new Vector3(cursorWorldPos.x, h, cursorWorldPos.z);
+        Vector3 dir    = flat - origin;
+        float dist     = dir.magnitude;
+        if (dist < 0.001f) return null;
+        dir /= dist;
+
+        RaycastHit hit;
+        float r = Mathf.Max(0f, settings.aimHoldRayRadius);
+
+        bool hitSomething = (r > 0.001f)
+            ? Physics.SphereCast(origin, r, dir, out hit, dist, settings.lockableMask, QueryTriggerInteraction.Ignore)
+            : Physics.Raycast(origin, dir, out hit, dist, settings.lockableMask, QueryTriggerInteraction.Ignore);
+
+        return hitSomething ? hit.transform : null;
     }
 
     private Transform GetForwardRayEnemy()

@@ -19,9 +19,9 @@ MonoBehaviour:
   groundRayStartHeight: 6
   groundRayLength: 80
   heightOffset: 0.02
-  baseDistance: 4.5
+  baseDistance: 5
   minDistance: 0
-  maxDistance: 12
+  maxDistance: 15
   dirSmoothing: 16
   lockableMask:
     serializedVersion: 2

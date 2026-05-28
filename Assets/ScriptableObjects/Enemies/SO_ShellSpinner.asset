@@ -26,9 +26,10 @@ MonoBehaviour:
   LosHeightOffset: 0.8
   RotationSpeed: 6
   EnterShellDuration: 0.6
-  SpinSpeed: 14
+  SpinSpeed: 7
   SpinDamage: 20
   HitPauseDuration: 0.15
+  SpinCollisionGrace: 0.12
   ExitShellDuration: 0.6
   DizzyDuration: 2.5
   WakeUpDuration: 0.5

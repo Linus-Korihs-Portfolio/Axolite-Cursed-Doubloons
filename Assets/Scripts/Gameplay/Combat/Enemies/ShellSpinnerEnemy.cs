@@ -40,11 +40,11 @@ public class ShellSpinnerEnemy : MonoBehaviour
     [SerializeField] private Transform playerTransform;
 
     [Header("Hitboxes")]
-    [Tooltip("Full-body collider (head + legs). Enabled when the spinner is vulnerable.")]
-    [SerializeField] private Collider bodyCollider;
-    [Tooltip("Shell-only collider. Enabled while the spinner is inside the shell (invincible). " +
+    [Tooltip("Child GameObject containing the full-body collider (head + legs). Active when the spinner is vulnerable.")]
+    [SerializeField] private GameObject bodyObject;
+    [Tooltip("Child GameObject containing the shell-only collider. Active while the spinner is inside the shell (invincible). " +
              "This is the collider that physically contacts players/walls during the spin.")]
-    [SerializeField] private Collider shellCollider;
+    [SerializeField] private GameObject shellObject;
 
     [Header("Debug")]
     [SerializeField] private bool enableLogs;
@@ -132,11 +132,6 @@ public class ShellSpinnerEnemy : MonoBehaviour
         bool      isPlayer = root.CompareTag(settings.PlayerTag);
         bool      isMinion = collision.transform.CompareTag(settings.MinionTag);
 
-        // Grace period: ignore all collisions for a short time after launch so the spinner
-        // clears the wall it was resting against from the previous hit.
-        float grace = settings != null ? settings.SpinCollisionGrace : 0.12f;
-        if (Time.time < spinStartTime + grace) return;
-
         // Ignore floor / ceiling: only horizontal contacts (wall normals) matter.
         bool hasHorizontalContact = false;
         for (int i = 0; i < collision.contactCount; i++)
@@ -148,6 +143,15 @@ public class ShellSpinnerEnemy : MonoBehaviour
             }
         }
         if (!hasHorizontalContact) return;
+
+        // Grace period only applies to wall collisions, NOT to players/minions.
+        // This prevents the spinner from re-triggering on the wall it was resting against,
+        // while still allowing it to hit a nearby player immediately.
+        if (!isPlayer && !isMinion)
+        {
+            float grace = settings != null ? settings.SpinCollisionGrace : 0.12f;
+            if (Time.time < spinStartTime + grace) return;
+        }
 
         if (isPlayer || isMinion)
         {
@@ -386,14 +390,14 @@ public class ShellSpinnerEnemy : MonoBehaviour
     // ──────────────────────────────────────────────────────────────────────────
 
     /// <param name="inShell">
-    /// true  → shellCollider on, bodyCollider off, IsInvincible = true.<br/>
-    /// false → bodyCollider on, shellCollider off, IsInvincible = false.
+    /// true  → shellObject active, bodyObject inactive, IsInvincible = true.<br/>
+    /// false → bodyObject active, shellObject inactive, IsInvincible = false.
     /// </param>
     private void SetHitboxState(bool inShell)
     {
         if (stats != null) stats.IsInvincible = inShell;
-        if (bodyCollider  != null) bodyCollider.enabled  = !inShell;
-        if (shellCollider != null) shellCollider.enabled =  inShell;
+        if (bodyObject  != null) bodyObject.SetActive(!inShell);
+        if (shellObject != null) shellObject.SetActive( inShell);
     }
 
     // ──────────────────────────────────────────────────────────────────────────
