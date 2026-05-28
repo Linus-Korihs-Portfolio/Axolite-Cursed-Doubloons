@@ -67,5 +67,8 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "GruenderGame.slnx"
+    "dotnet.defaultSolution": "GruenderGame.slnx",
+    "chat.tools.terminal.autoApprove": {
+        "New-Object": true
+    }
 }
