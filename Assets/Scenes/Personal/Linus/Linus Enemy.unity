@@ -1479,7 +1479,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1121785977838751573, guid: 516acb0300f70694fa480808d3db79ae, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2330723755618707652, guid: 516acb0300f70694fa480808d3db79ae, type: 3}
       propertyPath: playerTransform
@@ -1886,6 +1886,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_ShellSpinner
       objectReference: {fileID: 0}
+    - target: {fileID: 2857460131874169651, guid: e2fb01c9109db6d41a3b2f6342749c3d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7272819733732786336, guid: e2fb01c9109db6d41a3b2f6342749c3d, type: 3}
+      propertyPath: baseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: c0e36b9523f1b084c8d40b4e0f417542, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1912,7 +1920,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShellSpinnerEnemy
   settings: {fileID: 11400000, guid: 3a8c836d5c1006644b0f16ef3d91082b, type: 2}
-  enableLogs: 0
+  enableLogs: 1
   currentState: 0
 --- !u!1001 &8778253564183133839
 PrefabInstance:
@@ -1972,7 +1980,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6750168503334378764, guid: 161504828638b6842a22c92bce3a7c43, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

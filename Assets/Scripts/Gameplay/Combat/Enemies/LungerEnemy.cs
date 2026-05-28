@@ -552,6 +552,8 @@ public class LungerEnemy : MonoBehaviour
                 lungeHitIds.Add(id);
                 ts.ApplyDamage(settings.LungeDamage);
                 Log($"Lunge sweep hit {root.name} for {settings.LungeDamage} damage");
+                if (settings.LungeStopOnHit)
+                    hitWallDuringLunge = true;
             }
         }
     }

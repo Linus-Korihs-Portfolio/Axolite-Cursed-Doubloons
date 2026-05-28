@@ -55,6 +55,9 @@ public class LungerEnemySettings : ScriptableObject
     [Tooltip("Minimum time between two consecutive lunges (new encounter).")]
     public float LungeCooldown         = 4f;
 
+    [Tooltip("When enabled, the lunge stops as soon as it hits a minion or player instead of passing through.")]
+    public bool LungeStopOnHit = false;
+
     [Header("Navigation")]
     public bool  UseNavMesh              = true;
     public float NavRepathInterval       = 0.3f;
