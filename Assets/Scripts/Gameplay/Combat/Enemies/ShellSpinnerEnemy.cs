@@ -3,15 +3,16 @@ using UnityEngine;
 /// <summary>
 /// Enemy 2 — Shell Spinner (Koopa / Armos-like).
 ///
-/// State flow:  Idle → EnteringShell → Spinning → Hit → ExitingShell → Dizzy → WakingUp → EnteringShell …
+/// State flow:  Idle → Windup → Spinning → Hit → ExitingShell → Dizzy → WakingUp → Windup …
 ///
 ///   • Sleeps until a player/minion enters LOS or the spinner takes damage.
-///   • Immediately starts pulling into its shell once a target is found.
+///   • Immediately starts the windup once a target is found; shows a live aim line
+///     toward the target until the shell closes.
 ///   • Spin direction is locked toward the target the moment the shell closes;
 ///     the spinner travels in that straight line regardless of where the target moves.
 ///   • Any collision (player, minion, or wall) ends the spin.
 ///   • Invincible only while fully in the shell (Spinning + Hit states).
-///   • Vulnerable during Idle, EnteringShell, ExitingShell, Dizzy, WakingUp.
+///   • Vulnerable during Idle, Windup, ExitingShell, Dizzy, WakingUp.
 ///   • Death can only occur during the vulnerable states.
 ///
 /// Hitbox design — assign both colliders in the Inspector:
@@ -25,7 +26,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
     private enum SpinnerState
     {
         Idle,
-        EnteringShell,
+        Windup,
         Spinning,
         Hit,
         ExitingShell,
@@ -45,6 +46,11 @@ public class ShellSpinnerEnemy : MonoBehaviour
     [Tooltip("Child GameObject containing the shell-only collider. Active while the spinner is inside the shell (invincible). " +
              "This is the collider that physically contacts players/walls during the spin.")]
     [SerializeField] private GameObject shellObject;
+
+    [Header("Targeting Line")]
+    [Tooltip("LineRenderer used to draw a live aim line toward the target during the windup. " +
+             "Assign a child LineRenderer (2 positions, world space). Leave empty to skip.")]
+    [SerializeField] private LineRenderer targetingLine;
 
     [Header("Debug")]
     [SerializeField] private bool enableLogs;
@@ -66,6 +72,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
     // ── Spin data ──────────────────────────────────────────────────────────────
     private Vector3 spinDirection;      // locked when the shell closes; never updated mid-spin
+    private Vector3 spinStartPosition;  // recorded when Spinning begins; used for MaxSpinRange
     private bool    spinHitSomething;   // set by OnCollisionEnter, consumed in ExecuteState
 
     // Per-spin dedup: each target is damaged at most once per spin.
@@ -73,6 +80,13 @@ public class ShellSpinnerEnemy : MonoBehaviour
         new System.Collections.Generic.HashSet<int>();
 
     private float spinStartTime = -999f; // used for the collision grace period
+
+    // ── SpinUntilWall pass-through ─────────────────────────────────────────
+    // When SpinUntilWall is enabled we Physics.IgnoreCollision each hit target so the
+    // shell can physically pass through them.  Collisions are restored in ExitingShell.
+    private Collider shellCollider;
+    private readonly System.Collections.Generic.List<Collider> ignoredColliders =
+        new System.Collections.Generic.List<Collider>();
 
     // ── Physics (horizontal velocity set in Update, applied in FixedUpdate) ────
     private Vector3 frameVelocity;
@@ -92,11 +106,23 @@ public class ShellSpinnerEnemy : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.isKinematic = false;
-            rb.constraints = RigidbodyConstraints.FreezeRotation;
+            rb.isKinematic  = false;
+            rb.constraints  = RigidbodyConstraints.FreezeRotation;
+            // Interpolate between physics steps so fast spin movement renders smoothly.
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
         }
 
         SetHitboxState(inShell: false);
+
+        shellCollider = shellObject != null ? shellObject.GetComponent<Collider>() : null;
+
+        if (targetingLine != null)
+        {
+            targetingLine.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            targetingLine.receiveShadows    = false;
+            targetingLine.positionCount     = 2;
+            targetingLine.enabled           = false;
+        }
     }
 
     private void OnDestroy()
@@ -116,6 +142,33 @@ public class ShellSpinnerEnemy : MonoBehaviour
         RefreshTarget();
         UpdateState();
         ExecuteState();
+    }
+
+    // Line renderer positions are updated here so they read transforms after
+    // all Update() calls and physics interpolation have settled for the frame.
+    private void LateUpdate()
+    {
+        if (currentState != SpinnerState.Windup || targetingLine == null || !targetingLine.enabled) return;
+        if (currentTarget == null) return;
+        targetingLine.SetPosition(0, SnapToGround(transform.position));
+        targetingLine.SetPosition(1, SnapToGround(currentTarget.position));
+    }
+
+    // Projects a world-space point down onto the ground surface.
+    // Uses GroundMask if assigned; falls back to the spinner's own Y.
+    private Vector3 SnapToGround(Vector3 worldPos)
+    {
+        const float offset    = 0.05f; // hover just above the surface to avoid z-fighting
+        const float rayHeight = 6f;
+        if (settings != null && settings.GroundMask != 0)
+        {
+            Vector3 origin = worldPos + Vector3.up * rayHeight;
+            if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, rayHeight + 2f,
+                                settings.GroundMask, QueryTriggerInteraction.Ignore))
+                return hit.point + Vector3.up * offset;
+        }
+        // Fallback: flatten to the spinner's ground level.
+        return new Vector3(worldPos.x, transform.position.y + offset, worldPos.z);
     }
 
     private void FixedUpdate()
@@ -155,22 +208,51 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
         if (isPlayer || isMinion)
         {
-            // Deal damage to the hit target (once per spin per target).
-            int id = root.GetInstanceID();
-            if (!spinHitIds.Contains(id))
+            // SpinUntilWall: physically pass through this target so the shell isn't stopped
+            // by the target's collider.  Restored when the shell opens (ExitingShell).
+            if (settings != null && settings.SpinUntilWall && shellCollider != null
+                && !ignoredColliders.Contains(collision.collider))
             {
-                CombatantStats ts = GetStats(collision.transform);
-                if (ts != null && !ts.IsDead)
+                Physics.IgnoreCollision(shellCollider, collision.collider, true);
+                ignoredColliders.Add(collision.collider);
+            }
+
+            // Deal damage to the hit target (once per spin per target).
+            // Use CombatantStats.GetInstanceID() as the key — root.GetInstanceID() would be
+            // the same for all minions if they share a common scene-hierarchy parent.
+            //
+            // For the player, start the stats search from playerTransform (inspector-assigned
+            // moving body) rather than from the collider transform, so we find CombatantStats
+            // at most one level up instead of traversing the whole scene hierarchy.
+            Transform statsRoot = (isPlayer && playerTransform != null)
+                ? playerTransform
+                : collision.transform;
+            CombatantStats ts = GetStats(statsRoot);
+            if (ts != null)
+            {
+                int id = ts.GetInstanceID();
+                if (!spinHitIds.Contains(id) && !ts.IsDead)
                 {
                     spinHitIds.Add(id);
                     ts.ApplyDamage(settings != null ? settings.SpinDamage : 18f);
-                    Log($"Spin hit {root.name} for {settings.SpinDamage}");
+                    // For the player, apply knockback to playerTransform (the moving body with
+                    // the Rigidbody), not to the stats component's transform.
+                    Transform knockbackTarget = (isPlayer && playerTransform != null)
+                        ? playerTransform
+                        : ts.transform;
+                    ApplyKnockback(knockbackTarget);
+                    Log($"Spin hit {ts.name} for {settings.SpinDamage}");
                 }
             }
+            // SpinUntilWall: pass through targets; only a wall stops the spin.
+            if (settings == null || !settings.SpinUntilWall)
+                spinHitSomething = true;
         }
-
-        // Horizontal wall or target contact — stops the spin.
-        spinHitSomething = true;
+        else
+        {
+            // Wall hit — always ends the spin.
+            spinHitSomething = true;
+        }
     }
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -293,7 +375,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
     private void UpdateState()
     {
         // Locked states self-terminate via their own timers / collision flags.
-        if (currentState == SpinnerState.EnteringShell ||
+        if (currentState == SpinnerState.Windup      ||
             currentState == SpinnerState.Spinning       ||
             currentState == SpinnerState.Hit            ||
             currentState == SpinnerState.ExitingShell   ||
@@ -307,7 +389,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
             return;
         }
 
-        SetState(SpinnerState.EnteringShell);
+        SetState(SpinnerState.Windup);
     }
 
     private void ExecuteState()
@@ -321,9 +403,10 @@ public class ShellSpinnerEnemy : MonoBehaviour
                 break;
             }
 
-            case SpinnerState.EnteringShell:
+            case SpinnerState.Windup:
             {
                 stateTimer -= Time.deltaTime;
+
                 if (stateTimer <= 0f)
                 {
                     // Lock the spin direction toward the target (or straight ahead if lost).
@@ -345,6 +428,16 @@ public class ShellSpinnerEnemy : MonoBehaviour
                 {
                     SetState(SpinnerState.Hit);
                     break;
+                }
+                // When SpinUntilWall is active, cap travel at MaxSpinRange.
+                if (settings != null && settings.SpinUntilWall && settings.MaxSpinRange > 0f)
+                {
+                    float travelled = Vector3.Distance(transform.position, spinStartPosition);
+                    if (travelled >= settings.MaxSpinRange)
+                    {
+                        SetState(SpinnerState.Hit);
+                        break;
+                    }
                 }
                 frameVelocity = spinDirection * (settings != null ? settings.SpinSpeed : 10f);
                 FaceTowards(spinDirection);
@@ -379,7 +472,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
             {
                 stateTimer -= Time.deltaTime;
                 if (stateTimer <= 0f)
-                    SetState(currentTarget != null ? SpinnerState.EnteringShell : SpinnerState.Idle);
+                    SetState(currentTarget != null ? SpinnerState.Windup : SpinnerState.Idle);
                 break;
             }
         }
@@ -460,22 +553,28 @@ public class ShellSpinnerEnemy : MonoBehaviour
         Log($"State: {currentState} → {newState}");
         currentState = newState;
 
+        // Hide the targeting line on every state transition; only Windup re-enables it.
+        if (targetingLine != null) targetingLine.enabled = false;
+
         switch (newState)
         {
             case SpinnerState.Idle:
                 SetHitboxState(inShell: false);
                 break;
 
-            case SpinnerState.EnteringShell:
-                // Vulnerable while tucking in — shell isn't closed yet.
+            case SpinnerState.Windup:
+                // Vulnerable while targeting — shell isn’t closed yet.
                 SetHitboxState(inShell: false);
-                stateTimer = settings != null ? settings.EnterShellDuration : 0.6f;
+                stateTimer = settings != null ? settings.WindupDuration : 0.6f;
+                if (targetingLine != null) { targetingLine.positionCount = 2; targetingLine.enabled = true; }
                 break;
 
             case SpinnerState.Spinning:
                 // Shell is closed — invincible from now until ExitingShell.
                 SetHitboxState(inShell: true);
-                spinStartTime = Time.time;
+                spinStartTime     = Time.time;
+                spinStartPosition = transform.position;
+                ignoredColliders.Clear(); // fresh slate — no lingering pass-through ignores
                 break;
 
             case SpinnerState.Hit:
@@ -487,8 +586,12 @@ public class ShellSpinnerEnemy : MonoBehaviour
                 break;
 
             case SpinnerState.ExitingShell:
-                // Shell opens → vulnerable immediately.
+                // Deactivate the shell collider FIRST so it is no longer active when we
+                // restore the ignored collision pairs.  If we restored while the shell was
+                // still active and it was geometrically overlapping a target, PhysX would
+                // immediately apply a separation impulse, causing a visible pop/jitter.
                 SetHitboxState(inShell: false);
+                RestoreIgnoredColliders();
                 stateTimer = settings != null ? settings.ExitShellDuration : 0.6f;
                 break;
 
@@ -507,9 +610,62 @@ public class ShellSpinnerEnemy : MonoBehaviour
         if (enableLogs) Debug.Log($"[ShellSpinner] {msg}", this);
     }
 
+    // Restores all Physics.IgnoreCollision pairs that were created during a SpinUntilWall spin.
+    private void RestoreIgnoredColliders()
+    {
+        if (shellCollider != null)
+            foreach (var col in ignoredColliders)
+                if (col != null) Physics.IgnoreCollision(shellCollider, col, false);
+        ignoredColliders.Clear();
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    //  Knockback
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Applies a sideways (lateral) impulse to a hit target.
+    /// The push direction is the component of (target – spinner) that is perpendicular
+    /// to the spin direction, so targets are deflected off the side of the path rather
+    /// than pushed straight backwards.
+    /// </summary>
+    private void ApplyKnockback(Transform target)
+    {
+        float force = settings != null ? settings.KnockbackForce : 8f;
+        if (force <= 0f) return;
+
+        // target is ts.transform (the CombatantStats GO), not collision.transform.root.
+        // Using root caused all minions to resolve to a shared scene container, skipping knockback.
+
+        // Lateral direction: remove the component parallel to the spin axis.
+        Vector3 toTarget = target.position - transform.position;
+        toTarget.y = 0f;
+        Vector3 lateral = toTarget - spinDirection * Vector3.Dot(toTarget, spinDirection);
+        Vector3 dir = lateral.sqrMagnitude > 0.0001f
+            ? lateral.normalized
+            : Vector3.Cross(spinDirection, Vector3.up).normalized; // dead-centre → push right
+
+        // Prefer Rigidbody impulse (player or other physics objects).
+        Rigidbody targetRb = target.GetComponent<Rigidbody>();
+        if (targetRb != null && !targetRb.isKinematic)
+        {
+            targetRb.AddForce(dir * force, ForceMode.Impulse);
+            return;
+        }
+
+        // No usable Rigidbody — simulate via KnockbackReceiver (works with CharacterController or raw transform).
+        KnockbackReceiver receiver = target.GetComponent<KnockbackReceiver>();
+        if (receiver == null) receiver = target.gameObject.AddComponent<KnockbackReceiver>();
+        receiver.AddImpulse(dir * force);
+    }
+
     // ──────────────────────────────────────────────────────────────────────────
     //  Death
     // ──────────────────────────────────────────────────────────────────────────
 
-    private void OnDied() => Destroy(gameObject);
+    private void OnDied()
+    {
+        RestoreIgnoredColliders();
+        Destroy(gameObject);
+    }
 }

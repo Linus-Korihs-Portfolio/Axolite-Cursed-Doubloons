@@ -24,12 +24,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 192
   LosHeightOffset: 0.8
-  RotationSpeed: 6
-  EnterShellDuration: 0.6
-  SpinSpeed: 7
-  SpinDamage: 20
+  RotationSpeed: 0
+  WindupDuration: 2
+  GroundMask:
+    serializedVersion: 2
+    m_Bits: 192
+  SpinSpeed: 12
+  SpinDamage: 10
+  SpinUntilWall: 1
+  MaxSpinRange: 15
   HitPauseDuration: 0.15
-  SpinCollisionGrace: 0.12
+  SpinCollisionGrace: 0.11
+  KnockbackForce: 15
   ExitShellDuration: 0.6
   DizzyDuration: 2.5
   WakeUpDuration: 0.5
