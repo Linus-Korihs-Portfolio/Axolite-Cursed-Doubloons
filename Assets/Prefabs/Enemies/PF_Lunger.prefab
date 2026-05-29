@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8001184211049561810}
   - component: {fileID: 2634980963408571480}
   - component: {fileID: 8656907693460140126}
+  - component: {fileID: 2330723755618707652}
   m_Layer: 8
   m_Name: PF_Lunger
   m_TagString: Enemy
@@ -188,7 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 222ca75e431e4124e8bd8faa9890b56f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatantStats
-  baseProfile: {fileID: 11400000, guid: 6384b8f9b043f3e4a8ec5a3af88cc5de, type: 2}
+  baseProfile: {fileID: 11400000, guid: 1389f37c1949b734090441596fb326fd, type: 2}
   currentHealth: 0
   despawnOnDeath: 1
   despawnDelay: 0
@@ -214,3 +215,19 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &2330723755618707652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1121785977838751573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0899c269c9b7c140a55dc84d063796b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LungerEnemy
+  settings: {fileID: 11400000, guid: b46d192e859f5144788bdfddb71ebc65, type: 2}
+  playerTransform: {fileID: 0}
+  enableLogs: 1
+  currentState: 0

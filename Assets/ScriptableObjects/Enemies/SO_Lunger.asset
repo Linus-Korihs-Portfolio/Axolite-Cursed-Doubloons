@@ -27,7 +27,8 @@ MonoBehaviour:
   RequireLOSToAttack: 1
   MoveSpeed: 3.5
   RotationSpeed: 8
-  BiteRange: 1.5
+  BiteDesiredRange: 1
+  BiteMaxRange: 1.5
   BiteDamage: 10
   BiteCooldown: 1.2
   LungeMinDistance: 3.5
@@ -40,11 +41,11 @@ MonoBehaviour:
   LungeCooldown: 4
   UseNavMesh: 1
   NavRepathInterval: 0.3
-  NavTargetSampleRadius: 1.5
+  NavTargetSampleRadius: 1
   NavWaypointTolerance: 0.3
   IgnoreCollisionMask:
     serializedVersion: 2
-    m_Bits: 0
-  WallMask:
+    m_Bits: 512
+  LungeIgnoreCollisionMask:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 520

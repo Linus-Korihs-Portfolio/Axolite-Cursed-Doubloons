@@ -36,5 +36,5 @@ MonoBehaviour:
   CarryHeight: 6
   BurrowHealthThreshold: 0.3
   BurrowDescentSpeed: 5
-  BurrowRestDuration: 3
+  BurrowRestDuration: 4.26
   BurrowDepth: 1.5
