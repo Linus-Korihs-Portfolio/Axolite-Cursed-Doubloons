@@ -35,6 +35,13 @@ public class ShellSpinnerEnemySettings : ScriptableObject
     [Tooltip("LayerMask used to snap the targeting line to the ground surface. " + "Assign the same layer(s) as your floor geometry. If empty the spinner's own Y is used as a fallback.")]
     public LayerMask GroundMask;
 
+    [Header("Attack Choice")]
+    [Range(0f, 1f)]
+    [Tooltip("Chance to use a ranged attack after the first spin has completed. Spin is forced for the first attack.")]
+    public float RangedAttackChance = 0.5f;
+    [Tooltip("Maximum number of times the same attack type may be selected back to back.")]
+    public int MaxSameAttackRepeats = 2;
+
     [Header("Spin Attack")]
     [Tooltip("Speed at which the spinner moves in a straight line once launched.")]
     public float SpinSpeed = 10f;
@@ -42,7 +49,7 @@ public class ShellSpinnerEnemySettings : ScriptableObject
     public float SpinDamage = 18f;
     [Tooltip("When disabled (default) the spin stops as soon as it touches a player or minion. " + "When enabled the spin passes through all targets (dealing damage to each once) " + "and only stops when hitting a wall or travelling MaxSpinRange units.")]
     public bool SpinUntilWall = false;
-    [Tooltip("Maximum travel distance before the spin automatically ends. Only used when SpinUntilWall is enabled. 0 = unlimited.")]
+    [Tooltip("Maximum travel distance before the spin automatically ends. 0 = unlimited.")]
     public float MaxSpinRange = 20f;
 
     [Header("Hit Pause")]
@@ -55,6 +62,34 @@ public class ShellSpinnerEnemySettings : ScriptableObject
              "Works on both Rigidbody and non-Rigidbody (CharacterController) targets.")]
     public float KnockbackForce = 8f;
 
+    [Header("Ranged Attack")]
+    [Tooltip("Fallback local-space projectile spawn offset when the ShellSpinnerEnemy has no spawn point assigned.")]
+    public Vector3 ProjectileSpawnOffset = new Vector3(0f, 0.6f, 0.5f);
+    [Tooltip("How long the spinner tucks in before firing. It stays in place and tracks the target.")]
+    public float RangedWindupDuration = 0.35f;
+    [Tooltip("Time after the final projectile before the spinner exits the ranged attack and goes dizzy.")]
+    public float RangedRecoveryDuration = 0.35f;
+    [Tooltip("Projectile lifetime in seconds.")]
+    public float ProjectileLifetime = 6f;
+    [Tooltip("When true, spawned projectiles keep steering toward the current target.")]
+    public bool UseHomingProjectiles = true;
+
+    [Header("Ranged Attack - Fast Fire")]
+    public GameObject FastProjectilePrefab;
+    public int FastProjectileCount = 3;
+    public float FastProjectileInterval = 0.18f;
+    public float FastProjectileDamage = 6f;
+    public float FastProjectileSpeed = 12f;
+
+    [Header("Ranged Attack - Heavy Shot")]
+    public GameObject HeavyProjectilePrefab;
+    public int HeavyProjectileCount = 2;
+    public float HeavyProjectileInterval = 0.65f;
+    public float HeavyProjectileDamage = 14f;
+    public float HeavyProjectileSpeed = 7f;
+    [Tooltip("Impulse pushed backwards after each heavy shot. Only applies when the spinner has a non-kinematic Rigidbody.")]
+    public float HeavyShotRecoilForce = 2f;
+
     [Header("Shell Exit")]
     [Tooltip("Duration of the exiting-shell animation. Spinner is vulnerable from the very start of this state.")]
     public float ExitShellDuration = 0.6f;
@@ -62,6 +97,8 @@ public class ShellSpinnerEnemySettings : ScriptableObject
     [Header("Dizzy")]
     [Tooltip("How long the spinner stands dizzy and defenceless after exiting the shell.")]
     public float DizzyDuration = 2.5f;
+    [Tooltip("Variant: how long the spinner stands dizzy while firing projectiles.")]
+    public float DizzyProjDuration = 1f;
 
     [Header("Wake Up")]
     [Tooltip("Duration of the waking-up / shaking-off-dizziness animation before the next shell entry.")]

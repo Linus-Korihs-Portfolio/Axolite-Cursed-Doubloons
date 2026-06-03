@@ -29,6 +29,8 @@ MonoBehaviour:
   GroundMask:
     serializedVersion: 2
     m_Bits: 192
+  RangedAttackChance: 0.5
+  MaxSameAttackRepeats: 2
   SpinSpeed: 12
   SpinDamage: 10
   SpinUntilWall: 1
@@ -36,6 +38,23 @@ MonoBehaviour:
   HitPauseDuration: 0.15
   SpinCollisionGrace: 0.11
   KnockbackForce: 15
+  ProjectileSpawnOffset: {x: 0, y: 0.6, z: 0.5}
+  RangedWindupDuration: 0.35
+  RangedRecoveryDuration: 0.35
+  ProjectileLifetime: 6
+  UseHomingProjectiles: 0
+  FastProjectilePrefab: {fileID: 2292455647490666795, guid: ba4bfcecd66597f438d6879262eae445, type: 3}
+  FastProjectileCount: 3
+  FastProjectileInterval: 0.18
+  FastProjectileDamage: 6
+  FastProjectileSpeed: 12
+  HeavyProjectilePrefab: {fileID: 2292455647490666795, guid: ba4bfcecd66597f438d6879262eae445, type: 3}
+  HeavyProjectileCount: 2
+  HeavyProjectileInterval: 0.65
+  HeavyProjectileDamage: 14
+  HeavyProjectileSpeed: 7
+  HeavyShotRecoilForce: 2
   ExitShellDuration: 0.6
   DizzyDuration: 2.5
+  DizzyProjDuration: 1
   WakeUpDuration: 0.5

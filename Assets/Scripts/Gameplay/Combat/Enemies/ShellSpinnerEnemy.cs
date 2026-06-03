@@ -23,7 +23,8 @@ using UnityEngine;
          → WAKING UP after the dizzy timer ends.
 
      7. WAKING UP — shaking off the reset state.
-         → WINDUP if a target is still available, otherwise IDLE.
+         → Choose between shooting projectiles (random between fast or slow) or spinning if a target is still available, otherwise IDLE.
+         Can maximum do the same action twice
 
      Hitbox setup:
      bodyObject  — full body collider, active while vulnerable.
@@ -40,7 +41,22 @@ public class ShellSpinnerEnemy : MonoBehaviour
           Hit,         // brief impact pause inside shell
           ExitingShell, // shell opens and collisions restore
           Dizzy,       // vulnerable recovery pause
-          WakingUp     // reset animation before next action
+          DizzyProj,    // variant: dizzy but fires projectiles at player
+          WakingUp,    // reset animation before next action
+          RangedWindup, // tucks in, holds position, tracks target
+          RangedAttack  // fires projectiles while tracking target
+    }
+
+    private enum SpinnerAttackType
+    {
+        Spin,
+        Ranged
+    }
+
+    private enum ProjectileVariant
+    {
+        Fast,
+        Heavy
     }
 
     [SerializeField] private ShellSpinnerEnemySettings settings;
@@ -57,6 +73,10 @@ public class ShellSpinnerEnemy : MonoBehaviour
     [Header("Targeting Line")]
     [Tooltip("LineRenderer used to draw a live aim line toward the target during the windup. " + "Assign a child LineRenderer (2 positions, world space). Leave empty to skip.")]
     [SerializeField] private LineRenderer targetingLine;
+
+    [Header("Ranged Attack")]
+    [Tooltip("Optional child transform projectiles spawn from. If empty, the settings ProjectileSpawnOffset is used.")]
+    [SerializeField] private Transform projectileSpawnPoint;
 
     [Header("Debug")]
     [SerializeField] private bool enableLogs;
@@ -86,6 +106,15 @@ public class ShellSpinnerEnemy : MonoBehaviour
     private Vector3 frameVelocity;
 
     private static readonly Collider[] overlapBuffer = new Collider[32];
+
+    private bool hasCompletedFirstAttack;
+    private SpinnerAttackType lastAttackType = SpinnerAttackType.Spin;
+    private int sameAttackRepeatCount;
+
+    private ProjectileVariant currentProjectileVariant;
+    private int projectilesRemaining;
+    private float nextProjectileTime;
+    private bool rangedRecoveryStarted;
 
     private void Awake()
     {
@@ -330,7 +359,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
     private void UpdateState()
     {
-        if (currentState == SpinnerState.Windup || currentState == SpinnerState.Spinning || currentState == SpinnerState.Hit || currentState == SpinnerState.ExitingShell || currentState == SpinnerState.Dizzy || currentState == SpinnerState.WakingUp) return;
+        if (currentState == SpinnerState.Windup || currentState == SpinnerState.Spinning || currentState == SpinnerState.Hit || currentState == SpinnerState.ExitingShell || currentState == SpinnerState.Dizzy || currentState == SpinnerState.DizzyProj||currentState == SpinnerState.WakingUp || currentState == SpinnerState.RangedWindup || currentState == SpinnerState.RangedAttack) return;
 
         if (isAsleep || currentTarget == null)
         {
@@ -338,7 +367,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
             return;
         }
 
-        SetState(SpinnerState.Windup);
+        SetState(ChooseNextAttackState());
     }
 
     private void ExecuteState()
@@ -374,7 +403,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
                     SetState(SpinnerState.Hit);
                     break;
                 }
-                if (settings != null && settings.SpinUntilWall && settings.MaxSpinRange > 0f)
+                if (settings != null && settings.MaxSpinRange > 0f)
                 {
                     float travelled = Vector3.Distance(transform.position, spinStartPosition);
                     if (travelled >= settings.MaxSpinRange)
@@ -409,10 +438,52 @@ public class ShellSpinnerEnemy : MonoBehaviour
                 break;
             }
 
+            case SpinnerState.DizzyProj:
+            {
+                stateTimer -= Time.deltaTime;
+                if (stateTimer <= 0f) SetState(SpinnerState.WakingUp);
+                break;
+            }
+
             case SpinnerState.WakingUp:
             {
                 stateTimer -= Time.deltaTime;
-                if (stateTimer <= 0f) SetState(currentTarget != null ? SpinnerState.Windup : SpinnerState.Idle);
+                if (stateTimer <= 0f) SetState(currentTarget != null ? ChooseNextAttackState() : SpinnerState.Idle);
+                break;
+            }
+
+            case SpinnerState.RangedWindup:
+            {
+                stateTimer -= Time.deltaTime;
+                frameVelocity = Vector3.zero;
+                FaceTarget();
+                if (stateTimer <= 0f) SetState(SpinnerState.RangedAttack);
+                break;
+            }
+
+            case SpinnerState.RangedAttack:
+            {
+                frameVelocity = Vector3.zero;
+                FaceTarget();
+
+                if (projectilesRemaining > 0 && Time.time >= nextProjectileTime)
+                {
+                    FireProjectile();
+                    projectilesRemaining--;
+                    nextProjectileTime = Time.time + GetProjectileInterval(currentProjectileVariant);
+                }
+
+                if (projectilesRemaining <= 0)
+                {
+                    if (!rangedRecoveryStarted)
+                    {
+                        rangedRecoveryStarted = true;
+                        stateTimer = settings != null ? settings.RangedRecoveryDuration : 0.35f;
+                    }
+
+                    stateTimer -= Time.deltaTime;
+                    if (stateTimer <= 0f) SetState(SpinnerState.DizzyProj);
+                }
                 break;
             }
         }
@@ -482,6 +553,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
                 break;
 
             case SpinnerState.Windup:
+                RecordAttackChoice(SpinnerAttackType.Spin);
                 SetHitboxState(inShell: false);
                 stateTimer = settings != null ? settings.WindupDuration : 0.6f;
                 if (targetingLine != null)
@@ -515,10 +587,155 @@ public class ShellSpinnerEnemy : MonoBehaviour
                 stateTimer = settings != null ? settings.DizzyDuration : 2.5f;
                 break;
 
+            case SpinnerState.DizzyProj:
+                stateTimer = settings != null ? settings.DizzyProjDuration : 2.5f;
+                break;
+
             case SpinnerState.WakingUp:
                 stateTimer = settings != null ? settings.WakeUpDuration : 0.4f;
                 break;
+
+            case SpinnerState.RangedWindup:
+                RecordAttackChoice(SpinnerAttackType.Ranged);
+                SetHitboxState(inShell: false);
+                frameVelocity = Vector3.zero;
+                if (rb != null) rb.linearVelocity = Vector3.zero;
+                currentProjectileVariant = ChooseProjectileVariant();
+                stateTimer = settings != null ? settings.RangedWindupDuration : 0.35f;
+                break;
+
+            case SpinnerState.RangedAttack:
+                SetHitboxState(inShell: false);
+                frameVelocity = Vector3.zero;
+                if (rb != null) rb.linearVelocity = Vector3.zero;
+                projectilesRemaining = GetProjectileCount(currentProjectileVariant);
+                nextProjectileTime = Time.time;
+                rangedRecoveryStarted = false;
+                break;
         }
+    }
+
+    private SpinnerState ChooseNextAttackState()
+    {
+        SpinnerAttackType chosen = ChooseNextAttackType();
+        return chosen == SpinnerAttackType.Ranged ? SpinnerState.RangedWindup : SpinnerState.Windup;
+    }
+
+    private SpinnerAttackType ChooseNextAttackType()
+    {
+        if (!hasCompletedFirstAttack || !CanUseRangedAttack()) return SpinnerAttackType.Spin;
+
+        int maxRepeats = settings != null ? Mathf.Max(1, settings.MaxSameAttackRepeats) : 2;
+        if (sameAttackRepeatCount >= maxRepeats)
+        {
+            return lastAttackType == SpinnerAttackType.Spin ? SpinnerAttackType.Ranged : SpinnerAttackType.Spin;
+        }
+
+        float rangedChance = settings != null ? settings.RangedAttackChance : 0.5f;
+        return Random.value < rangedChance ? SpinnerAttackType.Ranged : SpinnerAttackType.Spin;
+    }
+
+    private void RecordAttackChoice(SpinnerAttackType attackType)
+    {
+        if (hasCompletedFirstAttack && attackType == lastAttackType)
+        {
+            sameAttackRepeatCount++;
+        }
+        else
+        {
+            lastAttackType = attackType;
+            sameAttackRepeatCount = 1;
+        }
+
+        hasCompletedFirstAttack = true;
+    }
+
+    private bool CanUseRangedAttack()
+    {
+        if (settings == null) return false;
+        return settings.FastProjectilePrefab != null || settings.HeavyProjectilePrefab != null;
+    }
+
+    private ProjectileVariant ChooseProjectileVariant()
+    {
+        bool hasFast = settings != null && settings.FastProjectilePrefab != null;
+        bool hasHeavy = settings != null && settings.HeavyProjectilePrefab != null;
+
+        if (hasFast && hasHeavy) return Random.value < 0.5f ? ProjectileVariant.Fast : ProjectileVariant.Heavy;
+        return hasHeavy ? ProjectileVariant.Heavy : ProjectileVariant.Fast;
+    }
+
+    private int GetProjectileCount(ProjectileVariant variant)
+    {
+        if (settings == null) return 1;
+        int count = variant == ProjectileVariant.Fast ? settings.FastProjectileCount : settings.HeavyProjectileCount;
+        return Mathf.Max(1, count);
+    }
+
+    private float GetProjectileInterval(ProjectileVariant variant)
+    {
+        if (settings == null) return 0.25f;
+        float interval = variant == ProjectileVariant.Fast ? settings.FastProjectileInterval : settings.HeavyProjectileInterval;
+        return Mathf.Max(0.01f, interval);
+    }
+
+    private void FireProjectile()
+    {
+        if (settings == null) return;
+
+        GameObject prefab = GetProjectilePrefab(currentProjectileVariant);
+        if (prefab == null || currentTarget == null) return;
+
+        Vector3 spawnPos = projectileSpawnPoint != null
+            ? projectileSpawnPoint.position
+            : transform.TransformPoint(settings.ProjectileSpawnOffset);
+
+        Vector3 aimDir = currentTarget.position - spawnPos;
+        aimDir.y = 0f;
+        Quaternion spawnRot = aimDir.sqrMagnitude > 0.0001f
+            ? Quaternion.LookRotation(aimDir.normalized, Vector3.up)
+            : transform.rotation;
+
+        MinionProjectile projectile = Instantiate(prefab, spawnPos, spawnRot).GetComponent<MinionProjectile>();
+        if (projectile != null)
+        {
+            float damage = currentProjectileVariant == ProjectileVariant.Fast ? settings.FastProjectileDamage : settings.HeavyProjectileDamage;
+            float speed = currentProjectileVariant == ProjectileVariant.Fast ? settings.FastProjectileSpeed : settings.HeavyProjectileSpeed;
+            string ownerTag = gameObject.CompareTag("Untagged") ? string.Empty : gameObject.tag;
+
+            projectile.Initialize(
+                currentTarget,
+                damage,
+                speed,
+                settings.UseHomingProjectiles,
+                ownerTag,
+                settings.ProjectileLifetime,
+                string.Empty);
+        }
+
+        if (currentProjectileVariant == ProjectileVariant.Heavy) ApplyRangedRecoil();
+        Log($"Fired {currentProjectileVariant} projectile");
+    }
+
+    private GameObject GetProjectilePrefab(ProjectileVariant variant)
+    {
+        if (settings == null) return null;
+
+        GameObject preferred = variant == ProjectileVariant.Fast ? settings.FastProjectilePrefab : settings.HeavyProjectilePrefab;
+        if (preferred != null) return preferred;
+
+        return variant == ProjectileVariant.Fast ? settings.HeavyProjectilePrefab : settings.FastProjectilePrefab;
+    }
+
+    private void ApplyRangedRecoil()
+    {
+        if (rb == null || rb.isKinematic || settings == null || settings.HeavyShotRecoilForce <= 0f) return;
+
+        Vector3 recoilDir = -transform.forward;
+        recoilDir.y = 0f;
+        if (recoilDir.sqrMagnitude <= 0.0001f) return;
+
+        rb.AddForce(recoilDir.normalized * settings.HeavyShotRecoilForce, ForceMode.Impulse);
     }
 
     private void Log(string msg)
