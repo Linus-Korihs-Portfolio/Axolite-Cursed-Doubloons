@@ -1,9 +1,9 @@
 using UnityEngine;
 
-/// <summary>
-/// Shared configuration for the Shell Spinner enemy (Enemy 2 — Koopa/Armos-like).
-/// Create via Assets > Create > SO > Combat > Enemy > Shell Spinner Enemy Settings.
-/// </summary>
+/* <Summary / Notes>
+    Shared configuration for the Shell Spinner enemy (Enemy 2 — Koopa/Armos-like).
+    Create via Assets > Create > SO > Combat > Enemy > Shell Spinner Enemy Settings.
+*/
 [CreateAssetMenu(menuName = "SO/Combat/Enemy/Shell Spinner")]
 public class ShellSpinnerEnemySettings : ScriptableObject
 {
@@ -32,8 +32,7 @@ public class ShellSpinnerEnemySettings : ScriptableObject
     [Header("Windup / Targeting")]
     [Tooltip("Duration of the windup / targeting phase. The spinner is still vulnerable and shows an aim line.")]
     public float WindupDuration = 0.6f;
-    [Tooltip("LayerMask used to snap the targeting line to the ground surface. " +
-             "Assign the same layer(s) as your floor geometry. If empty the spinner's own Y is used as a fallback.")]
+    [Tooltip("LayerMask used to snap the targeting line to the ground surface. " + "Assign the same layer(s) as your floor geometry. If empty the spinner's own Y is used as a fallback.")]
     public LayerMask GroundMask;
 
     [Header("Spin Attack")]
@@ -41,10 +40,8 @@ public class ShellSpinnerEnemySettings : ScriptableObject
     public float SpinSpeed = 10f;
     [Tooltip("Damage dealt to any player or minion touched during the spin.")]
     public float SpinDamage = 18f;
-    [Tooltip("When disabled (default) the spin stops as soon as it touches a player or minion. " +
-             "When enabled the spin passes through all targets (dealing damage to each once) " +
-             "and only stops when hitting a wall or travelling MaxSpinRange units.")]
-    public bool  SpinUntilWall = false;
+    [Tooltip("When disabled (default) the spin stops as soon as it touches a player or minion. " + "When enabled the spin passes through all targets (dealing damage to each once) " + "and only stops when hitting a wall or travelling MaxSpinRange units.")]
+    public bool SpinUntilWall = false;
     [Tooltip("Maximum travel distance before the spin automatically ends. Only used when SpinUntilWall is enabled. 0 = unlimited.")]
     public float MaxSpinRange = 20f;
 

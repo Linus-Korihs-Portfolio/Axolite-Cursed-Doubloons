@@ -16,7 +16,7 @@ public class PlayerMinionCommander : MonoBehaviour
     private struct FormationSlot
     {
         public MinionCore Minion;
-        public Vector2 LocalXZ;           // x = right-axis offset, y = forward-axis offset, relative to player
+        public Vector2 LocalXZ; // x = right-axis offset, y = forward-axis offset, relative to player
         public Vector3 LastIssuedWorldPos;
     }
 

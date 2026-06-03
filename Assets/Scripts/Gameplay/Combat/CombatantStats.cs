@@ -18,8 +18,7 @@ public class CombatantStats : MonoBehaviour
     private readonly List<ActiveStatusEffect> activeEffects = new List<ActiveStatusEffect>(); // Currently active status effects on this combatant
 
     public float CurrentHealth => currentHealth;
-    public bool IsDead => currentHealth <= 0f;
-    /// <summary>When true, ApplyDamage is silently ignored. Set by enemies that are invincible in certain states (e.g. ShellSpinner inside the shell).</summary>
+    public bool IsDead => currentHealth <= 0f; // When true, ApplyDamage is silently ignored. Set by enemies that are invincible in certain states (e.g. ShellSpinner inside the shell).
     public bool IsInvincible { get; set; }
 
     public event Action<float, float> HealthChanged; // (currentHealth, maxHealth)
