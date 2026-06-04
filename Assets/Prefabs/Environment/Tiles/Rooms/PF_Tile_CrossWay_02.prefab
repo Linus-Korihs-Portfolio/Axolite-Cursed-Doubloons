@@ -998,10 +998,270 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5886903153398160572}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -808561737723434772, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4635375714698935971}
+    - targetCorrespondingSourceObject: {fileID: -808561737723434772, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3537947142708762363}
+    - targetCorrespondingSourceObject: {fileID: 157693688854063214, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8904184017963358903}
+    - targetCorrespondingSourceObject: {fileID: 157693688854063214, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3642354697041469609}
+    - targetCorrespondingSourceObject: {fileID: 7096147998831541120, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8940368380722370475}
+    - targetCorrespondingSourceObject: {fileID: 7096147998831541120, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8989827261257084270}
+    - targetCorrespondingSourceObject: {fileID: 8179220526153441813, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9029562072299069665}
+    - targetCorrespondingSourceObject: {fileID: 8179220526153441813, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4644582406825200408}
   m_SourcePrefab: {fileID: 100100000, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
 --- !u!4 &2002189956149602676 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
   m_PrefabInstance: {fileID: 2036625754470190751}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2194292908913075953 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 157693688854063214, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+  m_PrefabInstance: {fileID: 2036625754470190751}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8904184017963358903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2194292908913075953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 1
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 0}
+  m_BuildHeightMesh: 0
+--- !u!64 &3642354697041469609
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2194292908913075953}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3914627750608125466, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+--- !u!1 &7531396502994691699 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -808561737723434772, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+  m_PrefabInstance: {fileID: 2036625754470190751}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4635375714698935971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7531396502994691699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 1
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 0}
+  m_BuildHeightMesh: 0
+--- !u!64 &3537947142708762363
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7531396502994691699}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -8574183008539486642, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+--- !u!1 &7908850837176069258 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8179220526153441813, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+  m_PrefabInstance: {fileID: 2036625754470190751}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9029562072299069665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7908850837176069258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 1
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 0}
+  m_BuildHeightMesh: 0
+--- !u!64 &4644582406825200408
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7908850837176069258}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -8020434641175148810, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+--- !u!1 &9095328785186190623 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7096147998831541120, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}
+  m_PrefabInstance: {fileID: 2036625754470190751}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8940368380722370475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9095328785186190623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 1
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 0}
+  m_BuildHeightMesh: 0
+--- !u!64 &8989827261257084270
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9095328785186190623}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6060227899505627479, guid: 3562f4cfa734f5b41b679f915b2f6e33, type: 3}

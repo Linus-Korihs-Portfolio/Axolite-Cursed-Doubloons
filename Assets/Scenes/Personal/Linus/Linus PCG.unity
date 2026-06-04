@@ -119,6 +119,43 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &326525715 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5355710263612989429, guid: 1bdfca6121177c44c80c032e6bd395d8, type: 3}
+  m_PrefabInstance: {fileID: 2837341898456449613}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &326525717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326525715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 3
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 0}
+  m_BuildHeightMesh: 0
 --- !u!1 &576831224
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,6 +328,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1092750262}
     m_Modifications:
+    - target: {fileID: 5126942003098301774, guid: 1bdfca6121177c44c80c032e6bd395d8, type: 3}
+      propertyPath: surface
+      value: 
+      objectReference: {fileID: 326525717}
     - target: {fileID: 5224893769436163900, guid: 1bdfca6121177c44c80c032e6bd395d8, type: 3}
       propertyPath: m_Name
       value: RoomAssembler
@@ -302,10 +343,6 @@ PrefabInstance:
     - target: {fileID: 5355710263612989429, guid: 1bdfca6121177c44c80c032e6bd395d8, type: 3}
       propertyPath: m_Layer
       value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6081870863342178339, guid: 1bdfca6121177c44c80c032e6bd395d8, type: 3}
-      propertyPath: levelIndex
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8735502233327984575, guid: 1bdfca6121177c44c80c032e6bd395d8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -350,7 +387,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5355710263612989429, guid: 1bdfca6121177c44c80c032e6bd395d8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 326525717}
   m_SourcePrefab: {fileID: 100100000, guid: 1bdfca6121177c44c80c032e6bd395d8, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

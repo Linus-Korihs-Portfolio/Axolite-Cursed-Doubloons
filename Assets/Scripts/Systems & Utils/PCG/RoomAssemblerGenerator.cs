@@ -14,6 +14,9 @@ public class RoomAssemblerGenerator : MonoBehaviour
     public bool clearBeforeGenerate = true;
 
     [Header("Content")]
+    [Tooltip("Optional runtime NavMesh build step. Runs after layout generation and before content spawning.")]
+    public RuntimeNavMeshBuilder navMeshBuilder;
+
     [Tooltip("Optional second pass that fills generated rooms with player, minions, enemies, and items.")]
     public LevelContentSpawner contentSpawner;
 
@@ -37,6 +40,8 @@ public class RoomAssemblerGenerator : MonoBehaviour
         if (!ValidateSetup()) return;
 
         if (parent == null) parent = transform;
+        if (navMeshBuilder == null) navMeshBuilder = GetComponent<RuntimeNavMeshBuilder>();
+        if (navMeshBuilder == null && parent != null) navMeshBuilder = parent.GetComponent<RuntimeNavMeshBuilder>();
 
         for (int attempt = 0; attempt < config.maxGenerationRetries; attempt++)
         {
@@ -88,6 +93,11 @@ public class RoomAssemblerGenerator : MonoBehaviour
             if (success)
             {
                 if (config.log) Debug.Log($"✓ Generation success. Seed={runSeed}, Rooms={placed.Count}, attempt={attempt + 1}");
+                if (navMeshBuilder != null)
+                {
+                    navMeshBuilder.Build(parent);
+                }
+
                 if (contentSpawner != null)
                 {
                     contentSpawner.SpawnForGeneratedRooms(placed, runSeed);
