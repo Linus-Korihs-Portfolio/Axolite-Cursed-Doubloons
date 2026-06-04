@@ -22,7 +22,15 @@ public class ItemSelectionUI : MonoBehaviour
 
         for (int i = 0; i < cards.Length; i++)
         {
-            cards[i].Setup(items[i]);
+            if (i < items.Count)
+            {
+                cards[i].gameObject.SetActive(true);
+                cards[i].Setup(items[i]);
+            }
+            else
+            {
+                cards[i].gameObject.SetActive(false);
+            }
         }
     }
 

@@ -47,6 +47,19 @@ public class GroundCursor : MonoBehaviour
     public bool IsAimingWithMouseKeyboard { get; private set; }
     public bool IsAimingWithGamepad { get; private set; }
 
+    private void Awake()
+    {
+        ResolveInputActions();
+    }
+
+    private void ResolveInputActions()
+    {
+        PlayerInput playerInput = GetComponentInParent<PlayerInput>();
+
+        cursorMoveAction = PlayerInputActionResolver.Resolve(cursorMoveAction, playerInput, "Camera", "CursorMove", this);
+        cursorExtraKeyAction = PlayerInputActionResolver.Resolve(cursorExtraKeyAction, playerInput, "Camera", "CursorExtraKey", this);
+    }
+
     private void OnEnable()
     {
         if (cursorMoveAction) cursorMoveAction.action.Enable();

@@ -64,6 +64,8 @@ public class PlayerMinionCommander : MonoBehaviour
 
     private void Awake()
     {
+        ResolveInputActions();
+
         if (cursor == null) cursor = GetComponentInChildren<GroundCursor>();
         if (player == null) player = transform;
         // Resolve PlayerAim for formation facing. Search the player hierarchy first, then the scene.
@@ -82,6 +84,15 @@ public class PlayerMinionCommander : MonoBehaviour
         }
 
         previewPropertyBlock = new MaterialPropertyBlock();
+    }
+
+    private void ResolveInputActions()
+    {
+        PlayerInput playerInput = GetComponentInParent<PlayerInput>();
+
+        commandAction = PlayerInputActionResolver.Resolve(commandAction, playerInput, "Player", "MinionCommand", this);
+        callAction = PlayerInputActionResolver.Resolve(callAction, playerInput, "Player", "MinionCall", this);
+        dismissAction = PlayerInputActionResolver.Resolve(dismissAction, playerInput, "Player", "MinionDismiss", this);
     }
 
     // Exposed for editor display only.

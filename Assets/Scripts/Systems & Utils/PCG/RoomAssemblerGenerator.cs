@@ -12,6 +12,13 @@ public class RoomAssemblerGenerator : MonoBehaviour
     [Header("Output")]
     public Transform parent;
     public bool clearBeforeGenerate = true;
+
+    [Header("Content")]
+    [Tooltip("Optional second pass that fills generated rooms with player, minions, enemies, and items.")]
+    public LevelContentSpawner contentSpawner;
+
+    public int LastRunSeed { get; private set; }
+
     private System.Random rng;
 
     private readonly List<PlacedRoom> placed = new();
@@ -36,6 +43,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
             if (clearBeforeGenerate) ClearChildren(parent);
 
             int runSeed = config.randomSeed ? (Environment.TickCount + attempt) : config.seed;
+            LastRunSeed = runSeed;
             rng = new System.Random(runSeed);
 
             roomPicker = new RoomPicker(rng);
@@ -80,6 +88,10 @@ public class RoomAssemblerGenerator : MonoBehaviour
             if (success)
             {
                 if (config.log) Debug.Log($"✓ Generation success. Seed={runSeed}, Rooms={placed.Count}, attempt={attempt + 1}");
+                if (contentSpawner != null)
+                {
+                    contentSpawner.SpawnForGeneratedRooms(placed, runSeed);
+                }
                 return;
             }
         }
