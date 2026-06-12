@@ -1,0 +1,155 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &9061822720536716739
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8017449571587430431, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e67b4d33ed6b32d479a07989853715a1, type: 2}
+    - target: {fileID: 919132149155446097, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: m_Name
+      value: PF_Enemy3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 58af628e9e3d0894ba8339f3c7ab1719, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 857642183101590936}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1486419762922202939}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2044534569642707360}
+  m_SourcePrefab: {fileID: 100100000, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+--- !u!95 &3217991710741567570 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+  m_PrefabInstance: {fileID: 9061822720536716739}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8143464775878875282 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+  m_PrefabInstance: {fileID: 9061822720536716739}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &857642183101590936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143464775878875282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6602ca8854d30354f9189fd71e9ff220, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy3AnimatorBridge
+  animator: {fileID: 3217991710741567570}
+  wakeUpTrigger: WakeUp
+  speedParameter: Speed
+  secondAttackTrigger: SecondAttack
+  grabAttackTrigger: GrabAttack
+  flyDownTrigger: FlyDown
+  digDownTrigger: DigDown
+  deathFlyingTrigger: DeathFlying
+  deathDiggingTrigger: DeathDigging
+  hiddenStateName: E3_HiddenArmed
+  walkBaseStateName: E3_Walk
+  hoverStateName: E3_Hover
+--- !u!114 &1486419762922202939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143464775878875282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c45cfa67f31b6e4ea3bfc57d9b23c86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy3AnimatorAutoTester
+  enemyAnimator: {fileID: 857642183101590936}
+  autoRunOnStart: 1
+  loopTest: 1
+  testWakeUpSequence: 1
+  testSecondAttack: 1
+  testGrabAttack: 1
+  testLowHpEscape: 1
+  testDirectDigDown: 0
+  testDeathFlying: 0
+  testDeathDigging: 0
+  hiddenWait: 1
+  wakeUpSequenceWait: 3
+  secondAttackWait: 2
+  grabAttackWait: 2
+  lowHpEscapeWait: 3
+  directDigDownWait: 2
+  deathWait: 2
+  delayBetweenLoops: 1
+  setSpeedDuringWalk: 0
+  walkSpeed: 1
+--- !u!114 &2044534569642707360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143464775878875282}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91ff4d35cf05e004ab02ee7f73ef5683, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy3AnimationEvents
+  showDebugLogs: 1
