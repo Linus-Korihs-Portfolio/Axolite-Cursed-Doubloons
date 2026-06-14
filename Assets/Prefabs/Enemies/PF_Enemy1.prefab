@@ -173,13 +173,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimatorAutoTester
   enemyAnimator: {fileID: 977172799114551594}
-  autoRunOnStart: 1
-  loopTest: 1
+  autoRunOnStart: 0
+  loopTest: 0
   idleWait: 1.5
   walkDuration: 2
-  attackWait: 0.2
-  lungeWait: 1.1
-  idleBreakWait: 5
-  deathWait: 2
+  attackWait: 2
+  lungeWait: 2
+  idleBreakWait: 3
+  deathWait: 2.5
   delayBetweenLoops: 1
   walkSpeed: 1

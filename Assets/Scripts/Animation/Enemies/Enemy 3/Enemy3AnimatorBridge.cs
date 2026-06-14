@@ -21,6 +21,9 @@ public class Enemy3AnimatorBridge : MonoBehaviour
     [SerializeField] private string walkBaseStateName = "E3_Walk";
     [SerializeField] private string hoverStateName = "E3_Hover";
 
+    [Header("Reset Settings")]
+    [SerializeField] private bool updateAnimatorAfterReset = true;
+
     private int wakeUpHash;
     private int speedHash;
     private int secondAttackHash;
@@ -103,13 +106,7 @@ public class Enemy3AnimatorBridge : MonoBehaviour
 
     public void WakeUp()
     {
-        if (!hasWakeUp)
-        {
-            Debug.LogWarning("Enemy3AnimatorBridge: Animator Trigger fehlt: " + wakeUpTrigger);
-            return;
-        }
-
-        animator.SetTrigger(wakeUpHash);
+        FireTrigger(wakeUpHash, hasWakeUp, wakeUpTrigger);
     }
 
     public void SetSpeed(float speed)
@@ -125,150 +122,108 @@ public class Enemy3AnimatorBridge : MonoBehaviour
 
     public void PlaySecondAttack()
     {
-        if (!hasSecondAttack)
-        {
-            Debug.LogWarning("Enemy3AnimatorBridge: Animator Trigger fehlt: " + secondAttackTrigger);
-            return;
-        }
-
-        animator.SetTrigger(secondAttackHash);
+        FireTrigger(secondAttackHash, hasSecondAttack, secondAttackTrigger);
     }
 
     public void PlayGrabAttack()
     {
-        if (!hasGrabAttack)
-        {
-            Debug.LogWarning("Enemy3AnimatorBridge: Animator Trigger fehlt: " + grabAttackTrigger);
-            return;
-        }
-
-        animator.SetTrigger(grabAttackHash);
+        FireTrigger(grabAttackHash, hasGrabAttack, grabAttackTrigger);
     }
 
     public void PlayFlyDown()
     {
-        if (!hasFlyDown)
-        {
-            Debug.LogWarning("Enemy3AnimatorBridge: Animator Trigger fehlt: " + flyDownTrigger);
-            return;
-        }
-
-        animator.SetTrigger(flyDownHash);
+        FireTrigger(flyDownHash, hasFlyDown, flyDownTrigger);
     }
 
     public void PlayDigDown()
     {
-        if (!hasDigDown)
-        {
-            Debug.LogWarning("Enemy3AnimatorBridge: Animator Trigger fehlt: " + digDownTrigger);
-            return;
-        }
-
-        animator.SetTrigger(digDownHash);
+        FireTrigger(digDownHash, hasDigDown, digDownTrigger);
     }
 
     public void PlayDeathFlying()
     {
-        if (!hasDeathFlying)
-        {
-            Debug.LogWarning("Enemy3AnimatorBridge: Animator Trigger fehlt: " + deathFlyingTrigger);
-            return;
-        }
-
-        animator.SetTrigger(deathFlyingHash);
+        ResetAllTriggers();
+        FireTrigger(deathFlyingHash, hasDeathFlying, deathFlyingTrigger);
     }
 
     public void PlayDeathDigging()
     {
-        if (!hasDeathDigging)
-        {
-            Debug.LogWarning("Enemy3AnimatorBridge: Animator Trigger fehlt: " + deathDiggingTrigger);
-            return;
-        }
-
-        animator.SetTrigger(deathDiggingHash);
+        ResetAllTriggers();
+        FireTrigger(deathDiggingHash, hasDeathDigging, deathDiggingTrigger);
     }
 
     public void ResetToHidden()
     {
+        ResetAllTriggers();
+
         if (hasSpeed)
         {
             animator.SetFloat(speedHash, 0f);
         }
 
-        ResetAllTriggers();
-
-        if (!string.IsNullOrEmpty(hiddenStateName))
-        {
-            animator.Play(hiddenStateName, 0, 0f);
-        }
+        PlayState(hiddenStateName);
     }
 
     public void ResetToWalkBase()
     {
+        ResetAllTriggers();
+
         if (hasSpeed)
         {
             animator.SetFloat(speedHash, 0f);
         }
 
-        ResetAllTriggers();
-
-        if (!string.IsNullOrEmpty(walkBaseStateName))
-        {
-            animator.Play(walkBaseStateName, 0, 0f);
-        }
+        PlayState(walkBaseStateName);
     }
 
     public void ResetToHover()
     {
+        ResetAllTriggers();
+
         if (hasSpeed)
         {
             animator.SetFloat(speedHash, 0f);
         }
 
-        ResetAllTriggers();
-
-        if (!string.IsNullOrEmpty(hoverStateName))
-        {
-            animator.Play(hoverStateName, 0, 0f);
-        }
+        PlayState(hoverStateName);
     }
 
     public void ResetAllTriggers()
     {
-        if (hasWakeUp)
+        if (hasWakeUp) animator.ResetTrigger(wakeUpHash);
+        if (hasSecondAttack) animator.ResetTrigger(secondAttackHash);
+        if (hasGrabAttack) animator.ResetTrigger(grabAttackHash);
+        if (hasFlyDown) animator.ResetTrigger(flyDownHash);
+        if (hasDigDown) animator.ResetTrigger(digDownHash);
+        if (hasDeathFlying) animator.ResetTrigger(deathFlyingHash);
+        if (hasDeathDigging) animator.ResetTrigger(deathDiggingHash);
+    }
+
+    private void FireTrigger(int triggerHash, bool hasTrigger, string triggerName)
+    {
+        if (!hasTrigger)
         {
-            animator.ResetTrigger(wakeUpHash);
+            Debug.LogWarning("Enemy3AnimatorBridge: Animator Trigger fehlt: " + triggerName);
+            return;
         }
 
-        if (hasSecondAttack)
+        animator.ResetTrigger(triggerHash);
+        animator.SetTrigger(triggerHash);
+    }
+
+    private void PlayState(string stateName)
+    {
+        if (string.IsNullOrEmpty(stateName))
         {
-            animator.ResetTrigger(secondAttackHash);
+            Debug.LogWarning("Enemy3AnimatorBridge: State Name ist leer.");
+            return;
         }
 
-        if (hasGrabAttack)
-        {
-            animator.ResetTrigger(grabAttackHash);
-        }
+        animator.Play(stateName, 0, 0f);
 
-        if (hasFlyDown)
+        if (updateAnimatorAfterReset)
         {
-            animator.ResetTrigger(flyDownHash);
-        }
-
-        if (hasDigDown)
-        {
-            animator.ResetTrigger(digDownHash);
-        }
-
-        if (hasDeathFlying)
-        {
-            animator.ResetTrigger(deathFlyingHash);
-        }
-
-        if (hasDeathDigging)
-        {
-            animator.ResetTrigger(deathDiggingHash);
+            animator.Update(0f);
         }
     }
 }

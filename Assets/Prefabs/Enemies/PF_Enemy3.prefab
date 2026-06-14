@@ -108,6 +108,7 @@ MonoBehaviour:
   hiddenStateName: E3_HiddenArmed
   walkBaseStateName: E3_Walk
   hoverStateName: E3_Hover
+  updateAnimatorAfterReset: 1
 --- !u!114 &1486419762922202939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,25 +122,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy3AnimatorAutoTester
   enemyAnimator: {fileID: 857642183101590936}
-  autoRunOnStart: 1
-  loopTest: 1
-  testWakeUpSequence: 1
-  testSecondAttack: 1
-  testGrabAttack: 1
-  testLowHpEscape: 1
-  testDirectDigDown: 0
-  testDeathFlying: 0
-  testDeathDigging: 0
+  autoRunOnStart: 0
+  loopTest: 0
+  scenario: 5
+  showTestButtons: 1
   hiddenWait: 1
   wakeUpSequenceWait: 3
   secondAttackWait: 2
   grabAttackWait: 2
   lowHpEscapeWait: 3
-  directDigDownWait: 2
   deathWait: 2
   delayBetweenLoops: 1
   setSpeedDuringWalk: 0
   walkSpeed: 1
+  walkSpeedWait: 0.5
 --- !u!114 &2044534569642707360
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,10 +5,6 @@ public class Enemy2AnimationEvents : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
 
-    // -------------------------
-    // Generic Enemy 2 Events
-    // -------------------------
-
     public void OnFootstep()
     {
         LogEvent("Footstep");
@@ -24,9 +20,10 @@ public class Enemy2AnimationEvents : MonoBehaviour
         LogEvent("Death animation finished");
     }
 
-    // -------------------------
-    // Projectile Attack Events
-    // -------------------------
+    public void OnDeathHit()
+    {
+        LogEvent("Death hit frame reached");
+    }
 
     public void OnProjectileAttackStart()
     {
@@ -43,18 +40,39 @@ public class Enemy2AnimationEvents : MonoBehaviour
         LogEvent("Projectile Attack shoot frame reached");
     }
 
+    public void OnProjectileAttackHit()
+    {
+        LogEvent("Projectile Attack hit frame reached");
+    }
+
+    public void OnProjectilAttackHit()
+    {
+        LogEvent("Projectile Attack hit frame reached. Note: Event name uses typo Projectil.");
+    }
+
     public void OnProjectileAttackEnd()
     {
         LogEvent("Projectile Attack ended");
     }
 
-    // -------------------------
-    // Spin Attack Events
-    // -------------------------
+    public void OnProjectileTurnWalkStart()
+    {
+        LogEvent("Projectile optional turn/walk started");
+    }
+
+    public void OnProjectileTurnWalkEnd()
+    {
+        LogEvent("Projectile optional turn/walk ended");
+    }
 
     public void OnSpinAttackStart()
     {
         LogEvent("Spin Attack started");
+    }
+
+    public void OnSpinAttackLoop()
+    {
+        LogEvent("Spin Attack loop / ContinueSpinning part");
     }
 
     public void OnSpinAttackHit()
@@ -66,10 +84,6 @@ public class Enemy2AnimationEvents : MonoBehaviour
     {
         LogEvent("Spin Attack ended");
     }
-
-    // -------------------------
-    // Helper
-    // -------------------------
 
     private void LogEvent(string message)
     {

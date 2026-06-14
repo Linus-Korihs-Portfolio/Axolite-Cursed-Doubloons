@@ -5,13 +5,16 @@ public class Enemy3AnimationEvents : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
 
-    // -------------------------
-    // Hidden / WakeUp / First Attack
-    // -------------------------
+    // WakeUp / First Attack
 
     public void OnWakeUpStarted()
     {
         LogEvent("WakeUp started");
+    }
+
+    public void OnWakeUp()
+    {
+        LogEvent("WakeUp event reached");
     }
 
     public void OnFirstAttackBite()
@@ -19,14 +22,17 @@ public class Enemy3AnimationEvents : MonoBehaviour
         LogEvent("FirstAttack bite / snap frame reached");
     }
 
+    public void OnFirstAttackHit()
+    {
+        LogEvent("FirstAttack hit frame reached");
+    }
+
     public void OnFirstAttackEnd()
     {
         LogEvent("FirstAttack ended");
     }
 
-    // -------------------------
     // Fly Up
-    // -------------------------
 
     public void OnFlyUpStart()
     {
@@ -38,9 +44,7 @@ public class Enemy3AnimationEvents : MonoBehaviour
         LogEvent("FlyUp ended");
     }
 
-    // -------------------------
     // Walk / Base
-    // -------------------------
 
     public void OnWalkBaseLoop()
     {
@@ -52,9 +56,7 @@ public class Enemy3AnimationEvents : MonoBehaviour
         LogEvent("Footstep");
     }
 
-    // -------------------------
     // Second Attack
-    // -------------------------
 
     public void OnSecondAttackStart()
     {
@@ -71,9 +73,7 @@ public class Enemy3AnimationEvents : MonoBehaviour
         LogEvent("SecondAttack ended");
     }
 
-    // -------------------------
     // Hover
-    // -------------------------
 
     public void OnHoverStart()
     {
@@ -90,9 +90,7 @@ public class Enemy3AnimationEvents : MonoBehaviour
         LogEvent("Hover ended");
     }
 
-    // -------------------------
     // Grab Attack
-    // -------------------------
 
     public void OnGrabAttackStart()
     {
@@ -102,6 +100,11 @@ public class Enemy3AnimationEvents : MonoBehaviour
     public void OnGrabAttackGrab()
     {
         LogEvent("GrabAttack grab frame reached");
+    }
+
+    public void OnGrabAttackHit()
+    {
+        LogEvent("GrabAttack hit frame reached");
     }
 
     public void OnGrabAttackLift()
@@ -114,9 +117,7 @@ public class Enemy3AnimationEvents : MonoBehaviour
         LogEvent("GrabAttack ended");
     }
 
-    // -------------------------
-    // Fly Down / Low HP Escape
-    // -------------------------
+    // Fly Down
 
     public void OnFlyDownStart()
     {
@@ -133,9 +134,7 @@ public class Enemy3AnimationEvents : MonoBehaviour
         LogEvent("FlyDown ended");
     }
 
-    // -------------------------
     // Digging
-    // -------------------------
 
     public void OnDigDownStart()
     {
@@ -157,9 +156,7 @@ public class Enemy3AnimationEvents : MonoBehaviour
         LogEvent("DiggingAndDown finished");
     }
 
-    // -------------------------
-    // Death
-    // -------------------------
+    // Death Events
 
     public void OnDeathFlyingStart()
     {
@@ -181,9 +178,27 @@ public class Enemy3AnimationEvents : MonoBehaviour
         LogEvent("DeathWhileDigging finished");
     }
 
-    // -------------------------
-    // Helper
-    // -------------------------
+    public void OnDeathHit()
+    {
+        LogEvent("Death hit frame reached");
+    }
+
+    public void OnDeathFinished()
+    {
+        LogEvent("Death animation finished");
+    }
+
+    // Aliases for current Animation Event names
+
+    public void OnDiggingDeathFinished()
+    {
+        LogEvent("Digging death animation finished");
+    }
+
+    public void OnFlyingDeathFinished()
+    {
+        LogEvent("Flying death animation finished");
+    }
 
     private void LogEvent(string message)
     {

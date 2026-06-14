@@ -15,16 +15,28 @@ public class Enemy2AnimatorAutoTester : MonoBehaviour
     [Header("Which Animations Should Be Tested?")]
     [SerializeField] private bool testIdle = true;
     [SerializeField] private bool testWalk = true;
-    [SerializeField] private bool testProjectileAttack = true;
-    [SerializeField] private bool testSpinAttack = true;
+    [SerializeField] private bool testProjectileAttackWithoutTurn = true;
+    [SerializeField] private bool testProjectileAttackWithTurn = true;
+    [SerializeField] private bool testProjectileAttackWithTurnAndRepeatShot = false;
+    [SerializeField] private bool testSpinAttackNormal = true;
+    [SerializeField] private bool testSpinAttackLong = true;
     [SerializeField] private bool testIdleBreak = true;
     [SerializeField] private bool testDeath = true;
 
     [Header("Timing")]
     [SerializeField] private float idleWait = 1.5f;
     [SerializeField] private float walkDuration = 2.0f;
-    [SerializeField] private float projectileAttackWait = 3.0f;
-    [SerializeField] private float spinAttackWait = 4.0f;
+    [SerializeField] private float projectileAttackWithoutTurnWait = 2.5f;
+    [SerializeField] private float projectileAttackWithTurnWait = 3.2f;
+    [SerializeField] private float projectileAttackRepeatWait = 4.0f;
+    [SerializeField] private float spinAttackNormalWait = 4.0f;
+
+    [Tooltip("Wie lange SpinAttack_2_4 länger laufen soll, bevor ContinueSpinning auf false gesetzt wird.")]
+    [SerializeField] private float longSpinHoldTime = 3.0f;
+
+    [Tooltip("Wartezeit nach dem Stoppen des langen Spins, damit SpinAttack_3_4 und 4_4 fertig ablaufen.")]
+    [SerializeField] private float spinAttackFinishWait = 2.0f;
+
     [SerializeField] private float idleBreakWait = 1.5f;
     [SerializeField] private float deathWait = 2.0f;
     [SerializeField] private float delayBetweenLoops = 1.0f;
@@ -101,18 +113,48 @@ public class Enemy2AnimatorAutoTester : MonoBehaviour
                 yield return new WaitForSeconds(idleWait);
             }
 
-            if (testProjectileAttack)
+            if (testProjectileAttackWithoutTurn)
             {
-                Debug.Log("ENEMY 2 AUTO TEST: ProjectileAttack");
-                enemyAnimator.PlayProjectileAttack();
-                yield return new WaitForSeconds(projectileAttackWait);
+                Debug.Log("ENEMY 2 AUTO TEST: ProjectileAttack WITHOUT turn/walk");
+                enemyAnimator.PlayProjectileAttack(false, false);
+                yield return new WaitForSeconds(projectileAttackWithoutTurnWait);
             }
 
-            if (testSpinAttack)
+            if (testProjectileAttackWithTurn)
             {
-                Debug.Log("ENEMY 2 AUTO TEST: SpinAttack");
-                enemyAnimator.PlaySpinAttack();
-                yield return new WaitForSeconds(spinAttackWait);
+                Debug.Log("ENEMY 2 AUTO TEST: ProjectileAttack WITH turn/walk");
+                enemyAnimator.PlayProjectileAttack(true, false);
+                yield return new WaitForSeconds(projectileAttackWithTurnWait);
+            }
+
+            if (testProjectileAttackWithTurnAndRepeatShot)
+            {
+                Debug.Log("ENEMY 2 AUTO TEST: ProjectileAttack WITH turn/walk AND repeat shot");
+                enemyAnimator.PlayProjectileAttack(true, true);
+                yield return new WaitForSeconds(projectileAttackRepeatWait);
+
+                enemyAnimator.SetContinueShooting(false);
+                yield return new WaitForSeconds(1.0f);
+            }
+
+            if (testSpinAttackNormal)
+            {
+                Debug.Log("ENEMY 2 AUTO TEST: SpinAttack normal");
+                enemyAnimator.PlaySpinAttack(false);
+                yield return new WaitForSeconds(spinAttackNormalWait);
+            }
+
+            if (testSpinAttackLong)
+            {
+                Debug.Log("ENEMY 2 AUTO TEST: SpinAttack LONG / ContinueSpinning true");
+                enemyAnimator.PlaySpinAttack(true);
+
+                yield return new WaitForSeconds(longSpinHoldTime);
+
+                Debug.Log("ENEMY 2 AUTO TEST: Stop ContinueSpinning");
+                enemyAnimator.StopSpinning();
+
+                yield return new WaitForSeconds(spinAttackFinishWait);
             }
 
             if (testIdleBreak)
