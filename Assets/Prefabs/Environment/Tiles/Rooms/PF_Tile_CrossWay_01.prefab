@@ -885,12 +885,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2550463727306718371, guid: c3ec7291773cdb74ab1d93c5209e3ede, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2572430882777506051}
-    - targetCorrespondingSourceObject: {fileID: 2550463727306718371, guid: c3ec7291773cdb74ab1d93c5209e3ede, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6374852916468259952}
-    - targetCorrespondingSourceObject: {fileID: 2550463727306718371, guid: c3ec7291773cdb74ab1d93c5209e3ede, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1750334556679088624}
   m_SourcePrefab: {fileID: 100100000, guid: c3ec7291773cdb74ab1d93c5209e3ede, type: 3}
 --- !u!1 &80468201986220177 stripped
 GameObject:
@@ -919,59 +913,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -629719859055844128, guid: c3ec7291773cdb74ab1d93c5209e3ede, type: 3}
---- !u!65 &6374852916468259952
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 80468201986220177}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 24.999996, y: 0.6148439, z: 24.999996}
-  m_Center: {x: -0.0000014305115, y: 0.307421, z: -0.0000014305115}
---- !u!114 &1750334556679088624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 80468201986220177}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
-  m_SerializedVersion: 0
-  m_AgentTypeID: 0
-  m_CollectObjects: 2
-  m_Size: {x: 10, y: 10, z: 10}
-  m_Center: {x: 0, y: 2, z: 0}
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_UseGeometry: 0
-  m_DefaultArea: 0
-  m_GenerateLinks: 1
-  m_IgnoreNavMeshAgent: 1
-  m_IgnoreNavMeshObstacle: 1
-  m_OverrideTileSize: 0
-  m_TileSize: 256
-  m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
-  m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 5ce681fd81753724da36ecb05e7bed9d, type: 2}
-  m_BuildHeightMesh: 0
 --- !u!1 &693384635027256186 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6059709852727660728, guid: c3ec7291773cdb74ab1d93c5209e3ede, type: 3}
