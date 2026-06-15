@@ -16,7 +16,7 @@ public class PlayerMinionCommander : MonoBehaviour
     private struct FormationSlot
     {
         public MinionCore Minion;
-        public Vector2 LocalXZ;           // x = right-axis offset, y = forward-axis offset, relative to player
+        public Vector2 LocalXZ; // x = right-axis offset, y = forward-axis offset, relative to player
         public Vector3 LastIssuedWorldPos;
     }
 
@@ -24,6 +24,7 @@ public class PlayerMinionCommander : MonoBehaviour
     [SerializeField] private PlayerMinionCommanderSettings settings;
     [SerializeField] private GroundCursor cursor;
     [SerializeField] private Transform player;
+    [SerializeField] private Transform playerMesh;
 
     [Header("Input")]
     [SerializeField] private InputActionReference commandAction;
@@ -59,11 +60,12 @@ public class PlayerMinionCommander : MonoBehaviour
     private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
     private static readonly int ColorId = Shader.PropertyToID("_Color");
     private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
-
     private void Log(string msg) { if (enableLogs) Debug.Log(msg); }
 
     private void Awake()
     {
+        ResolveInputActions();
+
         if (cursor == null) cursor = GetComponentInChildren<GroundCursor>();
         if (player == null) player = transform;
         // Resolve PlayerAim for formation facing. Search the player hierarchy first, then the scene.
@@ -82,6 +84,15 @@ public class PlayerMinionCommander : MonoBehaviour
         }
 
         previewPropertyBlock = new MaterialPropertyBlock();
+    }
+
+    private void ResolveInputActions()
+    {
+        PlayerInput playerInput = GetComponentInParent<PlayerInput>();
+
+        commandAction = PlayerInputActionResolver.Resolve(commandAction, playerInput, "Player", "MinionCommand", this);
+        callAction = PlayerInputActionResolver.Resolve(callAction, playerInput, "Player", "MinionCall", this);
+        dismissAction = PlayerInputActionResolver.Resolve(dismissAction, playerInput, "Player", "MinionDismiss", this);
     }
 
     // Exposed for editor display only.
@@ -335,6 +346,11 @@ public class PlayerMinionCommander : MonoBehaviour
         }
 
         Log($"[MinionCommander] Call wave fired — {count} minion(s) recalled (range: {settings.callRange}m).");
+        if (count > 0)
+        {
+            PlayCallDismissPulse(settings.callPulseColor);
+        }
+
         activeFormationSlots.Clear();
     }
 
@@ -389,8 +405,27 @@ public class PlayerMinionCommander : MonoBehaviour
         SendGroupToFormation(rangedGroup,  rangedCentre,  forward, right,  0f);
         SendGroupToFormation(supportGroup, supportCentre, forward, right, +gs);
 
+        PlayCallDismissPulse(settings.dismissPulseColor);
+
         Log($"[MinionCommander] Dismiss: {totalCount} minion(s) sent to formation " +
             $"(Melee: {meleeGroup.Count}, Ranged: {rangedGroup.Count}, Support: {supportGroup.Count}).");
+    }
+
+    private void PlayCallDismissPulse(Color color)
+    {
+        if (settings == null || !settings.enableCallDismissPulse) return;
+        if (playerMesh == null) return;
+
+        float endRadius = settings.pulseEndRadius > 0f ? settings.pulseEndRadius : settings.callRange;
+        CommandPulseEffect.Spawn(
+            playerMesh,
+            color,
+            settings.pulseStartRadius,
+            endRadius,
+            settings.pulseDuration,
+            settings.pulseRingWidth,
+            settings.pulseGroundOffset,
+            settings.pulseLightIntensity);
     }
 
     // Distributes a group of minions to staggered positions around a centre point and records their local slots.
@@ -840,5 +875,177 @@ public class PlayerMinionCommander : MonoBehaviour
     private static bool IsValidTarget(Transform target)
     {
         return target != null && target.gameObject.activeInHierarchy;
+    }
+
+    private sealed class CommandPulseEffect : MonoBehaviour
+    {
+        private const int CircleSegments = 96;
+
+        private Transform followTarget;
+        private MeshFilter meshFilter;
+        private MeshRenderer meshRenderer;
+        private Mesh mesh;
+        private Material material;
+        private Light pulseLight;
+        private Color color;
+        private float startRadius;
+        private float endRadius;
+        private float duration;
+        private float ringWidth;
+        private float groundOffset;
+        private float lightIntensity;
+        private float startTime;
+
+        public static void Spawn(
+            Transform followTarget,
+            Color color,
+            float startRadius,
+            float endRadius,
+            float duration,
+            float ringWidth,
+            float groundOffset,
+            float lightIntensity)
+        {
+            GameObject effectObject = new GameObject("Minion Command Pulse");
+            effectObject.transform.position = followTarget != null ? followTarget.position : Vector3.zero;
+
+            CommandPulseEffect effect = effectObject.AddComponent<CommandPulseEffect>();
+            effect.Initialize(followTarget, color, startRadius, endRadius, duration, ringWidth, groundOffset, lightIntensity);
+        }
+
+        private void Initialize(
+            Transform target,
+            Color pulseColor,
+            float initialRadius,
+            float finalRadius,
+            float lifetime,
+            float width,
+            float yOffset,
+            float pointLightIntensity)
+        {
+            followTarget = target;
+            color = pulseColor;
+            startRadius = Mathf.Max(0.01f, initialRadius);
+            endRadius = Mathf.Max(startRadius, finalRadius);
+            duration = Mathf.Max(0.05f, lifetime);
+            ringWidth = Mathf.Max(0.01f, width);
+            groundOffset = yOffset;
+            lightIntensity = Mathf.Max(0f, pointLightIntensity);
+            startTime = Time.time;
+
+            meshFilter = gameObject.AddComponent<MeshFilter>();
+            meshRenderer = gameObject.AddComponent<MeshRenderer>();
+            meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            meshRenderer.receiveShadows = false;
+            mesh = new Mesh { name = "Minion Command Pulse Ring" };
+            meshFilter.sharedMesh = mesh;
+
+            Shader shader = Shader.Find("Sprites/Default");
+            if (shader != null)
+            {
+                material = new Material(shader);
+                meshRenderer.sharedMaterial = material;
+            }
+
+            pulseLight = gameObject.AddComponent<Light>();
+            pulseLight.type = LightType.Point;
+            pulseLight.color = color;
+            pulseLight.intensity = lightIntensity;
+            pulseLight.range = Mathf.Max(endRadius * 0.55f, 1f);
+
+            UpdateVisual(0f);
+        }
+
+        private void Update()
+        {
+            float t = Mathf.Clamp01((Time.time - startTime) / duration);
+            UpdateVisual(t);
+
+            if (t >= 1f)
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (material != null)
+            {
+                Destroy(material);
+            }
+
+            if (mesh != null)
+            {
+                Destroy(mesh);
+            }
+        }
+
+        private void UpdateVisual(float t)
+        {
+            if (followTarget != null)
+            {
+                transform.position = followTarget.position;
+            }
+
+            float eased = 1f - Mathf.Pow(1f - t, 3f);
+            float radius = Mathf.Lerp(startRadius, endRadius, eased);
+            float alpha = color.a * (1f - t);
+            Color currentColor = new Color(color.r, color.g, color.b, alpha);
+
+            if (material != null)
+            {
+                material.color = currentColor;
+            }
+
+            if (mesh != null)
+            {
+                BuildFlatRingMesh(radius, Mathf.Lerp(ringWidth, ringWidth * 0.25f, t));
+            }
+
+            if (pulseLight != null)
+            {
+                pulseLight.transform.position = transform.position + Vector3.up * 1.2f;
+                pulseLight.intensity = lightIntensity * (1f - t);
+            }
+        }
+
+        private void BuildFlatRingMesh(float radius, float width)
+        {
+            int vertexCount = CircleSegments * 2;
+            int triangleIndexCount = CircleSegments * 6;
+            Vector3[] vertices = new Vector3[vertexCount];
+            Color[] colors = new Color[vertexCount];
+            int[] triangles = new int[triangleIndexCount];
+
+            float outerRadius = Mathf.Max(0.01f, radius);
+            float innerRadius = Mathf.Max(0.01f, outerRadius - Mathf.Max(0.01f, width));
+            Vector3 yOffset = Vector3.up * groundOffset;
+
+            for (int i = 0; i < CircleSegments; i++)
+            {
+                float angle = (i / (float)CircleSegments) * Mathf.PI * 2f;
+                Vector3 direction = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+                int vertexIndex = i * 2;
+                vertices[vertexIndex] = yOffset + direction * innerRadius;
+                vertices[vertexIndex + 1] = yOffset + direction * outerRadius;
+                colors[vertexIndex] = color;
+                colors[vertexIndex + 1] = color;
+
+                int nextVertexIndex = ((i + 1) % CircleSegments) * 2;
+                int triangleIndex = i * 6;
+                triangles[triangleIndex] = vertexIndex;
+                triangles[triangleIndex + 1] = nextVertexIndex;
+                triangles[triangleIndex + 2] = vertexIndex + 1;
+                triangles[triangleIndex + 3] = vertexIndex + 1;
+                triangles[triangleIndex + 4] = nextVertexIndex;
+                triangles[triangleIndex + 5] = nextVertexIndex + 1;
+            }
+
+            mesh.Clear();
+            mesh.vertices = vertices;
+            mesh.colors = colors;
+            mesh.triangles = triangles;
+            mesh.RecalculateBounds();
+        }
     }
 }

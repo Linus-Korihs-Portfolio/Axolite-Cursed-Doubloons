@@ -68,6 +68,22 @@ public class CameraCM : MonoBehaviour
 
     private void Log(string msg) { if (enableLogs) Debug.Log(msg); }
 
+    private void Awake()
+    {
+        ResolveInputActions();
+    }
+
+    private void ResolveInputActions()
+    {
+        PlayerInput playerInput = GetComponentInParent<PlayerInput>();
+        if (playerInput == null) playerInput = FindFirstObjectByType<PlayerInput>();
+
+        toggleAction = PlayerInputActionResolver.Resolve(toggleAction, playerInput, "Camera", "Toggle", this);
+        zoomAction = PlayerInputActionResolver.Resolve(zoomAction, playerInput, "Camera", "Zoom", this);
+        lookAction = PlayerInputActionResolver.Resolve(lookAction, playerInput, "Camera", "Look", this);
+        lockOnAction = PlayerInputActionResolver.Resolve(lockOnAction, playerInput, "Camera", "LockOn", this);
+    }
+
     private void OnEnable()
     {
         if (toggleAction) toggleAction.action.Enable();

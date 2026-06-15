@@ -39,6 +39,7 @@ MonoBehaviour:
   LungeWindupDuration: 0.4
   LungeRecoveryDuration: 1.2
   LungeCooldown: 4
+  LungeStopOnHit: 1
   UseNavMesh: 1
   NavRepathInterval: 0.3
   NavTargetSampleRadius: 1

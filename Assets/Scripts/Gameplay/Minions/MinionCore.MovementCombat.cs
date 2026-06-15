@@ -316,9 +316,11 @@ public partial class MinionCore
     {
         if (!useLocalSeparation) return;
 
-        // During active pursuit (Approach) and post-attack recovery (Recover), separation must not interfere with the minions movement toward the target.
+        // During post-attack recovery (Recover) the minion is briefly stationary — skip separation.
+        // Approach is intentionally NOT skipped: the anti-movement stripping below keeps the forward
+        // direction intact while still allowing minions to slide sideways past each other.
         CombatPhase phase = combatPhaseController.CurrentPhase;
-        if (phase == CombatPhase.Approach || phase == CombatPhase.Recover) return;
+        if (phase == CombatPhase.Recover) return;
 
         float radius = Mathf.Max(0.05f, separationRadius);
         int hitCount = Physics.OverlapSphereNonAlloc(

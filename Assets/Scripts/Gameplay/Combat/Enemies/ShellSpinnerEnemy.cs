@@ -1,70 +1,125 @@
 using UnityEngine;
-using UnityEngine.AI;
 
-/// <summary>
-/// Enemy 2 — Shell Spinner (Wind Waker Armos-like).
-///
-/// Behaviour:
-///   • Idle / Approach: walks toward the detected target normally.
-///   • Trigger conditions (either starts a Retract → Spin cycle):
-///       1. Enemy spots a player or minion within detection range.
-///       2. Enemy takes damage from a target it cannot currently see
-///          (attacked from behind / out of sight).
-///   • Retract: enemy pulls into its shell (wind-up, RetractDuration seconds).
-///   • Spinning: charges at high speed in the locked direction dealing contact
-///               damage every SpinDamageInterval seconds.
-///   • Crash (wall hit OR max distance reached): enemy pops out of shell, lies
-///     Dazed on the ground (fully vulnerable) for DazedDuration seconds.
-///   • After Dazed: returns to Idle and repeats.
-/// </summary>
+/* <Summary / Notes>
+     Enemy 2 — Shell Spinner (Koopa / Armos-like).
+
+     Full behaviour loop:
+     1. IDLE — asleep; standing still until a player or minion enters LOS or the spinner takes damage.
+
+     2. WINDUP — target locked; live aim line is shown while the shell closes.
+         → SPINNING when the windup timer ends.
+
+     3. SPINNING — shell closed; moving in a straight line toward the locked direction.
+         Any player, minion, or wall contact ends the spin.
+         → HIT on impact or max range.
+
+     4. HIT — brief impact pause while still inside the shell.
+         → EXITING SHELL after the pause.
+
+     5. EXITING SHELL — shell opens and collisions are restored.
+         → DIZZY after the exit animation.
+
+     6. DIZZY — vulnerable recovery pause.
+         → WAKING UP after the dizzy timer ends.
+
+     7. WAKING UP — shaking off the reset state.
+         → Choose between shooting projectiles (random between fast or slow) or spinning if a target is still available, otherwise IDLE.
+         Can maximum do the same action twice
+
+     Hitbox setup:
+     bodyObject  — full body collider, active while vulnerable.
+     shellObject — shell collider, active while spinning.
+*/
 [RequireComponent(typeof(CombatantStats))]
 public class ShellSpinnerEnemy : MonoBehaviour
 {
-    private enum SpinnerState { Idle, Approach, Retract, Spinning, Dazed }
+    private enum SpinnerState
+    {
+          Idle,        // asleep or waiting for target
+          Windup,      // live aim line while shell closes
+          Spinning,    // moving in a locked straight line
+          Hit,         // brief impact pause inside shell
+          ExitingShell, // shell opens and collisions restore
+          Dizzy,       // vulnerable recovery pause
+          DizzyProj,    // variant: dizzy but fires projectiles at player
+          WakingUp,    // reset animation before next action
+          RangedWindup, // tucks in, holds position, tracks target
+          RangedAttack  // fires projectiles while tracking target
+    }
+
+    private enum SpinnerAttackType
+    {
+        Spin,
+        Ranged
+    }
+
+    private enum ProjectileVariant
+    {
+        Fast,
+        Heavy
+    }
 
     [SerializeField] private ShellSpinnerEnemySettings settings;
+
+    [Tooltip("Assign the player's actual moving transform. " + "Required when the player prefab root is a static anchor above the moving body.")]
+    [SerializeField] private Transform playerTransform;
+
+    [Header("Hitboxes")]
+    [Tooltip("Child GameObject containing the full-body collider (head + legs). Active when the spinner is vulnerable.")]
+    [SerializeField] private GameObject bodyObject;
+    [Tooltip("Child GameObject containing the shell-only collider. Active while the spinner is inside the shell (invincible). " + "This is the collider that physically contacts players/walls during the spin.")]
+    [SerializeField] private GameObject shellObject;
+
+    [Header("Targeting Line")]
+    [Tooltip("LineRenderer used to draw a live aim line toward the target during the windup. " + "Assign a child LineRenderer (2 positions, world space). Leave empty to skip.")]
+    [SerializeField] private LineRenderer targetingLine;
+
+    [Header("Ranged Attack")]
+    [Tooltip("Optional child transform projectiles spawn from. If empty, the settings ProjectileSpawnOffset is used.")]
+    [SerializeField] private Transform projectileSpawnPoint;
 
     [Header("Debug")]
     [SerializeField] private bool enableLogs;
 
-    // ── Core references ────────────────────────────────────────────────────────
     private CombatantStats stats;
-    private Rigidbody       rb;
+    private Rigidbody rb;
 
-    // ── Target tracking ────────────────────────────────────────────────────────
     private Transform currentTarget;
 
-    // ── State machine ──────────────────────────────────────────────────────────
     [Header("Runtime (Read Only)")]
     [SerializeField] private SpinnerState currentState = SpinnerState.Idle;
-    private float        stateTimer;
+    private float stateTimer;
 
-    // ── Spin data ──────────────────────────────────────────────────────────────
-    private Vector3 spinDirection;
-    private Vector3 spinStartPos;
-    private bool    hitWallDuringSpin;
-    private float   lastSpinDamageTime;
+    private bool isAsleep = true;
 
-    // ── Physics (horizontal velocity set in Update, applied in FixedUpdate) ────
+    private Vector3 spinDirection; // locked when the shell closes; never updated mid-spin
+    private Vector3 spinStartPosition; // recorded when Spinning begins; used for MaxSpinRange
+    private bool spinHitSomething; // set by OnCollisionEnter, consumed in ExecuteState
+
+    private readonly System.Collections.Generic.HashSet<int> spinHitIds = new System.Collections.Generic.HashSet<int>();
+
+    private float spinStartTime = -999f; // used for the collision grace period
+
+    private Collider shellCollider;
+    private readonly System.Collections.Generic.List<Collider> ignoredColliders = new System.Collections.Generic.List<Collider>();
+
     private Vector3 frameVelocity;
-
-    // ── NavMesh ────────────────────────────────────────────────────────────────
-    private NavMeshPath navPath;
-    private int         navCornerIndex;
-    private bool        hasNavPath;
-    private float       nextNavRepathTime;
-    private Vector3     navLastDestination;
 
     private static readonly Collider[] overlapBuffer = new Collider[32];
 
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Unity lifecycle
-    // ──────────────────────────────────────────────────────────────────────────
+    private bool hasCompletedFirstAttack;
+    private SpinnerAttackType lastAttackType = SpinnerAttackType.Spin;
+    private int sameAttackRepeatCount;
+
+    private ProjectileVariant currentProjectileVariant;
+    private int projectilesRemaining;
+    private float nextProjectileTime;
+    private bool rangedRecoveryStarted;
 
     private void Awake()
     {
-        stats              = GetComponent<CombatantStats>();
-        stats.Died        += OnDied;
+        stats = GetComponent<CombatantStats>();
+        stats.Died += OnDied;
         stats.DamageTaken += OnDamageTaken;
 
         rb = GetComponent<Rigidbody>();
@@ -72,16 +127,19 @@ public class ShellSpinnerEnemy : MonoBehaviour
         {
             rb.isKinematic = false;
             rb.constraints = RigidbodyConstraints.FreezeRotation;
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
         }
 
-        if (settings != null && settings.IgnoreCollisionMask != 0)
+        SetHitboxState(inShell: false);
+
+        shellCollider = shellObject != null ? shellObject.GetComponent<Collider>() : null;
+
+        if (targetingLine != null)
         {
-            int myLayer = gameObject.layer;
-            for (int i = 0; i < 32; i++)
-            {
-                if ((settings.IgnoreCollisionMask.value & (1 << i)) != 0)
-                    Physics.IgnoreLayerCollision(myLayer, i, true);
-            }
+            targetingLine.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            targetingLine.receiveShadows = false;
+            targetingLine.positionCount = 2;
+            targetingLine.enabled = false;
         }
     }
 
@@ -89,7 +147,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
     {
         if (stats != null)
         {
-            stats.Died        -= OnDied;
+            stats.Died -= OnDied;
             stats.DamageTaken -= OnDamageTaken;
         }
     }
@@ -104,6 +162,28 @@ public class ShellSpinnerEnemy : MonoBehaviour
         ExecuteState();
     }
 
+    // Updates the targeting line after transform and physics motion settles.
+    private void LateUpdate()
+    {
+        if (currentState != SpinnerState.Windup || targetingLine == null || !targetingLine.enabled) return;
+        if (currentTarget == null) return;
+        targetingLine.SetPosition(0, SnapToGround(transform.position));
+        targetingLine.SetPosition(1, SnapToGround(currentTarget.position));
+    }
+
+    // Projects a world-space point down onto the ground surface.
+    private Vector3 SnapToGround(Vector3 worldPos)
+    {
+        const float offset = 0.05f; // hover just above the surface to avoid z-fighting
+        const float rayHeight = 6f;
+        if (settings != null && settings.GroundMask != 0)
+        {
+            Vector3 origin = worldPos + Vector3.up * rayHeight;
+            if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, rayHeight + 2f, settings.GroundMask, QueryTriggerInteraction.Ignore)) return hit.point + Vector3.up * offset;
+        }
+        return new Vector3(worldPos.x, transform.position.y + offset, worldPos.z);
+    }
+
     private void FixedUpdate()
     {
         if (rb == null || stats == null || stats.IsDead) return;
@@ -112,150 +192,205 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (currentState == SpinnerState.Spinning && settings != null)
+        if (currentState != SpinnerState.Spinning) return;
+
+        Transform root = collision.transform.root;
+        bool isPlayer = root.CompareTag(settings.PlayerTag);
+        bool isMinion = collision.transform.CompareTag(settings.MinionTag);
+
+        // Ignore floor / ceiling: only horizontal contacts (wall normals) matter.
+        bool hasHorizontalContact = false;
+        for (int i = 0; i < collision.contactCount; i++)
         {
-            if ((settings.WallMask.value & (1 << collision.gameObject.layer)) != 0)
-                hitWallDuringSpin = true;
+            if (Mathf.Abs(collision.GetContact(i).normal.y) <= 0.5f)
+            {
+                hasHorizontalContact = true;
+                break;
+            }
+        }
+        if (!hasHorizontalContact) return;
+
+        // Grace period only applies to wall collisions, NOT to players/minions.
+        if (!isPlayer && !isMinion)
+        {
+            float grace = settings != null ? settings.SpinCollisionGrace : 0.12f;
+            if (Time.time < spinStartTime + grace) return;
+        }
+
+        if (isPlayer || isMinion)
+        {
+            // SpinUntilWall: physically pass through this target so the shell isn't stopped
+            if (settings != null && settings.SpinUntilWall && shellCollider != null
+                && !ignoredColliders.Contains(collision.collider))
+            {
+                Physics.IgnoreCollision(shellCollider, collision.collider, true);
+                ignoredColliders.Add(collision.collider);
+            }
+
+            // Deal damage to the hit target (once per spin per target).
+            Transform statsRoot = (isPlayer && playerTransform != null) ? playerTransform : collision.transform;
+            CombatantStats ts = GetStats(statsRoot);
+            if (ts != null)
+            {
+                int id = ts.GetInstanceID();
+                if (!spinHitIds.Contains(id) && !ts.IsDead)
+                {
+                    spinHitIds.Add(id);
+                    ts.ApplyDamage(settings != null ? settings.SpinDamage : 18f);
+                    // For the player, apply knockback to playerTransform 
+                    Transform knockbackTarget = (isPlayer && playerTransform != null) ? playerTransform : ts.transform;
+                    ApplyKnockback(knockbackTarget);
+                    Log($"Spin hit {ts.name} for {settings.SpinDamage}");
+                }
+            }
+            // SpinUntilWall lets the shell pass through targets.
+            if (settings == null || !settings.SpinUntilWall) spinHitSomething = true;
+        }
+        else
+        {
+            spinHitSomething = true;
         }
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Damage-taken reaction
-    // ──────────────────────────────────────────────────────────────────────────
+    private static CombatantStats GetStats(Transform t)
+    {
+        if (t == null) return null;
+        return t.GetComponent<CombatantStats>() ?? t.GetComponentInParent<CombatantStats>() ?? t.GetComponentInChildren<CombatantStats>();
+    }
 
     private void OnDamageTaken(float _)
     {
-        // If hit while calm and the attacker is not in sight → retract and spin.
-        if (currentState == SpinnerState.Idle || currentState == SpinnerState.Approach)
-        {
-            if (currentTarget == null || !HasLineOfSight(currentTarget))
-            {
-                Log("Damaged from blind spot — retracting into shell!");
-                BeginRetract();
-            }
-        }
+        isAsleep = false;
     }
-
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Target tracking
-    // ──────────────────────────────────────────────────────────────────────────
 
     private void RefreshTarget()
     {
-        float forgetRadius = settings != null ? settings.ForgetRadius : 16f;
+        float forgetRadius = settings != null ? settings.ForgetRadius : 18f;
 
         if (currentTarget != null)
         {
-            CombatantStats ts = currentTarget.GetComponentInParent<CombatantStats>();
+            CombatantStats ts = GetStats(currentTarget);
             bool dead = ts != null && ts.IsDead;
-            bool far  = HorizontalDistance(currentTarget.position) > forgetRadius;
+            bool far = HorizontalDistance(currentTarget.position) > forgetRadius;
 
-            if (dead || far || !currentTarget.gameObject.activeInHierarchy)
-            {
-                Log($"Target lost: {currentTarget.name}");
-                currentTarget = null;
-                ResetNavPath();
-            }
+            if (dead || far || !currentTarget.gameObject.activeInHierarchy) currentTarget = null;
         }
 
         if (currentTarget != null) return;
 
-        bool hadTarget = false; // We only reach here when currentTarget is null.
-        Transform found = FindBestTarget();
-
-        // Newly spotted target while calm → retract and spin.
-        if (found != null && !hadTarget &&
-            (currentState == SpinnerState.Idle || currentState == SpinnerState.Approach))
+        if (isAsleep)
         {
-            currentTarget = found;
-            Log($"Target spotted: {found.name} — retracting into shell!");
-            BeginRetract();
+            Transform player = FindPlayerInSight();
+            if (player != null)
+            {
+                isAsleep = false;
+                currentTarget = player;
+                Log($"Player spotted — waking: {player.name}");
+            }
             return;
         }
 
-        if (found != null && currentTarget == null)
+        Transform found = FindBestTarget();
+        if (found != null)
+        {
+            currentTarget = found;
             Log($"Target acquired: {found.name}");
-
-        currentTarget = found;
+        }
+        else
+        {
+            isAsleep = true;
+            Log("No targets in range — returning to sleep");
+        }
     }
 
-    private Transform FindBestTarget()
+    // Finds the player if it is visible from the spinner.
+    private Transform FindPlayerInSight()
     {
         if (settings == null) return null;
 
-        int count = Physics.OverlapSphereNonAlloc(
-            transform.position, settings.DetectRadius, overlapBuffer, settings.DetectMask, QueryTriggerInteraction.Ignore);
-
-        Transform best   = null;
-        float     bestSq = float.PositiveInfinity;
+        int count = Physics.OverlapSphereNonAlloc(transform.position, settings.DetectRadius, overlapBuffer, settings.DetectMask, QueryTriggerInteraction.Ignore);
 
         for (int i = 0; i < count; i++)
         {
             Collider col = overlapBuffer[i];
             if (col == null) continue;
-
-            Transform t = col.transform;
-            if (!t.gameObject.activeInHierarchy) continue;
-
-            CombatantStats cs = t.GetComponentInParent<CombatantStats>();
+            Transform root = col.transform.root;
+            if (!root.gameObject.activeInHierarchy) continue;
+            if (!root.CompareTag(settings.PlayerTag)) continue;
+            CombatantStats cs = GetStats(col.transform);
             if (cs != null && cs.IsDead) continue;
+            if (!HasLineOfSight(col.transform)) continue;
 
-            bool isPlayer = t.CompareTag(settings.PlayerTag);
-            bool isMinion = t.CompareTag(settings.MinionTag);
+            return playerTransform != null ? playerTransform : root;
+        }
+        return null;
+    }
+
+    // Finds the closest valid target in range.
+    private Transform FindBestTarget()
+    {
+        if (settings == null) return null;
+
+        int count = Physics.OverlapSphereNonAlloc(transform.position, settings.DetectRadius, overlapBuffer, settings.DetectMask, QueryTriggerInteraction.Ignore);
+
+        Transform best = null;
+        float bestSq = float.PositiveInfinity;
+
+        for (int i = 0; i < count; i++)
+        {
+            Collider col = overlapBuffer[i];
+            if (col == null) continue;
+            Transform root = col.transform.root;
+            bool isPlayer = root.CompareTag(settings.PlayerTag);
+            bool isMinion = col.transform.CompareTag(settings.MinionTag);
             if (!isPlayer && !isMinion) continue;
+            if (!root.gameObject.activeInHierarchy) continue;
+            CombatantStats cs = GetStats(col.transform);
+            if (cs != null && cs.IsDead) continue;
+            if (settings.RequireLOSToDetect && !HasLineOfSight(col.transform)) continue;
 
-            if (settings.RequireLOSToDetect && !HasLineOfSight(t)) continue;
-
-            float sq = (t.position - transform.position).sqrMagnitude;
-            if (sq < bestSq) { bestSq = sq; best = t; }
+            Transform t = (isPlayer && playerTransform != null) ? playerTransform : col.transform;
+            float sq = (transform.position - t.position).sqrMagnitude;
+            if (sq < bestSq) { best = t; bestSq = sq; }
         }
 
         return best;
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    //  State machine
-    // ──────────────────────────────────────────────────────────────────────────
-
     private void UpdateState()
     {
-        // These states self-terminate.
-        if (currentState == SpinnerState.Retract ||
-            currentState == SpinnerState.Spinning ||
-            currentState == SpinnerState.Dazed) return;
+        if (currentState == SpinnerState.Windup || currentState == SpinnerState.Spinning || currentState == SpinnerState.Hit || currentState == SpinnerState.ExitingShell || currentState == SpinnerState.Dizzy || currentState == SpinnerState.DizzyProj||currentState == SpinnerState.WakingUp || currentState == SpinnerState.RangedWindup || currentState == SpinnerState.RangedAttack) return;
 
-        SetState(currentTarget != null ? SpinnerState.Approach : SpinnerState.Idle);
+        if (isAsleep || currentTarget == null)
+        {
+            SetState(SpinnerState.Idle);
+            return;
+        }
+
+        SetState(ChooseNextAttackState());
     }
 
     private void ExecuteState()
     {
         switch (currentState)
         {
-            case SpinnerState.Idle: break;
-
-            case SpinnerState.Approach:
+            case SpinnerState.Idle:
             {
-                if (currentTarget == null) break;
-                MoveTowards(currentTarget.position, 1.5f);
+                if (currentTarget != null) FaceTarget();
                 break;
             }
 
-            case SpinnerState.Retract:
+            case SpinnerState.Windup:
             {
                 stateTimer -= Time.deltaTime;
+
                 if (stateTimer <= 0f)
                 {
-                    // Lock spin direction toward target (or forward if target lost).
-                    Vector3 dir = currentTarget != null
-                        ? currentTarget.position - transform.position
-                        : transform.forward;
+                    Vector3 dir = currentTarget != null ? currentTarget.position - transform.position : transform.forward;
                     dir.y = 0f;
-                    if (dir.sqrMagnitude < 0.0001f) dir = transform.forward;
-
-                    spinDirection      = dir.normalized;
-                    spinStartPos       = transform.position;
-                    hitWallDuringSpin  = false;
-                    lastSpinDamageTime = Time.time;
+                    spinDirection = dir.sqrMagnitude > 0.0001f ? dir.normalized : transform.forward;
+                    spinHitSomething = false;
+                    spinHitIds.Clear();
                     SetState(SpinnerState.Spinning);
                 }
                 break;
@@ -263,180 +398,112 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
             case SpinnerState.Spinning:
             {
-                float traveled   = HorizontalDistance(spinStartPos);
-                bool  reachedMax = traveled >= settings.SpinMaxDistance;
-
-                if (hitWallDuringSpin || reachedMax)
+                if (spinHitSomething)
                 {
-                    BeginDazed();
+                    SetState(SpinnerState.Hit);
                     break;
                 }
-
-                frameVelocity = spinDirection * settings.SpinSpeed;
-                FaceTowards(spinDirection);
-
-                // Damage tick.
-                if (Time.time >= lastSpinDamageTime + settings.SpinDamageInterval)
+                if (settings != null && settings.MaxSpinRange > 0f)
                 {
-                    lastSpinDamageTime = Time.time;
-                    ApplySpinDamage();
+                    float travelled = Vector3.Distance(transform.position, spinStartPosition);
+                    if (travelled >= settings.MaxSpinRange)
+                    {
+                        SetState(SpinnerState.Hit);
+                        break;
+                    }
                 }
+                frameVelocity = spinDirection * (settings != null ? settings.SpinSpeed : 10f);
+                FaceTowards(spinDirection);
                 break;
             }
 
-            case SpinnerState.Dazed:
+            case SpinnerState.Hit:
             {
                 stateTimer -= Time.deltaTime;
-                if (stateTimer <= 0f)
+                if (stateTimer <= 0f) SetState(SpinnerState.ExitingShell);
+                break;
+            }
+
+            case SpinnerState.ExitingShell:
+            {
+                stateTimer -= Time.deltaTime;
+                if (stateTimer <= 0f) SetState(SpinnerState.Dizzy);
+                break;
+            }
+
+            case SpinnerState.Dizzy:
+            {
+                stateTimer -= Time.deltaTime;
+                if (stateTimer <= 0f) SetState(SpinnerState.WakingUp);
+                break;
+            }
+
+            case SpinnerState.DizzyProj:
+            {
+                stateTimer -= Time.deltaTime;
+                if (stateTimer <= 0f) SetState(SpinnerState.WakingUp);
+                break;
+            }
+
+            case SpinnerState.WakingUp:
+            {
+                stateTimer -= Time.deltaTime;
+                if (stateTimer <= 0f) SetState(currentTarget != null ? ChooseNextAttackState() : SpinnerState.Idle);
+                break;
+            }
+
+            case SpinnerState.RangedWindup:
+            {
+                stateTimer -= Time.deltaTime;
+                frameVelocity = Vector3.zero;
+                FaceTarget();
+                if (stateTimer <= 0f) SetState(SpinnerState.RangedAttack);
+                break;
+            }
+
+            case SpinnerState.RangedAttack:
+            {
+                frameVelocity = Vector3.zero;
+                FaceTarget();
+
+                if (projectilesRemaining > 0 && Time.time >= nextProjectileTime)
                 {
-                    SetState(SpinnerState.Idle);
-                    ResetNavPath();
-                    Log("Recovered from daze — back to Idle");
+                    FireProjectile();
+                    projectilesRemaining--;
+                    nextProjectileTime = Time.time + GetProjectileInterval(currentProjectileVariant);
+                }
+
+                if (projectilesRemaining <= 0)
+                {
+                    if (!rangedRecoveryStarted)
+                    {
+                        rangedRecoveryStarted = true;
+                        stateTimer = settings != null ? settings.RangedRecoveryDuration : 0.35f;
+                    }
+
+                    stateTimer -= Time.deltaTime;
+                    if (stateTimer <= 0f) SetState(SpinnerState.DizzyProj);
                 }
                 break;
             }
         }
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Spin helpers
-    // ──────────────────────────────────────────────────────────────────────────
-
-    private void BeginRetract()
+    // Sets the active collider pair based on whether the spinner is inside the shell.
+    private void SetHitboxState(bool inShell)
     {
-        if (currentState == SpinnerState.Retract  ||
-            currentState == SpinnerState.Spinning  ||
-            currentState == SpinnerState.Dazed) return;
-
-        stateTimer   = settings != null ? settings.RetractDuration : 0.5f;
-        SetState(SpinnerState.Retract);
-        ResetNavPath();
+        if (stats != null) stats.IsInvincible = inShell;
+        if (bodyObject != null) bodyObject.SetActive(!inShell);
+        if (shellObject != null) shellObject.SetActive(inShell);
     }
 
-    private void BeginDazed()
+    private void FaceTarget()
     {
-        frameVelocity = Vector3.zero;
-        if (rb != null) rb.linearVelocity = Vector3.zero;
-        stateTimer   = settings != null ? settings.DazedDuration : 3f;
-        Log($"Crashed! Entering Dazed for {stateTimer}s");
-        SetState(SpinnerState.Dazed);
+        if (currentTarget == null) return;
+        Vector3 dir = currentTarget.position - transform.position;
+        dir.y = 0f;
+        if (dir.sqrMagnitude > 0.0001f) SmoothFaceDirection(dir.normalized);
     }
-
-    private void ApplySpinDamage()
-    {
-        if (settings == null) return;
-
-        float damage = settings.SpinDamagePerSecond * settings.SpinDamageInterval;
-
-        int count = Physics.OverlapSphereNonAlloc(
-            transform.position, settings.SpinHitRadius, overlapBuffer, settings.DetectMask, QueryTriggerInteraction.Ignore);
-
-        for (int i = 0; i < count; i++)
-        {
-            Collider col = overlapBuffer[i];
-            if (col == null) continue;
-
-            bool valid = col.CompareTag(settings.PlayerTag) || col.CompareTag(settings.MinionTag);
-            if (!valid) continue;
-
-            CombatantStats ts = col.GetComponentInParent<CombatantStats>();
-            if (ts != null && !ts.IsDead)
-            {
-                ts.ApplyDamage(damage);
-                Log($"Spin hit {col.name} for {damage:F1} damage");
-            }
-        }
-    }
-
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Movement & navigation
-    // ──────────────────────────────────────────────────────────────────────────
-
-    private void MoveTowards(Vector3 targetPos, float stopDistance)
-    {
-        Vector3 toTarget = targetPos - transform.position;
-        toTarget.y = 0f;
-        float dist = toTarget.magnitude;
-
-        if (dist <= stopDistance) { ResetNavPath(); return; }
-
-        float speed = settings != null ? settings.MoveSpeed : 2.5f;
-
-        if (settings != null && settings.UseNavMesh)
-        {
-            if (TryMoveAlongNavPath(targetPos, stopDistance, speed)) return;
-        }
-
-        Vector3 dir   = toTarget / Mathf.Max(dist, 0.0001f);
-        frameVelocity = dir * speed;
-        SmoothFaceDirection(dir);
-    }
-
-    private bool TryMoveAlongNavPath(Vector3 destination, float stopDistance, float speed)
-    {
-        float now             = Time.time;
-        bool  destinationMoved = (navLastDestination - destination).sqrMagnitude > 0.35f * 0.35f;
-
-        if (!hasNavPath || now >= nextNavRepathTime || destinationMoved)
-        {
-            if (!TryBuildNavPath(destination)) return false;
-        }
-
-        Vector3[] corners = navPath.corners;
-        if (corners == null || corners.Length == 0) { hasNavPath = false; return false; }
-
-        float tolerance = settings != null ? settings.NavWaypointTolerance : 0.3f;
-        navCornerIndex  = Mathf.Clamp(navCornerIndex, 1, corners.Length - 1);
-
-        while (navCornerIndex < corners.Length)
-        {
-            Vector3 toCorner = corners[navCornerIndex] - transform.position;
-            toCorner.y = 0f;
-
-            if (toCorner.sqrMagnitude <= tolerance * tolerance) { navCornerIndex++; continue; }
-
-            if (navCornerIndex == corners.Length - 1 && toCorner.magnitude <= stopDistance)
-            { ResetNavPath(); return true; }
-
-            frameVelocity = toCorner.normalized * speed;
-            SmoothFaceDirection(toCorner.normalized);
-            return true;
-        }
-
-        ResetNavPath();
-        return true;
-    }
-
-    private bool TryBuildNavPath(Vector3 destination)
-    {
-        if (navPath == null) navPath = new NavMeshPath();
-
-        float repathInterval = settings != null ? settings.NavRepathInterval : 0.3f;
-        nextNavRepathTime = Time.time + repathInterval;
-
-        if (!NavMesh.SamplePosition(transform.position, out NavMeshHit startHit, 1.5f, NavMesh.AllAreas))
-        { hasNavPath = false; return false; }
-
-        float sampleRadius = settings != null ? settings.NavTargetSampleRadius : 1.5f;
-        if (!NavMesh.SamplePosition(destination, out NavMeshHit destHit, sampleRadius, NavMesh.AllAreas))
-        { hasNavPath = false; return false; }
-
-        bool ok = NavMesh.CalculatePath(startHit.position, destHit.position, NavMesh.AllAreas, navPath);
-        if (!ok || navPath.status == NavMeshPathStatus.PathInvalid ||
-            navPath.corners == null || navPath.corners.Length < 2)
-        { hasNavPath = false; return false; }
-
-        hasNavPath         = true;
-        navCornerIndex     = 1;
-        navLastDestination = destination;
-        return true;
-    }
-
-    private void ResetNavPath() { hasNavPath = false; navCornerIndex = 0; nextNavRepathTime = 0f; }
-
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Rotation helpers
-    // ──────────────────────────────────────────────────────────────────────────
 
     private void FaceTowards(Vector3 direction)
     {
@@ -447,59 +514,270 @@ public class ShellSpinnerEnemy : MonoBehaviour
     private void SmoothFaceDirection(Vector3 direction)
     {
         if (direction.sqrMagnitude < 0.0001f) return;
-        float      rs        = settings != null ? settings.RotationSpeed : 6f;
-        Quaternion targetRot = Quaternion.LookRotation(direction.normalized, Vector3.up);
-        transform.rotation   = Quaternion.Slerp(transform.rotation, targetRot, rs * Time.deltaTime);
+        Quaternion target = Quaternion.LookRotation(direction, Vector3.up);
+        float speed = settings != null ? settings.RotationSpeed : 8f;
+        transform.rotation = Quaternion.Slerp(transform.rotation, target, speed * Time.deltaTime);
     }
 
     private float HorizontalDistance(Vector3 pos)
     {
-        Vector3 d = pos - transform.position;
-        d.y = 0f;
-        return d.magnitude;
+        Vector3 delta = pos - transform.position;
+        delta.y = 0f;
+        return delta.magnitude;
     }
-
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Line of sight
-    // ──────────────────────────────────────────────────────────────────────────
 
     private bool HasLineOfSight(Transform target)
     {
         if (target == null || settings == null) return false;
-
-        float   h     = settings.LosHeightOffset;
-        Vector3 start = transform.position + Vector3.up * h;
-        Vector3 end   = target.position    + Vector3.up * h;
-        Vector3 dir   = end - start;
-        float   dist  = dir.magnitude;
-
+        Vector3 start = transform.position + Vector3.up * settings.LosHeightOffset;
+        Vector3 end = target.position + Vector3.up * settings.LosHeightOffset;
+        Vector3 dir = end - start;
+        float dist = dir.magnitude;
         if (dist <= 0.0001f) return true;
-
-        if (Physics.Raycast(start, dir / dist, out RaycastHit hit, dist, settings.LosBlockMask, QueryTriggerInteraction.Ignore))
-            return hit.transform == target || hit.transform.IsChildOf(target);
-
+        if (Physics.Raycast(start, dir / dist, out RaycastHit hit, dist, settings.LosBlockMask, QueryTriggerInteraction.Ignore)) return hit.transform == target || hit.transform.IsChildOf(target) || target.IsChildOf(hit.transform);
         return true;
     }
-
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Logging & state helpers
-    // ──────────────────────────────────────────────────────────────────────────
 
     private void SetState(SpinnerState newState)
     {
         if (newState == currentState) return;
         Log($"State: {currentState} → {newState}");
         currentState = newState;
+
+        if (targetingLine != null) targetingLine.enabled = false;
+
+        switch (newState)
+        {
+            case SpinnerState.Idle:
+                SetHitboxState(inShell: false);
+                break;
+
+            case SpinnerState.Windup:
+                RecordAttackChoice(SpinnerAttackType.Spin);
+                SetHitboxState(inShell: false);
+                stateTimer = settings != null ? settings.WindupDuration : 0.6f;
+                if (targetingLine != null)
+                {
+                    targetingLine.positionCount = 2;
+                    targetingLine.enabled = true;
+                }
+                break;
+
+            case SpinnerState.Spinning:
+                SetHitboxState(inShell: true);
+                spinStartTime = Time.time;
+                spinStartPosition = transform.position;
+                ignoredColliders.Clear();
+                break;
+
+            case SpinnerState.Hit:
+                SetHitboxState(inShell: true);
+                frameVelocity = Vector3.zero;
+                if (rb != null) rb.linearVelocity = Vector3.zero;
+                stateTimer = settings != null ? settings.HitPauseDuration : 0.15f;
+                break;
+
+            case SpinnerState.ExitingShell:
+                SetHitboxState(inShell: false);
+                RestoreIgnoredColliders();
+                stateTimer = settings != null ? settings.ExitShellDuration : 0.6f;
+                break;
+
+            case SpinnerState.Dizzy:
+                stateTimer = settings != null ? settings.DizzyDuration : 2.5f;
+                break;
+
+            case SpinnerState.DizzyProj:
+                stateTimer = settings != null ? settings.DizzyProjDuration : 2.5f;
+                break;
+
+            case SpinnerState.WakingUp:
+                stateTimer = settings != null ? settings.WakeUpDuration : 0.4f;
+                break;
+
+            case SpinnerState.RangedWindup:
+                RecordAttackChoice(SpinnerAttackType.Ranged);
+                SetHitboxState(inShell: false);
+                frameVelocity = Vector3.zero;
+                if (rb != null) rb.linearVelocity = Vector3.zero;
+                currentProjectileVariant = ChooseProjectileVariant();
+                stateTimer = settings != null ? settings.RangedWindupDuration : 0.35f;
+                break;
+
+            case SpinnerState.RangedAttack:
+                SetHitboxState(inShell: false);
+                frameVelocity = Vector3.zero;
+                if (rb != null) rb.linearVelocity = Vector3.zero;
+                projectilesRemaining = GetProjectileCount(currentProjectileVariant);
+                nextProjectileTime = Time.time;
+                rangedRecoveryStarted = false;
+                break;
+        }
+    }
+
+    private SpinnerState ChooseNextAttackState()
+    {
+        SpinnerAttackType chosen = ChooseNextAttackType();
+        return chosen == SpinnerAttackType.Ranged ? SpinnerState.RangedWindup : SpinnerState.Windup;
+    }
+
+    private SpinnerAttackType ChooseNextAttackType()
+    {
+        if (!hasCompletedFirstAttack || !CanUseRangedAttack()) return SpinnerAttackType.Spin;
+
+        int maxRepeats = settings != null ? Mathf.Max(1, settings.MaxSameAttackRepeats) : 2;
+        if (sameAttackRepeatCount >= maxRepeats)
+        {
+            return lastAttackType == SpinnerAttackType.Spin ? SpinnerAttackType.Ranged : SpinnerAttackType.Spin;
+        }
+
+        float rangedChance = settings != null ? settings.RangedAttackChance : 0.5f;
+        return Random.value < rangedChance ? SpinnerAttackType.Ranged : SpinnerAttackType.Spin;
+    }
+
+    private void RecordAttackChoice(SpinnerAttackType attackType)
+    {
+        if (hasCompletedFirstAttack && attackType == lastAttackType)
+        {
+            sameAttackRepeatCount++;
+        }
+        else
+        {
+            lastAttackType = attackType;
+            sameAttackRepeatCount = 1;
+        }
+
+        hasCompletedFirstAttack = true;
+    }
+
+    private bool CanUseRangedAttack()
+    {
+        if (settings == null) return false;
+        return settings.FastProjectilePrefab != null || settings.HeavyProjectilePrefab != null;
+    }
+
+    private ProjectileVariant ChooseProjectileVariant()
+    {
+        bool hasFast = settings != null && settings.FastProjectilePrefab != null;
+        bool hasHeavy = settings != null && settings.HeavyProjectilePrefab != null;
+
+        if (hasFast && hasHeavy) return Random.value < 0.5f ? ProjectileVariant.Fast : ProjectileVariant.Heavy;
+        return hasHeavy ? ProjectileVariant.Heavy : ProjectileVariant.Fast;
+    }
+
+    private int GetProjectileCount(ProjectileVariant variant)
+    {
+        if (settings == null) return 1;
+        int count = variant == ProjectileVariant.Fast ? settings.FastProjectileCount : settings.HeavyProjectileCount;
+        return Mathf.Max(1, count);
+    }
+
+    private float GetProjectileInterval(ProjectileVariant variant)
+    {
+        if (settings == null) return 0.25f;
+        float interval = variant == ProjectileVariant.Fast ? settings.FastProjectileInterval : settings.HeavyProjectileInterval;
+        return Mathf.Max(0.01f, interval);
+    }
+
+    private void FireProjectile()
+    {
+        if (settings == null) return;
+
+        GameObject prefab = GetProjectilePrefab(currentProjectileVariant);
+        if (prefab == null || currentTarget == null) return;
+
+        Vector3 spawnPos = projectileSpawnPoint != null
+            ? projectileSpawnPoint.position
+            : transform.TransformPoint(settings.ProjectileSpawnOffset);
+
+        Vector3 aimDir = currentTarget.position - spawnPos;
+        aimDir.y = 0f;
+        Quaternion spawnRot = aimDir.sqrMagnitude > 0.0001f
+            ? Quaternion.LookRotation(aimDir.normalized, Vector3.up)
+            : transform.rotation;
+
+        MinionProjectile projectile = Instantiate(prefab, spawnPos, spawnRot).GetComponent<MinionProjectile>();
+        if (projectile != null)
+        {
+            float damage = currentProjectileVariant == ProjectileVariant.Fast ? settings.FastProjectileDamage : settings.HeavyProjectileDamage;
+            float speed = currentProjectileVariant == ProjectileVariant.Fast ? settings.FastProjectileSpeed : settings.HeavyProjectileSpeed;
+            string ownerTag = gameObject.CompareTag("Untagged") ? string.Empty : gameObject.tag;
+
+            projectile.Initialize(
+                currentTarget,
+                damage,
+                speed,
+                settings.UseHomingProjectiles,
+                ownerTag,
+                settings.ProjectileLifetime,
+                string.Empty);
+        }
+
+        if (currentProjectileVariant == ProjectileVariant.Heavy) ApplyRangedRecoil();
+        Log($"Fired {currentProjectileVariant} projectile");
+    }
+
+    private GameObject GetProjectilePrefab(ProjectileVariant variant)
+    {
+        if (settings == null) return null;
+
+        GameObject preferred = variant == ProjectileVariant.Fast ? settings.FastProjectilePrefab : settings.HeavyProjectilePrefab;
+        if (preferred != null) return preferred;
+
+        return variant == ProjectileVariant.Fast ? settings.HeavyProjectilePrefab : settings.FastProjectilePrefab;
+    }
+
+    private void ApplyRangedRecoil()
+    {
+        if (rb == null || rb.isKinematic || settings == null || settings.HeavyShotRecoilForce <= 0f) return;
+
+        Vector3 recoilDir = -transform.forward;
+        recoilDir.y = 0f;
+        if (recoilDir.sqrMagnitude <= 0.0001f) return;
+
+        rb.AddForce(recoilDir.normalized * settings.HeavyShotRecoilForce, ForceMode.Impulse);
     }
 
     private void Log(string msg)
     {
-        if (enableLogs) Debug.Log($"[ShellSpinner:{name}] {msg}");
+        if (enableLogs) Debug.Log($"[ShellSpinner] {msg}", this);
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Death
-    // ──────────────────────────────────────────────────────────────────────────
+    // Restores all Physics.IgnoreCollision pairs from a SpinUntilWall spin.
+    private void RestoreIgnoredColliders()
+    {
+        if (shellCollider != null)
+            foreach (var col in ignoredColliders)
+                if (col != null) Physics.IgnoreCollision(shellCollider, col, false);
+        ignoredColliders.Clear();
+    }
 
-    private void OnDied() => Destroy(gameObject);
+    // Applies a sideways impulse that pushes the target off the spin path.
+    private void ApplyKnockback(Transform target)
+    {
+        float force = settings != null ? settings.KnockbackForce : 8f;
+        if (force <= 0f) return;
+
+        Vector3 toTarget = target.position - transform.position;
+        toTarget.y = 0f;
+        Vector3 lateral = toTarget - spinDirection * Vector3.Dot(toTarget, spinDirection);
+        Vector3 dir = lateral.sqrMagnitude > 0.0001f ? lateral.normalized : Vector3.Cross(spinDirection, Vector3.up).normalized;
+
+        Rigidbody targetRb = target.GetComponent<Rigidbody>();
+        if (targetRb != null && !targetRb.isKinematic)
+        {
+            targetRb.AddForce(dir * force, ForceMode.Impulse);
+            return;
+        }
+
+        KnockbackReceiver receiver = target.GetComponent<KnockbackReceiver>();
+        if (receiver == null) receiver = target.gameObject.AddComponent<KnockbackReceiver>();
+        receiver.AddImpulse(dir * force);
+    }
+
+    private void OnDied()
+    {
+        RestoreIgnoredColliders();
+        Destroy(gameObject);
+    }
 }

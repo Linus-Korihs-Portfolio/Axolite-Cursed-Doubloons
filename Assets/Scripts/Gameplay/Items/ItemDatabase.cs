@@ -8,6 +8,7 @@ public class ItemDatabase : MonoBehaviour
     public List<ItemData> allItems;
 
     private List<ItemData> availableItems = new List<ItemData>();
+    private System.Random seededRandom;
 
     private void Awake()
     {
@@ -17,7 +18,22 @@ public class ItemDatabase : MonoBehaviour
         availableItems = new List<ItemData>(allItems);
     }
 
+    public void SetSeed(int seed)
+    {
+        seededRandom = new System.Random(seed);
+    }
+
+    public void ClearSeed()
+    {
+        seededRandom = null;
+    }
+
     public List<ItemData> GetRandomItems(int count)
+    {
+        return GetRandomItems(count, seededRandom);
+    }
+
+    public List<ItemData> GetRandomItems(int count, System.Random rng)
     {
         List<ItemData> result = new List<ItemData>();
         List<ItemData> pool = new List<ItemData>(availableItems);
@@ -26,7 +42,7 @@ public class ItemDatabase : MonoBehaviour
         {
             if (pool.Count == 0) break;
 
-            ItemData selected = GetWeightedRandom(pool);
+            ItemData selected = GetWeightedRandom(pool, rng);
             result.Add(selected);
 
             pool.Remove(selected); // no duplicates in same roll
@@ -35,21 +51,22 @@ public class ItemDatabase : MonoBehaviour
         return result;
     }
 
-    private ItemData GetWeightedRandom(List<ItemData> pool)
+    private ItemData GetWeightedRandom(List<ItemData> pool, System.Random rng)
     {
         int totalWeight = 0;
 
         foreach (var item in pool)
-            totalWeight += item.weight;
+            totalWeight += Mathf.Max(1, item.weight);
 
-        int random = Random.Range(0, totalWeight);
+        int random = rng != null ? rng.Next(0, totalWeight) : Random.Range(0, totalWeight);
 
         foreach (var item in pool)
         {
-            if (random < item.weight)
+            int weight = Mathf.Max(1, item.weight);
+            if (random < weight)
                 return item;
 
-            random -= item.weight;
+            random -= weight;
         }
 
         return pool[0];

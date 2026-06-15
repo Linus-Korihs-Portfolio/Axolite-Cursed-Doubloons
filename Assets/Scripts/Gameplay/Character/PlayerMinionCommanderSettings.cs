@@ -34,6 +34,23 @@ public class PlayerMinionCommanderSettings : ScriptableObject
     [Tooltip("Color of the call/dismiss range Gizmo sphere drawn in the editor.")]
     public Color callRangeGizmoColor = new Color(0.2f, 0.7f, 1f, 0.25f);
 
+    [Header("Call / Dismiss Visuals")]
+    public bool enableCallDismissPulse = true;
+    public Color callPulseColor = new Color(0.25f, 0.75f, 1f, 0.9f);
+    public Color dismissPulseColor = new Color(0.65f, 1f, 0.35f, 0.9f);
+    [Tooltip("Seconds the pulse remains visible.")]
+    public float pulseDuration = 0.55f;
+    [Tooltip("Initial radius of the visible ring.")]
+    public float pulseStartRadius = 0.35f;
+    [Tooltip("Final ring radius. Use 0 to match callRange.")]
+    public float pulseEndRadius = 0f;
+    [Tooltip("Width of the expanding ring line.")]
+    public float pulseRingWidth = 0.18f;
+    [Tooltip("Height above the player pivot where the ring is drawn.")]
+    public float pulseGroundOffset = 0.08f;
+    [Tooltip("Temporary point light intensity added while the pulse expands.")]
+    public float pulseLightIntensity = 1.4f;
+
     [Header("Formation Tracking")]
     [Tooltip("How often (in seconds) dismissed formation slots are recomputed to track player movement and rotation.")]
     public float formationUpdateInterval = 0.1f;

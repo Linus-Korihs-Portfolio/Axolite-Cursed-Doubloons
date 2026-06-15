@@ -1,50 +1,71 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+/* <Summary / Notes>
+    Generic enemy AI supporting Melee and Ranged behaviour types.
+
+    State flow:
+    1. IDLE — no target; standing still.
+
+    2. APPROACH — moving toward target at MoveSpeed.
+       → ATTACK when within attack range.
+
+    3. ATTACK — in range; executing attack on cooldown.
+       → APPROACH when target moves out of range.
+       → BACK AWAY when target is too close (Ranged only).
+
+    4. BACK AWAY — target too close (Ranged only); retreating.
+       → ATTACK when back in preferred range.
+
+    5. CHASE LAST KNOWN — target lost LOS and EnablePursuit is true.
+       → IDLE when position is reached or exceeds PursuitRadius.
+*/
 [RequireComponent(typeof(CombatantStats))]
 public class EnemyAI : MonoBehaviour
 {
-    private enum EnemyState { Idle, Approach, Attack, BackAway, ChaseLastKnown }
+    private enum EnemyState
+    {
+        Idle,           // no target; standing still
+        Approach,       // moving toward target
+        Attack,         // in range; executing attack
+        BackAway,       // too close (Ranged only); retreating
+        ChaseLastKnown  // LOS lost; pursuing last known position
+    }
 
     [Tooltip("Shared behaviour configuration. Create via Assets > Create > SO > Combat > Enemy AI Settings.")]
     [SerializeField] private EnemyAISettings settings;
 
     private CombatantStats stats;
     private Rigidbody rb;
+
     private Transform currentTarget;
     private Vector3 lastKnownTargetPosition;
     private bool hasLastKnownPosition;
     private EnemyState currentState = EnemyState.Idle;
-    private float lastAttackTime    = -999f;
+    private float lastAttackTime = -999f;
 
-    // Horizontal velocity set each Update frame by ExecuteState, applied in FixedUpdate to preserve gravity.
-    private Vector3 frameVelocity = Vector3.zero;
+    private Vector3 frameVelocity; // horizontal movement, applied in FixedUpdate
 
-    // NavMesh path state (used when settings.UseNavMesh is true).
     private NavMeshPath navPath;
-    private int         navCornerIndex;
-    private float       nextNavRepathTime;
-    private Vector3     navLastDestination;
-    private bool        hasNavPath;
+    private int navCornerIndex;
+    private float nextNavRepathTime;
+    private Vector3 navLastDestination;
+    private bool hasNavPath;
 
-    // Reused overlap buffer — static so all enemies share it (fine since Physics calls are sequential on main thread).
     private static readonly Collider[] overlapBuffer = new Collider[32];
 
     private void Awake()
     {
-        stats       = GetComponent<CombatantStats>();
+        stats = GetComponent<CombatantStats>();
         stats.Died += OnDied;
 
         rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.isKinematic = false;
-            // Freeze rotation only — Y position stays free so gravity pulls the enemy to the ground.
             rb.constraints = RigidbodyConstraints.FreezeRotation;
         }
 
-        // Allow the enemy to pass through minion colliders (configured via IgnoreCollisionMask)
-        // so it is never physically blocked when approaching the player through a group.
         if (settings != null && settings.IgnoreCollisionMask != 0)
         {
             int myLayer = gameObject.layer;
@@ -78,7 +99,7 @@ public class EnemyAI : MonoBehaviour
         rb.linearVelocity = new Vector3(frameVelocity.x, rb.linearVelocity.y, frameVelocity.z);
     }
 
-    //Target selection and tracking
+    // Target selection and tracking
     private void RefreshTarget()
     {
         float forgetRadius = settings != null ? settings.ForgetRadius : 18f;
@@ -219,7 +240,7 @@ public class EnemyAI : MonoBehaviour
                     break;
                 }
 
-                MoveTowards(lastKnownTargetPosition, 0.5f); // stopDistance is 0.5 to prevent jitter when reaching the last known position.
+                MoveTowards(lastKnownTargetPosition, 0.5f);
                 break;
             }
 
@@ -280,7 +301,6 @@ public class EnemyAI : MonoBehaviour
         frameVelocity = dir * speed;
         SmoothFaceDirection(dir);
     }
-
 
     // NavMesh
     private bool TryMoveAlongNavPath(Vector3 destination, float stopDistance, float speed)
@@ -449,7 +469,6 @@ public class EnemyAI : MonoBehaviour
             }
         }
     }
-
 
     private void OnDied()
     {

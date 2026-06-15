@@ -1,8 +1,12 @@
 using UnityEngine;
 
-// Top-level enum shared by EnemyAISettings and EnemyAI.
+// Enemy behaviour mode.
 public enum EnemyType { Melee, Ranged }
 
+/* <Summary / Notes>
+    Generic enemy AI configuration asset. Supports Melee and Ranged behaviour types.
+    Create via Assets > Create > SO > Combat > Enemy > Test.
+*/
 [CreateAssetMenu(menuName = "SO/Combat/Enemy/Test")]
 public class EnemyAISettings : ScriptableObject
 {
@@ -18,25 +22,25 @@ public class EnemyAISettings : ScriptableObject
     [Tooltip("Radius within which enemies detect targets.")]
     public float DetectRadius = 12f;
     [Tooltip("Target is dropped when it leaves this radius.")]
-    public float ForgetRadius  = 18f;
+    public float ForgetRadius = 18f;
     public LayerMask DetectMask = ~0;
 
     [Header("Combat — Melee")]
-    public float MeleeAttackRange    = 1.5f;
+    public float MeleeAttackRange = 1.5f;
     public float MeleeAttackCooldown = 1.2f;
-    public float MeleeDamage         = 10f;
+    public float MeleeDamage = 10f;
 
     [Header("Combat — Ranged")]
-    public float RangedMinRange       = 4f;
-    public float RangedMaxRange       = 10f;
+    public float RangedMinRange = 4f;
+    public float RangedMaxRange = 10f;
     public float RangedAttackCooldown = 2f;
-    public float RangedDamage         = 8f;
-    public float ProjectileSpeed      = 8f;
-    public bool  UseHomingProjectile  = false;
+    public float RangedDamage = 8f;
+    public float ProjectileSpeed = 8f;
+    public bool UseHomingProjectile = false;
     public GameObject ProjectilePrefab;
 
     [Header("Movement")]
-    public float MoveSpeed     = 3.5f;
+    public float MoveSpeed = 3.5f;
     public float RotationSpeed = 8f;
 
     [Header("Target Priority")]
@@ -70,8 +74,6 @@ public class EnemyAISettings : ScriptableObject
     public bool RequireLOSToAttack = true;
 
     [Header("Physics")]
-    [Tooltip("Layers the enemy's Rigidbody should pass through (e.g. the Minion layer). " +
-             "Set this to the layer(s) used by minion colliders so the enemy is not blocked " +
-             "when approaching the player through a group of minions.")]
+    [Tooltip("Layers the enemy's Rigidbody should pass through (e.g. the Minion layer). " + "Set this to the layer(s) used by minion colliders so the enemy is not blocked when approaching the player through a group of minions.")]
     public LayerMask IgnoreCollisionMask;
 }

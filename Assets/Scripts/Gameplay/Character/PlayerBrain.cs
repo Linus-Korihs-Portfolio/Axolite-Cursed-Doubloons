@@ -35,6 +35,8 @@ public class PlayerBrain : MonoBehaviour
 
     private void Awake()
     {
+        ResolveInputActions();
+
         if (movement == null) movement = GetComponentInChildren<PlayerMovementCC>();
         if (aim == null) aim = GetComponentInChildren<PlayerAim>();
         if (dodge == null) dodge = GetComponentInChildren<PlayerDodge>();
@@ -52,6 +54,22 @@ public class PlayerBrain : MonoBehaviour
             Debug.LogError($"{name}: PlayerConfig is missing", this);
             enabled = false;
         }
+    }
+
+    private void ResolveInputActions()
+    {
+        PlayerInput playerInput = GetComponent<PlayerInput>();
+        if (playerInput == null) playerInput = GetComponentInParent<PlayerInput>();
+
+        moveAction = PlayerInputActionResolver.Resolve(moveAction, playerInput, "Player", "Move", this);
+        dodgeAction = PlayerInputActionResolver.Resolve(dodgeAction, playerInput, "Player", "Dodge", this);
+        punchAction = PlayerInputActionResolver.Resolve(punchAction, playerInput, "Player", "Punch", this);
+        cameraLookAction = PlayerInputActionResolver.Resolve(cameraLookAction, playerInput, "Camera", "Look", this);
+        cameraToggleAction = PlayerInputActionResolver.Resolve(cameraToggleAction, playerInput, "Camera", "Toggle", this);
+        cameraZoomAction = PlayerInputActionResolver.Resolve(cameraZoomAction, playerInput, "Camera", "Zoom", this);
+        cameraLockOnAction = PlayerInputActionResolver.Resolve(cameraLockOnAction, playerInput, "Camera", "LockOn", this);
+        cursorMoveAction = PlayerInputActionResolver.Resolve(cursorMoveAction, playerInput, "Camera", "CursorMove", this);
+        cursorExtraKeyAction = PlayerInputActionResolver.Resolve(cursorExtraKeyAction, playerInput, "Camera", "CursorExtraKey", this);
     }
 
     private void OnEnable()
@@ -131,5 +149,42 @@ public class PlayerBrain : MonoBehaviour
         // 2) fallback: old logic
         if (moveInput.magnitude >= config.activeMoveDeadzone) return movement.LastMoveDir;
         return GetFacingDir();
+    }
+}
+
+public static class PlayerInputActionResolver
+{
+    public static InputActionReference Resolve(
+        InputActionReference current,
+        PlayerInput playerInput,
+        string mapName,
+        string actionName,
+        Object context,
+        bool required = true)
+    {
+        if (current != null && current.action != null)
+        {
+            return current;
+        }
+
+        InputAction action = playerInput != null && playerInput.actions != null
+            ? playerInput.actions.FindAction($"{mapName}/{actionName}", false)
+            : null;
+
+        if (action != null)
+        {
+            return InputActionReference.Create(action);
+        }
+
+        if (required)
+        {
+            string source = playerInput == null
+                ? "No PlayerInput component found"
+                : "PlayerInput has no actions asset, map, or action with that name";
+
+            Debug.LogWarning($"{context.name}: Could not resolve input action '{mapName}/{actionName}'. {source}.", context);
+        }
+
+        return current;
     }
 }

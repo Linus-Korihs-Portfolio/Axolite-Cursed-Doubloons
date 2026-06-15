@@ -18,7 +18,8 @@ public class CombatantStats : MonoBehaviour
     private readonly List<ActiveStatusEffect> activeEffects = new List<ActiveStatusEffect>(); // Currently active status effects on this combatant
 
     public float CurrentHealth => currentHealth;
-    public bool IsDead => currentHealth <= 0f;
+    public bool IsDead => currentHealth <= 0f; // When true, ApplyDamage is silently ignored. Set by enemies that are invincible in certain states (e.g. ShellSpinner inside the shell).
+    public bool IsInvincible { get; set; }
 
     public event Action<float, float> HealthChanged; // (currentHealth, maxHealth)
     public event Action<float> DamageTaken;          // (finalDamage) — fired after each successful hit
@@ -150,7 +151,7 @@ public class CombatantStats : MonoBehaviour
 
     public float ApplyDamage(float amount) // Returns the actual damage taken after defense is applied
     {
-        if (amount <= 0f || IsDead) return 0f;
+        if (amount <= 0f || IsDead || IsInvincible) return 0f;
 
         float defense = GetStat(CombatStatType.Defense);
         float finalDamage = amount / defense; // Defense acts as a divisor (e.g., 10 damage with 2 defense results in 5 final damage)

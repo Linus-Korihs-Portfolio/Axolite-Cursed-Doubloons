@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 8735502233327984575}
   - component: {fileID: 8976436695498274876}
   - component: {fileID: 3135967114009463569}
+  - component: {fileID: 6081870863342178339}
+  - component: {fileID: 5126942003098301774}
   m_Layer: 0
   m_Name: PF_PCG_RoomAssembler
   m_TagString: Untagged
@@ -30,7 +32,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 6868674088188798315}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8976436695498274876
@@ -46,8 +49,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WFCGenerator
   config: {fileID: 11400000, guid: 8ac41c59633ddb14fa732bcbb2edc7a1, type: 2}
-  parent: {fileID: 8735502233327984575}
+  parent: {fileID: 6868674088188798315}
   clearBeforeGenerate: 1
+  navMeshBuilder: {fileID: 5126942003098301774}
+  contentSpawner: {fileID: 6081870863342178339}
 --- !u!114 &3135967114009463569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,3 +73,76 @@ MonoBehaviour:
 
     The chosen parent will be the
     parent object, where the generation will happen'
+--- !u!114 &6081870863342178339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5224893769436163900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9713408d165c4d5da7f0d05a24b89af1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelContentSpawner
+  config: {fileID: 11400000, guid: 68d23a9aba38b604ea143c4ec7fd0329, type: 2}
+  levelIndex: 1
+  contentParent: {fileID: 8735502233327984575}
+  forceSpawnedObjectsActive: 1
+  useRunSetupData: 1
+  fallbackMeleeMinions: 0
+  fallbackRangedMinions: 0
+  fallbackSupportMinions: 0
+--- !u!114 &5126942003098301774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5224893769436163900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6fc67ba0b284f52be9d42b478b6262b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RuntimeNavMeshBuilder
+  surface: {fileID: 0}
+  createSurfaceOnGeneratedRoot: 1
+  buildChildSurfaces: 1
+  useGeneratedLayers: 1
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  geometry: 1
+  defaultArea: 0
+  log: 1
+--- !u!1 &5355710263612989429
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6868674088188798315}
+  m_Layer: 0
+  m_Name: PCG_Level
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6868674088188798315
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5355710263612989429}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8735502233327984575}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

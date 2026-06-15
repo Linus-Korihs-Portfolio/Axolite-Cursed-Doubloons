@@ -9,10 +9,12 @@ public class MinionProjectile : MonoBehaviour
     [SerializeField] private LayerMask wallBlockMask = ~0;
 
     private Transform target;
+    private IAimTarget aimTargetOverride; // optional: enemy that redirects the aim point
     private float damage;
     private float speed;
     private bool homing;
-    private string ownerTag;   // tag of the team that fired this (ignored on hit)
+    private string ownerTag;    // tag of the team that fired this (ignored on hit)
+    private string playerTag;   // tag of the player — projectiles pass through them
     private float lifetime;
     private float spawnTime;
 
@@ -23,25 +25,40 @@ public class MinionProjectile : MonoBehaviour
         float speed,
         bool homing,
         string ownerTag,
-        float lifetime = 5f)
+        float lifetime = 5f,
+        string playerTag = "Player")
     {
         this.target    = target;
+        aimTargetOverride = target != null ? target.GetComponent<IAimTarget>() : null;
         this.damage    = damage;
         this.speed     = Mathf.Max(0.5f, speed);
         this.homing    = homing;
         this.ownerTag  = ownerTag;
+        this.playerTag = playerTag;
         this.lifetime  = Mathf.Max(0.1f, lifetime);
         spawnTime      = Time.time;
 
         // Face the target immediately on spawn.
         if (target != null)
         {
-            Vector3 dir = target.position - transform.position;
+            Vector3 dir = GetAimPosition() - transform.position;
             if (dir.sqrMagnitude > 0.0001f)
             {
                 transform.rotation = Quaternion.LookRotation(dir.normalized, Vector3.up);
             }
         }
+    }
+
+    // Returns the world-space point projectiles should steer toward.
+    // Uses IAimTarget if the target implements it (e.g. burrowed enemy with a visible head).
+    private Vector3 GetAimPosition()
+    {
+        if (aimTargetOverride != null)
+        {
+            Transform aimT = aimTargetOverride.GetAimTransform();
+            if (aimT != null) return aimT.position;
+        }
+        return target != null ? target.position : transform.position;
     }
 
     private void Update()
@@ -52,10 +69,10 @@ public class MinionProjectile : MonoBehaviour
             return;
         }
 
-        // Homing: steer smoothly toward the moving target each frame.
+        // Homing: steer smoothly toward the current aim position each frame.
         if (homing && target != null && target.gameObject.activeInHierarchy)
         {
-            Vector3 dir = target.position - transform.position;
+            Vector3 dir = GetAimPosition() - transform.position;
             if (dir.sqrMagnitude > 0.0001f)
             {
                 Quaternion targetRot = Quaternion.LookRotation(dir.normalized, Vector3.up);
@@ -88,10 +105,18 @@ public class MinionProjectile : MonoBehaviour
         if (other == null) return;
 
         // Skip colliders on the same team as the shooter.
-        if (!string.IsNullOrEmpty(ownerTag) && other.CompareTag(ownerTag)) return;
+        // Check both the collider's own tag and its root so child colliders are covered.
+        if (!string.IsNullOrEmpty(ownerTag) &&
+            (other.CompareTag(ownerTag) || other.transform.root.CompareTag(ownerTag))) return;
+
+        // Minion projectiles must not damage the player — pass straight through.
+        if (!string.IsNullOrEmpty(playerTag) &&
+            (other.CompareTag(playerTag) || other.transform.root.CompareTag(playerTag))) return;
 
         CombatantStats stats = other.GetComponentInParent<CombatantStats>();
-        if (stats != null && !stats.IsDead)
+        if (stats == null) return;   // No damageable target — pass through (triggers, environment, etc.)
+
+        if (!stats.IsDead)
         {
             stats.ApplyDamage(damage);
         }

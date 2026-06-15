@@ -12,6 +12,16 @@ public class RoomAssemblerGenerator : MonoBehaviour
     [Header("Output")]
     public Transform parent;
     public bool clearBeforeGenerate = true;
+
+    [Header("Content")]
+    [Tooltip("Optional runtime NavMesh build step. Runs after layout generation and before content spawning.")]
+    public RuntimeNavMeshBuilder navMeshBuilder;
+
+    [Tooltip("Optional second pass that fills generated rooms with player, minions, enemies, and items.")]
+    public LevelContentSpawner contentSpawner;
+
+    public int LastRunSeed { get; private set; }
+
     private System.Random rng;
 
     private readonly List<PlacedRoom> placed = new();
@@ -30,12 +40,15 @@ public class RoomAssemblerGenerator : MonoBehaviour
         if (!ValidateSetup()) return;
 
         if (parent == null) parent = transform;
+        if (navMeshBuilder == null) navMeshBuilder = GetComponent<RuntimeNavMeshBuilder>();
+        if (navMeshBuilder == null && parent != null) navMeshBuilder = parent.GetComponent<RuntimeNavMeshBuilder>();
 
         for (int attempt = 0; attempt < config.maxGenerationRetries; attempt++)
         {
             if (clearBeforeGenerate) ClearChildren(parent);
 
             int runSeed = config.randomSeed ? (Environment.TickCount + attempt) : config.seed;
+            LastRunSeed = runSeed;
             rng = new System.Random(runSeed);
 
             roomPicker = new RoomPicker(rng);
@@ -80,6 +93,15 @@ public class RoomAssemblerGenerator : MonoBehaviour
             if (success)
             {
                 if (config.log) Debug.Log($"✓ Generation success. Seed={runSeed}, Rooms={placed.Count}, attempt={attempt + 1}");
+                if (navMeshBuilder != null)
+                {
+                    navMeshBuilder.Build(parent);
+                }
+
+                if (contentSpawner != null)
+                {
+                    contentSpawner.SpawnForGeneratedRooms(placed, runSeed);
+                }
                 return;
             }
         }

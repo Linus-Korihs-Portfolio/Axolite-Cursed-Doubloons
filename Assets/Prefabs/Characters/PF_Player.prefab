@@ -262,7 +262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 222ca75e431e4124e8bd8faa9890b56f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatantStats
-  baseProfile: {fileID: 11400000, guid: 6384b8f9b043f3e4a8ec5a3af88cc5de, type: 2}
+  baseProfile: {fileID: 11400000, guid: 9f77fc40fa84261479be4a2be489bea9, type: 2}
   currentHealth: 0
   despawnOnDeath: 1
   despawnDelay: 0
@@ -281,6 +281,7 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 7b9a1e875b094dd4f841959d9b1b60a6, type: 2}
   cursor: {fileID: 3391111788512607623}
   player: {fileID: 1273055997037786594}
+  playerMesh: {fileID: 2151853351454571588}
   commandAction: {fileID: 0}
   callAction: {fileID: 0}
   dismissAction: {fileID: 0}
