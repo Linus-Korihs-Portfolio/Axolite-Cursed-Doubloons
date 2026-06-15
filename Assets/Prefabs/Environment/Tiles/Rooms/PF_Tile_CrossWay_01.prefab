@@ -156,6 +156,7 @@ GameObject:
   - component: {fileID: 1470407132463731173}
   - component: {fileID: 958990837341179844}
   - component: {fileID: 1183931941763940968}
+  - component: {fileID: 8831415293179364437}
   m_Layer: 6
   m_Name: Crossway1_Wall3
   m_TagString: Untagged
@@ -257,6 +258,38 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5935614468051184318, guid: c3ec7291773cdb74ab1d93c5209e3ede, type: 3}
+--- !u!114 &8831415293179364437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 693384635027256186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 1
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 039eaa637e5296249aa624924a4a1d9f, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &1055879319047175603
 GameObject:
   m_ObjectHideFlags: 0
@@ -862,6 +895,7 @@ GameObject:
   - component: {fileID: 7649227763075500135}
   - component: {fileID: 7827810711962946399}
   - component: {fileID: 2888278925444152828}
+  - component: {fileID: 4864763449920219516}
   m_Layer: 6
   m_Name: Crossway1_Wall4
   m_TagString: Untagged
@@ -963,6 +997,38 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5728898826509459864, guid: c3ec7291773cdb74ab1d93c5209e3ede, type: 3}
+--- !u!114 &4864763449920219516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6295537890110260836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 1
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 626c9cfd9e4d3bc4a842d4608374df28, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &6713933757798860622
 GameObject:
   m_ObjectHideFlags: 0
@@ -1114,6 +1180,7 @@ GameObject:
   - component: {fileID: 6619752202460892160}
   - component: {fileID: 9106847642810998054}
   - component: {fileID: 1264643661446419195}
+  - component: {fileID: 603456903136699905}
   m_Layer: 6
   m_Name: Crossway1_Wall1
   m_TagString: Untagged
@@ -1215,6 +1282,38 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 609566115143869334, guid: c3ec7291773cdb74ab1d93c5209e3ede, type: 3}
+--- !u!114 &603456903136699905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8392162332295245098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 1
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: dfc3756d6a74ca14cbdbeb5c33cccac9, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &8964747155335932491
 GameObject:
   m_ObjectHideFlags: 0
@@ -1227,6 +1326,7 @@ GameObject:
   - component: {fileID: 4921922178190741720}
   - component: {fileID: 663456988599796590}
   - component: {fileID: 8068651114473569531}
+  - component: {fileID: 7568289667118875964}
   m_Layer: 6
   m_Name: Crossway1_Wall2
   m_TagString: Untagged
@@ -1328,6 +1428,38 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4729101551586088220, guid: c3ec7291773cdb74ab1d93c5209e3ede, type: 3}
+--- !u!114 &7568289667118875964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8964747155335932491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 1
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: f0059f6a7a5492c468e1cc370fb4b6f5, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &9215616267352265670
 GameObject:
   m_ObjectHideFlags: 0

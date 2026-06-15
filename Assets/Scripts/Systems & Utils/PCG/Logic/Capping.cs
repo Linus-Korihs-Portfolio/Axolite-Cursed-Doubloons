@@ -30,6 +30,9 @@ namespace PCG.RoomAssembler.Logic
             bool log = false)
         {
             int caps = 0;
+            int deadEndCaps = 0;
+            int wallCaps = 0;
+            int logicalClosures = 0;
 
             for (int i = openSockets.Count - 1; i >= 0; i--)
             {
@@ -50,12 +53,19 @@ namespace PCG.RoomAssembler.Logic
                         var dead = roomPicker.PickAny(deadEndCache);
                         if (dead == null || dead.prefab == null) continue;
 
-                        if (roomPlacer.TryAttachRoom(target, dead, out var newPlaced, extraOverlapPadding: capExtraPadding, overlapMaskToUse: capCheckMask))
+                        if (roomPlacer.TryAttachRoom(
+                                target,
+                                dead,
+                                out var newPlaced,
+                                out _,
+                                extraOverlapPadding: capExtraPadding,
+                                overlapMaskToUse: capCheckMask))
                         {
                             openSockets.RemoveAt(i);
                             placedRooms.Add(newPlaced);
 
                             caps++;
+                            deadEndCaps++;
                             capped = true;
                             break;
                         }
@@ -71,23 +81,47 @@ namespace PCG.RoomAssembler.Logic
                         capExtraPadding: capExtraPadding,
                         roomOverlapMask: roomOverlapMask,
                         preventCapOverlappingCaps: preventCapOverlappingCaps,
-                        capOverlapMask: capOverlapMask))
+                        capOverlapMask: capOverlapMask,
+                        failureReason: out WallCapFailureReason wallFailure,
+                        blockingCollider: out Collider blockingCollider))
                 {
                     target.owner.connectedSocketInstanceIds.Add(target.marker.GetInstanceID());
                     openSockets.RemoveAt(i);
                     caps++;
+                    wallCaps++;
                     capped = true;
                 }
 
                 if (!capped)
                 {
-                    // can't cap => close logically (treated as wall)
+                    string blocker = blockingCollider != null
+                        ? $"{blockingCollider.name} (layer={LayerMask.LayerToName(blockingCollider.gameObject.layer)})"
+                        : "none";
+
+                    Debug.LogWarning(
+                        $"[PCG Capping] Wall cap failed at {target.marker.name}. " +
+                        $"Reason={wallFailure}, BlockingCollider={blocker}.",
+                        target.marker);
+
+                    // Keep generation state consistent, but report that no physical cap exists.
                     target.owner.connectedSocketInstanceIds.Add(target.marker.GetInstanceID());
                     openSockets.RemoveAt(i);
+                    logicalClosures++;
                 }
             }
 
-            if (log) Debug.Log($"Capping: capped={caps}");
+            Debug.Log(
+                $"[PCG Capping] DeadEnds={deadEndCaps}, Walls={wallCaps}, " +
+                $"LogicalOnly={logicalClosures}, RemainingOpen={openSockets.Count}.");
+
+            if (logicalClosures > 0 || openSockets.Count > 0)
+            {
+                Debug.LogWarning(
+                    $"[PCG Capping] {logicalClosures} socket(s) were closed only logically and " +
+                    $"{openSockets.Count} socket(s) remain open. Check the wall-cap prefab Bounds, " +
+                    "cap overlap masks, and maxCapsAfterEnd.");
+            }
+
             return caps;
         }
     }

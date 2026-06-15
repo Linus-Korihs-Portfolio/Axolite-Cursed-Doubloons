@@ -92,9 +92,6 @@ public class RoomAssemblerConfig : ScriptableObject
     [Tooltip("Moves fallback wall caps backward along socket forward axis. Useful to recess the cap into the opening.")]
     public float wallCapInset = 0.0f;
 
-    [Tooltip("Extra yaw rotation in degrees for fallback wall caps.")]
-    public float wallCapYawOffset = 0f;
-
     [Header("Seed")]
     [Tooltip("Use a different seed on each run. If disabled, generation is deterministic from the Seed value.")]
     public bool randomSeed = true;
