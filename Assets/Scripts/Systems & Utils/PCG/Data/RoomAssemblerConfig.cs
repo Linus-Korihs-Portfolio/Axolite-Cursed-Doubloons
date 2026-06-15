@@ -45,6 +45,25 @@ public class RoomAssemblerConfig : ScriptableObject
     [Tooltip("How many full generation retries if constraints fail.")]
     [Min(1)] public int maxGenerationRetries = 5;
 
+    [Header("Emergency Fallback")]
+    [Tooltip("After normal retries fail, run a bounded set of easier attempts so the player is less likely to receive no level.")]
+    public bool useEmergencyFallback = true;
+
+    [Tooltip("Maximum number of easier full-layout attempts. Generation still stops after this limit.")]
+    [Min(1)] public int emergencyFallbackRetries = 5;
+
+    [Tooltip("Minimum room count allowed only during emergency fallback attempts.")]
+    [Min(2)] public int emergencyMinimumRooms = 5;
+
+    [Tooltip("Extra room capacity allowed only during emergency fallback attempts.")]
+    [Min(0)] public int emergencyAdditionalMaxRooms = 15;
+
+    [Tooltip("Ignore the configured start-to-end distance range during emergency fallback attempts.")]
+    public bool emergencyIgnoreEndDistance = true;
+
+    [Tooltip("Always try the end room once the emergency minimum room count can be reached.")]
+    public bool emergencyForceEndRoom = true;
+
     [Header("Loops")]
     [Tooltip("Allow generated layout loops instead of only tree-like expansion.")]
     public bool allowLoops = true;

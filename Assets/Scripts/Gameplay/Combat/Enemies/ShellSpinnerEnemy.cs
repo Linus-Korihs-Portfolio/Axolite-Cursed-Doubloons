@@ -101,6 +101,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
     private float spinStartTime = -999f; // used for the collision grace period
 
     private Collider shellCollider;
+    private Collider fallbackCollider;
     private readonly System.Collections.Generic.List<Collider> ignoredColliders = new System.Collections.Generic.List<Collider>();
 
     private Vector3 frameVelocity;
@@ -118,6 +119,9 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
     private void Awake()
     {
+        UnityEngine.AI.NavMeshAgent navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (navMeshAgent != null) navMeshAgent.enabled = false;
+
         stats = GetComponent<CombatantStats>();
         stats.Died += OnDied;
         stats.DamageTaken += OnDamageTaken;
@@ -130,9 +134,18 @@ public class ShellSpinnerEnemy : MonoBehaviour
             rb.interpolation = RigidbodyInterpolation.Interpolate;
         }
 
-        SetHitboxState(inShell: false);
+        fallbackCollider = GetComponent<Collider>();
+        if (fallbackCollider == null)
+        {
+            CapsuleCollider capsule = gameObject.AddComponent<CapsuleCollider>();
+            capsule.radius = 0.5f;
+            capsule.height = 1.5f;
+            capsule.center = Vector3.up * 0.5f;
+            fallbackCollider = capsule;
+        }
 
-        shellCollider = shellObject != null ? shellObject.GetComponent<Collider>() : null;
+        SetHitboxState(inShell: false);
+        shellCollider = shellObject != null ? shellObject.GetComponent<Collider>() : fallbackCollider;
 
         if (targetingLine != null)
         {
@@ -194,9 +207,10 @@ public class ShellSpinnerEnemy : MonoBehaviour
     {
         if (currentState != SpinnerState.Spinning) return;
 
-        Transform root = collision.transform.root;
-        bool isPlayer = root.CompareTag(settings.PlayerTag);
-        bool isMinion = collision.transform.CompareTag(settings.MinionTag);
+        Transform player = EnemyTargetUtility.FindTaggedActor(collision.transform, settings.PlayerTag);
+        Transform minion = EnemyTargetUtility.FindTaggedActor(collision.transform, settings.MinionTag);
+        bool isPlayer = player != null;
+        bool isMinion = minion != null;
 
         // Ignore floor / ceiling: only horizontal contacts (wall normals) matter.
         bool hasHorizontalContact = false;
@@ -254,8 +268,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
     private static CombatantStats GetStats(Transform t)
     {
-        if (t == null) return null;
-        return t.GetComponent<CombatantStats>() ?? t.GetComponentInParent<CombatantStats>() ?? t.GetComponentInChildren<CombatantStats>();
+        return EnemyTargetUtility.GetStats(t);
     }
 
     private void OnDamageTaken(float _)
@@ -314,14 +327,13 @@ public class ShellSpinnerEnemy : MonoBehaviour
         {
             Collider col = overlapBuffer[i];
             if (col == null) continue;
-            Transform root = col.transform.root;
-            if (!root.gameObject.activeInHierarchy) continue;
-            if (!root.CompareTag(settings.PlayerTag)) continue;
+            Transform player = EnemyTargetUtility.FindTaggedActor(col.transform, settings.PlayerTag);
+            if (player == null || !player.gameObject.activeInHierarchy) continue;
             CombatantStats cs = GetStats(col.transform);
             if (cs != null && cs.IsDead) continue;
             if (!HasLineOfSight(col.transform)) continue;
 
-            return playerTransform != null ? playerTransform : root;
+            return playerTransform != null ? playerTransform : player;
         }
         return null;
     }
@@ -340,11 +352,13 @@ public class ShellSpinnerEnemy : MonoBehaviour
         {
             Collider col = overlapBuffer[i];
             if (col == null) continue;
-            Transform root = col.transform.root;
-            bool isPlayer = root.CompareTag(settings.PlayerTag);
-            bool isMinion = col.transform.CompareTag(settings.MinionTag);
+            Transform player = EnemyTargetUtility.FindTaggedActor(col.transform, settings.PlayerTag);
+            Transform minion = EnemyTargetUtility.FindTaggedActor(col.transform, settings.MinionTag);
+            bool isPlayer = player != null;
+            bool isMinion = minion != null;
             if (!isPlayer && !isMinion) continue;
-            if (!root.gameObject.activeInHierarchy) continue;
+            Transform actor = isPlayer ? player : minion;
+            if (!actor.gameObject.activeInHierarchy) continue;
             CombatantStats cs = GetStats(col.transform);
             if (cs != null && cs.IsDead) continue;
             if (settings.RequireLOSToDetect && !HasLineOfSight(col.transform)) continue;
@@ -495,6 +509,8 @@ public class ShellSpinnerEnemy : MonoBehaviour
         if (stats != null) stats.IsInvincible = inShell;
         if (bodyObject != null) bodyObject.SetActive(!inShell);
         if (shellObject != null) shellObject.SetActive(inShell);
+        if (bodyObject == null && shellObject == null && fallbackCollider != null)
+            fallbackCollider.enabled = true;
     }
 
     private void FaceTarget()
@@ -534,7 +550,8 @@ public class ShellSpinnerEnemy : MonoBehaviour
         Vector3 dir = end - start;
         float dist = dir.magnitude;
         if (dist <= 0.0001f) return true;
-        if (Physics.Raycast(start, dir / dist, out RaycastHit hit, dist, settings.LosBlockMask, QueryTriggerInteraction.Ignore)) return hit.transform == target || hit.transform.IsChildOf(target) || target.IsChildOf(hit.transform);
+        if (Physics.Raycast(start, dir / dist, out RaycastHit hit, dist, settings.LosBlockMask, QueryTriggerInteraction.Ignore))
+            return EnemyTargetUtility.BelongsToActor(hit.transform, target);
         return true;
     }
 

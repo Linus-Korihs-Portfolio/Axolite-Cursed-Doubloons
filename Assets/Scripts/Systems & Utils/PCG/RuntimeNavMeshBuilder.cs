@@ -13,7 +13,6 @@ public class RuntimeNavMeshBuilder : MonoBehaviour
     [Header("Collection")]
     [SerializeField] private bool useGeneratedLayers = true;
     [SerializeField] private LayerMask layerMask = ~0;
-    [SerializeField] private NavMeshCollectGeometry geometry = NavMeshCollectGeometry.PhysicsColliders;
     [SerializeField] private int defaultArea;
 
     [Header("Debug")]
@@ -110,7 +109,9 @@ public class RuntimeNavMeshBuilder : MonoBehaviour
     private void ConfigureSurface(NavMeshSurface targetSurface)
     {
         targetSurface.collectObjects = CollectObjects.Children;
-        targetSurface.useGeometry = geometry;
+        // Collider collection avoids render-only geometry. MeshColliders still require
+        // their imported shared meshes to have Read/Write enabled for runtime baking.
+        targetSurface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
         targetSurface.defaultArea = defaultArea;
         targetSurface.layerMask = useGeneratedLayers ? ResolveGeneratedLayerMask() : layerMask;
     }

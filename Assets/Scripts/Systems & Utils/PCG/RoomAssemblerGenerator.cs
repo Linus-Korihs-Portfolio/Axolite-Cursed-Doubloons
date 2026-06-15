@@ -24,6 +24,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
     public int LastRunSeed { get; private set; }
     public int LastGenerationFailedAttempts { get; private set; }
     public string LastGenerationFailureSummary { get; private set; }
+    public bool LastGenerationSucceeded { get; private set; }
     public bool IsGenerating => isGenerating;
 
     private System.Random rng;
@@ -65,13 +66,34 @@ public class RoomAssemblerGenerator : MonoBehaviour
         isGenerating = true;
         LastGenerationFailedAttempts = 0;
         LastGenerationFailureSummary = string.Empty;
+        LastGenerationSucceeded = false;
         var runDiagnostics = new GenerationRunDiagnostics();
 
         try
         {
-            for (int attempt = 0; attempt < config.maxGenerationRetries; attempt++)
+            int normalRetries = Mathf.Max(1, config.maxGenerationRetries);
+            int fallbackRetries = config.useEmergencyFallback
+                ? Mathf.Max(1, config.emergencyFallbackRetries)
+                : 0;
+            int totalRetries = normalRetries + fallbackRetries;
+
+            for (int attempt = 0; attempt < totalRetries; attempt++)
             {
                 if (clearBeforeGenerate) ClearChildren(parent);
+
+                bool emergencyFallback = attempt >= normalRetries;
+                int displayAttempt = emergencyFallback
+                    ? attempt - normalRetries + 1
+                    : attempt + 1;
+                int displayAttemptLimit = emergencyFallback ? fallbackRetries : normalRetries;
+
+                if (emergencyFallback && attempt == normalRetries)
+                {
+                    Debug.LogWarning(
+                        $"[PCG] Normal generation failed after {normalRetries} attempts. " +
+                        $"Starting {fallbackRetries} bounded emergency fallback attempt(s) with relaxed constraints.",
+                        this);
+                }
 
                 int runSeed = config.randomSeed
                     ? Environment.TickCount + attempt
@@ -109,16 +131,25 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
                 float minEndWorld = config.minEndDistanceRooms * roomUnitWorld;
                 float maxEndWorld = Mathf.Max(minEndWorld, config.maxEndDistanceRooms * roomUnitWorld);
+                int effectiveMinRooms = emergencyFallback
+                    ? Mathf.Min(config.minRooms, Mathf.Max(2, config.emergencyMinimumRooms))
+                    : config.minRooms;
+                int effectiveMaxRooms = emergencyFallback
+                    ? Mathf.Max(effectiveMinRooms, config.maxRooms + Mathf.Max(0, config.emergencyAdditionalMaxRooms))
+                    : config.maxRooms;
+                bool effectiveUseDistanceRange = config.useEndDistanceRange
+                    && !(emergencyFallback && config.emergencyIgnoreEndDistance);
                 var attemptDiagnostics = new GenerationAttemptDiagnostics(runSeed);
 
                 bool success = GrowUntilEnd(
                     startWorldPos: GetStartCenterWorld(startGO),
-                    useDistanceRange: config.useEndDistanceRange,
+                    useDistanceRange: effectiveUseDistanceRange,
                     minEndWorld: minEndWorld,
                     maxEndWorld: maxEndWorld,
-                    minRooms: config.minRooms,
-                    maxRooms: config.maxRooms,
+                    minRooms: effectiveMinRooms,
+                    maxRooms: effectiveMaxRooms,
                     attemptsPerOpenSocket: config.attemptsPerOpenSocket,
+                    forceEndWhenEligible: emergencyFallback && config.emergencyForceEndRoom,
                     diagnostics: attemptDiagnostics,
                     failureReason: out GenerationFailureReason failureReason
                 );
@@ -127,10 +158,12 @@ public class RoomAssemblerGenerator : MonoBehaviour
                 {
                     LastGenerationFailedAttempts = attempt;
                     LastGenerationFailureSummary = runDiagnostics.FormatSummary();
+                    LastGenerationSucceeded = true;
 
                     Debug.Log(
                         $"[PCG] Layout succeeded. Seed={runSeed}, Rooms={placed.Count}, " +
-                        $"FailedAttempts={attempt}. {LastGenerationFailureSummary}",
+                        $"FailedAttempts={attempt}, EmergencyFallback={emergencyFallback}. " +
+                        LastGenerationFailureSummary,
                         this);
 
                     if (navMeshBuilder != null)
@@ -151,16 +184,18 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
                 runDiagnostics.Record(failureReason, attemptDiagnostics);
                 Debug.LogWarning(
-                    $"[PCG] Attempt {attempt + 1}/{config.maxGenerationRetries} failed. " +
+                    $"[PCG] {(emergencyFallback ? "Emergency fallback" : "Normal")} attempt " +
+                    $"{displayAttempt}/{displayAttemptLimit} failed. " +
                     attemptDiagnostics.FormatAttempt(failureReason, placed.Count, openSockets.Count),
                     this);
             }
 
-            LastGenerationFailedAttempts = config.maxGenerationRetries;
+            LastGenerationFailedAttempts = totalRetries;
             LastGenerationFailureSummary = runDiagnostics.FormatSummary();
+            if (clearBeforeGenerate) ClearChildren(parent);
             Debug.LogError(
-                $"[PCG] Generation failed after {config.maxGenerationRetries} retries. " +
-                LastGenerationFailureSummary,
+                $"[PCG] Generation failed after {totalRetries} bounded attempts. " +
+                $"{LastGenerationFailureSummary} Automatic generation has stopped; it will not loop.",
                 this);
         }
         finally
@@ -223,6 +258,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
         int minRooms,
         int maxRooms,
         int attemptsPerOpenSocket,
+        bool forceEndWhenEligible,
         GenerationAttemptDiagnostics diagnostics,
         out GenerationFailureReason failureReason)
     {
@@ -248,7 +284,10 @@ public class RoomAssemblerGenerator : MonoBehaviour
                 RoomDefinition candidate;
                 if (!endPlaced && canTryEndByRoomCount)
                 {
-                    candidate = roomPicker.PickRoomWithBiasToEnd(config.roomPool, config.endRoom, forceEnd: false);
+                    candidate = roomPicker.PickRoomWithBiasToEnd(
+                        config.roomPool,
+                        config.endRoom,
+                        forceEnd: forceEndWhenEligible);
                 }
                 else
                 {

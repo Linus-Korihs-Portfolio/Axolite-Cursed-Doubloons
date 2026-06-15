@@ -109,7 +109,13 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
         }
 
         spawnY = transform.position.y;
-        burrowedY = spawnY - (settings != null ? settings.BurrowDepth : 1.5f);
+        float burrowDepth = settings != null ? settings.BurrowDepth : 1.5f;
+        if (headAimPoint != null)
+        {
+            float headHeight = headAimPoint.position.y - transform.position.y;
+            burrowDepth = Mathf.Min(burrowDepth, Mathf.Max(0.05f, headHeight - 0.05f));
+        }
+        burrowedY = spawnY - burrowDepth;
 
         // Start fully underground.
         Vector3 p = transform.position;
@@ -397,7 +403,9 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
             Collider col = overlapBuffer[i];
             if (col == null) continue;
 
-            bool valid = col.CompareTag(settings.PlayerTag) || col.CompareTag(settings.MinionTag);
+            bool valid =
+                EnemyTargetUtility.FindTaggedActor(col.transform, settings.PlayerTag) != null ||
+                EnemyTargetUtility.FindTaggedActor(col.transform, settings.MinionTag) != null;
             if (!valid) continue;
 
             CombatantStats ts = col.GetComponentInParent<CombatantStats>();
@@ -503,21 +511,22 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
             if (col == null) continue;
 
             Transform t = col.transform;
-            Transform root = t.root;
-            if (!root.gameObject.activeInHierarchy) continue;
+            Transform player = EnemyTargetUtility.FindTaggedActor(t, settings.PlayerTag);
+            Transform minion = EnemyTargetUtility.FindTaggedActor(t, settings.MinionTag);
+            Transform actor = player != null ? player : minion;
+            if (actor == null || !actor.gameObject.activeInHierarchy) continue;
 
             CombatantStats cs = t.GetComponentInParent<CombatantStats>() ?? t.GetComponentInChildren<CombatantStats>();
             if (cs != null && cs.IsDead) continue;
 
-            // Check collider transform AND the hierarchy root for the tag.
-            bool isMinion = t.CompareTag(settings.MinionTag) || root.CompareTag(settings.MinionTag);
-            bool isPlayer = t.CompareTag(settings.PlayerTag) || root.CompareTag(settings.PlayerTag);
+            bool isMinion = minion != null;
+            bool isPlayer = player != null;
             if (!isMinion && !isPlayer) continue;
 
             // For players, use the explicit playerTransform override if assigned. For minions, use the collider transform or root
             Transform trackTarget;
-            if (isPlayer) trackTarget = playerTransform != null ? playerTransform : root;
-            else trackTarget = cs != null ? cs.transform : t;
+            if (isPlayer) trackTarget = playerTransform != null ? playerTransform : player;
+            else trackTarget = cs != null ? cs.transform : actor;
 
             float sq = (trackTarget.position - transform.position).sqrMagnitude;
 

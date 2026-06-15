@@ -80,6 +80,9 @@ public class LungerEnemy : MonoBehaviour
 
     private void Awake()
     {
+        NavMeshAgent navMeshAgent = GetComponent<NavMeshAgent>();
+        if (navMeshAgent != null) navMeshAgent.enabled = false;
+
         stats = GetComponent<CombatantStats>();
         stats.Died += OnDied;
         stats.DamageTaken += OnDamageTaken;
@@ -133,8 +136,9 @@ public class LungerEnemy : MonoBehaviour
         if (currentState != LungerState.Lunging) return;
 
         // Targets are handled by sweep damage — skip them here.
-        Transform root = collision.transform.root;
-        if (root.CompareTag(settings.PlayerTag) || collision.transform.CompareTag(settings.MinionTag)) return;
+        bool hitPlayer = EnemyTargetUtility.FindTaggedActor(collision.transform, settings.PlayerTag) != null;
+        bool hitMinion = EnemyTargetUtility.FindTaggedActor(collision.transform, settings.MinionTag) != null;
+        if (hitPlayer || hitMinion) return;
 
         // Only horizontal contact normals (walls) stop the lunge; floor and ceiling are ignored.
         for (int i = 0; i < collision.contactCount; i++)
@@ -150,10 +154,7 @@ public class LungerEnemy : MonoBehaviour
     // Searches the transform itself, then up, then down — handles any hierarchy layout.
     private static CombatantStats GetStats(Transform t)
     {
-        if (t == null) return null;
-        return t.GetComponent<CombatantStats>()
-            ?? t.GetComponentInParent<CombatantStats>()
-            ?? t.GetComponentInChildren<CombatantStats>();
+        return EnemyTargetUtility.GetStats(t);
     }
 
     private void OnDamageTaken(float _)
@@ -256,16 +257,15 @@ public class LungerEnemy : MonoBehaviour
             Collider col = overlapBuffer[i];
             if (col == null) continue;
 
-            Transform root = col.transform.root;
-            if (!root.gameObject.activeInHierarchy) continue;
-            if (!root.CompareTag(settings.PlayerTag)) continue;
+            Transform player = EnemyTargetUtility.FindTaggedActor(col.transform, settings.PlayerTag);
+            if (player == null || !player.gameObject.activeInHierarchy) continue;
 
             CombatantStats cs = GetStats(col.transform);
             if (cs != null && cs.IsDead) continue;
 
             if (!HasLineOfSight(col.transform)) continue;
 
-            return playerTransform != null ? playerTransform : root;
+            return playerTransform != null ? playerTransform : player;
         }
         return null;
     }
@@ -286,15 +286,16 @@ public class LungerEnemy : MonoBehaviour
             if (col == null) continue;
 
             Transform t = col.transform;
-            Transform root = t.root;
-            if (!root.gameObject.activeInHierarchy) continue;
+            Transform player = EnemyTargetUtility.FindTaggedActor(t, settings.PlayerTag);
+            Transform minion = EnemyTargetUtility.FindTaggedActor(t, settings.MinionTag);
+            Transform actor = player != null ? player : minion;
+            if (actor == null || !actor.gameObject.activeInHierarchy) continue;
 
             CombatantStats cs = GetStats(t);
             if (cs != null && cs.IsDead) continue;
 
-            // Check both the collider's own tag and the root tag to handle nested hierarchies.
-            bool isPlayer = t.CompareTag(settings.PlayerTag) || root.CompareTag(settings.PlayerTag);
-            bool isMinion = t.CompareTag(settings.MinionTag);
+            bool isPlayer = player != null;
+            bool isMinion = minion != null;
             if (!isPlayer && !isMinion) continue;
 
             if (settings.RequireLOSToDetect && !HasLineOfSight(t)) continue;
@@ -526,12 +527,14 @@ public class LungerEnemy : MonoBehaviour
             Collider col = overlapBuffer[i];
             if (col == null) continue;
 
-            Transform root = col.transform.root;
-            bool isPlayer  = col.transform.CompareTag(settings.PlayerTag) || root.CompareTag(settings.PlayerTag);
-            bool isMinion  = col.transform.CompareTag(settings.MinionTag);
+            Transform player = EnemyTargetUtility.FindTaggedActor(col.transform, settings.PlayerTag);
+            Transform minion = EnemyTargetUtility.FindTaggedActor(col.transform, settings.MinionTag);
+            bool isPlayer = player != null;
+            bool isMinion = minion != null;
             if (!isPlayer && !isMinion) continue;
 
-            int id = root.GetInstanceID();
+            Transform actor = isPlayer ? player : minion;
+            int id = actor.GetInstanceID();
             if (lungeHitIds.Contains(id)) continue;
 
             CombatantStats ts = GetStats(col.transform);
@@ -539,7 +542,7 @@ public class LungerEnemy : MonoBehaviour
             {
                 lungeHitIds.Add(id);
                 ts.ApplyDamage(settings.LungeDamage);
-                Log($"Lunge sweep hit {root.name} for {settings.LungeDamage} damage");
+                Log($"Lunge sweep hit {actor.name} for {settings.LungeDamage} damage");
                 if (settings.LungeStopOnHit)
                     hitWallDuringLunge = true;
             }
@@ -686,7 +689,7 @@ public class LungerEnemy : MonoBehaviour
         if (dist <= 0.0001f) return true;
 
         if (Physics.Raycast(start, dir / dist, out RaycastHit hit, dist, settings.LosBlockMask, QueryTriggerInteraction.Ignore))
-            return hit.transform == target || hit.transform.IsChildOf(target);
+            return EnemyTargetUtility.BelongsToActor(hit.transform, target);
 
         return true;
     }
