@@ -15,6 +15,7 @@ MonoBehaviour:
   startRoom: {fileID: 11400000, guid: 5f11bf5df2a08a040ac334e8244303d1, type: 2}
   endRoom: {fileID: 11400000, guid: e7563cdf260b5fe4a958bf41d828cde5, type: 2}
   roomPool:
+  - {fileID: 11400000, guid: 70f08adfe92f3294b9e7448a91a056e8, type: 2}
   - {fileID: 11400000, guid: 2d6155fd9e77c7f44ab61a43dacaf13d, type: 2}
   - {fileID: 11400000, guid: 09fcbbac7416bca42b8803240f4d0a9a, type: 2}
   - {fileID: 11400000, guid: 774172464660bac49884a20a1e9a4123, type: 2}

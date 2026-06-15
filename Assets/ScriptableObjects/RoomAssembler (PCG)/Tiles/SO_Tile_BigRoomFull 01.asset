@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2cbe6f75a9f33445a5b051c9209e6c3, type: 3}
-  m_Name: SO_Tile_BigRoom01
+  m_Name: SO_Tile_BigRoomFull 01
   m_EditorClassIdentifier: Assembly-CSharp::RoomDefinition
   id: BigRoom 1
-  prefab: {fileID: 7160508785593374139, guid: b70284833c2923b4fa510be733173ee1, type: 3}
+  prefab: {fileID: 5191780016101394446, guid: 79ad366b8c7dcf84b91dca4cb6fb2e8e, type: 3}
   weight: 10
   isStart: 0
   isEnd: 0
