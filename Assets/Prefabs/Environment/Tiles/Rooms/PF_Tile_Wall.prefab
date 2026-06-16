@@ -82,11 +82,11 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -2481725031871107768, guid: f845a5cb2bea32440ac0600d03bc1d54, type: 3}
 --- !u!1 &3181671339328577448
@@ -462,6 +462,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f845a5cb2bea32440ac0600d03bc1d54, type: 3}
       propertyPath: m_Name
       value: MDL_Single_Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f845a5cb2bea32440ac0600d03bc1d54, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
