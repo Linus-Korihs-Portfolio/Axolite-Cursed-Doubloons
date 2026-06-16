@@ -36,6 +36,12 @@ MonoBehaviour:
   roomUnitWorldOverride: 0
   attemptsPerOpenSocket: 100
   maxGenerationRetries: 10
+  useEmergencyFallback: 1
+  emergencyFallbackRetries: 20
+  emergencyMinimumRooms: 5
+  emergencyAdditionalMaxRooms: 15
+  emergencyIgnoreEndDistance: 1
+  emergencyForceEndRoom: 1
   allowLoops: 1
   autoCloseMatchingSockets: 1
   centerSnapTolerance: 0.02
