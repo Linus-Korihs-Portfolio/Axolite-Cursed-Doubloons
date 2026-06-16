@@ -31,8 +31,8 @@ Transform:
   m_Children:
   - {fileID: 3436342201934778300}
   - {fileID: 3299384907475080883}
-  - {fileID: 3622005255356303111}
   - {fileID: 4452598360716184281}
+  - {fileID: 3622005255356303111}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1722328966295102317
@@ -44,7 +44,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3622005255356303111}
-  - component: {fileID: 5499543771382081216}
+  - component: {fileID: 1849175373731896733}
   m_Layer: 2
   m_Name: Bounds
   m_TagString: Untagged
@@ -62,13 +62,13 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 1, z: 15}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 632818950583305440}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &5499543771382081216
-BoxCollider:
+--- !u!64 &1849175373731896733
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -82,12 +82,13 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 30, y: 6, z: 10}
-  m_Center: {x: 0, y: 3.5, z: 3}
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2481725031871107768, guid: f845a5cb2bea32440ac0600d03bc1d54, type: 3}
 --- !u!1 &3181671339328577448
 GameObject:
   m_ObjectHideFlags: 0
