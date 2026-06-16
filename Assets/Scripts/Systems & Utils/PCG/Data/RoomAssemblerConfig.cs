@@ -4,6 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "SO/PCG/Room Assembler", fileName = "RoomAssemblerConfig")]
 public class RoomAssemblerConfig : ScriptableObject
 {
+    public const int MinimumEmergencyRooms = 5;
+
     [Header("Rooms")]
     [Tooltip("First room placed at world origin. Its Bounds can be used to auto-calculate room unit size.")]
     public RoomDefinition startRoom;
@@ -53,7 +55,7 @@ public class RoomAssemblerConfig : ScriptableObject
     [Min(1)] public int emergencyFallbackRetries = 5;
 
     [Tooltip("Minimum room count allowed only during emergency fallback attempts.")]
-    [Min(2)] public int emergencyMinimumRooms = 5;
+    [Min(MinimumEmergencyRooms)] public int emergencyMinimumRooms = MinimumEmergencyRooms;
 
     [Tooltip("Extra room capacity allowed only during emergency fallback attempts.")]
     [Min(0)] public int emergencyAdditionalMaxRooms = 15;
@@ -121,4 +123,11 @@ public class RoomAssemblerConfig : ScriptableObject
     [Header("Debug")]
     [Tooltip("Print detailed generation and placement logs to the Console.")]
     public bool log = false;
+
+    private void OnValidate()
+    {
+        emergencyMinimumRooms = Mathf.Max(MinimumEmergencyRooms, emergencyMinimumRooms);
+        emergencyFallbackRetries = Mathf.Max(1, emergencyFallbackRetries);
+        emergencyAdditionalMaxRooms = Mathf.Max(0, emergencyAdditionalMaxRooms);
+    }
 }

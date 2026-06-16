@@ -35,10 +35,10 @@ MonoBehaviour:
   maxEndDistanceRooms: 10
   roomUnitWorldOverride: 0
   attemptsPerOpenSocket: 100
-  maxGenerationRetries: 10
+  maxGenerationRetries: 15
   useEmergencyFallback: 1
-  emergencyFallbackRetries: 20
-  emergencyMinimumRooms: 5
+  emergencyFallbackRetries: 25
+  emergencyMinimumRooms: 8
   emergencyAdditionalMaxRooms: 15
   emergencyIgnoreEndDistance: 1
   emergencyForceEndRoom: 1

@@ -132,7 +132,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
                 float minEndWorld = config.minEndDistanceRooms * roomUnitWorld;
                 float maxEndWorld = Mathf.Max(minEndWorld, config.maxEndDistanceRooms * roomUnitWorld);
                 int effectiveMinRooms = emergencyFallback
-                    ? Mathf.Min(config.minRooms, Mathf.Max(2, config.emergencyMinimumRooms))
+                    ? Mathf.Max(RoomAssemblerConfig.MinimumEmergencyRooms, config.emergencyMinimumRooms)
                     : config.minRooms;
                 int effectiveMaxRooms = emergencyFallback
                     ? Mathf.Max(effectiveMinRooms, config.maxRooms + Mathf.Max(0, config.emergencyAdditionalMaxRooms))
