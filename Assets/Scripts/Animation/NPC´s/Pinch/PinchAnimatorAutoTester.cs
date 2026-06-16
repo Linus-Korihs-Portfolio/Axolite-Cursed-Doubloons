@@ -13,7 +13,7 @@ public class PinchAnimatorAutoTester : MonoBehaviour
 
     [Header("On Screen Tester")]
     [SerializeField] private bool showOnScreenTester = true;
-    [SerializeField] private Rect testerWindowRect = new Rect(15f, 15f, 260f, 170f);
+    [SerializeField] private Rect testerWindowRect = new Rect(15f, 15f, 260f, 210f);
 
     [Header("Start Behaviour")]
     [SerializeField] private bool resetToIdleOnStart = true;
@@ -68,7 +68,7 @@ public class PinchAnimatorAutoTester : MonoBehaviour
         GUILayout.Label("Keys:");
         GUILayout.Label("1 = Idle");
         GUILayout.Label("2 = Dialog");
-        GUILayout.Label("3 = IdleBreak");
+        GUILayout.Label("3 = IdleBreak + Coin");
         GUILayout.Label("R = Reset");
 
         GUILayout.Space(5);
@@ -81,11 +81,19 @@ public class PinchAnimatorAutoTester : MonoBehaviour
         if (GUILayout.Button("Play Dialog"))
             bridge.PlayDialog();
 
-        if (GUILayout.Button("Play IdleBreak"))
+        if (GUILayout.Button("Play IdleBreak + Coin"))
             bridge.PlayIdleBreak();
 
         if (GUILayout.Button("Reset To Start + Idle"))
             bridge.ResetToStartAndIdle();
+
+        GUILayout.Space(5);
+
+        if (GUILayout.Button("Force Show Coin"))
+            bridge.SetCoinVisible(true);
+
+        if (GUILayout.Button("Force Hide Coin"))
+            bridge.SetCoinVisible(false);
 
         GUI.enabled = true;
 
@@ -103,41 +111,5 @@ public class PinchAnimatorAutoTester : MonoBehaviour
 
         if (bridge == null)
             bridge = GetComponentInParent<PinchAnimatorBridge>();
-    }
-
-    [ContextMenu("Test / Play Idle")]
-    private void TestPlayIdle()
-    {
-        FindBridgeIfNeeded();
-
-        if (bridge != null)
-            bridge.PlayIdle();
-    }
-
-    [ContextMenu("Test / Play Dialog")]
-    private void TestPlayDialog()
-    {
-        FindBridgeIfNeeded();
-
-        if (bridge != null)
-            bridge.PlayDialog();
-    }
-
-    [ContextMenu("Test / Play IdleBreak")]
-    private void TestPlayIdleBreak()
-    {
-        FindBridgeIfNeeded();
-
-        if (bridge != null)
-            bridge.PlayIdleBreak();
-    }
-
-    [ContextMenu("Test / Reset To Start + Idle")]
-    private void TestResetToStartAndIdle()
-    {
-        FindBridgeIfNeeded();
-
-        if (bridge != null)
-            bridge.ResetToStartAndIdle();
     }
 }

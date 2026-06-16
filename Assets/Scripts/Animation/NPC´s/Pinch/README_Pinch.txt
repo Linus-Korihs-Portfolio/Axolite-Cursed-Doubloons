@@ -2,9 +2,9 @@
 
 ## Zweck
 
-Pinch ist ein animiertes NPC-Prefab mit vorbereitetem Animator Controller und Bridge-Script für Gameplay- oder Dialog-Anbindung.
+Pinch ist ein animiertes NPC-Prefab mit vorbereitetem Animator Controller und Bridge-Script für Dialog-, Idle- und IdleBreak-Animationen.
 
-Pinch besitzt nur 3 Animationen und benötigt kein Movement-System.
+Pinch besitzt zusätzlich eine Münze als optionales Prop, die nur während `Pinch_IdleBreak` sichtbar sein soll.
 
 ## Dateien
 
@@ -30,7 +30,7 @@ Pinch besitzt nur 3 Animationen und benötigt kein Movement-System.
   Startet die Dialog-Animation.
 
 * `IdleBreak` — Trigger
-  Startet die optionale Idle-Unterbrechung.
+  Startet die IdleBreak-Animation mit Münze.
 
 Ein `Speed`-Parameter wird nicht benötigt, da Pinch kein Enemy mit Movement ist.
 
@@ -48,8 +48,6 @@ Ein `Speed`-Parameter wird nicht benötigt, da Pinch kein Enemy mit Movement ist
 * `Pinch_IdleBreak → Pinch_Idle`
   über Exit Time, keine Condition
 
-`Pinch_Idle` läuft dauerhaft als Standardanimation.
-
 ## Clip Settings
 
 Loop Time ON:
@@ -61,6 +59,21 @@ Loop Time OFF:
 * `Pinch_Dialog`
 * `Pinch_IdleBreak`
 
+## Münze / Prop Setup
+
+Die Münze muss als echtes Objekt im `PF_Pinch`-Prefab vorhanden sein, nicht nur im importierten Animations-Preview.
+
+Wichtig im `PinchAnimatorBridge`:
+
+* `Coin Root` = Münz-GameObject aus der Prefab-Hierarchy eintragen
+* `Hide Coin On Start` = ON
+* `Force Coin Hidden Outside IdleBreak` = ON
+* `Disable Coin Game Object When Hidden` = ON
+
+Die Münze wird dadurch nur bei `Pinch_IdleBreak` angezeigt und bei Idle, Dialog und Reset automatisch versteckt.
+
+Falls `Force Hide Coin` im Tester die Münze nicht versteckt, ist wahrscheinlich das falsche Münz-Objekt im `Coin Root` eingetragen.
+
 ## Bridge-Script
 
 `PinchAnimatorBridge` stellt folgende Methoden bereit:
@@ -70,14 +83,21 @@ Loop Time OFF:
 * `PlayIdleBreak()`
 * `ResetToIdle()`
 * `ResetToStartAndIdle()`
+* `SetCoinVisible(bool visible)`
 
-`ResetToStartAndIdle()` ist primär für Tests gedacht und setzt Pinch auf seine Startposition zurück.
+`ResetToStartAndIdle()` ist primär für Tests gedacht.
 
 ## Animation Events
 
-`PinchAnimationEvents` enthält vorbereitete Event-Methoden für spätere Gameplay- oder Dialog-Anbindung.
+`PinchAnimationEvents` enthält vorbereitete Event-Methoden für spätere Gameplay-, Sound-, VFX- oder Prop-Anbindung.
 
-Aktuell können sie genutzt werden, um Dialog- oder IdleBreak-Animationen sauber wieder zu `Pinch_Idle` zurückzuführen.
+Aktuell sind unter anderem Methoden zum Anzeigen und Verstecken der Münze vorbereitet:
+
+* `AnimationEvent_ShowCoin()`
+* `AnimationEvent_HideCoin()`
+* `AnimationEvent_ReturnToIdle()`
+
+Die Münze wird aber zusätzlich über das Bridge-Script abgesichert, damit sie außerhalb von `Pinch_IdleBreak` nicht sichtbar bleibt.
 
 ## Testing
 
@@ -87,10 +107,14 @@ Im Play Mode:
 
 * `1` = Idle
 * `2` = Dialog
-* `3` = IdleBreak
+* `3` = IdleBreak + Coin
 * `R` = Reset zu Startposition + Idle
 
 Zusätzlich erscheint ein kleines Testfenster im Game View mit Buttons für alle Animationen.
+
+Falls im Editor ein GUI-/Skin-Fehler durch das Testfenster auftritt, kann im Inspector testweise deaktiviert werden:
+
+* `Show On Screen Tester`
 
 Für normales Gameplay deaktivieren oder entfernen:
 
@@ -98,6 +122,8 @@ Für normales Gameplay deaktivieren oder entfernen:
 
 ## Programmer Notes
 
-Die Gameplay- oder Dialog-Logik sollte Pinch über `PinchAnimatorBridge` ansteuern.
+Die Gameplay- oder Dialoglogik sollte Pinch über `PinchAnimatorBridge` ansteuern.
 
 Movement, AI, Dialogsystem, Sounds, VFX und Interaktionslogik sind noch nicht implementiert.
+
+Die Münze ist aktuell ein visuelles Prop und wird über `Coin Root` im Bridge-Script gesteuert.
