@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy3AnimationEvents : MonoBehaviour
+public class BurrowerAnimationEvents : MonoBehaviour
 {
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
@@ -148,7 +148,7 @@ public class Enemy3AnimationEvents : MonoBehaviour
 
     public void OnDiggingHidden()
     {
-        LogEvent("Enemy is hidden in ground");
+        LogEvent("Burrower is hidden in ground");
     }
 
     public void OnDiggingFinished()
@@ -207,6 +207,6 @@ public class Enemy3AnimationEvents : MonoBehaviour
             return;
         }
 
-        Debug.Log("[Enemy 3 Animation Event] " + gameObject.name + ": " + message);
+        Debug.Log("[Burrower Animation Event] " + gameObject.name + ": " + message);
     }
 }

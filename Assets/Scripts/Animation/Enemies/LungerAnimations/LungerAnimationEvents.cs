@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyAnimationEvents : MonoBehaviour
+public class LungerAnimationEvents : MonoBehaviour
 {
     public void OnMainAttackHit()
     {

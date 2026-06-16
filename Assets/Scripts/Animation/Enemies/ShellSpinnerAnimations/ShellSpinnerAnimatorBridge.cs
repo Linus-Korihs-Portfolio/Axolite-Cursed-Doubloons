@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class Enemy2AnimatorBridge : MonoBehaviour
+public class ShellSpinnerAnimatorBridge : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Animator animator;
@@ -84,7 +84,7 @@ public class Enemy2AnimatorBridge : MonoBehaviour
     {
         if (animator == null || animator.runtimeAnimatorController == null)
         {
-            Debug.LogWarning("Enemy2AnimatorBridge: Kein Animator oder kein Animator Controller gefunden.");
+            Debug.LogWarning("ShellSpinnerAnimatorBridge: Kein Animator oder kein Animator Controller gefunden.");
             return false;
         }
 
@@ -103,7 +103,7 @@ public class Enemy2AnimatorBridge : MonoBehaviour
     {
         if (!hasSpeed)
         {
-            Debug.LogWarning("Enemy2AnimatorBridge: Animator Parameter fehlt oder ist kein Float: " + speedParameter);
+            Debug.LogWarning("ShellSpinnerAnimatorBridge: Animator Parameter fehlt oder ist kein Float: " + speedParameter);
             return;
         }
 
@@ -114,7 +114,7 @@ public class Enemy2AnimatorBridge : MonoBehaviour
     {
         if (!hasNeedsTurn)
         {
-            Debug.LogWarning("Enemy2AnimatorBridge: Animator Parameter fehlt oder ist kein Bool: " + needsTurnParameter);
+            Debug.LogWarning("ShellSpinnerAnimatorBridge: Animator Parameter fehlt oder ist kein Bool: " + needsTurnParameter);
             return;
         }
 
@@ -125,7 +125,7 @@ public class Enemy2AnimatorBridge : MonoBehaviour
     {
         if (!hasContinueShooting)
         {
-            Debug.LogWarning("Enemy2AnimatorBridge: Animator Parameter fehlt oder ist kein Bool: " + continueShootingParameter);
+            Debug.LogWarning("ShellSpinnerAnimatorBridge: Animator Parameter fehlt oder ist kein Bool: " + continueShootingParameter);
             return;
         }
 
@@ -136,7 +136,7 @@ public class Enemy2AnimatorBridge : MonoBehaviour
     {
         if (!hasContinueSpinning)
         {
-            Debug.LogWarning("Enemy2AnimatorBridge: Animator Parameter fehlt oder ist kein Bool: " + continueSpinningParameter);
+            Debug.LogWarning("ShellSpinnerAnimatorBridge: Animator Parameter fehlt oder ist kein Bool: " + continueSpinningParameter);
             return;
         }
 
@@ -157,7 +157,7 @@ public class Enemy2AnimatorBridge : MonoBehaviour
     {
         if (!hasProjectileAttack)
         {
-            Debug.LogWarning("Enemy2AnimatorBridge: Animator Trigger fehlt: " + projectileAttackTrigger);
+            Debug.LogWarning("ShellSpinnerAnimatorBridge: Animator Trigger fehlt: " + projectileAttackTrigger);
             return;
         }
 
@@ -184,7 +184,7 @@ public class Enemy2AnimatorBridge : MonoBehaviour
     {
         if (!hasSpinAttack)
         {
-            Debug.LogWarning("Enemy2AnimatorBridge: Animator Trigger fehlt: " + spinAttackTrigger);
+            Debug.LogWarning("ShellSpinnerAnimatorBridge: Animator Trigger fehlt: " + spinAttackTrigger);
             return;
         }
 
@@ -209,7 +209,7 @@ public class Enemy2AnimatorBridge : MonoBehaviour
     {
         if (!hasIdleBreak)
         {
-            Debug.LogWarning("Enemy2AnimatorBridge: Animator Trigger fehlt: " + idleBreakTrigger);
+            Debug.LogWarning("ShellSpinnerAnimatorBridge: Animator Trigger fehlt: " + idleBreakTrigger);
             return;
         }
 
@@ -221,7 +221,7 @@ public class Enemy2AnimatorBridge : MonoBehaviour
     {
         if (!hasIsDead)
         {
-            Debug.LogWarning("Enemy2AnimatorBridge: Animator Parameter fehlt oder ist kein Bool: " + isDeadParameter);
+            Debug.LogWarning("ShellSpinnerAnimatorBridge: Animator Parameter fehlt oder ist kein Bool: " + isDeadParameter);
             return;
         }
 

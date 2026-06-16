@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-public class EnemyAnimatorAutoTester : MonoBehaviour
+public class LungerAnimatorAutoTester : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private EnemyAnimatorBridge enemyAnimator;
+    [SerializeField] private LungerAnimatorBridge lungerAnimator;
 
     [Header("Auto Test")]
     [SerializeField] private bool autoRunOnStart = true;
@@ -24,20 +24,20 @@ public class EnemyAnimatorAutoTester : MonoBehaviour
 
     private void Awake()
     {
-        if (enemyAnimator == null)
+        if (lungerAnimator == null)
         {
-            enemyAnimator = GetComponent<EnemyAnimatorBridge>();
+            lungerAnimator = GetComponent<LungerAnimatorBridge>();
         }
 
-        if (enemyAnimator == null)
+        if (lungerAnimator == null)
         {
-            Debug.LogError("EnemyAnimatorAutoTester: Keine EnemyAnimatorBridge gefunden.");
+            Debug.LogError("LungerAnimatorAutoTester: Keine LungerAnimatorBridge gefunden.");
         }
     }
 
     private IEnumerator Start()
     {
-        if (autoRunOnStart && enemyAnimator != null)
+        if (autoRunOnStart && lungerAnimator != null)
         {
             if (loopTest)
             {
@@ -63,38 +63,38 @@ public class EnemyAnimatorAutoTester : MonoBehaviour
         Debug.Log("AUTO TEST START: Idle");
 
         // Idle
-        enemyAnimator.SetSpeed(0f);
-        enemyAnimator.SetDead(false);
+        lungerAnimator.SetSpeed(0f);
+        lungerAnimator.SetDead(false);
         yield return new WaitForSeconds(idleWait);
 
         // Walk
         Debug.Log("AUTO TEST: Walk");
-        enemyAnimator.SetSpeed(walkSpeed);
+        lungerAnimator.SetSpeed(walkSpeed);
         yield return new WaitForSeconds(walkDuration);
 
         // Back to Idle
         Debug.Log("AUTO TEST: Back to Idle");
-        enemyAnimator.SetSpeed(0f);
+        lungerAnimator.SetSpeed(0f);
         yield return new WaitForSeconds(idleWait);
 
         // Main Attack
         Debug.Log("AUTO TEST: MainAttack");
-        enemyAnimator.PlayMainAttack();
+        lungerAnimator.PlayMainAttack();
         yield return new WaitForSeconds(attackWait);
 
         // Lunge Attack
         Debug.Log("AUTO TEST: LungeAttack");
-        enemyAnimator.PlayLungeAttack();
+        lungerAnimator.PlayLungeAttack();
         yield return new WaitForSeconds(lungeWait);
 
         // Idle Break optional
         Debug.Log("AUTO TEST: IdleBreak");
-        enemyAnimator.PlayIdleBreak();
+        lungerAnimator.PlayIdleBreak();
         yield return new WaitForSeconds(idleBreakWait);
 
         // Death
         Debug.Log("AUTO TEST: Death");
-        enemyAnimator.SetDead(true);
+        lungerAnimator.SetDead(true);
         yield return new WaitForSeconds(deathWait);
 
         Debug.Log("AUTO TEST FINISHED");
@@ -102,6 +102,6 @@ public class EnemyAnimatorAutoTester : MonoBehaviour
 
     private void ResetAnimatorForNextLoop()
     {
-        enemyAnimator.ResetToIdle();
+        lungerAnimator.ResetToIdle();
     }
 }

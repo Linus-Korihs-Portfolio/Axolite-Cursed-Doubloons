@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-public class Enemy2AnimatorAutoTester : MonoBehaviour
+public class ShellSpinnerAnimatorAutoTester : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Enemy2AnimatorBridge enemyAnimator;
+    [SerializeField] private ShellSpinnerAnimatorBridge shellSpinnerAnimator;
 
     [Header("Auto Test Settings")]
     [SerializeField] private bool autoRunOnStart = true;
@@ -48,20 +48,20 @@ public class Enemy2AnimatorAutoTester : MonoBehaviour
 
     private void Awake()
     {
-        if (enemyAnimator == null)
+        if (shellSpinnerAnimator == null)
         {
-            enemyAnimator = GetComponent<Enemy2AnimatorBridge>();
+            shellSpinnerAnimator = GetComponent<ShellSpinnerAnimatorBridge>();
         }
 
-        if (enemyAnimator == null)
+        if (shellSpinnerAnimator == null)
         {
-            Debug.LogError("Enemy2AnimatorAutoTester: Keine Enemy2AnimatorBridge gefunden. Bitte beide Scripts auf dasselbe GameObject legen.");
+            Debug.LogError("ShellSpinnerAnimatorAutoTester: Keine ShellSpinnerAnimatorBridge gefunden. Bitte beide Scripts auf dasselbe GameObject legen.");
         }
     }
 
     private void Start()
     {
-        if (autoRunOnStart && enemyAnimator != null)
+        if (autoRunOnStart && shellSpinnerAnimator != null)
         {
             StartAutoTest();
         }
@@ -90,93 +90,93 @@ public class Enemy2AnimatorAutoTester : MonoBehaviour
     {
         do
         {
-            Debug.Log("ENEMY 2 AUTO TEST START");
+            Debug.Log("SHELL SPINNER AUTO TEST START");
 
-            enemyAnimator.ResetToIdle();
+            shellSpinnerAnimator.ResetToIdle();
             yield return new WaitForSeconds(0.2f);
 
             if (testIdle)
             {
-                Debug.Log("ENEMY 2 AUTO TEST: Idle");
-                enemyAnimator.SetSpeed(0f);
+                Debug.Log("SHELL SPINNER AUTO TEST: Idle");
+                shellSpinnerAnimator.SetSpeed(0f);
                 yield return new WaitForSeconds(idleWait);
             }
 
             if (testWalk)
             {
-                Debug.Log("ENEMY 2 AUTO TEST: Walk");
-                enemyAnimator.SetSpeed(walkSpeed);
+                Debug.Log("SHELL SPINNER AUTO TEST: Walk");
+                shellSpinnerAnimator.SetSpeed(walkSpeed);
                 yield return new WaitForSeconds(walkDuration);
 
-                Debug.Log("ENEMY 2 AUTO TEST: Back to Idle");
-                enemyAnimator.SetSpeed(0f);
+                Debug.Log("SHELL SPINNER AUTO TEST: Back to Idle");
+                shellSpinnerAnimator.SetSpeed(0f);
                 yield return new WaitForSeconds(idleWait);
             }
 
             if (testProjectileAttackWithoutTurn)
             {
-                Debug.Log("ENEMY 2 AUTO TEST: ProjectileAttack WITHOUT turn/walk");
-                enemyAnimator.PlayProjectileAttack(false, false);
+                Debug.Log("SHELL SPINNER AUTO TEST: ProjectileAttack WITHOUT turn/walk");
+                shellSpinnerAnimator.PlayProjectileAttack(false, false);
                 yield return new WaitForSeconds(projectileAttackWithoutTurnWait);
             }
 
             if (testProjectileAttackWithTurn)
             {
-                Debug.Log("ENEMY 2 AUTO TEST: ProjectileAttack WITH turn/walk");
-                enemyAnimator.PlayProjectileAttack(true, false);
+                Debug.Log("SHELL SPINNER AUTO TEST: ProjectileAttack WITH turn/walk");
+                shellSpinnerAnimator.PlayProjectileAttack(true, false);
                 yield return new WaitForSeconds(projectileAttackWithTurnWait);
             }
 
             if (testProjectileAttackWithTurnAndRepeatShot)
             {
-                Debug.Log("ENEMY 2 AUTO TEST: ProjectileAttack WITH turn/walk AND repeat shot");
-                enemyAnimator.PlayProjectileAttack(true, true);
+                Debug.Log("SHELL SPINNER AUTO TEST: ProjectileAttack WITH turn/walk AND repeat shot");
+                shellSpinnerAnimator.PlayProjectileAttack(true, true);
                 yield return new WaitForSeconds(projectileAttackRepeatWait);
 
-                enemyAnimator.SetContinueShooting(false);
+                shellSpinnerAnimator.SetContinueShooting(false);
                 yield return new WaitForSeconds(1.0f);
             }
 
             if (testSpinAttackNormal)
             {
-                Debug.Log("ENEMY 2 AUTO TEST: SpinAttack normal");
-                enemyAnimator.PlaySpinAttack(false);
+                Debug.Log("SHELL SPINNER AUTO TEST: SpinAttack normal");
+                shellSpinnerAnimator.PlaySpinAttack(false);
                 yield return new WaitForSeconds(spinAttackNormalWait);
             }
 
             if (testSpinAttackLong)
             {
-                Debug.Log("ENEMY 2 AUTO TEST: SpinAttack LONG / ContinueSpinning true");
-                enemyAnimator.PlaySpinAttack(true);
+                Debug.Log("SHELL SPINNER AUTO TEST: SpinAttack LONG / ContinueSpinning true");
+                shellSpinnerAnimator.PlaySpinAttack(true);
 
                 yield return new WaitForSeconds(longSpinHoldTime);
 
-                Debug.Log("ENEMY 2 AUTO TEST: Stop ContinueSpinning");
-                enemyAnimator.StopSpinning();
+                Debug.Log("SHELL SPINNER AUTO TEST: Stop ContinueSpinning");
+                shellSpinnerAnimator.StopSpinning();
 
                 yield return new WaitForSeconds(spinAttackFinishWait);
             }
 
             if (testIdleBreak)
             {
-                Debug.Log("ENEMY 2 AUTO TEST: IdleBreak");
-                enemyAnimator.PlayIdleBreak();
+                Debug.Log("SHELL SPINNER AUTO TEST: IdleBreak");
+                shellSpinnerAnimator.PlayIdleBreak();
                 yield return new WaitForSeconds(idleBreakWait);
             }
 
             if (testDeath)
             {
-                Debug.Log("ENEMY 2 AUTO TEST: Death");
-                enemyAnimator.SetDead(true);
+                Debug.Log("SHELL SPINNER AUTO TEST: Death");
+                shellSpinnerAnimator.SetDead(true);
                 yield return new WaitForSeconds(deathWait);
             }
 
-            Debug.Log("ENEMY 2 AUTO TEST FINISHED");
+            Debug.Log("SHELL SPINNER AUTO TEST FINISHED");
 
             if (loopTest)
             {
-                Debug.Log("ENEMY 2 AUTO TEST LOOP: Reset and restart.");
-                enemyAnimator.ResetToIdle();
+                Debug.Log("SHELL SPINNER AUTO TEST LOOP: Reset and restart.");
+                shellSpinnerAnimator.ResetToIdle();
                 yield return new WaitForSeconds(delayBetweenLoops);
             }
 

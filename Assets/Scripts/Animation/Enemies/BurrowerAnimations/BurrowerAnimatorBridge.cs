@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class Enemy3AnimatorBridge : MonoBehaviour
+public class BurrowerAnimatorBridge : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Animator animator;
@@ -89,7 +89,7 @@ public class Enemy3AnimatorBridge : MonoBehaviour
     {
         if (animator == null || animator.runtimeAnimatorController == null)
         {
-            Debug.LogWarning("Enemy3AnimatorBridge: Kein Animator oder kein Animator Controller gefunden.");
+            Debug.LogWarning("BurrowerAnimatorBridge: Kein Animator oder kein Animator Controller gefunden.");
             return false;
         }
 
@@ -113,7 +113,7 @@ public class Enemy3AnimatorBridge : MonoBehaviour
     {
         if (!hasSpeed)
         {
-            Debug.LogWarning("Enemy3AnimatorBridge: Animator Parameter fehlt oder ist kein Float: " + speedParameter);
+            Debug.LogWarning("BurrowerAnimatorBridge: Animator Parameter fehlt oder ist kein Float: " + speedParameter);
             return;
         }
 
@@ -203,7 +203,7 @@ public class Enemy3AnimatorBridge : MonoBehaviour
     {
         if (!hasTrigger)
         {
-            Debug.LogWarning("Enemy3AnimatorBridge: Animator Trigger fehlt: " + triggerName);
+            Debug.LogWarning("BurrowerAnimatorBridge: Animator Trigger fehlt: " + triggerName);
             return;
         }
 
@@ -215,7 +215,7 @@ public class Enemy3AnimatorBridge : MonoBehaviour
     {
         if (string.IsNullOrEmpty(stateName))
         {
-            Debug.LogWarning("Enemy3AnimatorBridge: State Name ist leer.");
+            Debug.LogWarning("BurrowerAnimatorBridge: State Name ist leer.");
             return;
         }
 

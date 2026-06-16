@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Enemy3AnimatorAutoTester : MonoBehaviour
+public class BurrowerAnimatorAutoTester : MonoBehaviour
 {
     private enum TestScenario
     {
@@ -16,7 +16,7 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
     }
 
     [Header("References")]
-    [SerializeField] private Enemy3AnimatorBridge enemyAnimator;
+    [SerializeField] private BurrowerAnimatorBridge burrowerAnimator;
 
     [Header("Transform Reset")]
     [Tooltip("Das Objekt, das auf den Ursprungspunkt zurückgesetzt werden soll. Leer lassen = dieses GameObject.")]
@@ -56,9 +56,9 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
 
     private void Awake()
     {
-        if (enemyAnimator == null)
+        if (burrowerAnimator == null)
         {
-            enemyAnimator = GetComponent<Enemy3AnimatorBridge>();
+            burrowerAnimator = GetComponent<BurrowerAnimatorBridge>();
         }
 
         if (objectToReset == null)
@@ -66,9 +66,9 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
             objectToReset = transform;
         }
 
-        if (enemyAnimator == null)
+        if (burrowerAnimator == null)
         {
-            Debug.LogError("Enemy3AnimatorAutoTester: Keine Enemy3AnimatorBridge gefunden. Bitte beide Scripts auf dasselbe GameObject legen.");
+            Debug.LogError("BurrowerAnimatorAutoTester: Keine BurrowerAnimatorBridge gefunden. Bitte beide Scripts auf dasselbe GameObject legen.");
         }
 
         if (captureOriginOnStart)
@@ -79,7 +79,7 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
 
     private void Start()
     {
-        if (autoRunOnStart && enemyAnimator != null)
+        if (autoRunOnStart && burrowerAnimator != null)
         {
             StartAutoTest();
         }
@@ -117,7 +117,7 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
         originScale = objectToReset.localScale;
         originCaptured = true;
 
-        Debug.Log("Enemy3 Tester: Current transform captured as origin.");
+        Debug.Log("Burrower Tester: Current transform captured as origin.");
     }
 
     [ContextMenu("TEST / Reset Transform To Origin")]
@@ -132,7 +132,7 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
         objectToReset.rotation = originRotation;
         objectToReset.localScale = originScale;
 
-        Debug.Log("Enemy3 Tester: Transform reset to origin.");
+        Debug.Log("Burrower Tester: Transform reset to origin.");
     }
 
     [ContextMenu("TEST / Reset Animation To Hidden At Origin")]
@@ -141,12 +141,12 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
         StopAutoTest();
         ResetTransformToOrigin();
 
-        if (enemyAnimator != null)
+        if (burrowerAnimator != null)
         {
-            enemyAnimator.ResetToHidden();
+            burrowerAnimator.ResetToHidden();
         }
 
-        Debug.Log("Enemy3 Tester: Reset to Hidden at origin.");
+        Debug.Log("Burrower Tester: Reset to Hidden at origin.");
     }
 
     [ContextMenu("TEST / Reset Animation To Walk At Origin")]
@@ -155,12 +155,12 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
         StopAutoTest();
         ResetTransformToOrigin();
 
-        if (enemyAnimator != null)
+        if (burrowerAnimator != null)
         {
-            enemyAnimator.ResetToWalkBase();
+            burrowerAnimator.ResetToWalkBase();
         }
 
-        Debug.Log("Enemy3 Tester: Reset to Walk/Base at origin.");
+        Debug.Log("Burrower Tester: Reset to Walk/Base at origin.");
     }
 
     [ContextMenu("TEST / Reset Animation To Hover At Origin")]
@@ -169,19 +169,19 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
         StopAutoTest();
         ResetTransformToOrigin();
 
-        if (enemyAnimator != null)
+        if (burrowerAnimator != null)
         {
-            enemyAnimator.ResetToHover();
+            burrowerAnimator.ResetToHover();
         }
 
-        Debug.Log("Enemy3 Tester: Reset to Hover at origin.");
+        Debug.Log("Burrower Tester: Reset to Hover at origin.");
     }
 
     private IEnumerator AutoTestRoutine()
     {
         do
         {
-            Debug.Log("ENEMY 3 AUTO TEST START: " + scenario);
+            Debug.Log("Burrower AUTO TEST START: " + scenario);
 
             if (resetTransformBeforeAutoTest)
             {
@@ -223,7 +223,7 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
                     break;
             }
 
-            Debug.Log("ENEMY 3 AUTO TEST FINISHED: " + scenario);
+            Debug.Log("Burrower AUTO TEST FINISHED: " + scenario);
 
             if (loopTest)
             {
@@ -237,10 +237,10 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
 
     private IEnumerator TestWakeUpToWalk()
     {
-        enemyAnimator.ResetToHidden();
+        burrowerAnimator.ResetToHidden();
         yield return new WaitForSeconds(hiddenWait);
 
-        enemyAnimator.WakeUp();
+        burrowerAnimator.WakeUp();
         yield return new WaitForSeconds(wakeUpSequenceWait);
 
         yield return OptionalWalkSpeedTest();
@@ -248,74 +248,74 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
 
     private IEnumerator TestSecondAttackToHover()
     {
-        enemyAnimator.ResetToWalkBase();
+        burrowerAnimator.ResetToWalkBase();
         yield return new WaitForSeconds(0.3f);
 
         yield return OptionalWalkSpeedTest();
 
-        enemyAnimator.PlaySecondAttack();
+        burrowerAnimator.PlaySecondAttack();
         yield return new WaitForSeconds(secondAttackWait);
     }
 
     private IEnumerator TestGrabAttackFromHover()
     {
-        enemyAnimator.ResetToHover();
+        burrowerAnimator.ResetToHover();
         yield return new WaitForSeconds(0.3f);
 
-        enemyAnimator.PlayGrabAttack();
+        burrowerAnimator.PlayGrabAttack();
         yield return new WaitForSeconds(grabAttackWait);
     }
 
     private IEnumerator TestLowHpEscapeFromWalk()
     {
-        enemyAnimator.ResetToWalkBase();
+        burrowerAnimator.ResetToWalkBase();
         yield return new WaitForSeconds(0.5f);
 
-        enemyAnimator.PlayFlyDown();
+        burrowerAnimator.PlayFlyDown();
         yield return new WaitForSeconds(lowHpEscapeWait);
     }
 
     private IEnumerator TestLowHpEscapeFromHover()
     {
-        enemyAnimator.ResetToHover();
+        burrowerAnimator.ResetToHover();
         yield return new WaitForSeconds(0.5f);
 
-        enemyAnimator.PlayFlyDown();
+        burrowerAnimator.PlayFlyDown();
         yield return new WaitForSeconds(lowHpEscapeWait);
     }
 
     private IEnumerator TestFullCycleNoLowHp()
     {
-        enemyAnimator.ResetToHidden();
+        burrowerAnimator.ResetToHidden();
         yield return new WaitForSeconds(hiddenWait);
 
-        enemyAnimator.WakeUp();
+        burrowerAnimator.WakeUp();
         yield return new WaitForSeconds(wakeUpSequenceWait);
 
         yield return OptionalWalkSpeedTest();
 
-        enemyAnimator.PlaySecondAttack();
+        burrowerAnimator.PlaySecondAttack();
         yield return new WaitForSeconds(secondAttackWait);
 
-        enemyAnimator.PlayGrabAttack();
+        burrowerAnimator.PlayGrabAttack();
         yield return new WaitForSeconds(grabAttackWait);
     }
 
     private IEnumerator TestDeathFlying()
     {
-        enemyAnimator.ResetToHover();
+        burrowerAnimator.ResetToHover();
         yield return new WaitForSeconds(0.5f);
 
-        enemyAnimator.PlayDeathFlying();
+        burrowerAnimator.PlayDeathFlying();
         yield return new WaitForSeconds(deathWait);
     }
 
     private IEnumerator TestDeathDigging()
     {
-        enemyAnimator.ResetToHidden();
+        burrowerAnimator.ResetToHidden();
         yield return new WaitForSeconds(0.5f);
 
-        enemyAnimator.PlayDeathDigging();
+        burrowerAnimator.PlayDeathDigging();
         yield return new WaitForSeconds(deathWait);
     }
 
@@ -326,8 +326,8 @@ public class Enemy3AnimatorAutoTester : MonoBehaviour
             yield break;
         }
 
-        enemyAnimator.SetSpeed(walkSpeed);
+        burrowerAnimator.SetSpeed(walkSpeed);
         yield return new WaitForSeconds(walkSpeedWait);
-        enemyAnimator.SetSpeed(0f);
+        burrowerAnimator.SetSpeed(0f);
     }
 }

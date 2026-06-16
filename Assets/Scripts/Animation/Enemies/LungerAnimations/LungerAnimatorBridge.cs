@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class EnemyAnimatorBridge : MonoBehaviour
+public class LungerAnimatorBridge : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Animator animator;

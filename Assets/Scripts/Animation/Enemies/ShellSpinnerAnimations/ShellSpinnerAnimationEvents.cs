@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy2AnimationEvents : MonoBehaviour
+public class ShellSpinnerAnimationEvents : MonoBehaviour
 {
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
@@ -92,6 +92,6 @@ public class Enemy2AnimationEvents : MonoBehaviour
             return;
         }
 
-        Debug.Log("[Enemy 2 Animation Event] " + gameObject.name + ": " + message);
+        Debug.Log("[ShellSpinner Animation Event] " + gameObject.name + ": " + message);
     }
 }
