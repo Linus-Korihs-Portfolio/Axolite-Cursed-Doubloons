@@ -253,7 +253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCursorHighlight
   renderers:
-  - {fileID: 0}
+  - {fileID: 6287941248490046645}
   highlightColor: {r: 0.042452812, g: 0.20989934, b: 1, a: 1}
   intensity: 2
   addToExistingEmission: 1
@@ -272,7 +272,7 @@ MonoBehaviour:
   baseProfile: {fileID: 11400000, guid: 1389f37c1949b734090441596fb326fd, type: 2}
   currentHealth: 0
   despawnOnDeath: 1
-  despawnDelay: 0
+  despawnDelay: 1.5
 --- !u!195 &8656907693460140126
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -309,6 +309,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LungerEnemy
   settings: {fileID: 11400000, guid: b46d192e859f5144788bdfddb71ebc65, type: 2}
   playerTransform: {fileID: 0}
+  animationBridge: {fileID: 3318093478755040767}
+  deathDestroyDelay: 1.5
   enableLogs: 1
   currentState: 0
 --- !u!136 &1172384545012472642
@@ -595,7 +597,6 @@ GameObject:
   m_Component:
   - component: {fileID: 219997852272435264}
   - component: {fileID: 2417189422100441630}
-  - component: {fileID: 4042974775177488680}
   m_Layer: 8
   m_Name: Lunger_LP
   m_TagString: Enemy
@@ -709,28 +710,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.000797078, y: 0.039287053, z: -0.0051999353}
     m_Extent: {x: 0.042645246, y: 0.044462234, z: 0.043401517}
   m_DirtyAABB: 0
---- !u!95 &4042974775177488680
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3712339900890315921}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0e2724362b598424f81008f9d8052674, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3813942600222163091
 GameObject:
   m_ObjectHideFlags: 0
@@ -934,6 +913,14 @@ MonoBehaviour:
   lungeAttackTrigger: LungeAttack
   idleBreakTrigger: IdleBreak
   isDeadParameter: IsDead
+  logAnimatorCalls: 1
+  logSetupWarnings: 1
+  playStatesDirectly: 1
+  directTransitionDuration: 0.05
+  mainAttackState: E1_MainAttack
+  lungeAttackState: E1_LungeAttack
+  idleBreakState: E1_IdleBreak
+  deathState: E1_Death
 --- !u!114 &5069506810000571691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -941,7 +928,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4835726816240422494}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b6aca8608347c8449bb0b5361502625b, type: 3}
   m_Name: 
@@ -953,7 +940,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4835726816240422494}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b6d05a7f551a49429959439b13b25f7, type: 3}
   m_Name: 
@@ -1464,7 +1451,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8394594982065001075}
   m_Layer: 8
-  m_Name: Lunger_Rig
+  m_Name: E3_Rig
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

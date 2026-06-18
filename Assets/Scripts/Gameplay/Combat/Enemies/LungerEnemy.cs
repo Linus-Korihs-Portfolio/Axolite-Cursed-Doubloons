@@ -40,6 +40,10 @@ public class LungerEnemy : MonoBehaviour
     [Tooltip("Assign the player's actual moving transform. " + "Required when the player prefab root is a static anchor above the moving body.")]
     [SerializeField] private Transform playerTransform;
 
+    [Header("Animation")]
+    [SerializeField] private LungerAnimatorBridge animationBridge;
+    [SerializeField, Min(0f)] private float deathDestroyDelay = 1.5f;
+
     [Header("Debug")]
     [SerializeField] private bool enableLogs;
 
@@ -86,6 +90,14 @@ public class LungerEnemy : MonoBehaviour
         stats = GetComponent<CombatantStats>();
         stats.Died += OnDied;
         stats.DamageTaken += OnDamageTaken;
+
+        if (animationBridge == null)
+            animationBridge = GetComponentInChildren<LungerAnimatorBridge>(true);
+
+        if (animationBridge == null)
+            Log("No LungerAnimatorBridge found in children. Animations will not be driven by LungerEnemy.");
+        else
+            animationBridge.ResetToIdle();
 
         rb = GetComponent<Rigidbody>();
         if (rb != null)
@@ -343,11 +355,17 @@ public class LungerEnemy : MonoBehaviour
     {
         switch (currentState)
         {
-            case LungerState.Idle: break;
+            case LungerState.Idle:
+            {
+                SetAnimationSpeed(0f);
+                break;
+            }
 
             case LungerState.Approach:
             {
                 if (currentTarget == null) break;
+
+                SetAnimationSpeed(1f);
 
                 // Switch to a nearer target if one exists (0.5 m hysteresis avoids flip-flop).
                 Transform nearest = FindBestTarget();
@@ -369,6 +387,7 @@ public class LungerEnemy : MonoBehaviour
 
             case LungerState.PreLunge:
             {
+                SetAnimationSpeed(0f);
                 stateTimer -= Time.deltaTime;
                 FaceTowards(lungeDirection);
                 if (stateTimer <= 0f)
@@ -381,6 +400,7 @@ public class LungerEnemy : MonoBehaviour
 
             case LungerState.Lunging:
             {
+                SetAnimationSpeed(0f);
                 // Deal damage to every player/minion the body overlaps (once per target this lunge).
                 DealLungeSweepDamage();
 
@@ -400,6 +420,7 @@ public class LungerEnemy : MonoBehaviour
 
             case LungerState.Recovering:
             {
+                SetAnimationSpeed(0f);
                 stateTimer -= Time.deltaTime;
                 if (stateTimer <= 0f)
                 {
@@ -418,6 +439,7 @@ public class LungerEnemy : MonoBehaviour
 
             case LungerState.Bite:
             {
+                SetAnimationSpeed(0f);
                 if (currentTarget == null) { SetState(LungerState.Idle); break; }
 
                 // Target walked out of range — close in.
@@ -439,6 +461,8 @@ public class LungerEnemy : MonoBehaviour
                 if (Time.time >= lastBiteTime + settings.BiteCooldown)
                 {
                     lastBiteTime = Time.time;
+                    PlayMainAttackAnimation();
+
                     CombatantStats ts = GetStats(currentTarget);
                     if (ts != null && !ts.IsDead)
                     {
@@ -491,6 +515,7 @@ public class LungerEnemy : MonoBehaviour
         lungeDistance = dir.magnitude + overshoot;
         lastLungeTime = Time.time;
         stateTimer = settings != null ? settings.LungeWindupDuration : 0.4f;
+        PlayLungeAttackAnimation();
         SetState(LungerState.PreLunge);
     }
 
@@ -647,6 +672,24 @@ public class LungerEnemy : MonoBehaviour
 
     private void ResetNavPath() { hasNavPath = false; navCornerIndex = 0; nextNavRepathTime = 0f; }
 
+    private void SetAnimationSpeed(float speed)
+    {
+        if (animationBridge != null)
+            animationBridge.SetSpeed(speed);
+    }
+
+    private void PlayMainAttackAnimation()
+    {
+        if (animationBridge != null)
+            animationBridge.PlayMainAttack();
+    }
+
+    private void PlayLungeAttackAnimation()
+    {
+        if (animationBridge != null)
+            animationBridge.PlayLungeAttack();
+    }
+
     private void FaceTarget()
     {
         if (currentTarget == null) return;
@@ -721,5 +764,16 @@ public class LungerEnemy : MonoBehaviour
         if (enableLogs) Debug.Log($"[Lunger:{name}] {msg}");
     }
 
-    private void OnDied() => Destroy(gameObject);
+    private void OnDied()
+    {
+        frameVelocity = Vector3.zero;
+
+        if (rb != null)
+            rb.linearVelocity = Vector3.zero;
+
+        if (animationBridge != null)
+            animationBridge.SetDead(true);
+
+        Destroy(gameObject, deathDestroyDelay);
+    }
 }
