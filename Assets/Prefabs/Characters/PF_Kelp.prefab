@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4211510226673687994
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -8.517423
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.00000006593655
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.9796717
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6611267670208419702, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 3e43dcae4ebe7804192816015a722def, type: 2}
+    - target: {fileID: -5739977417281143504, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_Name
+      value: LP_Clothing
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_Name
+      value: PF_Kelp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 4de6b7730ba5ede4e80f75b501e18fb9, type: 2}
+    - target: {fileID: 8190927446439249766, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b08da0fa075caf140a9c58cf91401161, type: 2}
+    - target: {fileID: 8721750206940082162, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      propertyPath: m_Name
+      value: LP_Body
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 188679593550858294}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1255849002608243781}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5185277313590079343}
+  m_SourcePrefab: {fileID: 100100000, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+--- !u!1 &3941533600511582443 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+  m_PrefabInstance: {fileID: 4211510226673687994}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &188679593550858294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3941533600511582443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7809ecb2de9a3594381e3317cb43819c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KelpAnimatorBridge
+  animator: {fileID: 7717163793332035627}
+  speedParameter: Speed
+  punchTrigger: Punch
+  callMinionsTrigger: CallMinions
+  orderMinionsTrigger: OrderMinions
+  dismissTrigger: Dismiss
+  dodgeTrigger: Dodge
+  interactTrigger: Interact
+  idleBreakTrigger: IdleBreak
+  isDeadParameter: IsDead
+  idleStateName: Kelp_Idle
+--- !u!114 &1255849002608243781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3941533600511582443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3c06a7902c71c4dbb0d355afa55bb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KelpAnimatorAutoTester
+  kelpAnimator: {fileID: 188679593550858294}
+  autoRunOnStart: 0
+  loopTest: 0
+  scenario: 13
+  idleWait: 1.5
+  walkWait: 2
+  actionWait: 2
+  idleBreakWait: 3
+  dodgeWait: 1.5
+  deathWait: 2.5
+  delayBetweenLoops: 1
+  walkSpeed: 1
+--- !u!114 &5185277313590079343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3941533600511582443}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ac3ffbba9b2a2f438bb34ca51c1f2f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KelpAnimationEvents
+  showDebugLogs: 1
+--- !u!95 &7717163793332035627 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: b562c3bb876543948ab9e7be42500a4b, type: 3}
+  m_PrefabInstance: {fileID: 4211510226673687994}
+  m_PrefabAsset: {fileID: 0}

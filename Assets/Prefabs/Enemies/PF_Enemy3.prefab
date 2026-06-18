@@ -122,10 +122,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy3AnimatorAutoTester
   enemyAnimator: {fileID: 857642183101590936}
+  objectToReset: {fileID: 8811493597264921128}
+  captureOriginOnStart: 1
+  resetTransformBeforeAutoTest: 1
   autoRunOnStart: 0
   loopTest: 0
   scenario: 5
-  showTestButtons: 1
   hiddenWait: 1
   wakeUpSequenceWait: 3
   secondAttackWait: 2
@@ -149,3 +151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy3AnimationEvents
   showDebugLogs: 1
+--- !u!4 &8811493597264921128 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 95c823d24dc540647a47c3e19317e077, type: 3}
+  m_PrefabInstance: {fileID: 9061822720536716739}
+  m_PrefabAsset: {fileID: 0}
