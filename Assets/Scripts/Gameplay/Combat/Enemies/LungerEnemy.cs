@@ -42,6 +42,10 @@ public class LungerEnemy : MonoBehaviour
 
     [Header("Animation")]
     [SerializeField] private LungerAnimatorBridge animationBridge;
+    [SerializeField] private Transform visualRoot;
+    [SerializeField] private bool applyVisualYawOffset = true;
+    [SerializeField] private float visualYawOffset = 180f;
+    [SerializeField] private bool damageDrivenByAnimationEvents = true;
     [SerializeField, Min(0f)] private float deathDestroyDelay = 1.5f;
 
     [Header("Debug")]
@@ -68,8 +72,11 @@ public class LungerEnemy : MonoBehaviour
     private float lastLungeTime = -999f;
     private readonly System.Collections.Generic.HashSet<int> lungeHitIds =
         new System.Collections.Generic.HashSet<int>();
+    private bool lungeDamageActive;
 
     private float lastBiteTime = -999f;
+    private Transform pendingBiteTarget;
+    private bool biteDamagePending;
 
     private Vector3 frameVelocity;
     private int myLayer;
@@ -93,6 +100,11 @@ public class LungerEnemy : MonoBehaviour
 
         if (animationBridge == null)
             animationBridge = GetComponentInChildren<LungerAnimatorBridge>(true);
+
+        if (visualRoot == null && animationBridge != null)
+            visualRoot = animationBridge.transform;
+
+        ApplyVisualOrientationOffset();
 
         if (animationBridge == null)
             Log("No LungerAnimatorBridge found in children. Animations will not be driven by LungerEnemy.");
@@ -401,8 +413,11 @@ public class LungerEnemy : MonoBehaviour
             case LungerState.Lunging:
             {
                 SetAnimationSpeed(0f);
-                // Deal damage to every player/minion the body overlaps (once per target this lunge).
-                DealLungeSweepDamage();
+                if (!damageDrivenByAnimationEvents || lungeDamageActive)
+                {
+                    // Once the animation hit frame opens the window, sweep while the body moves.
+                    DealLungeSweepDamage();
+                }
 
                 float traveled   = HorizontalDistance(lungeStartPos);
                 bool  reachedEnd = traveled >= lungeDistance;
@@ -461,7 +476,15 @@ public class LungerEnemy : MonoBehaviour
                 if (Time.time >= lastBiteTime + settings.BiteCooldown)
                 {
                     lastBiteTime = Time.time;
+                    pendingBiteTarget = currentTarget;
+                    biteDamagePending = true;
                     PlayMainAttackAnimation();
+
+                    if (damageDrivenByAnimationEvents)
+                        break;
+
+                    biteDamagePending = false;
+                    pendingBiteTarget = null;
 
                     CombatantStats ts = GetStats(currentTarget);
                     if (ts != null && !ts.IsDead)
@@ -515,6 +538,8 @@ public class LungerEnemy : MonoBehaviour
         lungeDistance = dir.magnitude + overshoot;
         lastLungeTime = Time.time;
         stateTimer = settings != null ? settings.LungeWindupDuration : 0.4f;
+        lungeDamageActive = false;
+        lungeHitIds.Clear();
         PlayLungeAttackAnimation();
         SetState(LungerState.PreLunge);
     }
@@ -522,6 +547,7 @@ public class LungerEnemy : MonoBehaviour
     private void BeginRecovery()
     {
         frameVelocity = Vector3.zero;
+        lungeDamageActive = false;
         hasLungedThisEncounter = true;
         stateTimer = settings != null ? settings.LungeRecoveryDuration : 1.2f;
         // Restore lunge-only pass-through layers (skip any that are permanently ignored).
@@ -672,6 +698,90 @@ public class LungerEnemy : MonoBehaviour
 
     private void ResetNavPath() { hasNavPath = false; navCornerIndex = 0; nextNavRepathTime = 0f; }
 
+    public void OnMainAttackHitFrame()
+    {
+        ApplyPendingBiteDamage();
+    }
+
+    public void OnLungeAttackHitFrame()
+    {
+        lungeDamageActive = true;
+        DealLungeSweepDamage();
+    }
+
+    public void OnDeathAnimationFinished()
+    {
+        if (stats != null && stats.IsDead)
+            Destroy(gameObject);
+    }
+
+    private void ApplyPendingBiteDamage()
+    {
+        if (!biteDamagePending)
+        {
+            Log("Main attack hit frame reached, but no bite damage was pending.");
+            return;
+        }
+
+        biteDamagePending = false;
+
+        Transform target = pendingBiteTarget;
+        pendingBiteTarget = null;
+
+        if (target == null)
+        {
+            Log("Bite missed: target no longer exists.");
+            return;
+        }
+
+        float maxRange = settings != null ? settings.BiteMaxRange : 1.5f;
+        if (Vector3.Distance(transform.position, target.position) > maxRange)
+        {
+            Log($"Bite missed {target.name}: target moved out of range.");
+            return;
+        }
+
+        if (settings != null && settings.RequireLOSToAttack && !HasLineOfSight(target))
+        {
+            Log($"Bite missed {target.name}: line of sight blocked.");
+            return;
+        }
+
+        CombatantStats ts = GetStats(target);
+        if (ts != null && !ts.IsDead)
+        {
+            float damage = settings != null ? settings.BiteDamage : 10f;
+            ts.ApplyDamage(damage);
+            Log($"Bite hit {target.name} for {damage} damage");
+        }
+
+        RetargetAfterBite();
+    }
+
+    private void RetargetAfterBite()
+    {
+        if (currentTarget == null) return;
+
+        Transform nearest = FindBestTarget();
+        if (nearest == null || nearest == currentTarget) return;
+
+        float dNearest = Vector3.Distance(transform.position, nearest.position);
+        float dCurrent = Vector3.Distance(transform.position, currentTarget.position);
+        if (dNearest < dCurrent - 0.5f)
+        {
+            Log($"Post-bite: closer target â€” switching {currentTarget.name} â†’ {nearest.name}");
+            currentTarget = nearest;
+            ResetNavPath();
+        }
+    }
+
+    private void ApplyVisualOrientationOffset()
+    {
+        if (!applyVisualYawOffset || visualRoot == null) return;
+
+        visualRoot.localRotation = Quaternion.Euler(0f, visualYawOffset, 0f);
+    }
+
     private void SetAnimationSpeed(float speed)
     {
         if (animationBridge != null)
@@ -745,7 +855,6 @@ public class LungerEnemy : MonoBehaviour
         if (newState == LungerState.Lunging)
         {
             lungeStartPos = transform.position;
-            lungeHitIds.Clear();
             // Enable lunge-only pass-through (e.g. player layer) so the lunger flies through targets.
             if (settings != null)
             {

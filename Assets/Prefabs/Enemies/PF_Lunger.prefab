@@ -310,6 +310,10 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: b46d192e859f5144788bdfddb71ebc65, type: 2}
   playerTransform: {fileID: 0}
   animationBridge: {fileID: 3318093478755040767}
+  visualRoot: {fileID: 5210703559710414052}
+  applyVisualYawOffset: 1
+  visualYawOffset: 180
+  damageDrivenByAnimationEvents: 1
   deathDestroyDelay: 1.5
   enableLogs: 1
   currentState: 0
@@ -933,6 +937,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6aca8608347c8449bb0b5361502625b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimationEvents
+  lungerEnemy: {fileID: 2330723755618707652}
+  logEvents: 1
 --- !u!114 &7746550354551460432
 MonoBehaviour:
   m_ObjectHideFlags: 0
