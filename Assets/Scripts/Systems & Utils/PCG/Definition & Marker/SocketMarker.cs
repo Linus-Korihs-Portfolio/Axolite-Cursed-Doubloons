@@ -25,13 +25,43 @@ public class SocketMarker : MonoBehaviour
     {
         get
         {
-            // derive direction from name
-            if (name.Contains("North")) return transform.parent.forward;
-            if (name.Contains("South")) return -transform.parent.forward;
-            if (name.Contains("East"))  return transform.parent.right;
-            if (name.Contains("West"))  return -transform.parent.right;
+            Transform roomRoot = transform.parent;
+            if (roomRoot != null)
+            {
+                Vector3 roomCenterWorld = roomRoot.position;
+                Transform boundsTransform = roomRoot.Find("Bounds");
+                if (boundsTransform != null)
+                {
+                    BoxCollider bounds = boundsTransform.GetComponent<BoxCollider>();
+                    if (bounds != null)
+                    {
+                        roomCenterWorld = bounds.transform.TransformPoint(bounds.center);
+                    }
+                }
 
-            // fallback
+                Vector3 localDelta =
+                    roomRoot.InverseTransformPoint(CenterWorld) -
+                    roomRoot.InverseTransformPoint(roomCenterWorld);
+
+                if (Mathf.Abs(localDelta.x) > Mathf.Abs(localDelta.z) &&
+                    Mathf.Abs(localDelta.x) > 0.0001f)
+                {
+                    return localDelta.x > 0f ? roomRoot.right : -roomRoot.right;
+                }
+
+                if (Mathf.Abs(localDelta.z) > 0.0001f)
+                {
+                    return localDelta.z > 0f ? roomRoot.forward : -roomRoot.forward;
+                }
+            }
+
+            // Legacy fallback for sockets without a room Bounds object.
+            Transform fallbackBasis = transform.parent != null ? transform.parent : transform;
+            if (name.Contains("North")) return fallbackBasis.forward;
+            if (name.Contains("South")) return -fallbackBasis.forward;
+            if (name.Contains("East")) return fallbackBasis.right;
+            if (name.Contains("West")) return -fallbackBasis.right;
+
             return transform.forward;
         }
     }

@@ -13,7 +13,6 @@ public class RuntimeNavMeshBuilder : MonoBehaviour
     [Header("Collection")]
     [SerializeField] private bool useGeneratedLayers = true;
     [SerializeField] private LayerMask layerMask = ~0;
-    [SerializeField] private NavMeshCollectGeometry geometry = NavMeshCollectGeometry.PhysicsColliders;
     [SerializeField] private int defaultArea;
 
     [Header("Debug")]
@@ -29,52 +28,65 @@ public class RuntimeNavMeshBuilder : MonoBehaviour
 
         Physics.SyncTransforms();
 
-        int builtCount = 0;
-
         if (buildChildSurfaces)
         {
-            builtCount += BuildChildSurfaces(generatedRoot);
+            Debug.LogWarning(
+                "[PCG NavMesh] Separate child surfaces cannot mark areas of another surface as Not Walkable. " +
+                "Building one combined surface and using the child surface settings as modifiers instead.",
+                this);
         }
-        else
-        {
-            NavMeshSurface targetSurface = ResolveSurface(generatedRoot);
-            if (targetSurface == null)
-            {
-                Debug.LogWarning($"{name}: no NavMeshSurface available for runtime build.", this);
-                return;
-            }
 
-            ConfigureSurface(targetSurface);
-            targetSurface.BuildNavMesh();
-            builtCount++;
+        NavMeshSurface targetSurface = ResolveSurface(generatedRoot);
+        if (targetSurface == null)
+        {
+            Debug.LogWarning($"{name}: no NavMeshSurface available for runtime build.", this);
+            return;
         }
+
+        int referencedSurfaces = PrepareChildSurfaceReferences(generatedRoot, targetSurface);
+        ConfigureSurface(targetSurface);
+        targetSurface.BuildNavMesh();
 
         if (log)
         {
-            Debug.Log($"[PCG NavMesh] Built {builtCount} NavMeshSurface(s) under {generatedRoot.name}.", this);
+            Debug.Log(
+                $"[PCG NavMesh] Built one combined surface under {generatedRoot.name}. " +
+                $"ReferencedChildSurfaces={referencedSurfaces}.",
+                this);
         }
     }
 
-    private int BuildChildSurfaces(Transform generatedRoot)
+    private static int PrepareChildSurfaceReferences(
+        Transform generatedRoot,
+        NavMeshSurface targetSurface)
     {
-        NavMeshSurface[] surfaces = generatedRoot.GetComponentsInChildren<NavMeshSurface>(true);
-        int builtCount = 0;
+        NavMeshSurface[] childSurfaces = generatedRoot.GetComponentsInChildren<NavMeshSurface>(true);
+        int referencedCount = 0;
+        int notWalkableArea = NavMesh.GetAreaFromName("Not Walkable");
 
-        for (int i = 0; i < surfaces.Length; i++)
+        for (int i = 0; i < childSurfaces.Length; i++)
         {
-            NavMeshSurface childSurface = surfaces[i];
-            if (childSurface == null || !childSurface.gameObject.activeInHierarchy) continue;
+            NavMeshSurface childSurface = childSurfaces[i];
+            if (childSurface == null || childSurface == targetSurface) continue;
 
-            childSurface.BuildNavMesh();
-            builtCount++;
+            // Keep the authored component enabled, but remove its separately registered
+            // NavMeshData so it cannot overlap the combined generated surface.
+            childSurface.RemoveData();
+            referencedCount++;
+
+            if (childSurface.defaultArea != notWalkableArea) continue;
+
+            NavMeshModifier modifier = childSurface.GetComponent<NavMeshModifier>();
+            if (modifier == null)
+            {
+                modifier = childSurface.gameObject.AddComponent<NavMeshModifier>();
+            }
+
+            modifier.overrideArea = true;
+            modifier.area = notWalkableArea;
         }
 
-        if (builtCount == 0)
-        {
-            Debug.LogWarning($"{name}: buildChildSurfaces is enabled, but no active child NavMeshSurface was found under {generatedRoot.name}.", this);
-        }
-
-        return builtCount;
+        return referencedCount;
     }
 
     private NavMeshSurface ResolveSurface(Transform generatedRoot)
@@ -97,7 +109,9 @@ public class RuntimeNavMeshBuilder : MonoBehaviour
     private void ConfigureSurface(NavMeshSurface targetSurface)
     {
         targetSurface.collectObjects = CollectObjects.Children;
-        targetSurface.useGeometry = geometry;
+        // Collider collection avoids render-only geometry. MeshColliders still require
+        // their imported shared meshes to have Read/Write enabled for runtime baking.
+        targetSurface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
         targetSurface.defaultArea = defaultArea;
         targetSurface.layerMask = useGeneratedLayers ? ResolveGeneratedLayerMask() : layerMask;
     }

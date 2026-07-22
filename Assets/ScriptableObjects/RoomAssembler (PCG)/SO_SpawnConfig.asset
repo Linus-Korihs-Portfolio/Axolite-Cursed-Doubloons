@@ -70,7 +70,7 @@ MonoBehaviour:
     additionalMinPerLevel: 0
     additionalMaxPerLevel: 2
   itemPool: []
-  scalingMode: 1
+  scalingMode: 2
   enemyStatMultiplierByLevel:
     serializedVersion: 2
     m_Curve:

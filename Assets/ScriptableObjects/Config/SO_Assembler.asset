@@ -15,6 +15,7 @@ MonoBehaviour:
   startRoom: {fileID: 11400000, guid: 5f11bf5df2a08a040ac334e8244303d1, type: 2}
   endRoom: {fileID: 11400000, guid: e7563cdf260b5fe4a958bf41d828cde5, type: 2}
   roomPool:
+  - {fileID: 11400000, guid: 70f08adfe92f3294b9e7448a91a056e8, type: 2}
   - {fileID: 11400000, guid: 2d6155fd9e77c7f44ab61a43dacaf13d, type: 2}
   - {fileID: 11400000, guid: 09fcbbac7416bca42b8803240f4d0a9a, type: 2}
   - {fileID: 11400000, guid: 774172464660bac49884a20a1e9a4123, type: 2}
@@ -27,16 +28,22 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 833103c004d1e6a4aac51cc8ba2d09a9, type: 2}
   - {fileID: 11400000, guid: 7524bb6857f37874b905bb5ba78a1adb, type: 2}
   wallCapRoom: {fileID: 11400000, guid: 683f4ae77d082e644b510e8cc8550017, type: 2}
-  minRooms: 1
-  maxRooms: 20
-  useEndDistanceRange: 1
-  minEndDistanceRooms: 5
-  maxEndDistanceRooms: 10
+  minRooms: 5
+  maxRooms: 10
+  useEndDistanceRange: 0
+  minEndDistanceRooms: 0
+  maxEndDistanceRooms: 0
   roomUnitWorldOverride: 0
-  attemptsPerOpenSocket: 50
-  maxGenerationRetries: 50
+  attemptsPerOpenSocket: 25
+  maxGenerationRetries: 4
+  useEmergencyFallback: 0
+  emergencyFallbackRetries: 1
+  emergencyMinimumRooms: 5
+  emergencyAdditionalMaxRooms: 0
+  emergencyIgnoreEndDistance: 0
+  emergencyForceEndRoom: 0
   allowLoops: 1
-  autoCloseMatchingSockets: 1
+  autoCloseMatchingSockets: 0
   centerSnapTolerance: 0.02
   forwardDotTolerance: 0.95
   widthToleranceFallback: 0.05
@@ -49,11 +56,10 @@ MonoBehaviour:
   overlapPadding: 0.02
   capOpenSocketsAfterEnd: 1
   useDeadEndsToCap: 1
-  maxCapsAfterEnd: 999
+  maxCapsAfterEnd: 5
   capExtraPadding: 0.03
   preventCapOverlappingCaps: 1
   wallCapInset: 0
-  wallCapYawOffset: 0
   randomSeed: 1
   seed: 12345
   log: 0

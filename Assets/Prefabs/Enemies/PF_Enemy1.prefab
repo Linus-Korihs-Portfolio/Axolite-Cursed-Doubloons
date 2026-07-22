@@ -172,7 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b6d05a7f551a49429959439b13b25f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimatorAutoTester
-  enemyAnimator: {fileID: 977172799114551594}
+  lungerAnimator: {fileID: 0}
   autoRunOnStart: 0
   loopTest: 0
   idleWait: 1.5

@@ -53,6 +53,7 @@ namespace PCG.RoomAssembler.Logic
 
                     a.owner.connectedSocketInstanceIds.Add(a.marker.GetInstanceID());
                     b.owner.connectedSocketInstanceIds.Add(b.marker.GetInstanceID());
+                    a.owner.ConnectTo(b.owner);
 
                     openSockets.RemoveAt(i);
                     openSockets.RemoveAt(j);

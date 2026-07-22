@@ -20,6 +20,9 @@ MonoBehaviour:
   isDeadEnd: 0
   isHallway: 0
   isRoom: 1
+  specialRoomKind: 0
+  researchRoomType: 0
+  specialRoomRequiresDeadEnd: 1
   allowRotation: 1
   widthTolerance: 0.05
   allowedSocketTypes: 00000000

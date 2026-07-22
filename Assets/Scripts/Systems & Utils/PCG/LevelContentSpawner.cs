@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class LevelContentSpawner : MonoBehaviour
 {
+    private const string GeneratedContentRootName = "PCG_Content";
+
     [SerializeField] private LevelContentSpawnConfig config;
     [SerializeField, Min(1)] private int levelIndex = 1;
     [SerializeField] private Transform contentParent;
@@ -18,6 +20,7 @@ public class LevelContentSpawner : MonoBehaviour
 
     private readonly List<GameObject> spawnedObjects = new List<GameObject>();
     private readonly List<SpawnedObjectState> spawnedObjectStates = new List<SpawnedObjectState>();
+    private Transform generatedContentRoot;
 
     public IReadOnlyList<GameObject> SpawnedObjects => spawnedObjects;
     public int LevelIndex
@@ -86,9 +89,8 @@ public class LevelContentSpawner : MonoBehaviour
             return;
         }
 
-        if (contentParent == null) contentParent = transform;
-
         ClearSpawnedObjects();
+        GetOrCreateGeneratedContentRoot();
 
         ResetSpawnPointState(placedRooms);
 
@@ -127,22 +129,68 @@ public class LevelContentSpawner : MonoBehaviour
 
     public void ClearSpawnedObjects()
     {
-        for (int i = spawnedObjects.Count - 1; i >= 0; i--)
+        HashSet<GameObject> objectsToDestroy = new HashSet<GameObject>();
+
+        for (int i = 0; i < spawnedObjects.Count; i++)
         {
-            if (spawnedObjects[i] == null) continue;
+            if (spawnedObjects[i] != null)
+                objectsToDestroy.Add(spawnedObjects[i]);
+        }
+
+        PCGGeneratedContentMarker[] markers = FindObjectsByType<PCGGeneratedContentMarker>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < markers.Length; i++)
+        {
+            PCGGeneratedContentMarker marker = markers[i];
+            if (marker != null && marker.Owner == this)
+                objectsToDestroy.Add(marker.gameObject);
+        }
+
+        Transform host = contentParent != null ? contentParent : transform;
+        generatedContentRoot = host.Find(GeneratedContentRootName);
+        if (generatedContentRoot != null)
+        {
+            for (int i = 0; i < generatedContentRoot.childCount; i++)
+                objectsToDestroy.Add(generatedContentRoot.GetChild(i).gameObject);
+        }
+
+        // Older generated content was parented directly below the configured host.
+        // Match configured prefab names so the room hierarchy is left untouched.
+        for (int i = 0; i < host.childCount; i++)
+        {
+            Transform child = host.GetChild(i);
+            if (child == generatedContentRoot)
+                continue;
+
+            if (MatchesConfiguredPrefabName(child.name))
+                objectsToDestroy.Add(child.gameObject);
+        }
+
+        foreach (GameObject spawnedObject in objectsToDestroy)
+        {
+            if (spawnedObject == null)
+                continue;
 
             if (Application.isPlaying)
             {
-                Destroy(spawnedObjects[i]);
+                // Destroy is delayed until end of frame. Disable immediately so stale
+                // enemies cannot move or attack while a new layout is being generated.
+                spawnedObject.SetActive(false);
+                Destroy(spawnedObject);
             }
             else
             {
-                DestroyImmediate(spawnedObjects[i]);
+                DestroyImmediate(spawnedObject);
             }
         }
 
         spawnedObjects.Clear();
         spawnedObjectStates.Clear();
+
+        if (config != null && config.log && objectsToDestroy.Count > 0)
+            Debug.Log($"[PCG Content] Cleared {objectsToDestroy.Count} generated object(s).", this);
     }
 
     private GameObject SpawnPlayer(IReadOnlyList<PlacedRoom> rooms, System.Random rng)
@@ -369,8 +417,13 @@ public class LevelContentSpawner : MonoBehaviour
 
     private GameObject SpawnPrefab(GameObject prefab, PCGSpawnPoint point, string contentId)
     {
-        GameObject go = Instantiate(prefab, point.transform.position, point.transform.rotation, contentParent);
+        GameObject go = Instantiate(prefab, point.transform.position, point.transform.rotation, GetOrCreateGeneratedContentRoot());
         go.name = string.IsNullOrWhiteSpace(contentId) ? prefab.name : $"{prefab.name}_{contentId}";
+
+        PCGGeneratedContentMarker marker = go.GetComponent<PCGGeneratedContentMarker>();
+        if (marker == null)
+            marker = go.AddComponent<PCGGeneratedContentMarker>();
+        marker.Initialize(this);
 
         bool prefabSpawnedInactive = !go.activeSelf;
         if (forceSpawnedObjectsActive && prefabSpawnedInactive)
@@ -409,6 +462,56 @@ public class LevelContentSpawner : MonoBehaviour
         return go;
     }
 
+    private Transform GetOrCreateGeneratedContentRoot()
+    {
+        if (generatedContentRoot != null)
+            return generatedContentRoot;
+
+        Transform host = contentParent != null ? contentParent : transform;
+        generatedContentRoot = host.Find(GeneratedContentRootName);
+        if (generatedContentRoot != null)
+            return generatedContentRoot;
+
+        GameObject rootObject = new GameObject(GeneratedContentRootName);
+        generatedContentRoot = rootObject.transform;
+        generatedContentRoot.SetParent(host, false);
+        return generatedContentRoot;
+    }
+
+    private bool MatchesConfiguredPrefabName(string instanceName)
+    {
+        if (config == null || string.IsNullOrEmpty(instanceName))
+            return false;
+
+        if (MatchesPrefabName(instanceName, config.playerPrefab))
+            return true;
+
+        return PoolContainsPrefabName(config.enemyPool, instanceName)
+            || PoolContainsPrefabName(config.minionPool, instanceName)
+            || PoolContainsPrefabName(config.itemPool, instanceName);
+    }
+
+    private static bool PoolContainsPrefabName(List<WeightedSpawnEntry> pool, string instanceName)
+    {
+        if (pool == null)
+            return false;
+
+        for (int i = 0; i < pool.Count; i++)
+        {
+            WeightedSpawnEntry entry = pool[i];
+            if (entry != null && MatchesPrefabName(instanceName, entry.prefab))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool MatchesPrefabName(string instanceName, GameObject prefab)
+    {
+        return prefab != null
+            && instanceName.StartsWith(prefab.name + "_", StringComparison.Ordinal);
+    }
+
     private static int CountInactiveChildren(GameObject root)
     {
         if (root == null) return 0;
@@ -439,6 +542,15 @@ public class LevelContentSpawner : MonoBehaviour
             {
                 PCGSpawnPoint point = points[p];
                 if (point == null || point.kind != kind || point.occupied || !point.IsValidForLevel(levelIndex)) continue;
+                if (!IsSpawnPointInsideRoomBounds(rooms[i], point))
+                {
+                    Debug.LogWarning(
+                        $"[PCG Content] Ignoring {kind} spawnpoint '{point.name}' because it is " +
+                        $"outside room '{rooms[i].root.name}' Bounds.",
+                        point);
+                    continue;
+                }
+
                 valid.Add(point);
             }
 
@@ -464,11 +576,39 @@ public class LevelContentSpawner : MonoBehaviour
             {
                 PCGSpawnPoint point = points[p];
                 if (point == null || point.kind != kind || point.occupied || !point.IsValidForLevel(levelIndex)) continue;
+                if (!IsSpawnPointInsideRoomBounds(rooms[i], point))
+                {
+                    Debug.LogWarning(
+                        $"[PCG Content] Ignoring {kind} spawnpoint '{point.name}' because it is " +
+                        $"outside room '{rooms[i].root.name}' Bounds.",
+                        point);
+                    continue;
+                }
+
                 result.Add(point);
             }
         }
 
         return result;
+    }
+
+    private static bool IsSpawnPointInsideRoomBounds(PlacedRoom room, PCGSpawnPoint point)
+    {
+        if (room?.root == null || point == null) return false;
+
+        Transform boundsTransform = room.root.transform.Find("Bounds");
+        if (boundsTransform == null) return true;
+
+        BoxCollider bounds = boundsTransform.GetComponent<BoxCollider>();
+        if (bounds == null || !bounds.enabled) return true;
+
+        Vector3 localPoint = bounds.transform.InverseTransformPoint(point.transform.position);
+        Vector3 halfSize = bounds.size * 0.5f;
+        Vector3 delta = localPoint - bounds.center;
+        const float tolerance = 0.05f;
+
+        return Mathf.Abs(delta.x) <= halfSize.x + tolerance &&
+               Mathf.Abs(delta.z) <= halfSize.z + tolerance;
     }
 
     private static void ResetSpawnPointState(IReadOnlyList<PlacedRoom> rooms)
