@@ -4,7 +4,9 @@ using System.Text;
 using PCG.RoomAssembler;
 using PCG.RoomAssembler.Data;
 using PCG.RoomAssembler.Logic;
+using PCG.RoomAssembler.Metrics;
 using UnityEngine;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 public class RoomAssemblerGenerator : MonoBehaviour
 {
@@ -25,6 +27,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
     public int LastGenerationFailedAttempts { get; private set; }
     public string LastGenerationFailureSummary { get; private set; }
     public bool LastGenerationSucceeded { get; private set; }
+    public PCGGenerationMetrics LastGenerationMetrics { get; private set; }
     public bool IsGenerating => isGenerating;
 
     private System.Random rng;
@@ -44,11 +47,32 @@ public class RoomAssemblerGenerator : MonoBehaviour
     [ContextMenu("Generate")]
     public void Generate()
     {
-        if (!ValidateSetup()) return;
+        GenerateWithMetrics();
+    }
+
+    public PCGGenerationMetrics GenerateWithMetrics(int? seedOverride = null, int runIndex = 0)
+    {
+        PCGGenerationMetrics metrics = PCGGenerationMetrics.Create(name, runIndex, config);
+        Stopwatch totalStopwatch = Stopwatch.StartNew();
+        LastGenerationMetrics = metrics;
+
+        if (!ValidateSetup())
+        {
+            totalStopwatch.Stop();
+            metrics.success = false;
+            metrics.failureCategory = GenerationFailureReason.InvalidSetup.ToString();
+            metrics.totalGenerationMs = totalStopwatch.Elapsed.TotalMilliseconds;
+            return metrics;
+        }
+
         if (isGenerating)
         {
             Debug.LogWarning("[PCG] Generate ignored because generation is already running.", this);
-            return;
+            totalStopwatch.Stop();
+            metrics.success = false;
+            metrics.failureCategory = GenerationFailureReason.AlreadyGenerating.ToString();
+            metrics.totalGenerationMs = totalStopwatch.Elapsed.TotalMilliseconds;
+            return metrics;
         }
 
         if (parent == null) parent = transform;
@@ -68,6 +92,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
         LastGenerationFailureSummary = string.Empty;
         LastGenerationSucceeded = false;
         var runDiagnostics = new GenerationRunDiagnostics();
+        GenerationFailureReason lastFailureReason = GenerationFailureReason.None;
 
         try
         {
@@ -76,12 +101,16 @@ public class RoomAssemblerGenerator : MonoBehaviour
                 ? Mathf.Max(1, config.emergencyFallbackRetries)
                 : 0;
             int totalRetries = normalRetries + fallbackRetries;
+            int initialSeed = seedOverride ?? (config.randomSeed ? Environment.TickCount : config.seed);
+            metrics.initialSeed = initialSeed;
 
             for (int attempt = 0; attempt < totalRetries; attempt++)
             {
                 if (clearBeforeGenerate) ClearChildren(parent);
 
                 bool emergencyFallback = attempt >= normalRetries;
+                metrics.emergencyFallbackUsed = emergencyFallback;
+                metrics.fullAttemptsUsed = attempt + 1;
                 int displayAttempt = emergencyFallback
                     ? attempt - normalRetries + 1
                     : attempt + 1;
@@ -95,11 +124,10 @@ public class RoomAssemblerGenerator : MonoBehaviour
                         this);
                 }
 
-                int runSeed = config.randomSeed
-                    ? Environment.TickCount + attempt
-                    : config.seed + attempt;
+                int runSeed = initialSeed + attempt;
 
                 LastRunSeed = runSeed;
+                metrics.seed = runSeed;
                 rng = new System.Random(runSeed);
 
                 roomPicker = new RoomPicker(rng);
@@ -139,9 +167,13 @@ public class RoomAssemblerGenerator : MonoBehaviour
                     : config.maxRooms;
                 bool effectiveUseDistanceRange = config.useEndDistanceRange
                     && !(emergencyFallback && config.emergencyIgnoreEndDistance);
+                metrics.effectiveMinRooms = effectiveMinRooms;
+                metrics.effectiveMaxRooms = effectiveMaxRooms;
                 var attemptDiagnostics = new GenerationAttemptDiagnostics(runSeed);
 
-                bool success = GrowUntilEnd(
+                double cappingBeforeAttemptMs = metrics.cappingMs;
+                Stopwatch placementStopwatch = Stopwatch.StartNew();
+                bool layoutSucceeded = GrowUntilEnd(
                     startWorldPos: GetStartCenterWorld(startGO),
                     useDistanceRange: effectiveUseDistanceRange,
                     minEndWorld: minEndWorld,
@@ -150,38 +182,63 @@ public class RoomAssemblerGenerator : MonoBehaviour
                     maxRooms: effectiveMaxRooms,
                     attemptsPerOpenSocket: config.attemptsPerOpenSocket,
                     forceEndWhenEligible: emergencyFallback && config.emergencyForceEndRoom,
+                    metrics: metrics,
                     diagnostics: attemptDiagnostics,
                     failureReason: out GenerationFailureReason failureReason
                 );
+                placementStopwatch.Stop();
+                metrics.roomPlacementMs += Math.Max(
+                    0d,
+                    placementStopwatch.Elapsed.TotalMilliseconds - (metrics.cappingMs - cappingBeforeAttemptMs));
+                metrics.candidatePlacementAttempts += attemptDiagnostics.CandidateAttempts;
+                metrics.unfillableSockets += attemptDiagnostics.UnfillableSockets;
+                AddCounts(metrics.placementFailureCounts, attemptDiagnostics.PlacementFailures);
 
-                if (success)
+                if (layoutSucceeded)
                 {
                     LastGenerationFailedAttempts = attempt;
+                    metrics.failedFullAttempts = attempt;
+                    PopulateLayoutMetrics(metrics);
+
+                    metrics.success = metrics.remainingOpenSocketsAfterCapping <= 0;
+                    metrics.failureCategory = metrics.success
+                        ? GenerationFailureReason.None.ToString()
+                        : GenerationFailureReason.OpenSocketsRemainingAfterCapping.ToString();
+
                     LastGenerationFailureSummary = runDiagnostics.FormatSummary();
-                    LastGenerationSucceeded = true;
+                    LastGenerationSucceeded = metrics.success;
 
                     Debug.Log(
                         $"[PCG] Layout succeeded. Seed={runSeed}, Rooms={placed.Count}, " +
-                        $"FailedAttempts={attempt}, EmergencyFallback={emergencyFallback}. " +
+                        $"FailedAttempts={attempt}, EmergencyFallback={emergencyFallback}, " +
+                        $"MetricSuccess={metrics.success}. " +
                         LastGenerationFailureSummary,
                         this);
 
                     if (navMeshBuilder != null)
                     {
                         Debug.Log("[PCG] Building NavMesh.", this);
+                        Stopwatch navMeshStopwatch = Stopwatch.StartNew();
                         navMeshBuilder.Build(parent);
+                        navMeshStopwatch.Stop();
+                        metrics.navMeshMs += navMeshStopwatch.Elapsed.TotalMilliseconds;
                         Debug.Log("[PCG] NavMesh build complete.", this);
                     }
 
                     if (contentSpawner != null)
                     {
                         Debug.Log("[PCG] Spawning generated level content.", this);
+                        Stopwatch contentStopwatch = Stopwatch.StartNew();
                         contentSpawner.SpawnForGeneratedRooms(placed, runSeed);
+                        contentStopwatch.Stop();
+                        metrics.contentSpawningMs += contentStopwatch.Elapsed.TotalMilliseconds;
                         Debug.Log("[PCG] Content spawning complete.", this);
                     }
-                    return;
+                    return metrics;
                 }
 
+                lastFailureReason = failureReason;
+                PCGGenerationMetrics.Increment(metrics.generationFailureCounts, failureReason.ToString(), 1);
                 runDiagnostics.Record(failureReason, attemptDiagnostics);
                 Debug.LogWarning(
                     $"[PCG] {(emergencyFallback ? "Emergency fallback" : "Normal")} attempt " +
@@ -191,16 +248,24 @@ public class RoomAssemblerGenerator : MonoBehaviour
             }
 
             LastGenerationFailedAttempts = totalRetries;
+            metrics.failedFullAttempts = totalRetries;
+            metrics.success = false;
+            metrics.failureCategory = lastFailureReason.ToString();
             LastGenerationFailureSummary = runDiagnostics.FormatSummary();
             if (clearBeforeGenerate) ClearChildren(parent);
             Debug.LogError(
                 $"[PCG] Generation failed after {totalRetries} bounded attempts. " +
                 $"{LastGenerationFailureSummary} Automatic generation has stopped; it will not loop.",
                 this);
+
+            return metrics;
         }
         finally
         {
             isGenerating = false;
+            totalStopwatch.Stop();
+            metrics.totalGenerationMs = totalStopwatch.Elapsed.TotalMilliseconds;
+            LastGenerationMetrics = metrics;
         }
     }
 
@@ -259,6 +324,7 @@ public class RoomAssemblerGenerator : MonoBehaviour
         int maxRooms,
         int attemptsPerOpenSocket,
         bool forceEndWhenEligible,
+        PCGGenerationMetrics metrics,
         GenerationAttemptDiagnostics diagnostics,
         out GenerationFailureReason failureReason)
     {
@@ -353,6 +419,8 @@ public class RoomAssemblerGenerator : MonoBehaviour
 
             if (endPlaced && placed.Count >= minRooms)
             {
+                metrics.actualRoomsBeforeCapping = placed.Count;
+
                 if (config.capOpenSocketsAfterEnd)
                 {
                     openSockets.AddRange(socketsToCap);
@@ -369,7 +437,9 @@ public class RoomAssemblerGenerator : MonoBehaviour
                         }
                     }
 
+                    metrics.openSocketsBeforeCapping = openSockets.Count;
                     Debug.Log($"[PCG] Capping {openSockets.Count} remaining open socket(s).", this);
+                    Stopwatch cappingStopwatch = Stopwatch.StartNew();
                     capping.CapAllOpenSockets(
                         openSockets: openSockets,
                         placedRooms: placed,
@@ -384,7 +454,24 @@ public class RoomAssemblerGenerator : MonoBehaviour
                         capOverlapMask: config.capOverlapMask,
                         log: config.log
                     );
+                    cappingStopwatch.Stop();
+                    metrics.cappingMs += cappingStopwatch.Elapsed.TotalMilliseconds;
+
+                    CappingResult cappingResult = capping.LastResult;
+                    metrics.capPlacements = cappingResult.TotalCaps;
+                    metrics.deadEndCaps = cappingResult.DeadEndCaps;
+                    metrics.wallCaps = cappingResult.WallCaps;
+                    metrics.logicalOnlyCaps = cappingResult.LogicalClosures;
+                    metrics.remainingOpenSocketsAfterCapping = cappingResult.RemainingOpenSockets;
+                    metrics.actualRoomsAfterCapping = placed.Count;
                     Debug.Log($"[PCG] Capping complete. RemainingOpen={openSockets.Count}.", this);
+                }
+                else
+                {
+                    int unresolvedSockets = openSockets.Count + socketsToCap.Count;
+                    metrics.openSocketsBeforeCapping = unresolvedSockets;
+                    metrics.remainingOpenSocketsAfterCapping = unresolvedSockets;
+                    metrics.actualRoomsAfterCapping = placed.Count;
                 }
 
                 return true;
@@ -402,6 +489,358 @@ public class RoomAssemblerGenerator : MonoBehaviour
         for (int i = target.childCount - 1; i >= 0; i--)
         {
             DestroyImmediate(target.GetChild(i).gameObject);
+        }
+    }
+
+    private void PopulateLayoutMetrics(PCGGenerationMetrics metrics)
+    {
+        if (metrics == null) return;
+
+        metrics.actualRoomsAfterCapping = placed.Count;
+        if (metrics.actualRoomsBeforeCapping <= 0)
+            metrics.actualRoomsBeforeCapping = placed.Count;
+
+        metrics.roomTypeFrequency.Clear();
+
+        PlacedRoom startRoom = null;
+        List<PlacedRoom> bossCandidates = new List<PlacedRoom>();
+        int linearRooms = 0;
+        int branchingRooms = 0;
+        int nonCapRooms = 0;
+
+        for (int i = 0; i < placed.Count; i++)
+        {
+            PlacedRoom room = placed[i];
+            if (room == null) continue;
+
+            string roomType = DetermineResearchRoomType(room);
+            metrics.IncrementRoomType(roomType);
+
+            if (!room.isCap)
+            {
+                nonCapRooms++;
+                int socketCount = GetValidSocketCount(room);
+                if (socketCount == 2) linearRooms++;
+                else if (socketCount >= 3) branchingRooms++;
+            }
+
+            if (IsStartRoom(room))
+                startRoom ??= room;
+
+            if (GetSpecialKind(room.def) == PCGSpecialRoomKind.Boss)
+                bossCandidates.Add(room);
+        }
+
+        metrics.branchingFactor = linearRooms > 0
+            ? (float)branchingRooms / linearRooms
+            : branchingRooms;
+
+        Dictionary<PlacedRoom, int> distances = BuildGraphDistances(startRoom);
+        PlacedRoom bossRoom = PickFarthestReachableRoom(bossCandidates, distances);
+
+        if (bossRoom != null && distances.TryGetValue(bossRoom, out int bossDistance))
+        {
+            metrics.startToBossGraphDistance = bossDistance;
+            metrics.criticalPathRooms = bossDistance + 1;
+            metrics.sidePathRooms = Mathf.Max(0, nonCapRooms - metrics.criticalPathRooms);
+        }
+        else
+        {
+            metrics.startToBossGraphDistance = -1;
+            metrics.criticalPathRooms = 0;
+            metrics.sidePathRooms = nonCapRooms;
+        }
+
+        ValidateSpecialRoomPlacement(metrics, distances, bossRoom);
+    }
+
+    private string DetermineResearchRoomType(PlacedRoom room)
+    {
+        if (room == null) return PCGResearchRoomType.GenericRoom.ToString();
+        if (room.isCap) return PCGResearchRoomType.Cap.ToString();
+
+        RoomDefinition def = room.def;
+        if (def != null && def.researchRoomType != PCGResearchRoomType.Auto)
+            return def.researchRoomType.ToString();
+
+        PCGSpecialRoomKind specialKind = GetSpecialKind(def);
+        if (specialKind != PCGSpecialRoomKind.None)
+            return specialKind.ToString();
+
+        if (IsStartRoom(room)) return PCGResearchRoomType.Start.ToString();
+        if (def != null && def.isDeadEnd) return PCGResearchRoomType.DeadEnd.ToString();
+        if (LooksLikeBigRoom(room)) return PCGResearchRoomType.BigRoom.ToString();
+
+        int socketCount = GetValidSocketCount(room);
+        if (socketCount <= 1) return PCGResearchRoomType.DeadEnd.ToString();
+        if (socketCount == 2) return IsCornerRoom(room)
+            ? PCGResearchRoomType.Corner.ToString()
+            : PCGResearchRoomType.Corridor.ToString();
+        if (socketCount == 3) return PCGResearchRoomType.ThreeWay.ToString();
+        if (socketCount >= 4) return PCGResearchRoomType.Crossway.ToString();
+
+        if (def != null && def.isHallway) return PCGResearchRoomType.Corridor.ToString();
+        return PCGResearchRoomType.GenericRoom.ToString();
+    }
+
+    private bool IsStartRoom(PlacedRoom room)
+    {
+        if (room == null) return false;
+        if (room.def == config.startRoom) return true;
+        return room.def != null && room.def.isStart;
+    }
+
+    private PCGSpecialRoomKind GetSpecialKind(RoomDefinition definition)
+    {
+        if (definition == null) return PCGSpecialRoomKind.None;
+        if (definition.specialRoomKind != PCGSpecialRoomKind.None) return definition.specialRoomKind;
+        if (definition == config.endRoom || definition.isEnd) return PCGSpecialRoomKind.Boss;
+        return PCGSpecialRoomKind.None;
+    }
+
+    private static Dictionary<PlacedRoom, int> BuildGraphDistances(PlacedRoom startRoom)
+    {
+        Dictionary<PlacedRoom, int> distances = new Dictionary<PlacedRoom, int>();
+        if (startRoom == null) return distances;
+
+        Queue<PlacedRoom> queue = new Queue<PlacedRoom>();
+        distances[startRoom] = 0;
+        queue.Enqueue(startRoom);
+
+        while (queue.Count > 0)
+        {
+            PlacedRoom current = queue.Dequeue();
+            int nextDistance = distances[current] + 1;
+
+            for (int i = 0; i < current.connectedRooms.Count; i++)
+            {
+                PlacedRoom next = current.connectedRooms[i];
+                if (next == null || next.isCap || distances.ContainsKey(next)) continue;
+
+                distances[next] = nextDistance;
+                queue.Enqueue(next);
+            }
+        }
+
+        return distances;
+    }
+
+    private static PlacedRoom PickFarthestReachableRoom(
+        List<PlacedRoom> candidates,
+        Dictionary<PlacedRoom, int> distances)
+    {
+        PlacedRoom best = null;
+        int bestDistance = -1;
+
+        if (candidates == null || distances == null)
+            return null;
+
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            PlacedRoom candidate = candidates[i];
+            if (candidate == null || !distances.TryGetValue(candidate, out int distance)) continue;
+            if (distance <= bestDistance) continue;
+
+            best = candidate;
+            bestDistance = distance;
+        }
+
+        return best;
+    }
+
+    private void ValidateSpecialRoomPlacement(
+        PCGGenerationMetrics metrics,
+        Dictionary<PlacedRoom, int> distances,
+        PlacedRoom bossRoom)
+    {
+        bool allValid = true;
+        int invalidCount = 0;
+        bool bossFound = bossRoom != null;
+        StringBuilder details = new StringBuilder();
+        metrics.specialRooms.Clear();
+
+        for (int i = 0; i < placed.Count; i++)
+        {
+            PlacedRoom room = placed[i];
+            if (room == null || room.isCap) continue;
+
+            PCGSpecialRoomKind kind = GetSpecialKind(room.def);
+            if (kind == PCGSpecialRoomKind.None) continue;
+
+            int degree = CountNonCapConnections(room);
+            bool requiresDeadEnd = room.def == null || room.def.specialRoomRequiresDeadEnd;
+            bool deadEndValid = !requiresDeadEnd || degree <= 1;
+            bool distanceValid = true;
+
+            if (kind == PCGSpecialRoomKind.Boss)
+            {
+                bossFound = true;
+                distanceValid = distances != null
+                    && distances.TryGetValue(room, out int distance)
+                    && distance >= config.minEndDistanceRooms;
+            }
+
+            bool roomValid = deadEndValid && distanceValid;
+            int graphDistance = distances != null && distances.TryGetValue(room, out int knownDistance)
+                ? knownDistance
+                : -1;
+
+            metrics.specialRooms.Add(new PCGSpecialRoomMetric
+            {
+                kind = kind.ToString(),
+                roomId = room.def != null ? room.def.id : "Unknown",
+                graphDegree = degree,
+                graphDistance = graphDistance,
+                requiresDeadEnd = requiresDeadEnd,
+                deadEndValid = deadEndValid,
+                distanceValid = distanceValid,
+                valid = roomValid
+            });
+
+            if (!roomValid)
+            {
+                allValid = false;
+                invalidCount++;
+            }
+
+            if (details.Length > 0) details.Append(';');
+            details.Append(kind);
+            details.Append('(');
+            details.Append(room.def != null ? room.def.id : "Unknown");
+            details.Append(",degree=");
+            details.Append(degree);
+
+            if (kind == PCGSpecialRoomKind.Boss)
+            {
+                details.Append(",path=");
+                details.Append(graphDistance);
+            }
+
+            details.Append(",valid=");
+            details.Append(roomValid ? "true" : "false");
+            details.Append(')');
+        }
+
+        if (!bossFound)
+        {
+            allValid = false;
+            invalidCount++;
+            metrics.specialRooms.Add(new PCGSpecialRoomMetric
+            {
+                kind = PCGSpecialRoomKind.Boss.ToString(),
+                roomId = "Missing",
+                graphDegree = 0,
+                graphDistance = -1,
+                requiresDeadEnd = true,
+                deadEndValid = false,
+                distanceValid = false,
+                valid = false
+            });
+
+            if (details.Length > 0) details.Append(';');
+            details.Append("BossMissing(valid=false)");
+        }
+
+        metrics.specialRoomPlacementValid = allValid;
+        metrics.invalidSpecialRoomCount = invalidCount;
+        metrics.specialRoomValidation = details.Length > 0 ? details.ToString() : "none";
+    }
+
+    private static int CountNonCapConnections(PlacedRoom room)
+    {
+        if (room == null || room.connectedRooms == null) return 0;
+
+        int count = 0;
+        for (int i = 0; i < room.connectedRooms.Count; i++)
+        {
+            PlacedRoom connected = room.connectedRooms[i];
+            if (connected != null && !connected.isCap)
+                count++;
+        }
+
+        return count;
+    }
+
+    private static int GetValidSocketCount(PlacedRoom room)
+    {
+        if (room == null || room.root == null) return 0;
+
+        SocketMarker[] markers = room.root.GetComponentsInChildren<SocketMarker>(true);
+        int count = 0;
+        for (int i = 0; i < markers.Length; i++)
+        {
+            SocketMarker marker = markers[i];
+            if (marker == null || marker.left == null || marker.right == null) continue;
+            count++;
+        }
+
+        return count;
+    }
+
+    private static bool IsCornerRoom(PlacedRoom room)
+    {
+        if (room == null || room.root == null) return false;
+
+        SocketMarker[] markers = room.root.GetComponentsInChildren<SocketMarker>(true);
+        List<Vector3> directions = new List<Vector3>(2);
+        for (int i = 0; i < markers.Length; i++)
+        {
+            SocketMarker marker = markers[i];
+            if (marker == null || marker.left == null || marker.right == null) continue;
+
+            Vector3 forward = marker.ForwardWorld;
+            forward.y = 0f;
+            if (forward.sqrMagnitude < 0.0001f) continue;
+            directions.Add(forward.normalized);
+            if (directions.Count == 2) break;
+        }
+
+        if (directions.Count != 2) return false;
+        return Vector3.Dot(directions[0], directions[1]) > -0.75f;
+    }
+
+    private static bool LooksLikeBigRoom(PlacedRoom room)
+    {
+        if (room == null) return false;
+
+        RoomDefinition def = room.def;
+        if (def != null)
+        {
+            if (ContainsIgnoreCase(def.id, "big")) return true;
+            if (def.prefab != null && ContainsIgnoreCase(def.prefab.name, "big")) return true;
+        }
+
+        if (room.root != null && ContainsIgnoreCase(room.root.name, "big"))
+            return true;
+
+        SocketMarker[] markers = room.root != null
+            ? room.root.GetComponentsInChildren<SocketMarker>(true)
+            : Array.Empty<SocketMarker>();
+
+        for (int i = 0; i < markers.Length; i++)
+        {
+            if (markers[i] != null && markers[i].type == SocketType.BigDoor)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool ContainsIgnoreCase(string value, string search)
+    {
+        return !string.IsNullOrEmpty(value)
+            && value.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+
+    private static void AddCounts<T>(
+        Dictionary<string, int> target,
+        IReadOnlyDictionary<T, int> source)
+    {
+        if (target == null || source == null) return;
+
+        foreach (KeyValuePair<T, int> pair in source)
+        {
+            PCGGenerationMetrics.Increment(target, pair.Key.ToString(), pair.Value);
         }
     }
 
@@ -443,7 +882,10 @@ public class RoomAssemblerGenerator : MonoBehaviour
     private enum GenerationFailureReason
     {
         None,
+        InvalidSetup,
+        AlreadyGenerating,
         OpenSocketsExhausted,
+        OpenSocketsRemainingAfterCapping,
         RoomLimitReachedBeforeCompletion,
         SafetyLimitReached
     }

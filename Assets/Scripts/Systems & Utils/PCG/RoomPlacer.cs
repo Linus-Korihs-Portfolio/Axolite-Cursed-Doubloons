@@ -159,6 +159,7 @@ namespace PCG.RoomAssembler
                     placedRoom = new PlacedRoom(room, go);
                     placedRoom.connectedSocketInstanceIds.Add(candSocket.GetInstanceID());
                     target.owner.connectedSocketInstanceIds.Add(target.marker.GetInstanceID());
+                    placedRoom.ConnectTo(target.owner);
 
                     return true;
                 }

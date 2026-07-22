@@ -2,8 +2,15 @@ using UnityEngine;
 
 public class BurrowerAnimationEvents : MonoBehaviour
 {
+    [SerializeField] private BurrowerEnemy burrowerEnemy;
+
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
+
+    private void Awake()
+    {
+        ResolveEnemy();
+    }
 
     // WakeUp / First Attack
 
@@ -20,16 +27,25 @@ public class BurrowerAnimationEvents : MonoBehaviour
     public void OnFirstAttackBite()
     {
         LogEvent("FirstAttack bite / snap frame reached");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnFirstAttackHitFrame();
     }
 
     public void OnFirstAttackHit()
     {
         LogEvent("FirstAttack hit frame reached");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnFirstAttackHitFrame();
     }
 
     public void OnFirstAttackEnd()
     {
         LogEvent("FirstAttack ended");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnFirstAttackEndFrame();
     }
 
     // Fly Up
@@ -66,11 +82,17 @@ public class BurrowerAnimationEvents : MonoBehaviour
     public void OnSecondAttackHit()
     {
         LogEvent("SecondAttack hit frame reached");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnSecondAttackHitFrame();
     }
 
     public void OnSecondAttackEnd()
     {
         LogEvent("SecondAttack ended");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnSecondAttackEndFrame();
     }
 
     // Hover
@@ -100,11 +122,17 @@ public class BurrowerAnimationEvents : MonoBehaviour
     public void OnGrabAttackGrab()
     {
         LogEvent("GrabAttack grab frame reached");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnGrabAttackGrabFrame();
     }
 
     public void OnGrabAttackHit()
     {
         LogEvent("GrabAttack hit frame reached");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnGrabAttackHitFrame();
     }
 
     public void OnGrabAttackLift()
@@ -115,6 +143,9 @@ public class BurrowerAnimationEvents : MonoBehaviour
     public void OnGrabAttackEnd()
     {
         LogEvent("GrabAttack ended");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnGrabAttackEndFrame();
     }
 
     // Fly Down
@@ -166,6 +197,9 @@ public class BurrowerAnimationEvents : MonoBehaviour
     public void OnDeathFlyingFinished()
     {
         LogEvent("DeathWhileFlying finished");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnDeathAnimationFinished();
     }
 
     public void OnDeathDiggingStart()
@@ -176,6 +210,9 @@ public class BurrowerAnimationEvents : MonoBehaviour
     public void OnDeathDiggingFinished()
     {
         LogEvent("DeathWhileDigging finished");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnDeathAnimationFinished();
     }
 
     public void OnDeathHit()
@@ -186,6 +223,9 @@ public class BurrowerAnimationEvents : MonoBehaviour
     public void OnDeathFinished()
     {
         LogEvent("Death animation finished");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnDeathAnimationFinished();
     }
 
     // Aliases for current Animation Event names
@@ -193,20 +233,37 @@ public class BurrowerAnimationEvents : MonoBehaviour
     public void OnDiggingDeathFinished()
     {
         LogEvent("Digging death animation finished");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnDeathAnimationFinished();
     }
 
     public void OnFlyingDeathFinished()
     {
         LogEvent("Flying death animation finished");
+
+        if (ResolveEnemy())
+            burrowerEnemy.OnDeathAnimationFinished();
+    }
+
+    private bool ResolveEnemy()
+    {
+        if (burrowerEnemy == null)
+            burrowerEnemy = GetComponentInParent<BurrowerEnemy>();
+
+        if (burrowerEnemy == null)
+        {
+            Debug.LogError("[BurrowerAnimationEvents:" + name + "] No BurrowerEnemy found in parents.", this);
+            return false;
+        }
+
+        return true;
     }
 
     private void LogEvent(string message)
     {
-        if (!showDebugLogs)
-        {
-            return;
-        }
+        if (!showDebugLogs) return;
 
-        Debug.Log("[Burrower Animation Event] " + gameObject.name + ": " + message);
+        Debug.Log("[BurrowerAnimationEvents:" + name + "] " + message, this);
     }
 }

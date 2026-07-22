@@ -9,6 +9,8 @@ namespace PCG.RoomAssembler.Logic
         private readonly RoomPicker roomPicker;
         private readonly RoomPlacer roomPlacer;
 
+        public CappingResult LastResult { get; private set; }
+
         public Capping(RoomPicker roomPicker, RoomPlacer roomPlacer)
         {
             this.roomPicker = roomPicker;
@@ -62,6 +64,7 @@ namespace PCG.RoomAssembler.Logic
                                 overlapMaskToUse: capCheckMask))
                         {
                             openSockets.RemoveAt(i);
+                            newPlaced.isCap = true;
                             placedRooms.Add(newPlaced);
 
                             caps++;
@@ -114,6 +117,15 @@ namespace PCG.RoomAssembler.Logic
                 $"[PCG Capping] DeadEnds={deadEndCaps}, Walls={wallCaps}, " +
                 $"LogicalOnly={logicalClosures}, RemainingOpen={openSockets.Count}.");
 
+            LastResult = new CappingResult
+            {
+                TotalCaps = caps,
+                DeadEndCaps = deadEndCaps,
+                WallCaps = wallCaps,
+                LogicalClosures = logicalClosures,
+                RemainingOpenSockets = openSockets.Count
+            };
+
             if (logicalClosures > 0 || openSockets.Count > 0)
             {
                 Debug.LogWarning(
@@ -124,5 +136,14 @@ namespace PCG.RoomAssembler.Logic
 
             return caps;
         }
+    }
+
+    public struct CappingResult
+    {
+        public int TotalCaps;
+        public int DeadEndCaps;
+        public int WallCaps;
+        public int LogicalClosures;
+        public int RemainingOpenSockets;
     }
 }

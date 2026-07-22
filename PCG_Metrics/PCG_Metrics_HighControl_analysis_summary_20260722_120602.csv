@@ -1,0 +1,3037 @@
+﻿Gruppe;Kennzahl;Wert;Bewertung
+Versuchsdesign;Varianten-ID;HighControl=500;
+Zuverlaessigkeit;Runs gesamt;500;
+Zuverlaessigkeit;Erfolgreiche Runs;500;
+Zuverlaessigkeit;Success / Failure;100,0%;hoch / stabil
+Zuverlaessigkeit;Durchschnittliche Fehlversuche;12,378;hoher Retry-Aufwand, Constraints vermutlich zu eng
+Zuverlaessigkeit;Emergency-Fallback-Rate;69,6%;Fallback haeufig noetig, normale Regeln pruefen
+Layout;Durchschnitt Raeume vor Capping;13,892;
+Layout;Final Placed Rooms;18,458;
+Layout;Sollraum-Trefferquote;30,4%;kritisch
+Layout;Open Sockets Pre-Cap;8,756;
+Layout;Durchschnitt offene Sockets nach Capping;0;vollstaendig geschlossen
+Layout;Durchschnitt Branching Factor;1,56;stark verzweigt / labyrinthartig
+Layout;Durchschnitt kritischer Pfad;8,412;
+Layout;Durchschnitt Nebenpfad-Raeume;5,48;
+Progression;Durchschnitt Start-Boss-Distanz;7,412;Boss liegt im Mittel zu nah am Start
+Progression;Boss-Distanz gueltig;43,4%;kritisch
+Progression;Spezialraum-Validitaet;43,4%;kritisch
+Performance;Gesamtdauer ms;2566,029;teuer, Performance pruefen
+Performance;Durchschnitt Room Placement ms;2417,831;
+Performance;Durchschnitt Capping ms;83,551;
+Performance;Durchschnitt NavMesh ms;22,861;
+Performance;Durchschnitt Content Spawning ms;9,882;
+Fehler;Error Cause;none;
+Raumtypen;Cap;2283;
+Raumtypen;Corner;1514;
+Raumtypen;ThreeWay;1485;
+Raumtypen;Crossway;1217;
+Raumtypen;Corridor;1199;
+Raumtypen;Boss;500;
+Raumtypen;Start;500;
+Raumtypen;BigRoom;495;
+Raumtypen;DeadEnd;36;
+Generation Fehler;RoomLimitReachedBeforeCompletion;6074;
+Generation Fehler;OpenSocketsExhausted;115;
+Placement Fehler;Overlap;1190314;
+Placement Fehler;PlacementConstraintRejected;136649;
+Run 0;Varianten-ID;HighControl;
+Run 0;Success / Failure;true;Success
+Run 0;Gesamtdauer ms;1902,646;teuer, Performance pruefen
+Run 0;Final Placed Rooms;24;
+Run 0;Open Sockets Pre-Cap;10;
+Run 0;Error Cause;None;
+Run 1;Varianten-ID;HighControl;
+Run 1;Success / Failure;true;Success
+Run 1;Gesamtdauer ms;1973,324;teuer, Performance pruefen
+Run 1;Final Placed Rooms;24;
+Run 1;Open Sockets Pre-Cap;10;
+Run 1;Error Cause;None;
+Run 2;Varianten-ID;HighControl;
+Run 2;Success / Failure;true;Success
+Run 2;Gesamtdauer ms;1918,329;teuer, Performance pruefen
+Run 2;Final Placed Rooms;24;
+Run 2;Open Sockets Pre-Cap;10;
+Run 2;Error Cause;None;
+Run 3;Varianten-ID;HighControl;
+Run 3;Success / Failure;true;Success
+Run 3;Gesamtdauer ms;1037,151;teuer, Performance pruefen
+Run 3;Final Placed Rooms;24;
+Run 3;Open Sockets Pre-Cap;10;
+Run 3;Error Cause;None;
+Run 4;Varianten-ID;HighControl;
+Run 4;Success / Failure;true;Success
+Run 4;Gesamtdauer ms;797,774;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 4;Final Placed Rooms;24;
+Run 4;Open Sockets Pre-Cap;10;
+Run 4;Error Cause;None;
+Run 5;Varianten-ID;HighControl;
+Run 5;Success / Failure;true;Success
+Run 5;Gesamtdauer ms;687,359;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 5;Final Placed Rooms;24;
+Run 5;Open Sockets Pre-Cap;10;
+Run 5;Error Cause;None;
+Run 6;Varianten-ID;HighControl;
+Run 6;Success / Failure;true;Success
+Run 6;Gesamtdauer ms;543,954;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 6;Final Placed Rooms;24;
+Run 6;Open Sockets Pre-Cap;10;
+Run 6;Error Cause;None;
+Run 7;Varianten-ID;HighControl;
+Run 7;Success / Failure;true;Success
+Run 7;Gesamtdauer ms;454,903;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 7;Final Placed Rooms;24;
+Run 7;Open Sockets Pre-Cap;10;
+Run 7;Error Cause;None;
+Run 8;Varianten-ID;HighControl;
+Run 8;Success / Failure;true;Success
+Run 8;Gesamtdauer ms;317,378;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 8;Final Placed Rooms;24;
+Run 8;Open Sockets Pre-Cap;10;
+Run 8;Error Cause;None;
+Run 9;Varianten-ID;HighControl;
+Run 9;Success / Failure;true;Success
+Run 9;Gesamtdauer ms;239,871;unproblematisch
+Run 9;Final Placed Rooms;24;
+Run 9;Open Sockets Pre-Cap;10;
+Run 9;Error Cause;None;
+Run 10;Varianten-ID;HighControl;
+Run 10;Success / Failure;true;Success
+Run 10;Gesamtdauer ms;1786,773;teuer, Performance pruefen
+Run 10;Final Placed Rooms;15;
+Run 10;Open Sockets Pre-Cap;5;
+Run 10;Error Cause;None;
+Run 11;Varianten-ID;HighControl;
+Run 11;Success / Failure;true;Success
+Run 11;Gesamtdauer ms;1865,787;teuer, Performance pruefen
+Run 11;Final Placed Rooms;15;
+Run 11;Open Sockets Pre-Cap;7;
+Run 11;Error Cause;None;
+Run 12;Varianten-ID;HighControl;
+Run 12;Success / Failure;true;Success
+Run 12;Gesamtdauer ms;1764,291;teuer, Performance pruefen
+Run 12;Final Placed Rooms;15;
+Run 12;Open Sockets Pre-Cap;5;
+Run 12;Error Cause;None;
+Run 13;Varianten-ID;HighControl;
+Run 13;Success / Failure;true;Success
+Run 13;Gesamtdauer ms;1682,776;teuer, Performance pruefen
+Run 13;Final Placed Rooms;25;
+Run 13;Open Sockets Pre-Cap;9;
+Run 13;Error Cause;None;
+Run 14;Varianten-ID;HighControl;
+Run 14;Success / Failure;true;Success
+Run 14;Gesamtdauer ms;1633,605;teuer, Performance pruefen
+Run 14;Final Placed Rooms;25;
+Run 14;Open Sockets Pre-Cap;9;
+Run 14;Error Cause;None;
+Run 15;Varianten-ID;HighControl;
+Run 15;Success / Failure;true;Success
+Run 15;Gesamtdauer ms;1422,973;teuer, Performance pruefen
+Run 15;Final Placed Rooms;25;
+Run 15;Open Sockets Pre-Cap;9;
+Run 15;Error Cause;None;
+Run 16;Varianten-ID;HighControl;
+Run 16;Success / Failure;true;Success
+Run 16;Gesamtdauer ms;1231,204;teuer, Performance pruefen
+Run 16;Final Placed Rooms;25;
+Run 16;Open Sockets Pre-Cap;9;
+Run 16;Error Cause;None;
+Run 17;Varianten-ID;HighControl;
+Run 17;Success / Failure;true;Success
+Run 17;Gesamtdauer ms;1158,025;teuer, Performance pruefen
+Run 17;Final Placed Rooms;25;
+Run 17;Open Sockets Pre-Cap;9;
+Run 17;Error Cause;None;
+Run 18;Varianten-ID;HighControl;
+Run 18;Success / Failure;true;Success
+Run 18;Gesamtdauer ms;1055,445;teuer, Performance pruefen
+Run 18;Final Placed Rooms;25;
+Run 18;Open Sockets Pre-Cap;9;
+Run 18;Error Cause;None;
+Run 19;Varianten-ID;HighControl;
+Run 19;Success / Failure;true;Success
+Run 19;Gesamtdauer ms;999,952;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 19;Final Placed Rooms;25;
+Run 19;Open Sockets Pre-Cap;9;
+Run 19;Error Cause;None;
+Run 20;Varianten-ID;HighControl;
+Run 20;Success / Failure;true;Success
+Run 20;Gesamtdauer ms;911,637;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 20;Final Placed Rooms;25;
+Run 20;Open Sockets Pre-Cap;9;
+Run 20;Error Cause;None;
+Run 21;Varianten-ID;HighControl;
+Run 21;Success / Failure;true;Success
+Run 21;Gesamtdauer ms;788,141;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 21;Final Placed Rooms;25;
+Run 21;Open Sockets Pre-Cap;9;
+Run 21;Error Cause;None;
+Run 22;Varianten-ID;HighControl;
+Run 22;Success / Failure;true;Success
+Run 22;Gesamtdauer ms;601,608;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 22;Final Placed Rooms;25;
+Run 22;Open Sockets Pre-Cap;9;
+Run 22;Error Cause;None;
+Run 23;Varianten-ID;HighControl;
+Run 23;Success / Failure;true;Success
+Run 23;Gesamtdauer ms;419,301;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 23;Final Placed Rooms;25;
+Run 23;Open Sockets Pre-Cap;9;
+Run 23;Error Cause;None;
+Run 24;Varianten-ID;HighControl;
+Run 24;Success / Failure;true;Success
+Run 24;Gesamtdauer ms;287,829;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 24;Final Placed Rooms;25;
+Run 24;Open Sockets Pre-Cap;9;
+Run 24;Error Cause;None;
+Run 25;Varianten-ID;HighControl;
+Run 25;Success / Failure;true;Success
+Run 25;Gesamtdauer ms;259,448;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 25;Final Placed Rooms;25;
+Run 25;Open Sockets Pre-Cap;9;
+Run 25;Error Cause;None;
+Run 26;Varianten-ID;HighControl;
+Run 26;Success / Failure;true;Success
+Run 26;Gesamtdauer ms;194,883;unproblematisch
+Run 26;Final Placed Rooms;25;
+Run 26;Open Sockets Pre-Cap;9;
+Run 26;Error Cause;None;
+Run 27;Varianten-ID;HighControl;
+Run 27;Success / Failure;true;Success
+Run 27;Gesamtdauer ms;80,139;unproblematisch
+Run 27;Final Placed Rooms;25;
+Run 27;Open Sockets Pre-Cap;9;
+Run 27;Error Cause;None;
+Run 28;Varianten-ID;HighControl;
+Run 28;Success / Failure;true;Success
+Run 28;Gesamtdauer ms;1858,194;teuer, Performance pruefen
+Run 28;Final Placed Rooms;14;
+Run 28;Open Sockets Pre-Cap;3;
+Run 28;Error Cause;None;
+Run 29;Varianten-ID;HighControl;
+Run 29;Success / Failure;true;Success
+Run 29;Gesamtdauer ms;1951,563;teuer, Performance pruefen
+Run 29;Final Placed Rooms;18;
+Run 29;Open Sockets Pre-Cap;9;
+Run 29;Error Cause;None;
+Run 30;Varianten-ID;HighControl;
+Run 30;Success / Failure;true;Success
+Run 30;Gesamtdauer ms;2054,665;teuer, Performance pruefen
+Run 30;Final Placed Rooms;16;
+Run 30;Open Sockets Pre-Cap;7;
+Run 30;Error Cause;None;
+Run 31;Varianten-ID;HighControl;
+Run 31;Success / Failure;true;Success
+Run 31;Gesamtdauer ms;1920,402;teuer, Performance pruefen
+Run 31;Final Placed Rooms;16;
+Run 31;Open Sockets Pre-Cap;7;
+Run 31;Error Cause;None;
+Run 32;Varianten-ID;HighControl;
+Run 32;Success / Failure;true;Success
+Run 32;Gesamtdauer ms;1826,82;teuer, Performance pruefen
+Run 32;Final Placed Rooms;14;
+Run 32;Open Sockets Pre-Cap;4;
+Run 32;Error Cause;None;
+Run 33;Varianten-ID;HighControl;
+Run 33;Success / Failure;true;Success
+Run 33;Gesamtdauer ms;1971,979;teuer, Performance pruefen
+Run 33;Final Placed Rooms;17;
+Run 33;Open Sockets Pre-Cap;10;
+Run 33;Error Cause;None;
+Run 34;Varianten-ID;HighControl;
+Run 34;Success / Failure;true;Success
+Run 34;Gesamtdauer ms;1939,141;teuer, Performance pruefen
+Run 34;Final Placed Rooms;15;
+Run 34;Open Sockets Pre-Cap;4;
+Run 34;Error Cause;None;
+Run 35;Varianten-ID;HighControl;
+Run 35;Success / Failure;true;Success
+Run 35;Gesamtdauer ms;2026,473;teuer, Performance pruefen
+Run 35;Final Placed Rooms;18;
+Run 35;Open Sockets Pre-Cap;13;
+Run 35;Error Cause;None;
+Run 36;Varianten-ID;HighControl;
+Run 36;Success / Failure;true;Success
+Run 36;Gesamtdauer ms;2280,123;teuer, Performance pruefen
+Run 36;Final Placed Rooms;15;
+Run 36;Open Sockets Pre-Cap;6;
+Run 36;Error Cause;None;
+Run 37;Varianten-ID;HighControl;
+Run 37;Success / Failure;true;Success
+Run 37;Gesamtdauer ms;2006,729;teuer, Performance pruefen
+Run 37;Final Placed Rooms;16;
+Run 37;Open Sockets Pre-Cap;8;
+Run 37;Error Cause;None;
+Run 38;Varianten-ID;HighControl;
+Run 38;Success / Failure;true;Success
+Run 38;Gesamtdauer ms;2089,042;teuer, Performance pruefen
+Run 38;Final Placed Rooms;13;
+Run 38;Open Sockets Pre-Cap;4;
+Run 38;Error Cause;None;
+Run 39;Varianten-ID;HighControl;
+Run 39;Success / Failure;true;Success
+Run 39;Gesamtdauer ms;2024,554;teuer, Performance pruefen
+Run 39;Final Placed Rooms;15;
+Run 39;Open Sockets Pre-Cap;5;
+Run 39;Error Cause;None;
+Run 40;Varianten-ID;HighControl;
+Run 40;Success / Failure;true;Success
+Run 40;Gesamtdauer ms;1967,915;teuer, Performance pruefen
+Run 40;Final Placed Rooms;14;
+Run 40;Open Sockets Pre-Cap;6;
+Run 40;Error Cause;None;
+Run 41;Varianten-ID;HighControl;
+Run 41;Success / Failure;true;Success
+Run 41;Gesamtdauer ms;1904,226;teuer, Performance pruefen
+Run 41;Final Placed Rooms;16;
+Run 41;Open Sockets Pre-Cap;9;
+Run 41;Error Cause;None;
+Run 42;Varianten-ID;HighControl;
+Run 42;Success / Failure;true;Success
+Run 42;Gesamtdauer ms;1941,381;teuer, Performance pruefen
+Run 42;Final Placed Rooms;18;
+Run 42;Open Sockets Pre-Cap;10;
+Run 42;Error Cause;None;
+Run 43;Varianten-ID;HighControl;
+Run 43;Success / Failure;true;Success
+Run 43;Gesamtdauer ms;1911,354;teuer, Performance pruefen
+Run 43;Final Placed Rooms;17;
+Run 43;Open Sockets Pre-Cap;7;
+Run 43;Error Cause;None;
+Run 44;Varianten-ID;HighControl;
+Run 44;Success / Failure;true;Success
+Run 44;Gesamtdauer ms;2174,847;teuer, Performance pruefen
+Run 44;Final Placed Rooms;15;
+Run 44;Open Sockets Pre-Cap;11;
+Run 44;Error Cause;None;
+Run 45;Varianten-ID;HighControl;
+Run 45;Success / Failure;true;Success
+Run 45;Gesamtdauer ms;2158,235;teuer, Performance pruefen
+Run 45;Final Placed Rooms;17;
+Run 45;Open Sockets Pre-Cap;7;
+Run 45;Error Cause;None;
+Run 46;Varianten-ID;HighControl;
+Run 46;Success / Failure;true;Success
+Run 46;Gesamtdauer ms;2108,795;teuer, Performance pruefen
+Run 46;Final Placed Rooms;16;
+Run 46;Open Sockets Pre-Cap;5;
+Run 46;Error Cause;None;
+Run 47;Varianten-ID;HighControl;
+Run 47;Success / Failure;true;Success
+Run 47;Gesamtdauer ms;2274,504;teuer, Performance pruefen
+Run 47;Final Placed Rooms;17;
+Run 47;Open Sockets Pre-Cap;13;
+Run 47;Error Cause;None;
+Run 48;Varianten-ID;HighControl;
+Run 48;Success / Failure;true;Success
+Run 48;Gesamtdauer ms;2134,038;teuer, Performance pruefen
+Run 48;Final Placed Rooms;18;
+Run 48;Open Sockets Pre-Cap;6;
+Run 48;Error Cause;None;
+Run 49;Varianten-ID;HighControl;
+Run 49;Success / Failure;true;Success
+Run 49;Gesamtdauer ms;2184,276;teuer, Performance pruefen
+Run 49;Final Placed Rooms;20;
+Run 49;Open Sockets Pre-Cap;12;
+Run 49;Error Cause;None;
+Run 50;Varianten-ID;HighControl;
+Run 50;Success / Failure;true;Success
+Run 50;Gesamtdauer ms;2260,795;teuer, Performance pruefen
+Run 50;Final Placed Rooms;15;
+Run 50;Open Sockets Pre-Cap;9;
+Run 50;Error Cause;None;
+Run 51;Varianten-ID;HighControl;
+Run 51;Success / Failure;true;Success
+Run 51;Gesamtdauer ms;2261,564;teuer, Performance pruefen
+Run 51;Final Placed Rooms;16;
+Run 51;Open Sockets Pre-Cap;5;
+Run 51;Error Cause;None;
+Run 52;Varianten-ID;HighControl;
+Run 52;Success / Failure;true;Success
+Run 52;Gesamtdauer ms;2378,422;teuer, Performance pruefen
+Run 52;Final Placed Rooms;17;
+Run 52;Open Sockets Pre-Cap;10;
+Run 52;Error Cause;None;
+Run 53;Varianten-ID;HighControl;
+Run 53;Success / Failure;true;Success
+Run 53;Gesamtdauer ms;2290,894;teuer, Performance pruefen
+Run 53;Final Placed Rooms;14;
+Run 53;Open Sockets Pre-Cap;8;
+Run 53;Error Cause;None;
+Run 54;Varianten-ID;HighControl;
+Run 54;Success / Failure;true;Success
+Run 54;Gesamtdauer ms;2251,324;teuer, Performance pruefen
+Run 54;Final Placed Rooms;15;
+Run 54;Open Sockets Pre-Cap;6;
+Run 54;Error Cause;None;
+Run 55;Varianten-ID;HighControl;
+Run 55;Success / Failure;true;Success
+Run 55;Gesamtdauer ms;2213,431;teuer, Performance pruefen
+Run 55;Final Placed Rooms;18;
+Run 55;Open Sockets Pre-Cap;11;
+Run 55;Error Cause;None;
+Run 56;Varianten-ID;HighControl;
+Run 56;Success / Failure;true;Success
+Run 56;Gesamtdauer ms;2255,809;teuer, Performance pruefen
+Run 56;Final Placed Rooms;17;
+Run 56;Open Sockets Pre-Cap;8;
+Run 56;Error Cause;None;
+Run 57;Varianten-ID;HighControl;
+Run 57;Success / Failure;true;Success
+Run 57;Gesamtdauer ms;2220,375;teuer, Performance pruefen
+Run 57;Final Placed Rooms;18;
+Run 57;Open Sockets Pre-Cap;10;
+Run 57;Error Cause;None;
+Run 58;Varianten-ID;HighControl;
+Run 58;Success / Failure;true;Success
+Run 58;Gesamtdauer ms;2199,927;teuer, Performance pruefen
+Run 58;Final Placed Rooms;14;
+Run 58;Open Sockets Pre-Cap;4;
+Run 58;Error Cause;None;
+Run 59;Varianten-ID;HighControl;
+Run 59;Success / Failure;true;Success
+Run 59;Gesamtdauer ms;2211,127;teuer, Performance pruefen
+Run 59;Final Placed Rooms;18;
+Run 59;Open Sockets Pre-Cap;7;
+Run 59;Error Cause;None;
+Run 60;Varianten-ID;HighControl;
+Run 60;Success / Failure;true;Success
+Run 60;Gesamtdauer ms;1972,964;teuer, Performance pruefen
+Run 60;Final Placed Rooms;16;
+Run 60;Open Sockets Pre-Cap;8;
+Run 60;Error Cause;None;
+Run 61;Varianten-ID;HighControl;
+Run 61;Success / Failure;true;Success
+Run 61;Gesamtdauer ms;2003,917;teuer, Performance pruefen
+Run 61;Final Placed Rooms;17;
+Run 61;Open Sockets Pre-Cap;6;
+Run 61;Error Cause;None;
+Run 62;Varianten-ID;HighControl;
+Run 62;Success / Failure;true;Success
+Run 62;Gesamtdauer ms;2030,313;teuer, Performance pruefen
+Run 62;Final Placed Rooms;13;
+Run 62;Open Sockets Pre-Cap;2;
+Run 62;Error Cause;None;
+Run 63;Varianten-ID;HighControl;
+Run 63;Success / Failure;true;Success
+Run 63;Gesamtdauer ms;1770,848;teuer, Performance pruefen
+Run 63;Final Placed Rooms;22;
+Run 63;Open Sockets Pre-Cap;6;
+Run 63;Error Cause;None;
+Run 64;Varianten-ID;HighControl;
+Run 64;Success / Failure;true;Success
+Run 64;Gesamtdauer ms;1730,096;teuer, Performance pruefen
+Run 64;Final Placed Rooms;22;
+Run 64;Open Sockets Pre-Cap;6;
+Run 64;Error Cause;None;
+Run 65;Varianten-ID;HighControl;
+Run 65;Success / Failure;true;Success
+Run 65;Gesamtdauer ms;1595,9;teuer, Performance pruefen
+Run 65;Final Placed Rooms;22;
+Run 65;Open Sockets Pre-Cap;6;
+Run 65;Error Cause;None;
+Run 66;Varianten-ID;HighControl;
+Run 66;Success / Failure;true;Success
+Run 66;Gesamtdauer ms;1359,743;teuer, Performance pruefen
+Run 66;Final Placed Rooms;22;
+Run 66;Open Sockets Pre-Cap;6;
+Run 66;Error Cause;None;
+Run 67;Varianten-ID;HighControl;
+Run 67;Success / Failure;true;Success
+Run 67;Gesamtdauer ms;1288,774;teuer, Performance pruefen
+Run 67;Final Placed Rooms;22;
+Run 67;Open Sockets Pre-Cap;6;
+Run 67;Error Cause;None;
+Run 68;Varianten-ID;HighControl;
+Run 68;Success / Failure;true;Success
+Run 68;Gesamtdauer ms;1274,811;teuer, Performance pruefen
+Run 68;Final Placed Rooms;22;
+Run 68;Open Sockets Pre-Cap;6;
+Run 68;Error Cause;None;
+Run 69;Varianten-ID;HighControl;
+Run 69;Success / Failure;true;Success
+Run 69;Gesamtdauer ms;1069,868;teuer, Performance pruefen
+Run 69;Final Placed Rooms;22;
+Run 69;Open Sockets Pre-Cap;6;
+Run 69;Error Cause;None;
+Run 70;Varianten-ID;HighControl;
+Run 70;Success / Failure;true;Success
+Run 70;Gesamtdauer ms;989,949;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 70;Final Placed Rooms;22;
+Run 70;Open Sockets Pre-Cap;6;
+Run 70;Error Cause;None;
+Run 71;Varianten-ID;HighControl;
+Run 71;Success / Failure;true;Success
+Run 71;Gesamtdauer ms;840,088;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 71;Final Placed Rooms;22;
+Run 71;Open Sockets Pre-Cap;6;
+Run 71;Error Cause;None;
+Run 72;Varianten-ID;HighControl;
+Run 72;Success / Failure;true;Success
+Run 72;Gesamtdauer ms;731,114;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 72;Final Placed Rooms;22;
+Run 72;Open Sockets Pre-Cap;6;
+Run 72;Error Cause;None;
+Run 73;Varianten-ID;HighControl;
+Run 73;Success / Failure;true;Success
+Run 73;Gesamtdauer ms;595,861;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 73;Final Placed Rooms;22;
+Run 73;Open Sockets Pre-Cap;6;
+Run 73;Error Cause;None;
+Run 74;Varianten-ID;HighControl;
+Run 74;Success / Failure;true;Success
+Run 74;Gesamtdauer ms;518,073;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 74;Final Placed Rooms;22;
+Run 74;Open Sockets Pre-Cap;6;
+Run 74;Error Cause;None;
+Run 75;Varianten-ID;HighControl;
+Run 75;Success / Failure;true;Success
+Run 75;Gesamtdauer ms;425,3;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 75;Final Placed Rooms;22;
+Run 75;Open Sockets Pre-Cap;6;
+Run 75;Error Cause;None;
+Run 76;Varianten-ID;HighControl;
+Run 76;Success / Failure;true;Success
+Run 76;Gesamtdauer ms;240,639;unproblematisch
+Run 76;Final Placed Rooms;22;
+Run 76;Open Sockets Pre-Cap;6;
+Run 76;Error Cause;None;
+Run 77;Varianten-ID;HighControl;
+Run 77;Success / Failure;true;Success
+Run 77;Gesamtdauer ms;139,355;unproblematisch
+Run 77;Final Placed Rooms;22;
+Run 77;Open Sockets Pre-Cap;6;
+Run 77;Error Cause;None;
+Run 78;Varianten-ID;HighControl;
+Run 78;Success / Failure;true;Success
+Run 78;Gesamtdauer ms;2164,82;teuer, Performance pruefen
+Run 78;Final Placed Rooms;18;
+Run 78;Open Sockets Pre-Cap;10;
+Run 78;Error Cause;None;
+Run 79;Varianten-ID;HighControl;
+Run 79;Success / Failure;true;Success
+Run 79;Gesamtdauer ms;2266,116;teuer, Performance pruefen
+Run 79;Final Placed Rooms;17;
+Run 79;Open Sockets Pre-Cap;5;
+Run 79;Error Cause;None;
+Run 80;Varianten-ID;HighControl;
+Run 80;Success / Failure;true;Success
+Run 80;Gesamtdauer ms;2253,515;teuer, Performance pruefen
+Run 80;Final Placed Rooms;17;
+Run 80;Open Sockets Pre-Cap;7;
+Run 80;Error Cause;None;
+Run 81;Varianten-ID;HighControl;
+Run 81;Success / Failure;true;Success
+Run 81;Gesamtdauer ms;2478,717;teuer, Performance pruefen
+Run 81;Final Placed Rooms;16;
+Run 81;Open Sockets Pre-Cap;9;
+Run 81;Error Cause;None;
+Run 82;Varianten-ID;HighControl;
+Run 82;Success / Failure;true;Success
+Run 82;Gesamtdauer ms;2268,64;teuer, Performance pruefen
+Run 82;Final Placed Rooms;16;
+Run 82;Open Sockets Pre-Cap;8;
+Run 82;Error Cause;None;
+Run 83;Varianten-ID;HighControl;
+Run 83;Success / Failure;true;Success
+Run 83;Gesamtdauer ms;2214,244;teuer, Performance pruefen
+Run 83;Final Placed Rooms;16;
+Run 83;Open Sockets Pre-Cap;6;
+Run 83;Error Cause;None;
+Run 84;Varianten-ID;HighControl;
+Run 84;Success / Failure;true;Success
+Run 84;Gesamtdauer ms;2107,48;teuer, Performance pruefen
+Run 84;Final Placed Rooms;19;
+Run 84;Open Sockets Pre-Cap;7;
+Run 84;Error Cause;None;
+Run 85;Varianten-ID;HighControl;
+Run 85;Success / Failure;true;Success
+Run 85;Gesamtdauer ms;2173,444;teuer, Performance pruefen
+Run 85;Final Placed Rooms;17;
+Run 85;Open Sockets Pre-Cap;8;
+Run 85;Error Cause;None;
+Run 86;Varianten-ID;HighControl;
+Run 86;Success / Failure;true;Success
+Run 86;Gesamtdauer ms;2197,826;teuer, Performance pruefen
+Run 86;Final Placed Rooms;16;
+Run 86;Open Sockets Pre-Cap;7;
+Run 86;Error Cause;None;
+Run 87;Varianten-ID;HighControl;
+Run 87;Success / Failure;true;Success
+Run 87;Gesamtdauer ms;2496,938;teuer, Performance pruefen
+Run 87;Final Placed Rooms;14;
+Run 87;Open Sockets Pre-Cap;10;
+Run 87;Error Cause;None;
+Run 88;Varianten-ID;HighControl;
+Run 88;Success / Failure;true;Success
+Run 88;Gesamtdauer ms;2487,108;teuer, Performance pruefen
+Run 88;Final Placed Rooms;15;
+Run 88;Open Sockets Pre-Cap;5;
+Run 88;Error Cause;None;
+Run 89;Varianten-ID;HighControl;
+Run 89;Success / Failure;true;Success
+Run 89;Gesamtdauer ms;2583,313;teuer, Performance pruefen
+Run 89;Final Placed Rooms;18;
+Run 89;Open Sockets Pre-Cap;10;
+Run 89;Error Cause;None;
+Run 90;Varianten-ID;HighControl;
+Run 90;Success / Failure;true;Success
+Run 90;Gesamtdauer ms;2333,978;teuer, Performance pruefen
+Run 90;Final Placed Rooms;18;
+Run 90;Open Sockets Pre-Cap;10;
+Run 90;Error Cause;None;
+Run 91;Varianten-ID;HighControl;
+Run 91;Success / Failure;true;Success
+Run 91;Gesamtdauer ms;2171,898;teuer, Performance pruefen
+Run 91;Final Placed Rooms;19;
+Run 91;Open Sockets Pre-Cap;14;
+Run 91;Error Cause;None;
+Run 92;Varianten-ID;HighControl;
+Run 92;Success / Failure;true;Success
+Run 92;Gesamtdauer ms;2224,444;teuer, Performance pruefen
+Run 92;Final Placed Rooms;15;
+Run 92;Open Sockets Pre-Cap;5;
+Run 92;Error Cause;None;
+Run 93;Varianten-ID;HighControl;
+Run 93;Success / Failure;true;Success
+Run 93;Gesamtdauer ms;2136,779;teuer, Performance pruefen
+Run 93;Final Placed Rooms;16;
+Run 93;Open Sockets Pre-Cap;6;
+Run 93;Error Cause;None;
+Run 94;Varianten-ID;HighControl;
+Run 94;Success / Failure;true;Success
+Run 94;Gesamtdauer ms;2114,973;teuer, Performance pruefen
+Run 94;Final Placed Rooms;19;
+Run 94;Open Sockets Pre-Cap;12;
+Run 94;Error Cause;None;
+Run 95;Varianten-ID;HighControl;
+Run 95;Success / Failure;true;Success
+Run 95;Gesamtdauer ms;2299,108;teuer, Performance pruefen
+Run 95;Final Placed Rooms;17;
+Run 95;Open Sockets Pre-Cap;7;
+Run 95;Error Cause;None;
+Run 96;Varianten-ID;HighControl;
+Run 96;Success / Failure;true;Success
+Run 96;Gesamtdauer ms;2332,842;teuer, Performance pruefen
+Run 96;Final Placed Rooms;15;
+Run 96;Open Sockets Pre-Cap;3;
+Run 96;Error Cause;None;
+Run 97;Varianten-ID;HighControl;
+Run 97;Success / Failure;true;Success
+Run 97;Gesamtdauer ms;2338,161;teuer, Performance pruefen
+Run 97;Final Placed Rooms;16;
+Run 97;Open Sockets Pre-Cap;6;
+Run 97;Error Cause;None;
+Run 98;Varianten-ID;HighControl;
+Run 98;Success / Failure;true;Success
+Run 98;Gesamtdauer ms;2306,273;teuer, Performance pruefen
+Run 98;Final Placed Rooms;19;
+Run 98;Open Sockets Pre-Cap;12;
+Run 98;Error Cause;None;
+Run 99;Varianten-ID;HighControl;
+Run 99;Success / Failure;true;Success
+Run 99;Gesamtdauer ms;2493,315;teuer, Performance pruefen
+Run 99;Final Placed Rooms;19;
+Run 99;Open Sockets Pre-Cap;13;
+Run 99;Error Cause;None;
+Run 100;Varianten-ID;HighControl;
+Run 100;Success / Failure;true;Success
+Run 100;Gesamtdauer ms;2716,253;teuer, Performance pruefen
+Run 100;Final Placed Rooms;18;
+Run 100;Open Sockets Pre-Cap;14;
+Run 100;Error Cause;None;
+Run 101;Varianten-ID;HighControl;
+Run 101;Success / Failure;true;Success
+Run 101;Gesamtdauer ms;2654,938;teuer, Performance pruefen
+Run 101;Final Placed Rooms;16;
+Run 101;Open Sockets Pre-Cap;7;
+Run 101;Error Cause;None;
+Run 102;Varianten-ID;HighControl;
+Run 102;Success / Failure;true;Success
+Run 102;Gesamtdauer ms;2857,245;teuer, Performance pruefen
+Run 102;Final Placed Rooms;14;
+Run 102;Open Sockets Pre-Cap;8;
+Run 102;Error Cause;None;
+Run 103;Varianten-ID;HighControl;
+Run 103;Success / Failure;true;Success
+Run 103;Gesamtdauer ms;2764,44;teuer, Performance pruefen
+Run 103;Final Placed Rooms;16;
+Run 103;Open Sockets Pre-Cap;7;
+Run 103;Error Cause;None;
+Run 104;Varianten-ID;HighControl;
+Run 104;Success / Failure;true;Success
+Run 104;Gesamtdauer ms;2597,001;teuer, Performance pruefen
+Run 104;Final Placed Rooms;16;
+Run 104;Open Sockets Pre-Cap;8;
+Run 104;Error Cause;None;
+Run 105;Varianten-ID;HighControl;
+Run 105;Success / Failure;true;Success
+Run 105;Gesamtdauer ms;2656,843;teuer, Performance pruefen
+Run 105;Final Placed Rooms;17;
+Run 105;Open Sockets Pre-Cap;7;
+Run 105;Error Cause;None;
+Run 106;Varianten-ID;HighControl;
+Run 106;Success / Failure;true;Success
+Run 106;Gesamtdauer ms;2805,038;teuer, Performance pruefen
+Run 106;Final Placed Rooms;17;
+Run 106;Open Sockets Pre-Cap;11;
+Run 106;Error Cause;None;
+Run 107;Varianten-ID;HighControl;
+Run 107;Success / Failure;true;Success
+Run 107;Gesamtdauer ms;2620,588;teuer, Performance pruefen
+Run 107;Final Placed Rooms;17;
+Run 107;Open Sockets Pre-Cap;7;
+Run 107;Error Cause;None;
+Run 108;Varianten-ID;HighControl;
+Run 108;Success / Failure;true;Success
+Run 108;Gesamtdauer ms;2784,4;teuer, Performance pruefen
+Run 108;Final Placed Rooms;17;
+Run 108;Open Sockets Pre-Cap;9;
+Run 108;Error Cause;None;
+Run 109;Varianten-ID;HighControl;
+Run 109;Success / Failure;true;Success
+Run 109;Gesamtdauer ms;2732,258;teuer, Performance pruefen
+Run 109;Final Placed Rooms;15;
+Run 109;Open Sockets Pre-Cap;6;
+Run 109;Error Cause;None;
+Run 110;Varianten-ID;HighControl;
+Run 110;Success / Failure;true;Success
+Run 110;Gesamtdauer ms;2460,619;teuer, Performance pruefen
+Run 110;Final Placed Rooms;16;
+Run 110;Open Sockets Pre-Cap;7;
+Run 110;Error Cause;None;
+Run 111;Varianten-ID;HighControl;
+Run 111;Success / Failure;true;Success
+Run 111;Gesamtdauer ms;2523,344;teuer, Performance pruefen
+Run 111;Final Placed Rooms;18;
+Run 111;Open Sockets Pre-Cap;11;
+Run 111;Error Cause;None;
+Run 112;Varianten-ID;HighControl;
+Run 112;Success / Failure;true;Success
+Run 112;Gesamtdauer ms;2678,031;teuer, Performance pruefen
+Run 112;Final Placed Rooms;17;
+Run 112;Open Sockets Pre-Cap;14;
+Run 112;Error Cause;None;
+Run 113;Varianten-ID;HighControl;
+Run 113;Success / Failure;true;Success
+Run 113;Gesamtdauer ms;2611,031;teuer, Performance pruefen
+Run 113;Final Placed Rooms;14;
+Run 113;Open Sockets Pre-Cap;3;
+Run 113;Error Cause;None;
+Run 114;Varianten-ID;HighControl;
+Run 114;Success / Failure;true;Success
+Run 114;Gesamtdauer ms;2407,696;teuer, Performance pruefen
+Run 114;Final Placed Rooms;16;
+Run 114;Open Sockets Pre-Cap;7;
+Run 114;Error Cause;None;
+Run 115;Varianten-ID;HighControl;
+Run 115;Success / Failure;true;Success
+Run 115;Gesamtdauer ms;2444,708;teuer, Performance pruefen
+Run 115;Final Placed Rooms;16;
+Run 115;Open Sockets Pre-Cap;7;
+Run 115;Error Cause;None;
+Run 116;Varianten-ID;HighControl;
+Run 116;Success / Failure;true;Success
+Run 116;Gesamtdauer ms;2419,539;teuer, Performance pruefen
+Run 116;Final Placed Rooms;17;
+Run 116;Open Sockets Pre-Cap;9;
+Run 116;Error Cause;None;
+Run 117;Varianten-ID;HighControl;
+Run 117;Success / Failure;true;Success
+Run 117;Gesamtdauer ms;2281,791;teuer, Performance pruefen
+Run 117;Final Placed Rooms;16;
+Run 117;Open Sockets Pre-Cap;6;
+Run 117;Error Cause;None;
+Run 118;Varianten-ID;HighControl;
+Run 118;Success / Failure;true;Success
+Run 118;Gesamtdauer ms;2171,168;teuer, Performance pruefen
+Run 118;Final Placed Rooms;18;
+Run 118;Open Sockets Pre-Cap;9;
+Run 118;Error Cause;None;
+Run 119;Varianten-ID;HighControl;
+Run 119;Success / Failure;true;Success
+Run 119;Gesamtdauer ms;2239,442;teuer, Performance pruefen
+Run 119;Final Placed Rooms;15;
+Run 119;Open Sockets Pre-Cap;7;
+Run 119;Error Cause;None;
+Run 120;Varianten-ID;HighControl;
+Run 120;Success / Failure;true;Success
+Run 120;Gesamtdauer ms;2843,846;teuer, Performance pruefen
+Run 120;Final Placed Rooms;14;
+Run 120;Open Sockets Pre-Cap;6;
+Run 120;Error Cause;None;
+Run 121;Varianten-ID;HighControl;
+Run 121;Success / Failure;true;Success
+Run 121;Gesamtdauer ms;2316,898;teuer, Performance pruefen
+Run 121;Final Placed Rooms;16;
+Run 121;Open Sockets Pre-Cap;8;
+Run 121;Error Cause;None;
+Run 122;Varianten-ID;HighControl;
+Run 122;Success / Failure;true;Success
+Run 122;Gesamtdauer ms;2193,162;teuer, Performance pruefen
+Run 122;Final Placed Rooms;17;
+Run 122;Open Sockets Pre-Cap;9;
+Run 122;Error Cause;None;
+Run 123;Varianten-ID;HighControl;
+Run 123;Success / Failure;true;Success
+Run 123;Gesamtdauer ms;2427,341;teuer, Performance pruefen
+Run 123;Final Placed Rooms;16;
+Run 123;Open Sockets Pre-Cap;7;
+Run 123;Error Cause;None;
+Run 124;Varianten-ID;HighControl;
+Run 124;Success / Failure;true;Success
+Run 124;Gesamtdauer ms;2211,994;teuer, Performance pruefen
+Run 124;Final Placed Rooms;23;
+Run 124;Open Sockets Pre-Cap;11;
+Run 124;Error Cause;None;
+Run 125;Varianten-ID;HighControl;
+Run 125;Success / Failure;true;Success
+Run 125;Gesamtdauer ms;2152,922;teuer, Performance pruefen
+Run 125;Final Placed Rooms;23;
+Run 125;Open Sockets Pre-Cap;11;
+Run 125;Error Cause;None;
+Run 126;Varianten-ID;HighControl;
+Run 126;Success / Failure;true;Success
+Run 126;Gesamtdauer ms;2067,793;teuer, Performance pruefen
+Run 126;Final Placed Rooms;23;
+Run 126;Open Sockets Pre-Cap;11;
+Run 126;Error Cause;None;
+Run 127;Varianten-ID;HighControl;
+Run 127;Success / Failure;true;Success
+Run 127;Gesamtdauer ms;1920,248;teuer, Performance pruefen
+Run 127;Final Placed Rooms;23;
+Run 127;Open Sockets Pre-Cap;11;
+Run 127;Error Cause;None;
+Run 128;Varianten-ID;HighControl;
+Run 128;Success / Failure;true;Success
+Run 128;Gesamtdauer ms;1626,407;teuer, Performance pruefen
+Run 128;Final Placed Rooms;23;
+Run 128;Open Sockets Pre-Cap;11;
+Run 128;Error Cause;None;
+Run 129;Varianten-ID;HighControl;
+Run 129;Success / Failure;true;Success
+Run 129;Gesamtdauer ms;1532,826;teuer, Performance pruefen
+Run 129;Final Placed Rooms;23;
+Run 129;Open Sockets Pre-Cap;11;
+Run 129;Error Cause;None;
+Run 130;Varianten-ID;HighControl;
+Run 130;Success / Failure;true;Success
+Run 130;Gesamtdauer ms;1372,993;teuer, Performance pruefen
+Run 130;Final Placed Rooms;23;
+Run 130;Open Sockets Pre-Cap;11;
+Run 130;Error Cause;None;
+Run 131;Varianten-ID;HighControl;
+Run 131;Success / Failure;true;Success
+Run 131;Gesamtdauer ms;1267,243;teuer, Performance pruefen
+Run 131;Final Placed Rooms;23;
+Run 131;Open Sockets Pre-Cap;11;
+Run 131;Error Cause;None;
+Run 132;Varianten-ID;HighControl;
+Run 132;Success / Failure;true;Success
+Run 132;Gesamtdauer ms;1161,472;teuer, Performance pruefen
+Run 132;Final Placed Rooms;23;
+Run 132;Open Sockets Pre-Cap;11;
+Run 132;Error Cause;None;
+Run 133;Varianten-ID;HighControl;
+Run 133;Success / Failure;true;Success
+Run 133;Gesamtdauer ms;998,252;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 133;Final Placed Rooms;23;
+Run 133;Open Sockets Pre-Cap;11;
+Run 133;Error Cause;None;
+Run 134;Varianten-ID;HighControl;
+Run 134;Success / Failure;true;Success
+Run 134;Gesamtdauer ms;857,541;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 134;Final Placed Rooms;23;
+Run 134;Open Sockets Pre-Cap;11;
+Run 134;Error Cause;None;
+Run 135;Varianten-ID;HighControl;
+Run 135;Success / Failure;true;Success
+Run 135;Gesamtdauer ms;648,525;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 135;Final Placed Rooms;23;
+Run 135;Open Sockets Pre-Cap;11;
+Run 135;Error Cause;None;
+Run 136;Varianten-ID;HighControl;
+Run 136;Success / Failure;true;Success
+Run 136;Gesamtdauer ms;578,066;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 136;Final Placed Rooms;23;
+Run 136;Open Sockets Pre-Cap;11;
+Run 136;Error Cause;None;
+Run 137;Varianten-ID;HighControl;
+Run 137;Success / Failure;true;Success
+Run 137;Gesamtdauer ms;433,613;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 137;Final Placed Rooms;23;
+Run 137;Open Sockets Pre-Cap;11;
+Run 137;Error Cause;None;
+Run 138;Varianten-ID;HighControl;
+Run 138;Success / Failure;true;Success
+Run 138;Gesamtdauer ms;251,191;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 138;Final Placed Rooms;23;
+Run 138;Open Sockets Pre-Cap;11;
+Run 138;Error Cause;None;
+Run 139;Varianten-ID;HighControl;
+Run 139;Success / Failure;true;Success
+Run 139;Gesamtdauer ms;2247,77;teuer, Performance pruefen
+Run 139;Final Placed Rooms;20;
+Run 139;Open Sockets Pre-Cap;14;
+Run 139;Error Cause;None;
+Run 140;Varianten-ID;HighControl;
+Run 140;Success / Failure;true;Success
+Run 140;Gesamtdauer ms;2324,608;teuer, Performance pruefen
+Run 140;Final Placed Rooms;14;
+Run 140;Open Sockets Pre-Cap;6;
+Run 140;Error Cause;None;
+Run 141;Varianten-ID;HighControl;
+Run 141;Success / Failure;true;Success
+Run 141;Gesamtdauer ms;2481,682;teuer, Performance pruefen
+Run 141;Final Placed Rooms;16;
+Run 141;Open Sockets Pre-Cap;7;
+Run 141;Error Cause;None;
+Run 142;Varianten-ID;HighControl;
+Run 142;Success / Failure;true;Success
+Run 142;Gesamtdauer ms;2320,704;teuer, Performance pruefen
+Run 142;Final Placed Rooms;14;
+Run 142;Open Sockets Pre-Cap;4;
+Run 142;Error Cause;None;
+Run 143;Varianten-ID;HighControl;
+Run 143;Success / Failure;true;Success
+Run 143;Gesamtdauer ms;2561,647;teuer, Performance pruefen
+Run 143;Final Placed Rooms;13;
+Run 143;Open Sockets Pre-Cap;6;
+Run 143;Error Cause;None;
+Run 144;Varianten-ID;HighControl;
+Run 144;Success / Failure;true;Success
+Run 144;Gesamtdauer ms;2449,178;teuer, Performance pruefen
+Run 144;Final Placed Rooms;15;
+Run 144;Open Sockets Pre-Cap;7;
+Run 144;Error Cause;None;
+Run 145;Varianten-ID;HighControl;
+Run 145;Success / Failure;true;Success
+Run 145;Gesamtdauer ms;2914,673;teuer, Performance pruefen
+Run 145;Final Placed Rooms;19;
+Run 145;Open Sockets Pre-Cap;15;
+Run 145;Error Cause;None;
+Run 146;Varianten-ID;HighControl;
+Run 146;Success / Failure;true;Success
+Run 146;Gesamtdauer ms;2679,292;teuer, Performance pruefen
+Run 146;Final Placed Rooms;16;
+Run 146;Open Sockets Pre-Cap;7;
+Run 146;Error Cause;None;
+Run 147;Varianten-ID;HighControl;
+Run 147;Success / Failure;true;Success
+Run 147;Gesamtdauer ms;2654,355;teuer, Performance pruefen
+Run 147;Final Placed Rooms;14;
+Run 147;Open Sockets Pre-Cap;5;
+Run 147;Error Cause;None;
+Run 148;Varianten-ID;HighControl;
+Run 148;Success / Failure;true;Success
+Run 148;Gesamtdauer ms;2750,749;teuer, Performance pruefen
+Run 148;Final Placed Rooms;15;
+Run 148;Open Sockets Pre-Cap;10;
+Run 148;Error Cause;None;
+Run 149;Varianten-ID;HighControl;
+Run 149;Success / Failure;true;Success
+Run 149;Gesamtdauer ms;2790,122;teuer, Performance pruefen
+Run 149;Final Placed Rooms;14;
+Run 149;Open Sockets Pre-Cap;7;
+Run 149;Error Cause;None;
+Run 150;Varianten-ID;HighControl;
+Run 150;Success / Failure;true;Success
+Run 150;Gesamtdauer ms;3008,188;teuer, Performance pruefen
+Run 150;Final Placed Rooms;19;
+Run 150;Open Sockets Pre-Cap;8;
+Run 150;Error Cause;None;
+Run 151;Varianten-ID;HighControl;
+Run 151;Success / Failure;true;Success
+Run 151;Gesamtdauer ms;2919,263;teuer, Performance pruefen
+Run 151;Final Placed Rooms;16;
+Run 151;Open Sockets Pre-Cap;8;
+Run 151;Error Cause;None;
+Run 152;Varianten-ID;HighControl;
+Run 152;Success / Failure;true;Success
+Run 152;Gesamtdauer ms;2793,077;teuer, Performance pruefen
+Run 152;Final Placed Rooms;17;
+Run 152;Open Sockets Pre-Cap;9;
+Run 152;Error Cause;None;
+Run 153;Varianten-ID;HighControl;
+Run 153;Success / Failure;true;Success
+Run 153;Gesamtdauer ms;2909,024;teuer, Performance pruefen
+Run 153;Final Placed Rooms;18;
+Run 153;Open Sockets Pre-Cap;12;
+Run 153;Error Cause;None;
+Run 154;Varianten-ID;HighControl;
+Run 154;Success / Failure;true;Success
+Run 154;Gesamtdauer ms;2915,562;teuer, Performance pruefen
+Run 154;Final Placed Rooms;17;
+Run 154;Open Sockets Pre-Cap;9;
+Run 154;Error Cause;None;
+Run 155;Varianten-ID;HighControl;
+Run 155;Success / Failure;true;Success
+Run 155;Gesamtdauer ms;2894,252;teuer, Performance pruefen
+Run 155;Final Placed Rooms;19;
+Run 155;Open Sockets Pre-Cap;10;
+Run 155;Error Cause;None;
+Run 156;Varianten-ID;HighControl;
+Run 156;Success / Failure;true;Success
+Run 156;Gesamtdauer ms;3092,884;teuer, Performance pruefen
+Run 156;Final Placed Rooms;15;
+Run 156;Open Sockets Pre-Cap;8;
+Run 156;Error Cause;None;
+Run 157;Varianten-ID;HighControl;
+Run 157;Success / Failure;true;Success
+Run 157;Gesamtdauer ms;3077,219;teuer, Performance pruefen
+Run 157;Final Placed Rooms;17;
+Run 157;Open Sockets Pre-Cap;9;
+Run 157;Error Cause;None;
+Run 158;Varianten-ID;HighControl;
+Run 158;Success / Failure;true;Success
+Run 158;Gesamtdauer ms;3132,121;teuer, Performance pruefen
+Run 158;Final Placed Rooms;15;
+Run 158;Open Sockets Pre-Cap;8;
+Run 158;Error Cause;None;
+Run 159;Varianten-ID;HighControl;
+Run 159;Success / Failure;true;Success
+Run 159;Gesamtdauer ms;2928,678;teuer, Performance pruefen
+Run 159;Final Placed Rooms;16;
+Run 159;Open Sockets Pre-Cap;5;
+Run 159;Error Cause;None;
+Run 160;Varianten-ID;HighControl;
+Run 160;Success / Failure;true;Success
+Run 160;Gesamtdauer ms;2782,862;teuer, Performance pruefen
+Run 160;Final Placed Rooms;15;
+Run 160;Open Sockets Pre-Cap;7;
+Run 160;Error Cause;None;
+Run 161;Varianten-ID;HighControl;
+Run 161;Success / Failure;true;Success
+Run 161;Gesamtdauer ms;2855,297;teuer, Performance pruefen
+Run 161;Final Placed Rooms;18;
+Run 161;Open Sockets Pre-Cap;10;
+Run 161;Error Cause;None;
+Run 162;Varianten-ID;HighControl;
+Run 162;Success / Failure;true;Success
+Run 162;Gesamtdauer ms;2773,545;teuer, Performance pruefen
+Run 162;Final Placed Rooms;16;
+Run 162;Open Sockets Pre-Cap;9;
+Run 162;Error Cause;None;
+Run 163;Varianten-ID;HighControl;
+Run 163;Success / Failure;true;Success
+Run 163;Gesamtdauer ms;2975,741;teuer, Performance pruefen
+Run 163;Final Placed Rooms;16;
+Run 163;Open Sockets Pre-Cap;9;
+Run 163;Error Cause;None;
+Run 164;Varianten-ID;HighControl;
+Run 164;Success / Failure;true;Success
+Run 164;Gesamtdauer ms;2946,619;teuer, Performance pruefen
+Run 164;Final Placed Rooms;15;
+Run 164;Open Sockets Pre-Cap;7;
+Run 164;Error Cause;None;
+Run 165;Varianten-ID;HighControl;
+Run 165;Success / Failure;true;Success
+Run 165;Gesamtdauer ms;2811,233;teuer, Performance pruefen
+Run 165;Final Placed Rooms;17;
+Run 165;Open Sockets Pre-Cap;10;
+Run 165;Error Cause;None;
+Run 166;Varianten-ID;HighControl;
+Run 166;Success / Failure;true;Success
+Run 166;Gesamtdauer ms;3005,97;teuer, Performance pruefen
+Run 166;Final Placed Rooms;18;
+Run 166;Open Sockets Pre-Cap;13;
+Run 166;Error Cause;None;
+Run 167;Varianten-ID;HighControl;
+Run 167;Success / Failure;true;Success
+Run 167;Gesamtdauer ms;2923,833;teuer, Performance pruefen
+Run 167;Final Placed Rooms;17;
+Run 167;Open Sockets Pre-Cap;10;
+Run 167;Error Cause;None;
+Run 168;Varianten-ID;HighControl;
+Run 168;Success / Failure;true;Success
+Run 168;Gesamtdauer ms;2993,44;teuer, Performance pruefen
+Run 168;Final Placed Rooms;17;
+Run 168;Open Sockets Pre-Cap;12;
+Run 168;Error Cause;None;
+Run 169;Varianten-ID;HighControl;
+Run 169;Success / Failure;true;Success
+Run 169;Gesamtdauer ms;2849,884;teuer, Performance pruefen
+Run 169;Final Placed Rooms;15;
+Run 169;Open Sockets Pre-Cap;7;
+Run 169;Error Cause;None;
+Run 170;Varianten-ID;HighControl;
+Run 170;Success / Failure;true;Success
+Run 170;Gesamtdauer ms;3046,428;teuer, Performance pruefen
+Run 170;Final Placed Rooms;17;
+Run 170;Open Sockets Pre-Cap;10;
+Run 170;Error Cause;None;
+Run 171;Varianten-ID;HighControl;
+Run 171;Success / Failure;true;Success
+Run 171;Gesamtdauer ms;2973,992;teuer, Performance pruefen
+Run 171;Final Placed Rooms;16;
+Run 171;Open Sockets Pre-Cap;6;
+Run 171;Error Cause;None;
+Run 172;Varianten-ID;HighControl;
+Run 172;Success / Failure;true;Success
+Run 172;Gesamtdauer ms;2774,664;teuer, Performance pruefen
+Run 172;Final Placed Rooms;17;
+Run 172;Open Sockets Pre-Cap;6;
+Run 172;Error Cause;None;
+Run 173;Varianten-ID;HighControl;
+Run 173;Success / Failure;true;Success
+Run 173;Gesamtdauer ms;2820,502;teuer, Performance pruefen
+Run 173;Final Placed Rooms;16;
+Run 173;Open Sockets Pre-Cap;8;
+Run 173;Error Cause;None;
+Run 174;Varianten-ID;HighControl;
+Run 174;Success / Failure;true;Success
+Run 174;Gesamtdauer ms;2805,478;teuer, Performance pruefen
+Run 174;Final Placed Rooms;16;
+Run 174;Open Sockets Pre-Cap;7;
+Run 174;Error Cause;None;
+Run 175;Varianten-ID;HighControl;
+Run 175;Success / Failure;true;Success
+Run 175;Gesamtdauer ms;2839,959;teuer, Performance pruefen
+Run 175;Final Placed Rooms;21;
+Run 175;Open Sockets Pre-Cap;11;
+Run 175;Error Cause;None;
+Run 176;Varianten-ID;HighControl;
+Run 176;Success / Failure;true;Success
+Run 176;Gesamtdauer ms;2687,252;teuer, Performance pruefen
+Run 176;Final Placed Rooms;21;
+Run 176;Open Sockets Pre-Cap;11;
+Run 176;Error Cause;None;
+Run 177;Varianten-ID;HighControl;
+Run 177;Success / Failure;true;Success
+Run 177;Gesamtdauer ms;2561,733;teuer, Performance pruefen
+Run 177;Final Placed Rooms;21;
+Run 177;Open Sockets Pre-Cap;11;
+Run 177;Error Cause;None;
+Run 178;Varianten-ID;HighControl;
+Run 178;Success / Failure;true;Success
+Run 178;Gesamtdauer ms;2295,619;teuer, Performance pruefen
+Run 178;Final Placed Rooms;21;
+Run 178;Open Sockets Pre-Cap;11;
+Run 178;Error Cause;None;
+Run 179;Varianten-ID;HighControl;
+Run 179;Success / Failure;true;Success
+Run 179;Gesamtdauer ms;2142,271;teuer, Performance pruefen
+Run 179;Final Placed Rooms;21;
+Run 179;Open Sockets Pre-Cap;11;
+Run 179;Error Cause;None;
+Run 180;Varianten-ID;HighControl;
+Run 180;Success / Failure;true;Success
+Run 180;Gesamtdauer ms;1912,062;teuer, Performance pruefen
+Run 180;Final Placed Rooms;21;
+Run 180;Open Sockets Pre-Cap;11;
+Run 180;Error Cause;None;
+Run 181;Varianten-ID;HighControl;
+Run 181;Success / Failure;true;Success
+Run 181;Gesamtdauer ms;1736,828;teuer, Performance pruefen
+Run 181;Final Placed Rooms;21;
+Run 181;Open Sockets Pre-Cap;11;
+Run 181;Error Cause;None;
+Run 182;Varianten-ID;HighControl;
+Run 182;Success / Failure;true;Success
+Run 182;Gesamtdauer ms;1556,082;teuer, Performance pruefen
+Run 182;Final Placed Rooms;21;
+Run 182;Open Sockets Pre-Cap;11;
+Run 182;Error Cause;None;
+Run 183;Varianten-ID;HighControl;
+Run 183;Success / Failure;true;Success
+Run 183;Gesamtdauer ms;1284,434;teuer, Performance pruefen
+Run 183;Final Placed Rooms;21;
+Run 183;Open Sockets Pre-Cap;11;
+Run 183;Error Cause;None;
+Run 184;Varianten-ID;HighControl;
+Run 184;Success / Failure;true;Success
+Run 184;Gesamtdauer ms;1073,242;teuer, Performance pruefen
+Run 184;Final Placed Rooms;21;
+Run 184;Open Sockets Pre-Cap;11;
+Run 184;Error Cause;None;
+Run 185;Varianten-ID;HighControl;
+Run 185;Success / Failure;true;Success
+Run 185;Gesamtdauer ms;812,059;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 185;Final Placed Rooms;21;
+Run 185;Open Sockets Pre-Cap;11;
+Run 185;Error Cause;None;
+Run 186;Varianten-ID;HighControl;
+Run 186;Success / Failure;true;Success
+Run 186;Gesamtdauer ms;575,079;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 186;Final Placed Rooms;21;
+Run 186;Open Sockets Pre-Cap;11;
+Run 186;Error Cause;None;
+Run 187;Varianten-ID;HighControl;
+Run 187;Success / Failure;true;Success
+Run 187;Gesamtdauer ms;508,906;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 187;Final Placed Rooms;21;
+Run 187;Open Sockets Pre-Cap;11;
+Run 187;Error Cause;None;
+Run 188;Varianten-ID;HighControl;
+Run 188;Success / Failure;true;Success
+Run 188;Gesamtdauer ms;391,553;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 188;Final Placed Rooms;21;
+Run 188;Open Sockets Pre-Cap;11;
+Run 188;Error Cause;None;
+Run 189;Varianten-ID;HighControl;
+Run 189;Success / Failure;true;Success
+Run 189;Gesamtdauer ms;228,892;unproblematisch
+Run 189;Final Placed Rooms;21;
+Run 189;Open Sockets Pre-Cap;11;
+Run 189;Error Cause;None;
+Run 190;Varianten-ID;HighControl;
+Run 190;Success / Failure;true;Success
+Run 190;Gesamtdauer ms;1148,687;teuer, Performance pruefen
+Run 190;Final Placed Rooms;23;
+Run 190;Open Sockets Pre-Cap;11;
+Run 190;Error Cause;None;
+Run 191;Varianten-ID;HighControl;
+Run 191;Success / Failure;true;Success
+Run 191;Gesamtdauer ms;1013,388;teuer, Performance pruefen
+Run 191;Final Placed Rooms;23;
+Run 191;Open Sockets Pre-Cap;11;
+Run 191;Error Cause;None;
+Run 192;Varianten-ID;HighControl;
+Run 192;Success / Failure;true;Success
+Run 192;Gesamtdauer ms;784,382;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 192;Final Placed Rooms;23;
+Run 192;Open Sockets Pre-Cap;11;
+Run 192;Error Cause;None;
+Run 193;Varianten-ID;HighControl;
+Run 193;Success / Failure;true;Success
+Run 193;Gesamtdauer ms;590,553;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 193;Final Placed Rooms;23;
+Run 193;Open Sockets Pre-Cap;11;
+Run 193;Error Cause;None;
+Run 194;Varianten-ID;HighControl;
+Run 194;Success / Failure;true;Success
+Run 194;Gesamtdauer ms;349,47;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 194;Final Placed Rooms;23;
+Run 194;Open Sockets Pre-Cap;11;
+Run 194;Error Cause;None;
+Run 195;Varianten-ID;HighControl;
+Run 195;Success / Failure;true;Success
+Run 195;Gesamtdauer ms;220,105;unproblematisch
+Run 195;Final Placed Rooms;23;
+Run 195;Open Sockets Pre-Cap;11;
+Run 195;Error Cause;None;
+Run 196;Varianten-ID;HighControl;
+Run 196;Success / Failure;true;Success
+Run 196;Gesamtdauer ms;797,617;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 196;Final Placed Rooms;27;
+Run 196;Open Sockets Pre-Cap;14;
+Run 196;Error Cause;None;
+Run 197;Varianten-ID;HighControl;
+Run 197;Success / Failure;true;Success
+Run 197;Gesamtdauer ms;677,591;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 197;Final Placed Rooms;27;
+Run 197;Open Sockets Pre-Cap;14;
+Run 197;Error Cause;None;
+Run 198;Varianten-ID;HighControl;
+Run 198;Success / Failure;true;Success
+Run 198;Gesamtdauer ms;455,182;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 198;Final Placed Rooms;27;
+Run 198;Open Sockets Pre-Cap;14;
+Run 198;Error Cause;None;
+Run 199;Varianten-ID;HighControl;
+Run 199;Success / Failure;true;Success
+Run 199;Gesamtdauer ms;367,973;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 199;Final Placed Rooms;27;
+Run 199;Open Sockets Pre-Cap;14;
+Run 199;Error Cause;None;
+Run 200;Varianten-ID;HighControl;
+Run 200;Success / Failure;true;Success
+Run 200;Gesamtdauer ms;328,056;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 200;Final Placed Rooms;27;
+Run 200;Open Sockets Pre-Cap;14;
+Run 200;Error Cause;None;
+Run 201;Varianten-ID;HighControl;
+Run 201;Success / Failure;true;Success
+Run 201;Gesamtdauer ms;2717,269;teuer, Performance pruefen
+Run 201;Final Placed Rooms;18;
+Run 201;Open Sockets Pre-Cap;9;
+Run 201;Error Cause;None;
+Run 202;Varianten-ID;HighControl;
+Run 202;Success / Failure;true;Success
+Run 202;Gesamtdauer ms;2709,572;teuer, Performance pruefen
+Run 202;Final Placed Rooms;15;
+Run 202;Open Sockets Pre-Cap;5;
+Run 202;Error Cause;None;
+Run 203;Varianten-ID;HighControl;
+Run 203;Success / Failure;true;Success
+Run 203;Gesamtdauer ms;2855,749;teuer, Performance pruefen
+Run 203;Final Placed Rooms;14;
+Run 203;Open Sockets Pre-Cap;5;
+Run 203;Error Cause;None;
+Run 204;Varianten-ID;HighControl;
+Run 204;Success / Failure;true;Success
+Run 204;Gesamtdauer ms;2793,528;teuer, Performance pruefen
+Run 204;Final Placed Rooms;17;
+Run 204;Open Sockets Pre-Cap;10;
+Run 204;Error Cause;None;
+Run 205;Varianten-ID;HighControl;
+Run 205;Success / Failure;true;Success
+Run 205;Gesamtdauer ms;2785,398;teuer, Performance pruefen
+Run 205;Final Placed Rooms;18;
+Run 205;Open Sockets Pre-Cap;10;
+Run 205;Error Cause;None;
+Run 206;Varianten-ID;HighControl;
+Run 206;Success / Failure;true;Success
+Run 206;Gesamtdauer ms;2770,586;teuer, Performance pruefen
+Run 206;Final Placed Rooms;17;
+Run 206;Open Sockets Pre-Cap;10;
+Run 206;Error Cause;None;
+Run 207;Varianten-ID;HighControl;
+Run 207;Success / Failure;true;Success
+Run 207;Gesamtdauer ms;2831,107;teuer, Performance pruefen
+Run 207;Final Placed Rooms;13;
+Run 207;Open Sockets Pre-Cap;6;
+Run 207;Error Cause;None;
+Run 208;Varianten-ID;HighControl;
+Run 208;Success / Failure;true;Success
+Run 208;Gesamtdauer ms;3045,746;teuer, Performance pruefen
+Run 208;Final Placed Rooms;17;
+Run 208;Open Sockets Pre-Cap;11;
+Run 208;Error Cause;None;
+Run 209;Varianten-ID;HighControl;
+Run 209;Success / Failure;true;Success
+Run 209;Gesamtdauer ms;2796,591;teuer, Performance pruefen
+Run 209;Final Placed Rooms;19;
+Run 209;Open Sockets Pre-Cap;10;
+Run 209;Error Cause;None;
+Run 210;Varianten-ID;HighControl;
+Run 210;Success / Failure;true;Success
+Run 210;Gesamtdauer ms;2792,06;teuer, Performance pruefen
+Run 210;Final Placed Rooms;16;
+Run 210;Open Sockets Pre-Cap;9;
+Run 210;Error Cause;None;
+Run 211;Varianten-ID;HighControl;
+Run 211;Success / Failure;true;Success
+Run 211;Gesamtdauer ms;2750,139;teuer, Performance pruefen
+Run 211;Final Placed Rooms;14;
+Run 211;Open Sockets Pre-Cap;6;
+Run 211;Error Cause;None;
+Run 212;Varianten-ID;HighControl;
+Run 212;Success / Failure;true;Success
+Run 212;Gesamtdauer ms;3021,03;teuer, Performance pruefen
+Run 212;Final Placed Rooms;17;
+Run 212;Open Sockets Pre-Cap;11;
+Run 212;Error Cause;None;
+Run 213;Varianten-ID;HighControl;
+Run 213;Success / Failure;true;Success
+Run 213;Gesamtdauer ms;3082,362;teuer, Performance pruefen
+Run 213;Final Placed Rooms;16;
+Run 213;Open Sockets Pre-Cap;7;
+Run 213;Error Cause;None;
+Run 214;Varianten-ID;HighControl;
+Run 214;Success / Failure;true;Success
+Run 214;Gesamtdauer ms;3027,906;teuer, Performance pruefen
+Run 214;Final Placed Rooms;18;
+Run 214;Open Sockets Pre-Cap;10;
+Run 214;Error Cause;None;
+Run 215;Varianten-ID;HighControl;
+Run 215;Success / Failure;true;Success
+Run 215;Gesamtdauer ms;2976,713;teuer, Performance pruefen
+Run 215;Final Placed Rooms;17;
+Run 215;Open Sockets Pre-Cap;8;
+Run 215;Error Cause;None;
+Run 216;Varianten-ID;HighControl;
+Run 216;Success / Failure;true;Success
+Run 216;Gesamtdauer ms;3085,261;teuer, Performance pruefen
+Run 216;Final Placed Rooms;18;
+Run 216;Open Sockets Pre-Cap;13;
+Run 216;Error Cause;None;
+Run 217;Varianten-ID;HighControl;
+Run 217;Success / Failure;true;Success
+Run 217;Gesamtdauer ms;3122,332;teuer, Performance pruefen
+Run 217;Final Placed Rooms;14;
+Run 217;Open Sockets Pre-Cap;7;
+Run 217;Error Cause;None;
+Run 218;Varianten-ID;HighControl;
+Run 218;Success / Failure;true;Success
+Run 218;Gesamtdauer ms;3099,266;teuer, Performance pruefen
+Run 218;Final Placed Rooms;14;
+Run 218;Open Sockets Pre-Cap;6;
+Run 218;Error Cause;None;
+Run 219;Varianten-ID;HighControl;
+Run 219;Success / Failure;true;Success
+Run 219;Gesamtdauer ms;3160,802;teuer, Performance pruefen
+Run 219;Final Placed Rooms;18;
+Run 219;Open Sockets Pre-Cap;11;
+Run 219;Error Cause;None;
+Run 220;Varianten-ID;HighControl;
+Run 220;Success / Failure;true;Success
+Run 220;Gesamtdauer ms;2981,714;teuer, Performance pruefen
+Run 220;Final Placed Rooms;15;
+Run 220;Open Sockets Pre-Cap;6;
+Run 220;Error Cause;None;
+Run 221;Varianten-ID;HighControl;
+Run 221;Success / Failure;true;Success
+Run 221;Gesamtdauer ms;3032,984;teuer, Performance pruefen
+Run 221;Final Placed Rooms;16;
+Run 221;Open Sockets Pre-Cap;9;
+Run 221;Error Cause;None;
+Run 222;Varianten-ID;HighControl;
+Run 222;Success / Failure;true;Success
+Run 222;Gesamtdauer ms;3023,595;teuer, Performance pruefen
+Run 222;Final Placed Rooms;17;
+Run 222;Open Sockets Pre-Cap;8;
+Run 222;Error Cause;None;
+Run 223;Varianten-ID;HighControl;
+Run 223;Success / Failure;true;Success
+Run 223;Gesamtdauer ms;3071,965;teuer, Performance pruefen
+Run 223;Final Placed Rooms;15;
+Run 223;Open Sockets Pre-Cap;8;
+Run 223;Error Cause;None;
+Run 224;Varianten-ID;HighControl;
+Run 224;Success / Failure;true;Success
+Run 224;Gesamtdauer ms;2980,186;teuer, Performance pruefen
+Run 224;Final Placed Rooms;17;
+Run 224;Open Sockets Pre-Cap;11;
+Run 224;Error Cause;None;
+Run 225;Varianten-ID;HighControl;
+Run 225;Success / Failure;true;Success
+Run 225;Gesamtdauer ms;2973,842;teuer, Performance pruefen
+Run 225;Final Placed Rooms;15;
+Run 225;Open Sockets Pre-Cap;4;
+Run 225;Error Cause;None;
+Run 226;Varianten-ID;HighControl;
+Run 226;Success / Failure;true;Success
+Run 226;Gesamtdauer ms;2851,984;teuer, Performance pruefen
+Run 226;Final Placed Rooms;20;
+Run 226;Open Sockets Pre-Cap;12;
+Run 226;Error Cause;None;
+Run 227;Varianten-ID;HighControl;
+Run 227;Success / Failure;true;Success
+Run 227;Gesamtdauer ms;2699,248;teuer, Performance pruefen
+Run 227;Final Placed Rooms;18;
+Run 227;Open Sockets Pre-Cap;9;
+Run 227;Error Cause;None;
+Run 228;Varianten-ID;HighControl;
+Run 228;Success / Failure;true;Success
+Run 228;Gesamtdauer ms;2767,098;teuer, Performance pruefen
+Run 228;Final Placed Rooms;17;
+Run 228;Open Sockets Pre-Cap;14;
+Run 228;Error Cause;None;
+Run 229;Varianten-ID;HighControl;
+Run 229;Success / Failure;true;Success
+Run 229;Gesamtdauer ms;2710,507;teuer, Performance pruefen
+Run 229;Final Placed Rooms;17;
+Run 229;Open Sockets Pre-Cap;10;
+Run 229;Error Cause;None;
+Run 230;Varianten-ID;HighControl;
+Run 230;Success / Failure;true;Success
+Run 230;Gesamtdauer ms;2701,486;teuer, Performance pruefen
+Run 230;Final Placed Rooms;17;
+Run 230;Open Sockets Pre-Cap;5;
+Run 230;Error Cause;None;
+Run 231;Varianten-ID;HighControl;
+Run 231;Success / Failure;true;Success
+Run 231;Gesamtdauer ms;2860,711;teuer, Performance pruefen
+Run 231;Final Placed Rooms;15;
+Run 231;Open Sockets Pre-Cap;11;
+Run 231;Error Cause;None;
+Run 232;Varianten-ID;HighControl;
+Run 232;Success / Failure;true;Success
+Run 232;Gesamtdauer ms;2751,645;teuer, Performance pruefen
+Run 232;Final Placed Rooms;16;
+Run 232;Open Sockets Pre-Cap;6;
+Run 232;Error Cause;None;
+Run 233;Varianten-ID;HighControl;
+Run 233;Success / Failure;true;Success
+Run 233;Gesamtdauer ms;2770,419;teuer, Performance pruefen
+Run 233;Final Placed Rooms;19;
+Run 233;Open Sockets Pre-Cap;10;
+Run 233;Error Cause;None;
+Run 234;Varianten-ID;HighControl;
+Run 234;Success / Failure;true;Success
+Run 234;Gesamtdauer ms;2774,598;teuer, Performance pruefen
+Run 234;Final Placed Rooms;17;
+Run 234;Open Sockets Pre-Cap;9;
+Run 234;Error Cause;None;
+Run 235;Varianten-ID;HighControl;
+Run 235;Success / Failure;true;Success
+Run 235;Gesamtdauer ms;2798,889;teuer, Performance pruefen
+Run 235;Final Placed Rooms;15;
+Run 235;Open Sockets Pre-Cap;5;
+Run 235;Error Cause;None;
+Run 236;Varianten-ID;HighControl;
+Run 236;Success / Failure;true;Success
+Run 236;Gesamtdauer ms;2923,7;teuer, Performance pruefen
+Run 236;Final Placed Rooms;14;
+Run 236;Open Sockets Pre-Cap;5;
+Run 236;Error Cause;None;
+Run 237;Varianten-ID;HighControl;
+Run 237;Success / Failure;true;Success
+Run 237;Gesamtdauer ms;2819,866;teuer, Performance pruefen
+Run 237;Final Placed Rooms;15;
+Run 237;Open Sockets Pre-Cap;6;
+Run 237;Error Cause;None;
+Run 238;Varianten-ID;HighControl;
+Run 238;Success / Failure;true;Success
+Run 238;Gesamtdauer ms;2834,124;teuer, Performance pruefen
+Run 238;Final Placed Rooms;16;
+Run 238;Open Sockets Pre-Cap;8;
+Run 238;Error Cause;None;
+Run 239;Varianten-ID;HighControl;
+Run 239;Success / Failure;true;Success
+Run 239;Gesamtdauer ms;2863,654;teuer, Performance pruefen
+Run 239;Final Placed Rooms;17;
+Run 239;Open Sockets Pre-Cap;9;
+Run 239;Error Cause;None;
+Run 240;Varianten-ID;HighControl;
+Run 240;Success / Failure;true;Success
+Run 240;Gesamtdauer ms;2706,919;teuer, Performance pruefen
+Run 240;Final Placed Rooms;19;
+Run 240;Open Sockets Pre-Cap;11;
+Run 240;Error Cause;None;
+Run 241;Varianten-ID;HighControl;
+Run 241;Success / Failure;true;Success
+Run 241;Gesamtdauer ms;2711,469;teuer, Performance pruefen
+Run 241;Final Placed Rooms;17;
+Run 241;Open Sockets Pre-Cap;9;
+Run 241;Error Cause;None;
+Run 242;Varianten-ID;HighControl;
+Run 242;Success / Failure;true;Success
+Run 242;Gesamtdauer ms;2919,292;teuer, Performance pruefen
+Run 242;Final Placed Rooms;16;
+Run 242;Open Sockets Pre-Cap;8;
+Run 242;Error Cause;None;
+Run 243;Varianten-ID;HighControl;
+Run 243;Success / Failure;true;Success
+Run 243;Gesamtdauer ms;3027,704;teuer, Performance pruefen
+Run 243;Final Placed Rooms;13;
+Run 243;Open Sockets Pre-Cap;4;
+Run 243;Error Cause;None;
+Run 244;Varianten-ID;HighControl;
+Run 244;Success / Failure;true;Success
+Run 244;Gesamtdauer ms;2887,386;teuer, Performance pruefen
+Run 244;Final Placed Rooms;15;
+Run 244;Open Sockets Pre-Cap;6;
+Run 244;Error Cause;None;
+Run 245;Varianten-ID;HighControl;
+Run 245;Success / Failure;true;Success
+Run 245;Gesamtdauer ms;2791,003;teuer, Performance pruefen
+Run 245;Final Placed Rooms;17;
+Run 245;Open Sockets Pre-Cap;11;
+Run 245;Error Cause;None;
+Run 246;Varianten-ID;HighControl;
+Run 246;Success / Failure;true;Success
+Run 246;Gesamtdauer ms;2691,257;teuer, Performance pruefen
+Run 246;Final Placed Rooms;16;
+Run 246;Open Sockets Pre-Cap;5;
+Run 246;Error Cause;None;
+Run 247;Varianten-ID;HighControl;
+Run 247;Success / Failure;true;Success
+Run 247;Gesamtdauer ms;2673,235;teuer, Performance pruefen
+Run 247;Final Placed Rooms;19;
+Run 247;Open Sockets Pre-Cap;12;
+Run 247;Error Cause;None;
+Run 248;Varianten-ID;HighControl;
+Run 248;Success / Failure;true;Success
+Run 248;Gesamtdauer ms;2827,555;teuer, Performance pruefen
+Run 248;Final Placed Rooms;17;
+Run 248;Open Sockets Pre-Cap;8;
+Run 248;Error Cause;None;
+Run 249;Varianten-ID;HighControl;
+Run 249;Success / Failure;true;Success
+Run 249;Gesamtdauer ms;2899,806;teuer, Performance pruefen
+Run 249;Final Placed Rooms;17;
+Run 249;Open Sockets Pre-Cap;8;
+Run 249;Error Cause;None;
+Run 250;Varianten-ID;HighControl;
+Run 250;Success / Failure;true;Success
+Run 250;Gesamtdauer ms;2971,188;teuer, Performance pruefen
+Run 250;Final Placed Rooms;18;
+Run 250;Open Sockets Pre-Cap;9;
+Run 250;Error Cause;None;
+Run 251;Varianten-ID;HighControl;
+Run 251;Success / Failure;true;Success
+Run 251;Gesamtdauer ms;3007,184;teuer, Performance pruefen
+Run 251;Final Placed Rooms;16;
+Run 251;Open Sockets Pre-Cap;6;
+Run 251;Error Cause;None;
+Run 252;Varianten-ID;HighControl;
+Run 252;Success / Failure;true;Success
+Run 252;Gesamtdauer ms;2941,269;teuer, Performance pruefen
+Run 252;Final Placed Rooms;15;
+Run 252;Open Sockets Pre-Cap;5;
+Run 252;Error Cause;None;
+Run 253;Varianten-ID;HighControl;
+Run 253;Success / Failure;true;Success
+Run 253;Gesamtdauer ms;2917,187;teuer, Performance pruefen
+Run 253;Final Placed Rooms;17;
+Run 253;Open Sockets Pre-Cap;9;
+Run 253;Error Cause;None;
+Run 254;Varianten-ID;HighControl;
+Run 254;Success / Failure;true;Success
+Run 254;Gesamtdauer ms;2856,256;teuer, Performance pruefen
+Run 254;Final Placed Rooms;16;
+Run 254;Open Sockets Pre-Cap;9;
+Run 254;Error Cause;None;
+Run 255;Varianten-ID;HighControl;
+Run 255;Success / Failure;true;Success
+Run 255;Gesamtdauer ms;2879,424;teuer, Performance pruefen
+Run 255;Final Placed Rooms;18;
+Run 255;Open Sockets Pre-Cap;11;
+Run 255;Error Cause;None;
+Run 256;Varianten-ID;HighControl;
+Run 256;Success / Failure;true;Success
+Run 256;Gesamtdauer ms;3167,194;teuer, Performance pruefen
+Run 256;Final Placed Rooms;15;
+Run 256;Open Sockets Pre-Cap;6;
+Run 256;Error Cause;None;
+Run 257;Varianten-ID;HighControl;
+Run 257;Success / Failure;true;Success
+Run 257;Gesamtdauer ms;3126,34;teuer, Performance pruefen
+Run 257;Final Placed Rooms;15;
+Run 257;Open Sockets Pre-Cap;6;
+Run 257;Error Cause;None;
+Run 258;Varianten-ID;HighControl;
+Run 258;Success / Failure;true;Success
+Run 258;Gesamtdauer ms;3219,233;teuer, Performance pruefen
+Run 258;Final Placed Rooms;17;
+Run 258;Open Sockets Pre-Cap;10;
+Run 258;Error Cause;None;
+Run 259;Varianten-ID;HighControl;
+Run 259;Success / Failure;true;Success
+Run 259;Gesamtdauer ms;3248,462;teuer, Performance pruefen
+Run 259;Final Placed Rooms;17;
+Run 259;Open Sockets Pre-Cap;7;
+Run 259;Error Cause;None;
+Run 260;Varianten-ID;HighControl;
+Run 260;Success / Failure;true;Success
+Run 260;Gesamtdauer ms;3228,902;teuer, Performance pruefen
+Run 260;Final Placed Rooms;16;
+Run 260;Open Sockets Pre-Cap;8;
+Run 260;Error Cause;None;
+Run 261;Varianten-ID;HighControl;
+Run 261;Success / Failure;true;Success
+Run 261;Gesamtdauer ms;3381,052;teuer, Performance pruefen
+Run 261;Final Placed Rooms;17;
+Run 261;Open Sockets Pre-Cap;10;
+Run 261;Error Cause;None;
+Run 262;Varianten-ID;HighControl;
+Run 262;Success / Failure;true;Success
+Run 262;Gesamtdauer ms;3345,614;teuer, Performance pruefen
+Run 262;Final Placed Rooms;16;
+Run 262;Open Sockets Pre-Cap;7;
+Run 262;Error Cause;None;
+Run 263;Varianten-ID;HighControl;
+Run 263;Success / Failure;true;Success
+Run 263;Gesamtdauer ms;3481,63;teuer, Performance pruefen
+Run 263;Final Placed Rooms;15;
+Run 263;Open Sockets Pre-Cap;8;
+Run 263;Error Cause;None;
+Run 264;Varianten-ID;HighControl;
+Run 264;Success / Failure;true;Success
+Run 264;Gesamtdauer ms;3466,807;teuer, Performance pruefen
+Run 264;Final Placed Rooms;17;
+Run 264;Open Sockets Pre-Cap;10;
+Run 264;Error Cause;None;
+Run 265;Varianten-ID;HighControl;
+Run 265;Success / Failure;true;Success
+Run 265;Gesamtdauer ms;3429,552;teuer, Performance pruefen
+Run 265;Final Placed Rooms;17;
+Run 265;Open Sockets Pre-Cap;11;
+Run 265;Error Cause;None;
+Run 266;Varianten-ID;HighControl;
+Run 266;Success / Failure;true;Success
+Run 266;Gesamtdauer ms;3291,286;teuer, Performance pruefen
+Run 266;Final Placed Rooms;17;
+Run 266;Open Sockets Pre-Cap;5;
+Run 266;Error Cause;None;
+Run 267;Varianten-ID;HighControl;
+Run 267;Success / Failure;true;Success
+Run 267;Gesamtdauer ms;3315,184;teuer, Performance pruefen
+Run 267;Final Placed Rooms;19;
+Run 267;Open Sockets Pre-Cap;9;
+Run 267;Error Cause;None;
+Run 268;Varianten-ID;HighControl;
+Run 268;Success / Failure;true;Success
+Run 268;Gesamtdauer ms;3303,63;teuer, Performance pruefen
+Run 268;Final Placed Rooms;14;
+Run 268;Open Sockets Pre-Cap;5;
+Run 268;Error Cause;None;
+Run 269;Varianten-ID;HighControl;
+Run 269;Success / Failure;true;Success
+Run 269;Gesamtdauer ms;3366,643;teuer, Performance pruefen
+Run 269;Final Placed Rooms;17;
+Run 269;Open Sockets Pre-Cap;8;
+Run 269;Error Cause;None;
+Run 270;Varianten-ID;HighControl;
+Run 270;Success / Failure;true;Success
+Run 270;Gesamtdauer ms;3421,247;teuer, Performance pruefen
+Run 270;Final Placed Rooms;14;
+Run 270;Open Sockets Pre-Cap;6;
+Run 270;Error Cause;None;
+Run 271;Varianten-ID;HighControl;
+Run 271;Success / Failure;true;Success
+Run 271;Gesamtdauer ms;3321,095;teuer, Performance pruefen
+Run 271;Final Placed Rooms;16;
+Run 271;Open Sockets Pre-Cap;5;
+Run 271;Error Cause;None;
+Run 272;Varianten-ID;HighControl;
+Run 272;Success / Failure;true;Success
+Run 272;Gesamtdauer ms;3838,318;teuer, Performance pruefen
+Run 272;Final Placed Rooms;18;
+Run 272;Open Sockets Pre-Cap;8;
+Run 272;Error Cause;None;
+Run 273;Varianten-ID;HighControl;
+Run 273;Success / Failure;true;Success
+Run 273;Gesamtdauer ms;2932,134;teuer, Performance pruefen
+Run 273;Final Placed Rooms;16;
+Run 273;Open Sockets Pre-Cap;5;
+Run 273;Error Cause;None;
+Run 274;Varianten-ID;HighControl;
+Run 274;Success / Failure;true;Success
+Run 274;Gesamtdauer ms;2912,878;teuer, Performance pruefen
+Run 274;Final Placed Rooms;17;
+Run 274;Open Sockets Pre-Cap;7;
+Run 274;Error Cause;None;
+Run 275;Varianten-ID;HighControl;
+Run 275;Success / Failure;true;Success
+Run 275;Gesamtdauer ms;3178,342;teuer, Performance pruefen
+Run 275;Final Placed Rooms;16;
+Run 275;Open Sockets Pre-Cap;6;
+Run 275;Error Cause;None;
+Run 276;Varianten-ID;HighControl;
+Run 276;Success / Failure;true;Success
+Run 276;Gesamtdauer ms;2873,795;teuer, Performance pruefen
+Run 276;Final Placed Rooms;18;
+Run 276;Open Sockets Pre-Cap;9;
+Run 276;Error Cause;None;
+Run 277;Varianten-ID;HighControl;
+Run 277;Success / Failure;true;Success
+Run 277;Gesamtdauer ms;2677,919;teuer, Performance pruefen
+Run 277;Final Placed Rooms;15;
+Run 277;Open Sockets Pre-Cap;4;
+Run 277;Error Cause;None;
+Run 278;Varianten-ID;HighControl;
+Run 278;Success / Failure;true;Success
+Run 278;Gesamtdauer ms;2487,857;teuer, Performance pruefen
+Run 278;Final Placed Rooms;16;
+Run 278;Open Sockets Pre-Cap;7;
+Run 278;Error Cause;None;
+Run 279;Varianten-ID;HighControl;
+Run 279;Success / Failure;true;Success
+Run 279;Gesamtdauer ms;2396,551;teuer, Performance pruefen
+Run 279;Final Placed Rooms;18;
+Run 279;Open Sockets Pre-Cap;8;
+Run 279;Error Cause;None;
+Run 280;Varianten-ID;HighControl;
+Run 280;Success / Failure;true;Success
+Run 280;Gesamtdauer ms;2432,441;teuer, Performance pruefen
+Run 280;Final Placed Rooms;15;
+Run 280;Open Sockets Pre-Cap;9;
+Run 280;Error Cause;None;
+Run 281;Varianten-ID;HighControl;
+Run 281;Success / Failure;true;Success
+Run 281;Gesamtdauer ms;2516,821;teuer, Performance pruefen
+Run 281;Final Placed Rooms;14;
+Run 281;Open Sockets Pre-Cap;9;
+Run 281;Error Cause;None;
+Run 282;Varianten-ID;HighControl;
+Run 282;Success / Failure;true;Success
+Run 282;Gesamtdauer ms;2833,588;teuer, Performance pruefen
+Run 282;Final Placed Rooms;15;
+Run 282;Open Sockets Pre-Cap;10;
+Run 282;Error Cause;None;
+Run 283;Varianten-ID;HighControl;
+Run 283;Success / Failure;true;Success
+Run 283;Gesamtdauer ms;3060,046;teuer, Performance pruefen
+Run 283;Final Placed Rooms;15;
+Run 283;Open Sockets Pre-Cap;9;
+Run 283;Error Cause;None;
+Run 284;Varianten-ID;HighControl;
+Run 284;Success / Failure;true;Success
+Run 284;Gesamtdauer ms;3118,559;teuer, Performance pruefen
+Run 284;Final Placed Rooms;17;
+Run 284;Open Sockets Pre-Cap;9;
+Run 284;Error Cause;None;
+Run 285;Varianten-ID;HighControl;
+Run 285;Success / Failure;true;Success
+Run 285;Gesamtdauer ms;2907,334;teuer, Performance pruefen
+Run 285;Final Placed Rooms;17;
+Run 285;Open Sockets Pre-Cap;8;
+Run 285;Error Cause;None;
+Run 286;Varianten-ID;HighControl;
+Run 286;Success / Failure;true;Success
+Run 286;Gesamtdauer ms;2821,6;teuer, Performance pruefen
+Run 286;Final Placed Rooms;15;
+Run 286;Open Sockets Pre-Cap;10;
+Run 286;Error Cause;None;
+Run 287;Varianten-ID;HighControl;
+Run 287;Success / Failure;true;Success
+Run 287;Gesamtdauer ms;3082,329;teuer, Performance pruefen
+Run 287;Final Placed Rooms;17;
+Run 287;Open Sockets Pre-Cap;9;
+Run 287;Error Cause;None;
+Run 288;Varianten-ID;HighControl;
+Run 288;Success / Failure;true;Success
+Run 288;Gesamtdauer ms;3079,459;teuer, Performance pruefen
+Run 288;Final Placed Rooms;17;
+Run 288;Open Sockets Pre-Cap;8;
+Run 288;Error Cause;None;
+Run 289;Varianten-ID;HighControl;
+Run 289;Success / Failure;true;Success
+Run 289;Gesamtdauer ms;2987,203;teuer, Performance pruefen
+Run 289;Final Placed Rooms;17;
+Run 289;Open Sockets Pre-Cap;7;
+Run 289;Error Cause;None;
+Run 290;Varianten-ID;HighControl;
+Run 290;Success / Failure;true;Success
+Run 290;Gesamtdauer ms;3010,001;teuer, Performance pruefen
+Run 290;Final Placed Rooms;17;
+Run 290;Open Sockets Pre-Cap;7;
+Run 290;Error Cause;None;
+Run 291;Varianten-ID;HighControl;
+Run 291;Success / Failure;true;Success
+Run 291;Gesamtdauer ms;2978,979;teuer, Performance pruefen
+Run 291;Final Placed Rooms;19;
+Run 291;Open Sockets Pre-Cap;10;
+Run 291;Error Cause;None;
+Run 292;Varianten-ID;HighControl;
+Run 292;Success / Failure;true;Success
+Run 292;Gesamtdauer ms;3328,471;teuer, Performance pruefen
+Run 292;Final Placed Rooms;14;
+Run 292;Open Sockets Pre-Cap;7;
+Run 292;Error Cause;None;
+Run 293;Varianten-ID;HighControl;
+Run 293;Success / Failure;true;Success
+Run 293;Gesamtdauer ms;3602,104;teuer, Performance pruefen
+Run 293;Final Placed Rooms;16;
+Run 293;Open Sockets Pre-Cap;9;
+Run 293;Error Cause;None;
+Run 294;Varianten-ID;HighControl;
+Run 294;Success / Failure;true;Success
+Run 294;Gesamtdauer ms;3726,642;teuer, Performance pruefen
+Run 294;Final Placed Rooms;17;
+Run 294;Open Sockets Pre-Cap;9;
+Run 294;Error Cause;None;
+Run 295;Varianten-ID;HighControl;
+Run 295;Success / Failure;true;Success
+Run 295;Gesamtdauer ms;5044,218;teuer, Performance pruefen
+Run 295;Final Placed Rooms;17;
+Run 295;Open Sockets Pre-Cap;13;
+Run 295;Error Cause;None;
+Run 296;Varianten-ID;HighControl;
+Run 296;Success / Failure;true;Success
+Run 296;Gesamtdauer ms;4023,984;teuer, Performance pruefen
+Run 296;Final Placed Rooms;16;
+Run 296;Open Sockets Pre-Cap;14;
+Run 296;Error Cause;None;
+Run 297;Varianten-ID;HighControl;
+Run 297;Success / Failure;true;Success
+Run 297;Gesamtdauer ms;3857,157;teuer, Performance pruefen
+Run 297;Final Placed Rooms;15;
+Run 297;Open Sockets Pre-Cap;3;
+Run 297;Error Cause;None;
+Run 298;Varianten-ID;HighControl;
+Run 298;Success / Failure;true;Success
+Run 298;Gesamtdauer ms;3589,581;teuer, Performance pruefen
+Run 298;Final Placed Rooms;23;
+Run 298;Open Sockets Pre-Cap;8;
+Run 298;Error Cause;None;
+Run 299;Varianten-ID;HighControl;
+Run 299;Success / Failure;true;Success
+Run 299;Gesamtdauer ms;3375,129;teuer, Performance pruefen
+Run 299;Final Placed Rooms;23;
+Run 299;Open Sockets Pre-Cap;8;
+Run 299;Error Cause;None;
+Run 300;Varianten-ID;HighControl;
+Run 300;Success / Failure;true;Success
+Run 300;Gesamtdauer ms;3363,236;teuer, Performance pruefen
+Run 300;Final Placed Rooms;23;
+Run 300;Open Sockets Pre-Cap;8;
+Run 300;Error Cause;None;
+Run 301;Varianten-ID;HighControl;
+Run 301;Success / Failure;true;Success
+Run 301;Gesamtdauer ms;3079,905;teuer, Performance pruefen
+Run 301;Final Placed Rooms;23;
+Run 301;Open Sockets Pre-Cap;8;
+Run 301;Error Cause;None;
+Run 302;Varianten-ID;HighControl;
+Run 302;Success / Failure;true;Success
+Run 302;Gesamtdauer ms;2902,968;teuer, Performance pruefen
+Run 302;Final Placed Rooms;23;
+Run 302;Open Sockets Pre-Cap;8;
+Run 302;Error Cause;None;
+Run 303;Varianten-ID;HighControl;
+Run 303;Success / Failure;true;Success
+Run 303;Gesamtdauer ms;2740,238;teuer, Performance pruefen
+Run 303;Final Placed Rooms;23;
+Run 303;Open Sockets Pre-Cap;8;
+Run 303;Error Cause;None;
+Run 304;Varianten-ID;HighControl;
+Run 304;Success / Failure;true;Success
+Run 304;Gesamtdauer ms;2597,531;teuer, Performance pruefen
+Run 304;Final Placed Rooms;23;
+Run 304;Open Sockets Pre-Cap;8;
+Run 304;Error Cause;None;
+Run 305;Varianten-ID;HighControl;
+Run 305;Success / Failure;true;Success
+Run 305;Gesamtdauer ms;2340,744;teuer, Performance pruefen
+Run 305;Final Placed Rooms;23;
+Run 305;Open Sockets Pre-Cap;8;
+Run 305;Error Cause;None;
+Run 306;Varianten-ID;HighControl;
+Run 306;Success / Failure;true;Success
+Run 306;Gesamtdauer ms;2136,195;teuer, Performance pruefen
+Run 306;Final Placed Rooms;23;
+Run 306;Open Sockets Pre-Cap;8;
+Run 306;Error Cause;None;
+Run 307;Varianten-ID;HighControl;
+Run 307;Success / Failure;true;Success
+Run 307;Gesamtdauer ms;1859,86;teuer, Performance pruefen
+Run 307;Final Placed Rooms;23;
+Run 307;Open Sockets Pre-Cap;8;
+Run 307;Error Cause;None;
+Run 308;Varianten-ID;HighControl;
+Run 308;Success / Failure;true;Success
+Run 308;Gesamtdauer ms;1586,934;teuer, Performance pruefen
+Run 308;Final Placed Rooms;23;
+Run 308;Open Sockets Pre-Cap;8;
+Run 308;Error Cause;None;
+Run 309;Varianten-ID;HighControl;
+Run 309;Success / Failure;true;Success
+Run 309;Gesamtdauer ms;1322,996;teuer, Performance pruefen
+Run 309;Final Placed Rooms;23;
+Run 309;Open Sockets Pre-Cap;8;
+Run 309;Error Cause;None;
+Run 310;Varianten-ID;HighControl;
+Run 310;Success / Failure;true;Success
+Run 310;Gesamtdauer ms;1158,969;teuer, Performance pruefen
+Run 310;Final Placed Rooms;23;
+Run 310;Open Sockets Pre-Cap;8;
+Run 310;Error Cause;None;
+Run 311;Varianten-ID;HighControl;
+Run 311;Success / Failure;true;Success
+Run 311;Gesamtdauer ms;749,365;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 311;Final Placed Rooms;23;
+Run 311;Open Sockets Pre-Cap;8;
+Run 311;Error Cause;None;
+Run 312;Varianten-ID;HighControl;
+Run 312;Success / Failure;true;Success
+Run 312;Gesamtdauer ms;218,902;unproblematisch
+Run 312;Final Placed Rooms;23;
+Run 312;Open Sockets Pre-Cap;8;
+Run 312;Error Cause;None;
+Run 313;Varianten-ID;HighControl;
+Run 313;Success / Failure;true;Success
+Run 313;Gesamtdauer ms;3288,303;teuer, Performance pruefen
+Run 313;Final Placed Rooms;16;
+Run 313;Open Sockets Pre-Cap;11;
+Run 313;Error Cause;None;
+Run 314;Varianten-ID;HighControl;
+Run 314;Success / Failure;true;Success
+Run 314;Gesamtdauer ms;3039,808;teuer, Performance pruefen
+Run 314;Final Placed Rooms;16;
+Run 314;Open Sockets Pre-Cap;7;
+Run 314;Error Cause;None;
+Run 315;Varianten-ID;HighControl;
+Run 315;Success / Failure;true;Success
+Run 315;Gesamtdauer ms;3296,643;teuer, Performance pruefen
+Run 315;Final Placed Rooms;17;
+Run 315;Open Sockets Pre-Cap;9;
+Run 315;Error Cause;None;
+Run 316;Varianten-ID;HighControl;
+Run 316;Success / Failure;true;Success
+Run 316;Gesamtdauer ms;3599,424;teuer, Performance pruefen
+Run 316;Final Placed Rooms;17;
+Run 316;Open Sockets Pre-Cap;12;
+Run 316;Error Cause;None;
+Run 317;Varianten-ID;HighControl;
+Run 317;Success / Failure;true;Success
+Run 317;Gesamtdauer ms;3360,734;teuer, Performance pruefen
+Run 317;Final Placed Rooms;17;
+Run 317;Open Sockets Pre-Cap;8;
+Run 317;Error Cause;None;
+Run 318;Varianten-ID;HighControl;
+Run 318;Success / Failure;true;Success
+Run 318;Gesamtdauer ms;3178,902;teuer, Performance pruefen
+Run 318;Final Placed Rooms;19;
+Run 318;Open Sockets Pre-Cap;9;
+Run 318;Error Cause;None;
+Run 319;Varianten-ID;HighControl;
+Run 319;Success / Failure;true;Success
+Run 319;Gesamtdauer ms;3035,993;teuer, Performance pruefen
+Run 319;Final Placed Rooms;19;
+Run 319;Open Sockets Pre-Cap;9;
+Run 319;Error Cause;None;
+Run 320;Varianten-ID;HighControl;
+Run 320;Success / Failure;true;Success
+Run 320;Gesamtdauer ms;2665,308;teuer, Performance pruefen
+Run 320;Final Placed Rooms;19;
+Run 320;Open Sockets Pre-Cap;9;
+Run 320;Error Cause;None;
+Run 321;Varianten-ID;HighControl;
+Run 321;Success / Failure;true;Success
+Run 321;Gesamtdauer ms;2734,78;teuer, Performance pruefen
+Run 321;Final Placed Rooms;19;
+Run 321;Open Sockets Pre-Cap;9;
+Run 321;Error Cause;None;
+Run 322;Varianten-ID;HighControl;
+Run 322;Success / Failure;true;Success
+Run 322;Gesamtdauer ms;2455,82;teuer, Performance pruefen
+Run 322;Final Placed Rooms;19;
+Run 322;Open Sockets Pre-Cap;9;
+Run 322;Error Cause;None;
+Run 323;Varianten-ID;HighControl;
+Run 323;Success / Failure;true;Success
+Run 323;Gesamtdauer ms;2238,373;teuer, Performance pruefen
+Run 323;Final Placed Rooms;19;
+Run 323;Open Sockets Pre-Cap;9;
+Run 323;Error Cause;None;
+Run 324;Varianten-ID;HighControl;
+Run 324;Success / Failure;true;Success
+Run 324;Gesamtdauer ms;1855,616;teuer, Performance pruefen
+Run 324;Final Placed Rooms;19;
+Run 324;Open Sockets Pre-Cap;9;
+Run 324;Error Cause;None;
+Run 325;Varianten-ID;HighControl;
+Run 325;Success / Failure;true;Success
+Run 325;Gesamtdauer ms;1793,944;teuer, Performance pruefen
+Run 325;Final Placed Rooms;19;
+Run 325;Open Sockets Pre-Cap;9;
+Run 325;Error Cause;None;
+Run 326;Varianten-ID;HighControl;
+Run 326;Success / Failure;true;Success
+Run 326;Gesamtdauer ms;1583,129;teuer, Performance pruefen
+Run 326;Final Placed Rooms;19;
+Run 326;Open Sockets Pre-Cap;9;
+Run 326;Error Cause;None;
+Run 327;Varianten-ID;HighControl;
+Run 327;Success / Failure;true;Success
+Run 327;Gesamtdauer ms;1533,334;teuer, Performance pruefen
+Run 327;Final Placed Rooms;19;
+Run 327;Open Sockets Pre-Cap;9;
+Run 327;Error Cause;None;
+Run 328;Varianten-ID;HighControl;
+Run 328;Success / Failure;true;Success
+Run 328;Gesamtdauer ms;1311,306;teuer, Performance pruefen
+Run 328;Final Placed Rooms;19;
+Run 328;Open Sockets Pre-Cap;9;
+Run 328;Error Cause;None;
+Run 329;Varianten-ID;HighControl;
+Run 329;Success / Failure;true;Success
+Run 329;Gesamtdauer ms;963,247;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 329;Final Placed Rooms;19;
+Run 329;Open Sockets Pre-Cap;9;
+Run 329;Error Cause;None;
+Run 330;Varianten-ID;HighControl;
+Run 330;Success / Failure;true;Success
+Run 330;Gesamtdauer ms;641,79;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 330;Final Placed Rooms;19;
+Run 330;Open Sockets Pre-Cap;9;
+Run 330;Error Cause;None;
+Run 331;Varianten-ID;HighControl;
+Run 331;Success / Failure;true;Success
+Run 331;Gesamtdauer ms;357,107;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 331;Final Placed Rooms;19;
+Run 331;Open Sockets Pre-Cap;9;
+Run 331;Error Cause;None;
+Run 332;Varianten-ID;HighControl;
+Run 332;Success / Failure;true;Success
+Run 332;Gesamtdauer ms;152,988;unproblematisch
+Run 332;Final Placed Rooms;19;
+Run 332;Open Sockets Pre-Cap;9;
+Run 332;Error Cause;None;
+Run 333;Varianten-ID;HighControl;
+Run 333;Success / Failure;true;Success
+Run 333;Gesamtdauer ms;3336,189;teuer, Performance pruefen
+Run 333;Final Placed Rooms;18;
+Run 333;Open Sockets Pre-Cap;14;
+Run 333;Error Cause;None;
+Run 334;Varianten-ID;HighControl;
+Run 334;Success / Failure;true;Success
+Run 334;Gesamtdauer ms;3521,921;teuer, Performance pruefen
+Run 334;Final Placed Rooms;18;
+Run 334;Open Sockets Pre-Cap;11;
+Run 334;Error Cause;None;
+Run 335;Varianten-ID;HighControl;
+Run 335;Success / Failure;true;Success
+Run 335;Gesamtdauer ms;3374,457;teuer, Performance pruefen
+Run 335;Final Placed Rooms;16;
+Run 335;Open Sockets Pre-Cap;7;
+Run 335;Error Cause;None;
+Run 336;Varianten-ID;HighControl;
+Run 336;Success / Failure;true;Success
+Run 336;Gesamtdauer ms;3464,668;teuer, Performance pruefen
+Run 336;Final Placed Rooms;17;
+Run 336;Open Sockets Pre-Cap;10;
+Run 336;Error Cause;None;
+Run 337;Varianten-ID;HighControl;
+Run 337;Success / Failure;true;Success
+Run 337;Gesamtdauer ms;3543,477;teuer, Performance pruefen
+Run 337;Final Placed Rooms;16;
+Run 337;Open Sockets Pre-Cap;9;
+Run 337;Error Cause;None;
+Run 338;Varianten-ID;HighControl;
+Run 338;Success / Failure;true;Success
+Run 338;Gesamtdauer ms;3430,128;teuer, Performance pruefen
+Run 338;Final Placed Rooms;15;
+Run 338;Open Sockets Pre-Cap;5;
+Run 338;Error Cause;None;
+Run 339;Varianten-ID;HighControl;
+Run 339;Success / Failure;true;Success
+Run 339;Gesamtdauer ms;3240,176;teuer, Performance pruefen
+Run 339;Final Placed Rooms;14;
+Run 339;Open Sockets Pre-Cap;4;
+Run 339;Error Cause;None;
+Run 340;Varianten-ID;HighControl;
+Run 340;Success / Failure;true;Success
+Run 340;Gesamtdauer ms;3445,936;teuer, Performance pruefen
+Run 340;Final Placed Rooms;15;
+Run 340;Open Sockets Pre-Cap;8;
+Run 340;Error Cause;None;
+Run 341;Varianten-ID;HighControl;
+Run 341;Success / Failure;true;Success
+Run 341;Gesamtdauer ms;3439,489;teuer, Performance pruefen
+Run 341;Final Placed Rooms;14;
+Run 341;Open Sockets Pre-Cap;7;
+Run 341;Error Cause;None;
+Run 342;Varianten-ID;HighControl;
+Run 342;Success / Failure;true;Success
+Run 342;Gesamtdauer ms;3549,626;teuer, Performance pruefen
+Run 342;Final Placed Rooms;15;
+Run 342;Open Sockets Pre-Cap;6;
+Run 342;Error Cause;None;
+Run 343;Varianten-ID;HighControl;
+Run 343;Success / Failure;true;Success
+Run 343;Gesamtdauer ms;3541,612;teuer, Performance pruefen
+Run 343;Final Placed Rooms;18;
+Run 343;Open Sockets Pre-Cap;10;
+Run 343;Error Cause;None;
+Run 344;Varianten-ID;HighControl;
+Run 344;Success / Failure;true;Success
+Run 344;Gesamtdauer ms;3621,008;teuer, Performance pruefen
+Run 344;Final Placed Rooms;15;
+Run 344;Open Sockets Pre-Cap;7;
+Run 344;Error Cause;None;
+Run 345;Varianten-ID;HighControl;
+Run 345;Success / Failure;true;Success
+Run 345;Gesamtdauer ms;3800,998;teuer, Performance pruefen
+Run 345;Final Placed Rooms;17;
+Run 345;Open Sockets Pre-Cap;9;
+Run 345;Error Cause;None;
+Run 346;Varianten-ID;HighControl;
+Run 346;Success / Failure;true;Success
+Run 346;Gesamtdauer ms;3630,401;teuer, Performance pruefen
+Run 346;Final Placed Rooms;16;
+Run 346;Open Sockets Pre-Cap;5;
+Run 346;Error Cause;None;
+Run 347;Varianten-ID;HighControl;
+Run 347;Success / Failure;true;Success
+Run 347;Gesamtdauer ms;3735,76;teuer, Performance pruefen
+Run 347;Final Placed Rooms;16;
+Run 347;Open Sockets Pre-Cap;8;
+Run 347;Error Cause;None;
+Run 348;Varianten-ID;HighControl;
+Run 348;Success / Failure;true;Success
+Run 348;Gesamtdauer ms;3680,131;teuer, Performance pruefen
+Run 348;Final Placed Rooms;15;
+Run 348;Open Sockets Pre-Cap;8;
+Run 348;Error Cause;None;
+Run 349;Varianten-ID;HighControl;
+Run 349;Success / Failure;true;Success
+Run 349;Gesamtdauer ms;3554,743;teuer, Performance pruefen
+Run 349;Final Placed Rooms;18;
+Run 349;Open Sockets Pre-Cap;8;
+Run 349;Error Cause;None;
+Run 350;Varianten-ID;HighControl;
+Run 350;Success / Failure;true;Success
+Run 350;Gesamtdauer ms;3394,507;teuer, Performance pruefen
+Run 350;Final Placed Rooms;17;
+Run 350;Open Sockets Pre-Cap;7;
+Run 350;Error Cause;None;
+Run 351;Varianten-ID;HighControl;
+Run 351;Success / Failure;true;Success
+Run 351;Gesamtdauer ms;3563,338;teuer, Performance pruefen
+Run 351;Final Placed Rooms;18;
+Run 351;Open Sockets Pre-Cap;10;
+Run 351;Error Cause;None;
+Run 352;Varianten-ID;HighControl;
+Run 352;Success / Failure;true;Success
+Run 352;Gesamtdauer ms;3405,878;teuer, Performance pruefen
+Run 352;Final Placed Rooms;16;
+Run 352;Open Sockets Pre-Cap;10;
+Run 352;Error Cause;None;
+Run 353;Varianten-ID;HighControl;
+Run 353;Success / Failure;true;Success
+Run 353;Gesamtdauer ms;3433,393;teuer, Performance pruefen
+Run 353;Final Placed Rooms;15;
+Run 353;Open Sockets Pre-Cap;6;
+Run 353;Error Cause;None;
+Run 354;Varianten-ID;HighControl;
+Run 354;Success / Failure;true;Success
+Run 354;Gesamtdauer ms;3204,916;teuer, Performance pruefen
+Run 354;Final Placed Rooms;18;
+Run 354;Open Sockets Pre-Cap;9;
+Run 354;Error Cause;None;
+Run 355;Varianten-ID;HighControl;
+Run 355;Success / Failure;true;Success
+Run 355;Gesamtdauer ms;3648,869;teuer, Performance pruefen
+Run 355;Final Placed Rooms;14;
+Run 355;Open Sockets Pre-Cap;7;
+Run 355;Error Cause;None;
+Run 356;Varianten-ID;HighControl;
+Run 356;Success / Failure;true;Success
+Run 356;Gesamtdauer ms;3324,026;teuer, Performance pruefen
+Run 356;Final Placed Rooms;14;
+Run 356;Open Sockets Pre-Cap;7;
+Run 356;Error Cause;None;
+Run 357;Varianten-ID;HighControl;
+Run 357;Success / Failure;true;Success
+Run 357;Gesamtdauer ms;3433,652;teuer, Performance pruefen
+Run 357;Final Placed Rooms;16;
+Run 357;Open Sockets Pre-Cap;8;
+Run 357;Error Cause;None;
+Run 358;Varianten-ID;HighControl;
+Run 358;Success / Failure;true;Success
+Run 358;Gesamtdauer ms;3338,621;teuer, Performance pruefen
+Run 358;Final Placed Rooms;17;
+Run 358;Open Sockets Pre-Cap;8;
+Run 358;Error Cause;None;
+Run 359;Varianten-ID;HighControl;
+Run 359;Success / Failure;true;Success
+Run 359;Gesamtdauer ms;3201,844;teuer, Performance pruefen
+Run 359;Final Placed Rooms;17;
+Run 359;Open Sockets Pre-Cap;8;
+Run 359;Error Cause;None;
+Run 360;Varianten-ID;HighControl;
+Run 360;Success / Failure;true;Success
+Run 360;Gesamtdauer ms;3456,728;teuer, Performance pruefen
+Run 360;Final Placed Rooms;18;
+Run 360;Open Sockets Pre-Cap;9;
+Run 360;Error Cause;None;
+Run 361;Varianten-ID;HighControl;
+Run 361;Success / Failure;true;Success
+Run 361;Gesamtdauer ms;3400,248;teuer, Performance pruefen
+Run 361;Final Placed Rooms;15;
+Run 361;Open Sockets Pre-Cap;6;
+Run 361;Error Cause;None;
+Run 362;Varianten-ID;HighControl;
+Run 362;Success / Failure;true;Success
+Run 362;Gesamtdauer ms;3376,782;teuer, Performance pruefen
+Run 362;Final Placed Rooms;15;
+Run 362;Open Sockets Pre-Cap;3;
+Run 362;Error Cause;None;
+Run 363;Varianten-ID;HighControl;
+Run 363;Success / Failure;true;Success
+Run 363;Gesamtdauer ms;3344,215;teuer, Performance pruefen
+Run 363;Final Placed Rooms;14;
+Run 363;Open Sockets Pre-Cap;3;
+Run 363;Error Cause;None;
+Run 364;Varianten-ID;HighControl;
+Run 364;Success / Failure;true;Success
+Run 364;Gesamtdauer ms;3274,807;teuer, Performance pruefen
+Run 364;Final Placed Rooms;18;
+Run 364;Open Sockets Pre-Cap;9;
+Run 364;Error Cause;None;
+Run 365;Varianten-ID;HighControl;
+Run 365;Success / Failure;true;Success
+Run 365;Gesamtdauer ms;3376,717;teuer, Performance pruefen
+Run 365;Final Placed Rooms;15;
+Run 365;Open Sockets Pre-Cap;5;
+Run 365;Error Cause;None;
+Run 366;Varianten-ID;HighControl;
+Run 366;Success / Failure;true;Success
+Run 366;Gesamtdauer ms;3471,733;teuer, Performance pruefen
+Run 366;Final Placed Rooms;17;
+Run 366;Open Sockets Pre-Cap;10;
+Run 366;Error Cause;None;
+Run 367;Varianten-ID;HighControl;
+Run 367;Success / Failure;true;Success
+Run 367;Gesamtdauer ms;3589,41;teuer, Performance pruefen
+Run 367;Final Placed Rooms;16;
+Run 367;Open Sockets Pre-Cap;7;
+Run 367;Error Cause;None;
+Run 368;Varianten-ID;HighControl;
+Run 368;Success / Failure;true;Success
+Run 368;Gesamtdauer ms;3139,124;teuer, Performance pruefen
+Run 368;Final Placed Rooms;14;
+Run 368;Open Sockets Pre-Cap;3;
+Run 368;Error Cause;None;
+Run 369;Varianten-ID;HighControl;
+Run 369;Success / Failure;true;Success
+Run 369;Gesamtdauer ms;3221,189;teuer, Performance pruefen
+Run 369;Final Placed Rooms;15;
+Run 369;Open Sockets Pre-Cap;7;
+Run 369;Error Cause;None;
+Run 370;Varianten-ID;HighControl;
+Run 370;Success / Failure;true;Success
+Run 370;Gesamtdauer ms;3258,506;teuer, Performance pruefen
+Run 370;Final Placed Rooms;18;
+Run 370;Open Sockets Pre-Cap;10;
+Run 370;Error Cause;None;
+Run 371;Varianten-ID;HighControl;
+Run 371;Success / Failure;true;Success
+Run 371;Gesamtdauer ms;3473,233;teuer, Performance pruefen
+Run 371;Final Placed Rooms;17;
+Run 371;Open Sockets Pre-Cap;9;
+Run 371;Error Cause;None;
+Run 372;Varianten-ID;HighControl;
+Run 372;Success / Failure;true;Success
+Run 372;Gesamtdauer ms;3443,612;teuer, Performance pruefen
+Run 372;Final Placed Rooms;20;
+Run 372;Open Sockets Pre-Cap;9;
+Run 372;Error Cause;None;
+Run 373;Varianten-ID;HighControl;
+Run 373;Success / Failure;true;Success
+Run 373;Gesamtdauer ms;3405,494;teuer, Performance pruefen
+Run 373;Final Placed Rooms;14;
+Run 373;Open Sockets Pre-Cap;7;
+Run 373;Error Cause;None;
+Run 374;Varianten-ID;HighControl;
+Run 374;Success / Failure;true;Success
+Run 374;Gesamtdauer ms;3538,949;teuer, Performance pruefen
+Run 374;Final Placed Rooms;16;
+Run 374;Open Sockets Pre-Cap;9;
+Run 374;Error Cause;None;
+Run 375;Varianten-ID;HighControl;
+Run 375;Success / Failure;true;Success
+Run 375;Gesamtdauer ms;3576,976;teuer, Performance pruefen
+Run 375;Final Placed Rooms;15;
+Run 375;Open Sockets Pre-Cap;6;
+Run 375;Error Cause;None;
+Run 376;Varianten-ID;HighControl;
+Run 376;Success / Failure;true;Success
+Run 376;Gesamtdauer ms;3767,757;teuer, Performance pruefen
+Run 376;Final Placed Rooms;17;
+Run 376;Open Sockets Pre-Cap;10;
+Run 376;Error Cause;None;
+Run 377;Varianten-ID;HighControl;
+Run 377;Success / Failure;true;Success
+Run 377;Gesamtdauer ms;3573,963;teuer, Performance pruefen
+Run 377;Final Placed Rooms;17;
+Run 377;Open Sockets Pre-Cap;8;
+Run 377;Error Cause;None;
+Run 378;Varianten-ID;HighControl;
+Run 378;Success / Failure;true;Success
+Run 378;Gesamtdauer ms;3603,191;teuer, Performance pruefen
+Run 378;Final Placed Rooms;17;
+Run 378;Open Sockets Pre-Cap;7;
+Run 378;Error Cause;None;
+Run 379;Varianten-ID;HighControl;
+Run 379;Success / Failure;true;Success
+Run 379;Gesamtdauer ms;3670,409;teuer, Performance pruefen
+Run 379;Final Placed Rooms;17;
+Run 379;Open Sockets Pre-Cap;6;
+Run 379;Error Cause;None;
+Run 380;Varianten-ID;HighControl;
+Run 380;Success / Failure;true;Success
+Run 380;Gesamtdauer ms;3727,924;teuer, Performance pruefen
+Run 380;Final Placed Rooms;16;
+Run 380;Open Sockets Pre-Cap;8;
+Run 380;Error Cause;None;
+Run 381;Varianten-ID;HighControl;
+Run 381;Success / Failure;true;Success
+Run 381;Gesamtdauer ms;3854,532;teuer, Performance pruefen
+Run 381;Final Placed Rooms;17;
+Run 381;Open Sockets Pre-Cap;9;
+Run 381;Error Cause;None;
+Run 382;Varianten-ID;HighControl;
+Run 382;Success / Failure;true;Success
+Run 382;Gesamtdauer ms;3789,879;teuer, Performance pruefen
+Run 382;Final Placed Rooms;13;
+Run 382;Open Sockets Pre-Cap;5;
+Run 382;Error Cause;None;
+Run 383;Varianten-ID;HighControl;
+Run 383;Success / Failure;true;Success
+Run 383;Gesamtdauer ms;3796,753;teuer, Performance pruefen
+Run 383;Final Placed Rooms;18;
+Run 383;Open Sockets Pre-Cap;9;
+Run 383;Error Cause;None;
+Run 384;Varianten-ID;HighControl;
+Run 384;Success / Failure;true;Success
+Run 384;Gesamtdauer ms;3941,274;teuer, Performance pruefen
+Run 384;Final Placed Rooms;18;
+Run 384;Open Sockets Pre-Cap;10;
+Run 384;Error Cause;None;
+Run 385;Varianten-ID;HighControl;
+Run 385;Success / Failure;true;Success
+Run 385;Gesamtdauer ms;4054,416;teuer, Performance pruefen
+Run 385;Final Placed Rooms;27;
+Run 385;Open Sockets Pre-Cap;17;
+Run 385;Error Cause;None;
+Run 386;Varianten-ID;HighControl;
+Run 386;Success / Failure;true;Success
+Run 386;Gesamtdauer ms;3718,095;teuer, Performance pruefen
+Run 386;Final Placed Rooms;27;
+Run 386;Open Sockets Pre-Cap;17;
+Run 386;Error Cause;None;
+Run 387;Varianten-ID;HighControl;
+Run 387;Success / Failure;true;Success
+Run 387;Gesamtdauer ms;3342,931;teuer, Performance pruefen
+Run 387;Final Placed Rooms;27;
+Run 387;Open Sockets Pre-Cap;17;
+Run 387;Error Cause;None;
+Run 388;Varianten-ID;HighControl;
+Run 388;Success / Failure;true;Success
+Run 388;Gesamtdauer ms;3132,283;teuer, Performance pruefen
+Run 388;Final Placed Rooms;27;
+Run 388;Open Sockets Pre-Cap;17;
+Run 388;Error Cause;None;
+Run 389;Varianten-ID;HighControl;
+Run 389;Success / Failure;true;Success
+Run 389;Gesamtdauer ms;2724,327;teuer, Performance pruefen
+Run 389;Final Placed Rooms;27;
+Run 389;Open Sockets Pre-Cap;17;
+Run 389;Error Cause;None;
+Run 390;Varianten-ID;HighControl;
+Run 390;Success / Failure;true;Success
+Run 390;Gesamtdauer ms;2422,304;teuer, Performance pruefen
+Run 390;Final Placed Rooms;27;
+Run 390;Open Sockets Pre-Cap;17;
+Run 390;Error Cause;None;
+Run 391;Varianten-ID;HighControl;
+Run 391;Success / Failure;true;Success
+Run 391;Gesamtdauer ms;2198,411;teuer, Performance pruefen
+Run 391;Final Placed Rooms;27;
+Run 391;Open Sockets Pre-Cap;17;
+Run 391;Error Cause;None;
+Run 392;Varianten-ID;HighControl;
+Run 392;Success / Failure;true;Success
+Run 392;Gesamtdauer ms;1957,863;teuer, Performance pruefen
+Run 392;Final Placed Rooms;27;
+Run 392;Open Sockets Pre-Cap;17;
+Run 392;Error Cause;None;
+Run 393;Varianten-ID;HighControl;
+Run 393;Success / Failure;true;Success
+Run 393;Gesamtdauer ms;1700,358;teuer, Performance pruefen
+Run 393;Final Placed Rooms;27;
+Run 393;Open Sockets Pre-Cap;17;
+Run 393;Error Cause;None;
+Run 394;Varianten-ID;HighControl;
+Run 394;Success / Failure;true;Success
+Run 394;Gesamtdauer ms;1391,666;teuer, Performance pruefen
+Run 394;Final Placed Rooms;27;
+Run 394;Open Sockets Pre-Cap;17;
+Run 394;Error Cause;None;
+Run 395;Varianten-ID;HighControl;
+Run 395;Success / Failure;true;Success
+Run 395;Gesamtdauer ms;1350,081;teuer, Performance pruefen
+Run 395;Final Placed Rooms;27;
+Run 395;Open Sockets Pre-Cap;17;
+Run 395;Error Cause;None;
+Run 396;Varianten-ID;HighControl;
+Run 396;Success / Failure;true;Success
+Run 396;Gesamtdauer ms;1154,064;teuer, Performance pruefen
+Run 396;Final Placed Rooms;27;
+Run 396;Open Sockets Pre-Cap;17;
+Run 396;Error Cause;None;
+Run 397;Varianten-ID;HighControl;
+Run 397;Success / Failure;true;Success
+Run 397;Gesamtdauer ms;918,1;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 397;Final Placed Rooms;27;
+Run 397;Open Sockets Pre-Cap;17;
+Run 397;Error Cause;None;
+Run 398;Varianten-ID;HighControl;
+Run 398;Success / Failure;true;Success
+Run 398;Gesamtdauer ms;547,183;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 398;Final Placed Rooms;27;
+Run 398;Open Sockets Pre-Cap;17;
+Run 398;Error Cause;None;
+Run 399;Varianten-ID;HighControl;
+Run 399;Success / Failure;true;Success
+Run 399;Gesamtdauer ms;472,432;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 399;Final Placed Rooms;27;
+Run 399;Open Sockets Pre-Cap;17;
+Run 399;Error Cause;None;
+Run 400;Varianten-ID;HighControl;
+Run 400;Success / Failure;true;Success
+Run 400;Gesamtdauer ms;2130,761;teuer, Performance pruefen
+Run 400;Final Placed Rooms;23;
+Run 400;Open Sockets Pre-Cap;7;
+Run 400;Error Cause;None;
+Run 401;Varianten-ID;HighControl;
+Run 401;Success / Failure;true;Success
+Run 401;Gesamtdauer ms;1909,13;teuer, Performance pruefen
+Run 401;Final Placed Rooms;23;
+Run 401;Open Sockets Pre-Cap;7;
+Run 401;Error Cause;None;
+Run 402;Varianten-ID;HighControl;
+Run 402;Success / Failure;true;Success
+Run 402;Gesamtdauer ms;1711,379;teuer, Performance pruefen
+Run 402;Final Placed Rooms;23;
+Run 402;Open Sockets Pre-Cap;7;
+Run 402;Error Cause;None;
+Run 403;Varianten-ID;HighControl;
+Run 403;Success / Failure;true;Success
+Run 403;Gesamtdauer ms;1515,065;teuer, Performance pruefen
+Run 403;Final Placed Rooms;23;
+Run 403;Open Sockets Pre-Cap;7;
+Run 403;Error Cause;None;
+Run 404;Varianten-ID;HighControl;
+Run 404;Success / Failure;true;Success
+Run 404;Gesamtdauer ms;1282,634;teuer, Performance pruefen
+Run 404;Final Placed Rooms;23;
+Run 404;Open Sockets Pre-Cap;7;
+Run 404;Error Cause;None;
+Run 405;Varianten-ID;HighControl;
+Run 405;Success / Failure;true;Success
+Run 405;Gesamtdauer ms;1068,174;teuer, Performance pruefen
+Run 405;Final Placed Rooms;23;
+Run 405;Open Sockets Pre-Cap;7;
+Run 405;Error Cause;None;
+Run 406;Varianten-ID;HighControl;
+Run 406;Success / Failure;true;Success
+Run 406;Gesamtdauer ms;800,367;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 406;Final Placed Rooms;23;
+Run 406;Open Sockets Pre-Cap;7;
+Run 406;Error Cause;None;
+Run 407;Varianten-ID;HighControl;
+Run 407;Success / Failure;true;Success
+Run 407;Gesamtdauer ms;572,641;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 407;Final Placed Rooms;23;
+Run 407;Open Sockets Pre-Cap;7;
+Run 407;Error Cause;None;
+Run 408;Varianten-ID;HighControl;
+Run 408;Success / Failure;true;Success
+Run 408;Gesamtdauer ms;399,547;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 408;Final Placed Rooms;23;
+Run 408;Open Sockets Pre-Cap;7;
+Run 408;Error Cause;None;
+Run 409;Varianten-ID;HighControl;
+Run 409;Success / Failure;true;Success
+Run 409;Gesamtdauer ms;193,042;unproblematisch
+Run 409;Final Placed Rooms;23;
+Run 409;Open Sockets Pre-Cap;7;
+Run 409;Error Cause;None;
+Run 410;Varianten-ID;HighControl;
+Run 410;Success / Failure;true;Success
+Run 410;Gesamtdauer ms;119,73;unproblematisch
+Run 410;Final Placed Rooms;23;
+Run 410;Open Sockets Pre-Cap;7;
+Run 410;Error Cause;None;
+Run 411;Varianten-ID;HighControl;
+Run 411;Success / Failure;true;Success
+Run 411;Gesamtdauer ms;3307,369;teuer, Performance pruefen
+Run 411;Final Placed Rooms;17;
+Run 411;Open Sockets Pre-Cap;10;
+Run 411;Error Cause;None;
+Run 412;Varianten-ID;HighControl;
+Run 412;Success / Failure;true;Success
+Run 412;Gesamtdauer ms;3461,055;teuer, Performance pruefen
+Run 412;Final Placed Rooms;18;
+Run 412;Open Sockets Pre-Cap;8;
+Run 412;Error Cause;None;
+Run 413;Varianten-ID;HighControl;
+Run 413;Success / Failure;true;Success
+Run 413;Gesamtdauer ms;3827,94;teuer, Performance pruefen
+Run 413;Final Placed Rooms;16;
+Run 413;Open Sockets Pre-Cap;10;
+Run 413;Error Cause;None;
+Run 414;Varianten-ID;HighControl;
+Run 414;Success / Failure;true;Success
+Run 414;Gesamtdauer ms;3696,455;teuer, Performance pruefen
+Run 414;Final Placed Rooms;18;
+Run 414;Open Sockets Pre-Cap;10;
+Run 414;Error Cause;None;
+Run 415;Varianten-ID;HighControl;
+Run 415;Success / Failure;true;Success
+Run 415;Gesamtdauer ms;3741,273;teuer, Performance pruefen
+Run 415;Final Placed Rooms;13;
+Run 415;Open Sockets Pre-Cap;5;
+Run 415;Error Cause;None;
+Run 416;Varianten-ID;HighControl;
+Run 416;Success / Failure;true;Success
+Run 416;Gesamtdauer ms;3871,005;teuer, Performance pruefen
+Run 416;Final Placed Rooms;16;
+Run 416;Open Sockets Pre-Cap;9;
+Run 416;Error Cause;None;
+Run 417;Varianten-ID;HighControl;
+Run 417;Success / Failure;true;Success
+Run 417;Gesamtdauer ms;4079,566;teuer, Performance pruefen
+Run 417;Final Placed Rooms;17;
+Run 417;Open Sockets Pre-Cap;10;
+Run 417;Error Cause;None;
+Run 418;Varianten-ID;HighControl;
+Run 418;Success / Failure;true;Success
+Run 418;Gesamtdauer ms;4013,794;teuer, Performance pruefen
+Run 418;Final Placed Rooms;18;
+Run 418;Open Sockets Pre-Cap;11;
+Run 418;Error Cause;None;
+Run 419;Varianten-ID;HighControl;
+Run 419;Success / Failure;true;Success
+Run 419;Gesamtdauer ms;3826,74;teuer, Performance pruefen
+Run 419;Final Placed Rooms;14;
+Run 419;Open Sockets Pre-Cap;4;
+Run 419;Error Cause;None;
+Run 420;Varianten-ID;HighControl;
+Run 420;Success / Failure;true;Success
+Run 420;Gesamtdauer ms;3861,392;teuer, Performance pruefen
+Run 420;Final Placed Rooms;16;
+Run 420;Open Sockets Pre-Cap;9;
+Run 420;Error Cause;None;
+Run 421;Varianten-ID;HighControl;
+Run 421;Success / Failure;true;Success
+Run 421;Gesamtdauer ms;4050,952;teuer, Performance pruefen
+Run 421;Final Placed Rooms;17;
+Run 421;Open Sockets Pre-Cap;8;
+Run 421;Error Cause;None;
+Run 422;Varianten-ID;HighControl;
+Run 422;Success / Failure;true;Success
+Run 422;Gesamtdauer ms;4032,693;teuer, Performance pruefen
+Run 422;Final Placed Rooms;19;
+Run 422;Open Sockets Pre-Cap;10;
+Run 422;Error Cause;None;
+Run 423;Varianten-ID;HighControl;
+Run 423;Success / Failure;true;Success
+Run 423;Gesamtdauer ms;3609,672;teuer, Performance pruefen
+Run 423;Final Placed Rooms;16;
+Run 423;Open Sockets Pre-Cap;7;
+Run 423;Error Cause;None;
+Run 424;Varianten-ID;HighControl;
+Run 424;Success / Failure;true;Success
+Run 424;Gesamtdauer ms;3860,872;teuer, Performance pruefen
+Run 424;Final Placed Rooms;19;
+Run 424;Open Sockets Pre-Cap;9;
+Run 424;Error Cause;None;
+Run 425;Varianten-ID;HighControl;
+Run 425;Success / Failure;true;Success
+Run 425;Gesamtdauer ms;3934,983;teuer, Performance pruefen
+Run 425;Final Placed Rooms;16;
+Run 425;Open Sockets Pre-Cap;8;
+Run 425;Error Cause;None;
+Run 426;Varianten-ID;HighControl;
+Run 426;Success / Failure;true;Success
+Run 426;Gesamtdauer ms;4001,591;teuer, Performance pruefen
+Run 426;Final Placed Rooms;16;
+Run 426;Open Sockets Pre-Cap;6;
+Run 426;Error Cause;None;
+Run 427;Varianten-ID;HighControl;
+Run 427;Success / Failure;true;Success
+Run 427;Gesamtdauer ms;4088,156;teuer, Performance pruefen
+Run 427;Final Placed Rooms;16;
+Run 427;Open Sockets Pre-Cap;8;
+Run 427;Error Cause;None;
+Run 428;Varianten-ID;HighControl;
+Run 428;Success / Failure;true;Success
+Run 428;Gesamtdauer ms;3902,381;teuer, Performance pruefen
+Run 428;Final Placed Rooms;17;
+Run 428;Open Sockets Pre-Cap;9;
+Run 428;Error Cause;None;
+Run 429;Varianten-ID;HighControl;
+Run 429;Success / Failure;true;Success
+Run 429;Gesamtdauer ms;3922,138;teuer, Performance pruefen
+Run 429;Final Placed Rooms;16;
+Run 429;Open Sockets Pre-Cap;7;
+Run 429;Error Cause;None;
+Run 430;Varianten-ID;HighControl;
+Run 430;Success / Failure;true;Success
+Run 430;Gesamtdauer ms;3947,583;teuer, Performance pruefen
+Run 430;Final Placed Rooms;16;
+Run 430;Open Sockets Pre-Cap;8;
+Run 430;Error Cause;None;
+Run 431;Varianten-ID;HighControl;
+Run 431;Success / Failure;true;Success
+Run 431;Gesamtdauer ms;3945,869;teuer, Performance pruefen
+Run 431;Final Placed Rooms;18;
+Run 431;Open Sockets Pre-Cap;11;
+Run 431;Error Cause;None;
+Run 432;Varianten-ID;HighControl;
+Run 432;Success / Failure;true;Success
+Run 432;Gesamtdauer ms;3718,429;teuer, Performance pruefen
+Run 432;Final Placed Rooms;17;
+Run 432;Open Sockets Pre-Cap;7;
+Run 432;Error Cause;None;
+Run 433;Varianten-ID;HighControl;
+Run 433;Success / Failure;true;Success
+Run 433;Gesamtdauer ms;3520,409;teuer, Performance pruefen
+Run 433;Final Placed Rooms;18;
+Run 433;Open Sockets Pre-Cap;7;
+Run 433;Error Cause;None;
+Run 434;Varianten-ID;HighControl;
+Run 434;Success / Failure;true;Success
+Run 434;Gesamtdauer ms;3560,248;teuer, Performance pruefen
+Run 434;Final Placed Rooms;17;
+Run 434;Open Sockets Pre-Cap;9;
+Run 434;Error Cause;None;
+Run 435;Varianten-ID;HighControl;
+Run 435;Success / Failure;true;Success
+Run 435;Gesamtdauer ms;3551,499;teuer, Performance pruefen
+Run 435;Final Placed Rooms;14;
+Run 435;Open Sockets Pre-Cap;3;
+Run 435;Error Cause;None;
+Run 436;Varianten-ID;HighControl;
+Run 436;Success / Failure;true;Success
+Run 436;Gesamtdauer ms;3516,476;teuer, Performance pruefen
+Run 436;Final Placed Rooms;15;
+Run 436;Open Sockets Pre-Cap;6;
+Run 436;Error Cause;None;
+Run 437;Varianten-ID;HighControl;
+Run 437;Success / Failure;true;Success
+Run 437;Gesamtdauer ms;3481,409;teuer, Performance pruefen
+Run 437;Final Placed Rooms;17;
+Run 437;Open Sockets Pre-Cap;8;
+Run 437;Error Cause;None;
+Run 438;Varianten-ID;HighControl;
+Run 438;Success / Failure;true;Success
+Run 438;Gesamtdauer ms;3285,387;teuer, Performance pruefen
+Run 438;Final Placed Rooms;17;
+Run 438;Open Sockets Pre-Cap;8;
+Run 438;Error Cause;None;
+Run 439;Varianten-ID;HighControl;
+Run 439;Success / Failure;true;Success
+Run 439;Gesamtdauer ms;3465,613;teuer, Performance pruefen
+Run 439;Final Placed Rooms;14;
+Run 439;Open Sockets Pre-Cap;4;
+Run 439;Error Cause;None;
+Run 440;Varianten-ID;HighControl;
+Run 440;Success / Failure;true;Success
+Run 440;Gesamtdauer ms;3549,849;teuer, Performance pruefen
+Run 440;Final Placed Rooms;26;
+Run 440;Open Sockets Pre-Cap;15;
+Run 440;Error Cause;None;
+Run 441;Varianten-ID;HighControl;
+Run 441;Success / Failure;true;Success
+Run 441;Gesamtdauer ms;3262,226;teuer, Performance pruefen
+Run 441;Final Placed Rooms;26;
+Run 441;Open Sockets Pre-Cap;15;
+Run 441;Error Cause;None;
+Run 442;Varianten-ID;HighControl;
+Run 442;Success / Failure;true;Success
+Run 442;Gesamtdauer ms;3080,058;teuer, Performance pruefen
+Run 442;Final Placed Rooms;26;
+Run 442;Open Sockets Pre-Cap;15;
+Run 442;Error Cause;None;
+Run 443;Varianten-ID;HighControl;
+Run 443;Success / Failure;true;Success
+Run 443;Gesamtdauer ms;2919,316;teuer, Performance pruefen
+Run 443;Final Placed Rooms;26;
+Run 443;Open Sockets Pre-Cap;15;
+Run 443;Error Cause;None;
+Run 444;Varianten-ID;HighControl;
+Run 444;Success / Failure;true;Success
+Run 444;Gesamtdauer ms;2690,835;teuer, Performance pruefen
+Run 444;Final Placed Rooms;26;
+Run 444;Open Sockets Pre-Cap;15;
+Run 444;Error Cause;None;
+Run 445;Varianten-ID;HighControl;
+Run 445;Success / Failure;true;Success
+Run 445;Gesamtdauer ms;2314,898;teuer, Performance pruefen
+Run 445;Final Placed Rooms;26;
+Run 445;Open Sockets Pre-Cap;15;
+Run 445;Error Cause;None;
+Run 446;Varianten-ID;HighControl;
+Run 446;Success / Failure;true;Success
+Run 446;Gesamtdauer ms;2095,2;teuer, Performance pruefen
+Run 446;Final Placed Rooms;26;
+Run 446;Open Sockets Pre-Cap;15;
+Run 446;Error Cause;None;
+Run 447;Varianten-ID;HighControl;
+Run 447;Success / Failure;true;Success
+Run 447;Gesamtdauer ms;1829,1;teuer, Performance pruefen
+Run 447;Final Placed Rooms;26;
+Run 447;Open Sockets Pre-Cap;15;
+Run 447;Error Cause;None;
+Run 448;Varianten-ID;HighControl;
+Run 448;Success / Failure;true;Success
+Run 448;Gesamtdauer ms;1696,256;teuer, Performance pruefen
+Run 448;Final Placed Rooms;26;
+Run 448;Open Sockets Pre-Cap;15;
+Run 448;Error Cause;None;
+Run 449;Varianten-ID;HighControl;
+Run 449;Success / Failure;true;Success
+Run 449;Gesamtdauer ms;1575,835;teuer, Performance pruefen
+Run 449;Final Placed Rooms;26;
+Run 449;Open Sockets Pre-Cap;15;
+Run 449;Error Cause;None;
+Run 450;Varianten-ID;HighControl;
+Run 450;Success / Failure;true;Success
+Run 450;Gesamtdauer ms;1133,289;teuer, Performance pruefen
+Run 450;Final Placed Rooms;26;
+Run 450;Open Sockets Pre-Cap;15;
+Run 450;Error Cause;None;
+Run 451;Varianten-ID;HighControl;
+Run 451;Success / Failure;true;Success
+Run 451;Gesamtdauer ms;985,035;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 451;Final Placed Rooms;26;
+Run 451;Open Sockets Pre-Cap;15;
+Run 451;Error Cause;None;
+Run 452;Varianten-ID;HighControl;
+Run 452;Success / Failure;true;Success
+Run 452;Gesamtdauer ms;848,773;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 452;Final Placed Rooms;26;
+Run 452;Open Sockets Pre-Cap;15;
+Run 452;Error Cause;None;
+Run 453;Varianten-ID;HighControl;
+Run 453;Success / Failure;true;Success
+Run 453;Gesamtdauer ms;788,255;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 453;Final Placed Rooms;26;
+Run 453;Open Sockets Pre-Cap;15;
+Run 453;Error Cause;None;
+Run 454;Varianten-ID;HighControl;
+Run 454;Success / Failure;true;Success
+Run 454;Gesamtdauer ms;507,256;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 454;Final Placed Rooms;26;
+Run 454;Open Sockets Pre-Cap;15;
+Run 454;Error Cause;None;
+Run 455;Varianten-ID;HighControl;
+Run 455;Success / Failure;true;Success
+Run 455;Gesamtdauer ms;3885,182;teuer, Performance pruefen
+Run 455;Final Placed Rooms;16;
+Run 455;Open Sockets Pre-Cap;4;
+Run 455;Error Cause;None;
+Run 456;Varianten-ID;HighControl;
+Run 456;Success / Failure;true;Success
+Run 456;Gesamtdauer ms;4188,573;teuer, Performance pruefen
+Run 456;Final Placed Rooms;17;
+Run 456;Open Sockets Pre-Cap;11;
+Run 456;Error Cause;None;
+Run 457;Varianten-ID;HighControl;
+Run 457;Success / Failure;true;Success
+Run 457;Gesamtdauer ms;4365,588;teuer, Performance pruefen
+Run 457;Final Placed Rooms;13;
+Run 457;Open Sockets Pre-Cap;4;
+Run 457;Error Cause;None;
+Run 458;Varianten-ID;HighControl;
+Run 458;Success / Failure;true;Success
+Run 458;Gesamtdauer ms;4215,99;teuer, Performance pruefen
+Run 458;Final Placed Rooms;14;
+Run 458;Open Sockets Pre-Cap;5;
+Run 458;Error Cause;None;
+Run 459;Varianten-ID;HighControl;
+Run 459;Success / Failure;true;Success
+Run 459;Gesamtdauer ms;4436,964;teuer, Performance pruefen
+Run 459;Final Placed Rooms;17;
+Run 459;Open Sockets Pre-Cap;10;
+Run 459;Error Cause;None;
+Run 460;Varianten-ID;HighControl;
+Run 460;Success / Failure;true;Success
+Run 460;Gesamtdauer ms;4349,338;teuer, Performance pruefen
+Run 460;Final Placed Rooms;19;
+Run 460;Open Sockets Pre-Cap;7;
+Run 460;Error Cause;None;
+Run 461;Varianten-ID;HighControl;
+Run 461;Success / Failure;true;Success
+Run 461;Gesamtdauer ms;4252,432;teuer, Performance pruefen
+Run 461;Final Placed Rooms;15;
+Run 461;Open Sockets Pre-Cap;7;
+Run 461;Error Cause;None;
+Run 462;Varianten-ID;HighControl;
+Run 462;Success / Failure;true;Success
+Run 462;Gesamtdauer ms;4203,922;teuer, Performance pruefen
+Run 462;Final Placed Rooms;17;
+Run 462;Open Sockets Pre-Cap;9;
+Run 462;Error Cause;None;
+Run 463;Varianten-ID;HighControl;
+Run 463;Success / Failure;true;Success
+Run 463;Gesamtdauer ms;4453,013;teuer, Performance pruefen
+Run 463;Final Placed Rooms;17;
+Run 463;Open Sockets Pre-Cap;11;
+Run 463;Error Cause;None;
+Run 464;Varianten-ID;HighControl;
+Run 464;Success / Failure;true;Success
+Run 464;Gesamtdauer ms;4418,918;teuer, Performance pruefen
+Run 464;Final Placed Rooms;14;
+Run 464;Open Sockets Pre-Cap;5;
+Run 464;Error Cause;None;
+Run 465;Varianten-ID;HighControl;
+Run 465;Success / Failure;true;Success
+Run 465;Gesamtdauer ms;4501,422;teuer, Performance pruefen
+Run 465;Final Placed Rooms;16;
+Run 465;Open Sockets Pre-Cap;7;
+Run 465;Error Cause;None;
+Run 466;Varianten-ID;HighControl;
+Run 466;Success / Failure;true;Success
+Run 466;Gesamtdauer ms;4220,316;teuer, Performance pruefen
+Run 466;Final Placed Rooms;17;
+Run 466;Open Sockets Pre-Cap;6;
+Run 466;Error Cause;None;
+Run 467;Varianten-ID;HighControl;
+Run 467;Success / Failure;true;Success
+Run 467;Gesamtdauer ms;4448,078;teuer, Performance pruefen
+Run 467;Final Placed Rooms;17;
+Run 467;Open Sockets Pre-Cap;14;
+Run 467;Error Cause;None;
+Run 468;Varianten-ID;HighControl;
+Run 468;Success / Failure;true;Success
+Run 468;Gesamtdauer ms;4576,105;teuer, Performance pruefen
+Run 468;Final Placed Rooms;19;
+Run 468;Open Sockets Pre-Cap;15;
+Run 468;Error Cause;None;
+Run 469;Varianten-ID;HighControl;
+Run 469;Success / Failure;true;Success
+Run 469;Gesamtdauer ms;4428,702;teuer, Performance pruefen
+Run 469;Final Placed Rooms;16;
+Run 469;Open Sockets Pre-Cap;7;
+Run 469;Error Cause;None;
+Run 470;Varianten-ID;HighControl;
+Run 470;Success / Failure;true;Success
+Run 470;Gesamtdauer ms;4128,574;teuer, Performance pruefen
+Run 470;Final Placed Rooms;16;
+Run 470;Open Sockets Pre-Cap;7;
+Run 470;Error Cause;None;
+Run 471;Varianten-ID;HighControl;
+Run 471;Success / Failure;true;Success
+Run 471;Gesamtdauer ms;4163,839;teuer, Performance pruefen
+Run 471;Final Placed Rooms;17;
+Run 471;Open Sockets Pre-Cap;7;
+Run 471;Error Cause;None;
+Run 472;Varianten-ID;HighControl;
+Run 472;Success / Failure;true;Success
+Run 472;Gesamtdauer ms;3885,727;teuer, Performance pruefen
+Run 472;Final Placed Rooms;14;
+Run 472;Open Sockets Pre-Cap;3;
+Run 472;Error Cause;None;
+Run 473;Varianten-ID;HighControl;
+Run 473;Success / Failure;true;Success
+Run 473;Gesamtdauer ms;3798,878;teuer, Performance pruefen
+Run 473;Final Placed Rooms;17;
+Run 473;Open Sockets Pre-Cap;8;
+Run 473;Error Cause;None;
+Run 474;Varianten-ID;HighControl;
+Run 474;Success / Failure;true;Success
+Run 474;Gesamtdauer ms;3447,574;teuer, Performance pruefen
+Run 474;Final Placed Rooms;17;
+Run 474;Open Sockets Pre-Cap;9;
+Run 474;Error Cause;None;
+Run 475;Varianten-ID;HighControl;
+Run 475;Success / Failure;true;Success
+Run 475;Gesamtdauer ms;3241,769;teuer, Performance pruefen
+Run 475;Final Placed Rooms;14;
+Run 475;Open Sockets Pre-Cap;2;
+Run 475;Error Cause;None;
+Run 476;Varianten-ID;HighControl;
+Run 476;Success / Failure;true;Success
+Run 476;Gesamtdauer ms;3283,465;teuer, Performance pruefen
+Run 476;Final Placed Rooms;16;
+Run 476;Open Sockets Pre-Cap;5;
+Run 476;Error Cause;None;
+Run 477;Varianten-ID;HighControl;
+Run 477;Success / Failure;true;Success
+Run 477;Gesamtdauer ms;3133,491;teuer, Performance pruefen
+Run 477;Final Placed Rooms;13;
+Run 477;Open Sockets Pre-Cap;1;
+Run 477;Error Cause;None;
+Run 478;Varianten-ID;HighControl;
+Run 478;Success / Failure;true;Success
+Run 478;Gesamtdauer ms;3080,227;teuer, Performance pruefen
+Run 478;Final Placed Rooms;18;
+Run 478;Open Sockets Pre-Cap;11;
+Run 478;Error Cause;None;
+Run 479;Varianten-ID;HighControl;
+Run 479;Success / Failure;true;Success
+Run 479;Gesamtdauer ms;2732,131;teuer, Performance pruefen
+Run 479;Final Placed Rooms;18;
+Run 479;Open Sockets Pre-Cap;12;
+Run 479;Error Cause;None;
+Run 480;Varianten-ID;HighControl;
+Run 480;Success / Failure;true;Success
+Run 480;Gesamtdauer ms;2751,334;teuer, Performance pruefen
+Run 480;Final Placed Rooms;16;
+Run 480;Open Sockets Pre-Cap;7;
+Run 480;Error Cause;None;
+Run 481;Varianten-ID;HighControl;
+Run 481;Success / Failure;true;Success
+Run 481;Gesamtdauer ms;2704,302;teuer, Performance pruefen
+Run 481;Final Placed Rooms;16;
+Run 481;Open Sockets Pre-Cap;6;
+Run 481;Error Cause;None;
+Run 482;Varianten-ID;HighControl;
+Run 482;Success / Failure;true;Success
+Run 482;Gesamtdauer ms;2881,384;teuer, Performance pruefen
+Run 482;Final Placed Rooms;16;
+Run 482;Open Sockets Pre-Cap;8;
+Run 482;Error Cause;None;
+Run 483;Varianten-ID;HighControl;
+Run 483;Success / Failure;true;Success
+Run 483;Gesamtdauer ms;2815,805;teuer, Performance pruefen
+Run 483;Final Placed Rooms;20;
+Run 483;Open Sockets Pre-Cap;12;
+Run 483;Error Cause;None;
+Run 484;Varianten-ID;HighControl;
+Run 484;Success / Failure;true;Success
+Run 484;Gesamtdauer ms;3029,198;teuer, Performance pruefen
+Run 484;Final Placed Rooms;17;
+Run 484;Open Sockets Pre-Cap;10;
+Run 484;Error Cause;None;
+Run 485;Varianten-ID;HighControl;
+Run 485;Success / Failure;true;Success
+Run 485;Gesamtdauer ms;3111,373;teuer, Performance pruefen
+Run 485;Final Placed Rooms;15;
+Run 485;Open Sockets Pre-Cap;9;
+Run 485;Error Cause;None;
+Run 486;Varianten-ID;HighControl;
+Run 486;Success / Failure;true;Success
+Run 486;Gesamtdauer ms;3353,193;teuer, Performance pruefen
+Run 486;Final Placed Rooms;17;
+Run 486;Open Sockets Pre-Cap;11;
+Run 486;Error Cause;None;
+Run 487;Varianten-ID;HighControl;
+Run 487;Success / Failure;true;Success
+Run 487;Gesamtdauer ms;3309,201;teuer, Performance pruefen
+Run 487;Final Placed Rooms;18;
+Run 487;Open Sockets Pre-Cap;8;
+Run 487;Error Cause;None;
+Run 488;Varianten-ID;HighControl;
+Run 488;Success / Failure;true;Success
+Run 488;Gesamtdauer ms;3309,188;teuer, Performance pruefen
+Run 488;Final Placed Rooms;15;
+Run 488;Open Sockets Pre-Cap;5;
+Run 488;Error Cause;None;
+Run 489;Varianten-ID;HighControl;
+Run 489;Success / Failure;true;Success
+Run 489;Gesamtdauer ms;3396,55;teuer, Performance pruefen
+Run 489;Final Placed Rooms;15;
+Run 489;Open Sockets Pre-Cap;5;
+Run 489;Error Cause;None;
+Run 490;Varianten-ID;HighControl;
+Run 490;Success / Failure;true;Success
+Run 490;Gesamtdauer ms;3562,124;teuer, Performance pruefen
+Run 490;Final Placed Rooms;15;
+Run 490;Open Sockets Pre-Cap;8;
+Run 490;Error Cause;None;
+Run 491;Varianten-ID;HighControl;
+Run 491;Success / Failure;true;Success
+Run 491;Gesamtdauer ms;4190,417;teuer, Performance pruefen
+Run 491;Final Placed Rooms;18;
+Run 491;Open Sockets Pre-Cap;13;
+Run 491;Error Cause;None;
+Run 492;Varianten-ID;HighControl;
+Run 492;Success / Failure;true;Success
+Run 492;Gesamtdauer ms;4079,16;teuer, Performance pruefen
+Run 492;Final Placed Rooms;14;
+Run 492;Open Sockets Pre-Cap;3;
+Run 492;Error Cause;None;
+Run 493;Varianten-ID;HighControl;
+Run 493;Success / Failure;true;Success
+Run 493;Gesamtdauer ms;4394,491;teuer, Performance pruefen
+Run 493;Final Placed Rooms;16;
+Run 493;Open Sockets Pre-Cap;8;
+Run 493;Error Cause;None;
+Run 494;Varianten-ID;HighControl;
+Run 494;Success / Failure;true;Success
+Run 494;Gesamtdauer ms;4205,516;teuer, Performance pruefen
+Run 494;Final Placed Rooms;17;
+Run 494;Open Sockets Pre-Cap;7;
+Run 494;Error Cause;None;
+Run 495;Varianten-ID;HighControl;
+Run 495;Success / Failure;true;Success
+Run 495;Gesamtdauer ms;4507,32;teuer, Performance pruefen
+Run 495;Final Placed Rooms;14;
+Run 495;Open Sockets Pre-Cap;10;
+Run 495;Error Cause;None;
+Run 496;Varianten-ID;HighControl;
+Run 496;Success / Failure;true;Success
+Run 496;Gesamtdauer ms;4539,474;teuer, Performance pruefen
+Run 496;Final Placed Rooms;17;
+Run 496;Open Sockets Pre-Cap;7;
+Run 496;Error Cause;None;
+Run 497;Varianten-ID;HighControl;
+Run 497;Success / Failure;true;Success
+Run 497;Gesamtdauer ms;4671,526;teuer, Performance pruefen
+Run 497;Final Placed Rooms;19;
+Run 497;Open Sockets Pre-Cap;13;
+Run 497;Error Cause;None;
+Run 498;Varianten-ID;HighControl;
+Run 498;Success / Failure;true;Success
+Run 498;Gesamtdauer ms;4564,467;teuer, Performance pruefen
+Run 498;Final Placed Rooms;14;
+Run 498;Open Sockets Pre-Cap;4;
+Run 498;Error Cause;None;
+Run 499;Varianten-ID;HighControl;
+Run 499;Success / Failure;true;Success
+Run 499;Gesamtdauer ms;4360,38;teuer, Performance pruefen
+Run 499;Final Placed Rooms;16;
+Run 499;Open Sockets Pre-Cap;7;
+Run 499;Error Cause;None;

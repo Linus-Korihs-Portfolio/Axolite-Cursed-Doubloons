@@ -78,6 +78,15 @@ public class ShellSpinnerEnemy : MonoBehaviour
     [Tooltip("Optional child transform projectiles spawn from. If empty, the settings ProjectileSpawnOffset is used.")]
     [SerializeField] private Transform projectileSpawnPoint;
 
+    [Header("Animation")]
+    [SerializeField] private ShellSpinnerAnimatorBridge animationBridge;
+    [SerializeField] private Transform visualRoot;
+    [SerializeField] private bool applyVisualYawOffset;
+    [SerializeField] private float visualYawOffset;
+    [SerializeField] private bool projectilesDrivenByAnimationEvents = true;
+    [SerializeField, Min(0.05f)] private float projectileAnimationEventFallbackDelay = 0.75f;
+    [SerializeField, Min(0f)] private float deathDestroyDelay = 1.5f;
+
     [Header("Debug")]
     [SerializeField] private bool enableLogs;
 
@@ -125,6 +134,19 @@ public class ShellSpinnerEnemy : MonoBehaviour
         stats = GetComponent<CombatantStats>();
         stats.Died += OnDied;
         stats.DamageTaken += OnDamageTaken;
+
+        if (animationBridge == null)
+            animationBridge = GetComponentInChildren<ShellSpinnerAnimatorBridge>(true);
+
+        if (visualRoot == null && animationBridge != null)
+            visualRoot = animationBridge.transform;
+
+        ApplyVisualOrientationOffset();
+
+        if (animationBridge == null)
+            Log("No ShellSpinnerAnimatorBridge found in children. Animations will not be driven by ShellSpinnerEnemy.");
+        else
+            animationBridge.ResetToIdle();
 
         rb = GetComponent<Rigidbody>();
         if (rb != null)
@@ -390,6 +412,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
         {
             case SpinnerState.Idle:
             {
+                SetAnimationSpeed(0f);
                 if (currentTarget != null) FaceTarget();
                 break;
             }
@@ -412,6 +435,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
             case SpinnerState.Spinning:
             {
+                SetAnimationSpeed(1f);
                 if (spinHitSomething)
                 {
                     SetState(SpinnerState.Hit);
@@ -482,9 +506,10 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
                 if (projectilesRemaining > 0 && Time.time >= nextProjectileTime)
                 {
-                    FireProjectile();
-                    projectilesRemaining--;
-                    nextProjectileTime = Time.time + GetProjectileInterval(currentProjectileVariant);
+                    if (projectilesDrivenByAnimationEvents && animationBridge != null)
+                        Log("Projectile animation event did not arrive before fallback timer. Firing from gameplay timer.");
+
+                    TryFireRangedProjectile("timer");
                 }
 
                 if (projectilesRemaining <= 0)
@@ -567,11 +592,16 @@ public class ShellSpinnerEnemy : MonoBehaviour
         {
             case SpinnerState.Idle:
                 SetHitboxState(inShell: false);
+                SetAnimationSpeed(0f);
+                StopSpinningAnimation();
+                StopShootingAnimation();
                 break;
 
             case SpinnerState.Windup:
                 RecordAttackChoice(SpinnerAttackType.Spin);
                 SetHitboxState(inShell: false);
+                SetAnimationSpeed(0f);
+                PlaySpinAttackAnimation(true);
                 stateTimer = settings != null ? settings.WindupDuration : 0.6f;
                 if (targetingLine != null)
                 {
@@ -582,6 +612,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
             case SpinnerState.Spinning:
                 SetHitboxState(inShell: true);
+                SetContinueSpinningAnimation(true);
                 spinStartTime = Time.time;
                 spinStartPosition = transform.position;
                 ignoredColliders.Clear();
@@ -589,6 +620,8 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
             case SpinnerState.Hit:
                 SetHitboxState(inShell: true);
+                SetAnimationSpeed(0f);
+                StopSpinningAnimation();
                 frameVelocity = Vector3.zero;
                 if (rb != null) rb.linearVelocity = Vector3.zero;
                 stateTimer = settings != null ? settings.HitPauseDuration : 0.15f;
@@ -596,6 +629,7 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
             case SpinnerState.ExitingShell:
                 SetHitboxState(inShell: false);
+                StopSpinningAnimation();
                 RestoreIgnoredColliders();
                 stateTimer = settings != null ? settings.ExitShellDuration : 0.6f;
                 break;
@@ -615,9 +649,12 @@ public class ShellSpinnerEnemy : MonoBehaviour
             case SpinnerState.RangedWindup:
                 RecordAttackChoice(SpinnerAttackType.Ranged);
                 SetHitboxState(inShell: false);
+                SetAnimationSpeed(0f);
                 frameVelocity = Vector3.zero;
                 if (rb != null) rb.linearVelocity = Vector3.zero;
                 currentProjectileVariant = ChooseProjectileVariant();
+                projectilesRemaining = GetProjectileCount(currentProjectileVariant);
+                PlayProjectileAttackAnimation(false, projectilesRemaining > 1);
                 stateTimer = settings != null ? settings.RangedWindupDuration : 0.35f;
                 break;
 
@@ -625,8 +662,9 @@ public class ShellSpinnerEnemy : MonoBehaviour
                 SetHitboxState(inShell: false);
                 frameVelocity = Vector3.zero;
                 if (rb != null) rb.linearVelocity = Vector3.zero;
-                projectilesRemaining = GetProjectileCount(currentProjectileVariant);
-                nextProjectileTime = Time.time;
+                if (projectilesRemaining <= 0)
+                    projectilesRemaining = GetProjectileCount(currentProjectileVariant);
+                nextProjectileTime = Time.time + (projectilesDrivenByAnimationEvents && animationBridge != null ? projectileAnimationEventFallbackDelay : 0f);
                 rangedRecoveryStarted = false;
                 break;
         }
@@ -734,6 +772,35 @@ public class ShellSpinnerEnemy : MonoBehaviour
         Log($"Fired {currentProjectileVariant} projectile");
     }
 
+    private bool TryFireRangedProjectile(string source)
+    {
+        if (currentState != SpinnerState.RangedAttack && currentState != SpinnerState.RangedWindup)
+        {
+            Log($"Ignored projectile {source}: current state is {currentState}.");
+            return false;
+        }
+
+        if (projectilesRemaining <= 0)
+        {
+            StopShootingAnimation();
+            Log($"Ignored projectile {source}: no projectiles remaining.");
+            return false;
+        }
+
+        FireProjectile();
+        projectilesRemaining--;
+
+        bool continueShooting = projectilesRemaining > 0;
+        if (animationBridge != null)
+            animationBridge.SetContinueShooting(continueShooting);
+
+        float fallbackDelay = projectilesDrivenByAnimationEvents && animationBridge != null
+            ? Mathf.Max(projectileAnimationEventFallbackDelay, GetProjectileInterval(currentProjectileVariant))
+            : GetProjectileInterval(currentProjectileVariant);
+        nextProjectileTime = Time.time + fallbackDelay;
+        return true;
+    }
+
     private GameObject GetProjectilePrefab(ProjectileVariant variant)
     {
         if (settings == null) return null;
@@ -758,6 +825,88 @@ public class ShellSpinnerEnemy : MonoBehaviour
     private void Log(string msg)
     {
         if (enableLogs) Debug.Log($"[ShellSpinner] {msg}", this);
+    }
+
+    public void OnProjectileAttackShootFrame()
+    {
+        if (currentState == SpinnerState.RangedWindup)
+            SetState(SpinnerState.RangedAttack);
+
+        TryFireRangedProjectile("animation event");
+    }
+
+    public void OnProjectileAttackHitFrame()
+    {
+        Log("Projectile attack hit frame reached.");
+    }
+
+    public void OnProjectileAttackEndFrame()
+    {
+        StopShootingAnimation();
+    }
+
+    public void OnSpinAttackStartFrame()
+    {
+        SetContinueSpinningAnimation(true);
+    }
+
+    public void OnSpinAttackHitFrame()
+    {
+        Log("Spin attack hit frame reached. Spin damage is still applied by collision contact.");
+    }
+
+    public void OnSpinAttackEndFrame()
+    {
+        StopSpinningAnimation();
+    }
+
+    public void OnDeathAnimationFinished()
+    {
+        if (stats != null && stats.IsDead)
+            Destroy(gameObject);
+    }
+
+    private void ApplyVisualOrientationOffset()
+    {
+        if (!applyVisualYawOffset || visualRoot == null) return;
+
+        visualRoot.localRotation = Quaternion.Euler(0f, visualYawOffset, 0f);
+    }
+
+    private void SetAnimationSpeed(float speed)
+    {
+        if (animationBridge != null)
+            animationBridge.SetSpeed(speed);
+    }
+
+    private void PlayProjectileAttackAnimation(bool needsTurn, bool continueShooting)
+    {
+        if (animationBridge != null)
+            animationBridge.PlayProjectileAttack(needsTurn, continueShooting);
+    }
+
+    private void PlaySpinAttackAnimation(bool continueSpinning)
+    {
+        if (animationBridge != null)
+            animationBridge.PlaySpinAttack(continueSpinning);
+    }
+
+    private void SetContinueSpinningAnimation(bool continueSpinning)
+    {
+        if (animationBridge != null)
+            animationBridge.SetContinueSpinning(continueSpinning);
+    }
+
+    private void StopSpinningAnimation()
+    {
+        if (animationBridge != null)
+            animationBridge.StopSpinning();
+    }
+
+    private void StopShootingAnimation()
+    {
+        if (animationBridge != null)
+            animationBridge.SetContinueShooting(false);
     }
 
     // Restores all Physics.IgnoreCollision pairs from a SpinUntilWall spin.
@@ -795,6 +944,10 @@ public class ShellSpinnerEnemy : MonoBehaviour
     private void OnDied()
     {
         RestoreIgnoredColliders();
-        Destroy(gameObject);
+
+        if (animationBridge != null)
+            animationBridge.SetDead(true);
+
+        Destroy(gameObject, deathDestroyDelay);
     }
 }
