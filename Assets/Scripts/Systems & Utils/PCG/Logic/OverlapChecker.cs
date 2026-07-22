@@ -11,6 +11,24 @@ namespace PCG.RoomAssembler.Logic
             LayerMask maskToUse,
             Transform ignoreRoot = null)
         {
+            return Overlaps(
+                candidate,
+                overlapPadding,
+                extraPadding,
+                maskToUse,
+                out _,
+                ignoreRoot);
+        }
+
+        public static bool Overlaps(
+            GameObject candidate,
+            float overlapPadding,
+            float extraPadding,
+            LayerMask maskToUse,
+            out Collider blockingCollider,
+            Transform ignoreRoot = null)
+        {
+            blockingCollider = null;
             float pad = overlapPadding + extraPadding;
 
             // Prefer explicit Bounds collider
@@ -38,6 +56,7 @@ namespace PCG.RoomAssembler.Logic
                         if (hit.transform.IsChildOf(candidate.transform)) continue;
                         if (ignoreRoot != null && hit.transform.IsChildOf(ignoreRoot)) continue;
 
+                        blockingCollider = hit;
                         return true;
                     }
                     return false;
@@ -68,6 +87,7 @@ namespace PCG.RoomAssembler.Logic
                     if (hit.transform.IsChildOf(candidate.transform)) continue;
                     if (ignoreRoot != null && hit.transform.IsChildOf(ignoreRoot)) continue;
 
+                    blockingCollider = hit;
                     return true;
                 }
             }

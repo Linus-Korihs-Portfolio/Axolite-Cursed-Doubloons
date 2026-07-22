@@ -24,7 +24,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &855353172221510044
 Transform:
   m_ObjectHideFlags: 0
@@ -209,6 +209,7 @@ MonoBehaviour:
   bodyObject: {fileID: 0}
   shellObject: {fileID: 0}
   targetingLine: {fileID: 0}
+  projectileSpawnPoint: {fileID: 0}
   enableLogs: 1
   currentState: 0
 --- !u!120 &8147322639375545203

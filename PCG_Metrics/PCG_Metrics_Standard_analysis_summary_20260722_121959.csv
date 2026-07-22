@@ -1,0 +1,3037 @@
+﻿Gruppe;Kennzahl;Wert;Bewertung
+Versuchsdesign;Varianten-ID;Standard=500;
+Zuverlaessigkeit;Runs gesamt;500;
+Zuverlaessigkeit;Erfolgreiche Runs;500;
+Zuverlaessigkeit;Success / Failure;100,0%;hoch / stabil
+Zuverlaessigkeit;Durchschnittliche Fehlversuche;2,808;hoher Retry-Aufwand, Constraints vermutlich zu eng
+Zuverlaessigkeit;Emergency-Fallback-Rate;3,8%;Fallback kaum noetig
+Layout;Durchschnitt Raeume vor Capping;12,272;
+Layout;Final Placed Rooms;15,584;
+Layout;Sollraum-Trefferquote;100,0%;hoch / stabil
+Layout;Open Sockets Pre-Cap;6,308;
+Layout;Durchschnitt offene Sockets nach Capping;0;vollstaendig geschlossen
+Layout;Durchschnitt Branching Factor;1,391;stark verzweigt / labyrinthartig
+Layout;Durchschnitt kritischer Pfad;8,176;
+Layout;Durchschnitt Nebenpfad-Raeume;4,096;
+Progression;Durchschnitt Start-Boss-Distanz;7,176;Progression ausreichend gestreckt
+Progression;Boss-Distanz gueltig;100,0%;hoch / stabil
+Progression;Spezialraum-Validitaet;100,0%;hoch / stabil
+Performance;Gesamtdauer ms;502,721;spuerbar, aber fuer Offline-Generierung brauchbar
+Performance;Durchschnitt Room Placement ms;396,532;
+Performance;Durchschnitt Capping ms;64,278;
+Performance;Durchschnitt NavMesh ms;21,121;
+Performance;Durchschnitt Content Spawning ms;9,966;
+Fehler;Error Cause;none;
+Raumtypen;Cap;1656;
+Raumtypen;Corner;1294;
+Raumtypen;ThreeWay;1097;
+Raumtypen;Corridor;1065;
+Raumtypen;Crossway;971;
+Raumtypen;Boss;500;
+Raumtypen;Start;500;
+Raumtypen;BigRoom;413;
+Raumtypen;DeadEnd;296;
+Generation Fehler;RoomLimitReachedBeforeCompletion;1287;
+Generation Fehler;OpenSocketsExhausted;117;
+Placement Fehler;Overlap;132956;
+Placement Fehler;PlacementConstraintRejected;39493;
+Run 0;Varianten-ID;Standard;
+Run 0;Success / Failure;true;Success
+Run 0;Gesamtdauer ms;288,7;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 0;Final Placed Rooms;17;
+Run 0;Open Sockets Pre-Cap;6;
+Run 0;Error Cause;None;
+Run 1;Varianten-ID;Standard;
+Run 1;Success / Failure;true;Success
+Run 1;Gesamtdauer ms;1181,307;teuer, Performance pruefen
+Run 1;Final Placed Rooms;10;
+Run 1;Open Sockets Pre-Cap;2;
+Run 1;Error Cause;None;
+Run 2;Varianten-ID;Standard;
+Run 2;Success / Failure;true;Success
+Run 2;Gesamtdauer ms;900,199;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 2;Final Placed Rooms;10;
+Run 2;Open Sockets Pre-Cap;2;
+Run 2;Error Cause;None;
+Run 3;Varianten-ID;Standard;
+Run 3;Success / Failure;true;Success
+Run 3;Gesamtdauer ms;611,627;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 3;Final Placed Rooms;10;
+Run 3;Open Sockets Pre-Cap;2;
+Run 3;Error Cause;None;
+Run 4;Varianten-ID;Standard;
+Run 4;Success / Failure;true;Success
+Run 4;Gesamtdauer ms;377,144;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 4;Final Placed Rooms;10;
+Run 4;Open Sockets Pre-Cap;2;
+Run 4;Error Cause;None;
+Run 5;Varianten-ID;Standard;
+Run 5;Success / Failure;true;Success
+Run 5;Gesamtdauer ms;143,529;unproblematisch
+Run 5;Final Placed Rooms;10;
+Run 5;Open Sockets Pre-Cap;2;
+Run 5;Error Cause;None;
+Run 6;Varianten-ID;Standard;
+Run 6;Success / Failure;true;Success
+Run 6;Gesamtdauer ms;312,697;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 6;Final Placed Rooms;12;
+Run 6;Open Sockets Pre-Cap;2;
+Run 6;Error Cause;None;
+Run 7;Varianten-ID;Standard;
+Run 7;Success / Failure;true;Success
+Run 7;Gesamtdauer ms;284,192;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 7;Final Placed Rooms;12;
+Run 7;Open Sockets Pre-Cap;2;
+Run 7;Error Cause;None;
+Run 8;Varianten-ID;Standard;
+Run 8;Success / Failure;true;Success
+Run 8;Gesamtdauer ms;160,385;unproblematisch
+Run 8;Final Placed Rooms;12;
+Run 8;Open Sockets Pre-Cap;2;
+Run 8;Error Cause;None;
+Run 9;Varianten-ID;Standard;
+Run 9;Success / Failure;true;Success
+Run 9;Gesamtdauer ms;38,512;sehr schnell
+Run 9;Final Placed Rooms;12;
+Run 9;Open Sockets Pre-Cap;2;
+Run 9;Error Cause;None;
+Run 10;Varianten-ID;Standard;
+Run 10;Success / Failure;true;Success
+Run 10;Gesamtdauer ms;148,834;unproblematisch
+Run 10;Final Placed Rooms;18;
+Run 10;Open Sockets Pre-Cap;5;
+Run 10;Error Cause;None;
+Run 11;Varianten-ID;Standard;
+Run 11;Success / Failure;true;Success
+Run 11;Gesamtdauer ms;1136,231;teuer, Performance pruefen
+Run 11;Final Placed Rooms;17;
+Run 11;Open Sockets Pre-Cap;7;
+Run 11;Error Cause;None;
+Run 12;Varianten-ID;Standard;
+Run 12;Success / Failure;true;Success
+Run 12;Gesamtdauer ms;682,977;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 12;Final Placed Rooms;17;
+Run 12;Open Sockets Pre-Cap;7;
+Run 12;Error Cause;None;
+Run 13;Varianten-ID;Standard;
+Run 13;Success / Failure;true;Success
+Run 13;Gesamtdauer ms;594,101;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 13;Final Placed Rooms;17;
+Run 13;Open Sockets Pre-Cap;7;
+Run 13;Error Cause;None;
+Run 14;Varianten-ID;Standard;
+Run 14;Success / Failure;true;Success
+Run 14;Gesamtdauer ms;551,47;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 14;Final Placed Rooms;17;
+Run 14;Open Sockets Pre-Cap;7;
+Run 14;Error Cause;None;
+Run 15;Varianten-ID;Standard;
+Run 15;Success / Failure;true;Success
+Run 15;Gesamtdauer ms;443,432;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 15;Final Placed Rooms;17;
+Run 15;Open Sockets Pre-Cap;7;
+Run 15;Error Cause;None;
+Run 16;Varianten-ID;Standard;
+Run 16;Success / Failure;true;Success
+Run 16;Gesamtdauer ms;384,223;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 16;Final Placed Rooms;17;
+Run 16;Open Sockets Pre-Cap;7;
+Run 16;Error Cause;None;
+Run 17;Varianten-ID;Standard;
+Run 17;Success / Failure;true;Success
+Run 17;Gesamtdauer ms;211,921;unproblematisch
+Run 17;Final Placed Rooms;17;
+Run 17;Open Sockets Pre-Cap;7;
+Run 17;Error Cause;None;
+Run 18;Varianten-ID;Standard;
+Run 18;Success / Failure;true;Success
+Run 18;Gesamtdauer ms;437,428;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 18;Final Placed Rooms;16;
+Run 18;Open Sockets Pre-Cap;9;
+Run 18;Error Cause;None;
+Run 19;Varianten-ID;Standard;
+Run 19;Success / Failure;true;Success
+Run 19;Gesamtdauer ms;369,048;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 19;Final Placed Rooms;16;
+Run 19;Open Sockets Pre-Cap;9;
+Run 19;Error Cause;None;
+Run 20;Varianten-ID;Standard;
+Run 20;Success / Failure;true;Success
+Run 20;Gesamtdauer ms;276,69;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 20;Final Placed Rooms;16;
+Run 20;Open Sockets Pre-Cap;9;
+Run 20;Error Cause;None;
+Run 21;Varianten-ID;Standard;
+Run 21;Success / Failure;true;Success
+Run 21;Gesamtdauer ms;355,093;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 21;Final Placed Rooms;19;
+Run 21;Open Sockets Pre-Cap;9;
+Run 21;Error Cause;None;
+Run 22;Varianten-ID;Standard;
+Run 22;Success / Failure;true;Success
+Run 22;Gesamtdauer ms;202,173;unproblematisch
+Run 22;Final Placed Rooms;19;
+Run 22;Open Sockets Pre-Cap;9;
+Run 22;Error Cause;None;
+Run 23;Varianten-ID;Standard;
+Run 23;Success / Failure;true;Success
+Run 23;Gesamtdauer ms;96,388;unproblematisch
+Run 23;Final Placed Rooms;19;
+Run 23;Open Sockets Pre-Cap;9;
+Run 23;Error Cause;None;
+Run 24;Varianten-ID;Standard;
+Run 24;Success / Failure;true;Success
+Run 24;Gesamtdauer ms;527,981;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 24;Final Placed Rooms;14;
+Run 24;Open Sockets Pre-Cap;7;
+Run 24;Error Cause;None;
+Run 25;Varianten-ID;Standard;
+Run 25;Success / Failure;true;Success
+Run 25;Gesamtdauer ms;432,923;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 25;Final Placed Rooms;14;
+Run 25;Open Sockets Pre-Cap;7;
+Run 25;Error Cause;None;
+Run 26;Varianten-ID;Standard;
+Run 26;Success / Failure;true;Success
+Run 26;Gesamtdauer ms;295,246;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 26;Final Placed Rooms;14;
+Run 26;Open Sockets Pre-Cap;7;
+Run 26;Error Cause;None;
+Run 27;Varianten-ID;Standard;
+Run 27;Success / Failure;true;Success
+Run 27;Gesamtdauer ms;53,1;unproblematisch
+Run 27;Final Placed Rooms;11;
+Run 27;Open Sockets Pre-Cap;0;
+Run 27;Error Cause;None;
+Run 28;Varianten-ID;Standard;
+Run 28;Success / Failure;true;Success
+Run 28;Gesamtdauer ms;545,596;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 28;Final Placed Rooms;16;
+Run 28;Open Sockets Pre-Cap;7;
+Run 28;Error Cause;None;
+Run 29;Varianten-ID;Standard;
+Run 29;Success / Failure;true;Success
+Run 29;Gesamtdauer ms;447,242;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 29;Final Placed Rooms;16;
+Run 29;Open Sockets Pre-Cap;7;
+Run 29;Error Cause;None;
+Run 30;Varianten-ID;Standard;
+Run 30;Success / Failure;true;Success
+Run 30;Gesamtdauer ms;429,802;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 30;Final Placed Rooms;16;
+Run 30;Open Sockets Pre-Cap;7;
+Run 30;Error Cause;None;
+Run 31;Varianten-ID;Standard;
+Run 31;Success / Failure;true;Success
+Run 31;Gesamtdauer ms;316,297;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 31;Final Placed Rooms;16;
+Run 31;Open Sockets Pre-Cap;7;
+Run 31;Error Cause;None;
+Run 32;Varianten-ID;Standard;
+Run 32;Success / Failure;true;Success
+Run 32;Gesamtdauer ms;194,798;unproblematisch
+Run 32;Final Placed Rooms;16;
+Run 32;Open Sockets Pre-Cap;7;
+Run 32;Error Cause;None;
+Run 33;Varianten-ID;Standard;
+Run 33;Success / Failure;true;Success
+Run 33;Gesamtdauer ms;85,243;unproblematisch
+Run 33;Final Placed Rooms;16;
+Run 33;Open Sockets Pre-Cap;7;
+Run 33;Error Cause;None;
+Run 34;Varianten-ID;Standard;
+Run 34;Success / Failure;true;Success
+Run 34;Gesamtdauer ms;648,378;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 34;Final Placed Rooms;16;
+Run 34;Open Sockets Pre-Cap;5;
+Run 34;Error Cause;None;
+Run 35;Varianten-ID;Standard;
+Run 35;Success / Failure;true;Success
+Run 35;Gesamtdauer ms;439,343;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 35;Final Placed Rooms;16;
+Run 35;Open Sockets Pre-Cap;5;
+Run 35;Error Cause;None;
+Run 36;Varianten-ID;Standard;
+Run 36;Success / Failure;true;Success
+Run 36;Gesamtdauer ms;340,281;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 36;Final Placed Rooms;16;
+Run 36;Open Sockets Pre-Cap;5;
+Run 36;Error Cause;None;
+Run 37;Varianten-ID;Standard;
+Run 37;Success / Failure;true;Success
+Run 37;Gesamtdauer ms;200,121;unproblematisch
+Run 37;Final Placed Rooms;16;
+Run 37;Open Sockets Pre-Cap;5;
+Run 37;Error Cause;None;
+Run 38;Varianten-ID;Standard;
+Run 38;Success / Failure;true;Success
+Run 38;Gesamtdauer ms;135,607;unproblematisch
+Run 38;Final Placed Rooms;16;
+Run 38;Open Sockets Pre-Cap;5;
+Run 38;Error Cause;None;
+Run 39;Varianten-ID;Standard;
+Run 39;Success / Failure;true;Success
+Run 39;Gesamtdauer ms;383,244;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 39;Final Placed Rooms;20;
+Run 39;Open Sockets Pre-Cap;10;
+Run 39;Error Cause;None;
+Run 40;Varianten-ID;Standard;
+Run 40;Success / Failure;true;Success
+Run 40;Gesamtdauer ms;372,702;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 40;Final Placed Rooms;20;
+Run 40;Open Sockets Pre-Cap;10;
+Run 40;Error Cause;None;
+Run 41;Varianten-ID;Standard;
+Run 41;Success / Failure;true;Success
+Run 41;Gesamtdauer ms;212,744;unproblematisch
+Run 41;Final Placed Rooms;20;
+Run 41;Open Sockets Pre-Cap;10;
+Run 41;Error Cause;None;
+Run 42;Varianten-ID;Standard;
+Run 42;Success / Failure;true;Success
+Run 42;Gesamtdauer ms;179,641;unproblematisch
+Run 42;Final Placed Rooms;15;
+Run 42;Open Sockets Pre-Cap;7;
+Run 42;Error Cause;None;
+Run 43;Varianten-ID;Standard;
+Run 43;Success / Failure;true;Success
+Run 43;Gesamtdauer ms;166,554;unproblematisch
+Run 43;Final Placed Rooms;12;
+Run 43;Open Sockets Pre-Cap;3;
+Run 43;Error Cause;None;
+Run 44;Varianten-ID;Standard;
+Run 44;Success / Failure;true;Success
+Run 44;Gesamtdauer ms;1058,311;teuer, Performance pruefen
+Run 44;Final Placed Rooms;16;
+Run 44;Open Sockets Pre-Cap;5;
+Run 44;Error Cause;None;
+Run 45;Varianten-ID;Standard;
+Run 45;Success / Failure;true;Success
+Run 45;Gesamtdauer ms;940,391;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 45;Final Placed Rooms;16;
+Run 45;Open Sockets Pre-Cap;5;
+Run 45;Error Cause;None;
+Run 46;Varianten-ID;Standard;
+Run 46;Success / Failure;true;Success
+Run 46;Gesamtdauer ms;753,664;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 46;Final Placed Rooms;16;
+Run 46;Open Sockets Pre-Cap;5;
+Run 46;Error Cause;None;
+Run 47;Varianten-ID;Standard;
+Run 47;Success / Failure;true;Success
+Run 47;Gesamtdauer ms;528,181;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 47;Final Placed Rooms;16;
+Run 47;Open Sockets Pre-Cap;5;
+Run 47;Error Cause;None;
+Run 48;Varianten-ID;Standard;
+Run 48;Success / Failure;true;Success
+Run 48;Gesamtdauer ms;450,784;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 48;Final Placed Rooms;16;
+Run 48;Open Sockets Pre-Cap;5;
+Run 48;Error Cause;None;
+Run 49;Varianten-ID;Standard;
+Run 49;Success / Failure;true;Success
+Run 49;Gesamtdauer ms;301,927;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 49;Final Placed Rooms;16;
+Run 49;Open Sockets Pre-Cap;5;
+Run 49;Error Cause;None;
+Run 50;Varianten-ID;Standard;
+Run 50;Success / Failure;true;Success
+Run 50;Gesamtdauer ms;786,98;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 50;Final Placed Rooms;12;
+Run 50;Open Sockets Pre-Cap;6;
+Run 50;Error Cause;None;
+Run 51;Varianten-ID;Standard;
+Run 51;Success / Failure;true;Success
+Run 51;Gesamtdauer ms;622,014;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 51;Final Placed Rooms;12;
+Run 51;Open Sockets Pre-Cap;6;
+Run 51;Error Cause;None;
+Run 52;Varianten-ID;Standard;
+Run 52;Success / Failure;true;Success
+Run 52;Gesamtdauer ms;500,028;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 52;Final Placed Rooms;12;
+Run 52;Open Sockets Pre-Cap;6;
+Run 52;Error Cause;None;
+Run 53;Varianten-ID;Standard;
+Run 53;Success / Failure;true;Success
+Run 53;Gesamtdauer ms;390,008;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 53;Final Placed Rooms;12;
+Run 53;Open Sockets Pre-Cap;6;
+Run 53;Error Cause;None;
+Run 54;Varianten-ID;Standard;
+Run 54;Success / Failure;true;Success
+Run 54;Gesamtdauer ms;322,801;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 54;Final Placed Rooms;12;
+Run 54;Open Sockets Pre-Cap;6;
+Run 54;Error Cause;None;
+Run 55;Varianten-ID;Standard;
+Run 55;Success / Failure;true;Success
+Run 55;Gesamtdauer ms;191,315;unproblematisch
+Run 55;Final Placed Rooms;12;
+Run 55;Open Sockets Pre-Cap;6;
+Run 55;Error Cause;None;
+Run 56;Varianten-ID;Standard;
+Run 56;Success / Failure;true;Success
+Run 56;Gesamtdauer ms;75,066;unproblematisch
+Run 56;Final Placed Rooms;12;
+Run 56;Open Sockets Pre-Cap;6;
+Run 56;Error Cause;None;
+Run 57;Varianten-ID;Standard;
+Run 57;Success / Failure;true;Success
+Run 57;Gesamtdauer ms;1849,135;teuer, Performance pruefen
+Run 57;Final Placed Rooms;11;
+Run 57;Open Sockets Pre-Cap;6;
+Run 57;Error Cause;None;
+Run 58;Varianten-ID;Standard;
+Run 58;Success / Failure;true;Success
+Run 58;Gesamtdauer ms;1631,559;teuer, Performance pruefen
+Run 58;Final Placed Rooms;11;
+Run 58;Open Sockets Pre-Cap;6;
+Run 58;Error Cause;None;
+Run 59;Varianten-ID;Standard;
+Run 59;Success / Failure;true;Success
+Run 59;Gesamtdauer ms;1580,121;teuer, Performance pruefen
+Run 59;Final Placed Rooms;11;
+Run 59;Open Sockets Pre-Cap;6;
+Run 59;Error Cause;None;
+Run 60;Varianten-ID;Standard;
+Run 60;Success / Failure;true;Success
+Run 60;Gesamtdauer ms;1375,024;teuer, Performance pruefen
+Run 60;Final Placed Rooms;11;
+Run 60;Open Sockets Pre-Cap;6;
+Run 60;Error Cause;None;
+Run 61;Varianten-ID;Standard;
+Run 61;Success / Failure;true;Success
+Run 61;Gesamtdauer ms;1335,149;teuer, Performance pruefen
+Run 61;Final Placed Rooms;11;
+Run 61;Open Sockets Pre-Cap;6;
+Run 61;Error Cause;None;
+Run 62;Varianten-ID;Standard;
+Run 62;Success / Failure;true;Success
+Run 62;Gesamtdauer ms;1267,502;teuer, Performance pruefen
+Run 62;Final Placed Rooms;11;
+Run 62;Open Sockets Pre-Cap;6;
+Run 62;Error Cause;None;
+Run 63;Varianten-ID;Standard;
+Run 63;Success / Failure;true;Success
+Run 63;Gesamtdauer ms;1008,013;teuer, Performance pruefen
+Run 63;Final Placed Rooms;11;
+Run 63;Open Sockets Pre-Cap;6;
+Run 63;Error Cause;None;
+Run 64;Varianten-ID;Standard;
+Run 64;Success / Failure;true;Success
+Run 64;Gesamtdauer ms;984,725;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 64;Final Placed Rooms;11;
+Run 64;Open Sockets Pre-Cap;6;
+Run 64;Error Cause;None;
+Run 65;Varianten-ID;Standard;
+Run 65;Success / Failure;true;Success
+Run 65;Gesamtdauer ms;783,11;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 65;Final Placed Rooms;11;
+Run 65;Open Sockets Pre-Cap;6;
+Run 65;Error Cause;None;
+Run 66;Varianten-ID;Standard;
+Run 66;Success / Failure;true;Success
+Run 66;Gesamtdauer ms;643,771;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 66;Final Placed Rooms;11;
+Run 66;Open Sockets Pre-Cap;6;
+Run 66;Error Cause;None;
+Run 67;Varianten-ID;Standard;
+Run 67;Success / Failure;true;Success
+Run 67;Gesamtdauer ms;553,041;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 67;Final Placed Rooms;11;
+Run 67;Open Sockets Pre-Cap;6;
+Run 67;Error Cause;None;
+Run 68;Varianten-ID;Standard;
+Run 68;Success / Failure;true;Success
+Run 68;Gesamtdauer ms;442,357;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 68;Final Placed Rooms;11;
+Run 68;Open Sockets Pre-Cap;6;
+Run 68;Error Cause;None;
+Run 69;Varianten-ID;Standard;
+Run 69;Success / Failure;true;Success
+Run 69;Gesamtdauer ms;199,397;unproblematisch
+Run 69;Final Placed Rooms;11;
+Run 69;Open Sockets Pre-Cap;6;
+Run 69;Error Cause;None;
+Run 70;Varianten-ID;Standard;
+Run 70;Success / Failure;true;Success
+Run 70;Gesamtdauer ms;93,071;unproblematisch
+Run 70;Final Placed Rooms;11;
+Run 70;Open Sockets Pre-Cap;6;
+Run 70;Error Cause;None;
+Run 71;Varianten-ID;Standard;
+Run 71;Success / Failure;true;Success
+Run 71;Gesamtdauer ms;338,299;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 71;Final Placed Rooms;12;
+Run 71;Open Sockets Pre-Cap;4;
+Run 71;Error Cause;None;
+Run 72;Varianten-ID;Standard;
+Run 72;Success / Failure;true;Success
+Run 72;Gesamtdauer ms;156,537;unproblematisch
+Run 72;Final Placed Rooms;12;
+Run 72;Open Sockets Pre-Cap;4;
+Run 72;Error Cause;None;
+Run 73;Varianten-ID;Standard;
+Run 73;Success / Failure;true;Success
+Run 73;Gesamtdauer ms;76,925;unproblematisch
+Run 73;Final Placed Rooms;12;
+Run 73;Open Sockets Pre-Cap;4;
+Run 73;Error Cause;None;
+Run 74;Varianten-ID;Standard;
+Run 74;Success / Failure;true;Success
+Run 74;Gesamtdauer ms;563,729;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 74;Final Placed Rooms;16;
+Run 74;Open Sockets Pre-Cap;7;
+Run 74;Error Cause;None;
+Run 75;Varianten-ID;Standard;
+Run 75;Success / Failure;true;Success
+Run 75;Gesamtdauer ms;403,514;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 75;Final Placed Rooms;16;
+Run 75;Open Sockets Pre-Cap;7;
+Run 75;Error Cause;None;
+Run 76;Varianten-ID;Standard;
+Run 76;Success / Failure;true;Success
+Run 76;Gesamtdauer ms;359,778;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 76;Final Placed Rooms;16;
+Run 76;Open Sockets Pre-Cap;7;
+Run 76;Error Cause;None;
+Run 77;Varianten-ID;Standard;
+Run 77;Success / Failure;true;Success
+Run 77;Gesamtdauer ms;314,627;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 77;Final Placed Rooms;16;
+Run 77;Open Sockets Pre-Cap;7;
+Run 77;Error Cause;None;
+Run 78;Varianten-ID;Standard;
+Run 78;Success / Failure;true;Success
+Run 78;Gesamtdauer ms;195,978;unproblematisch
+Run 78;Final Placed Rooms;16;
+Run 78;Open Sockets Pre-Cap;7;
+Run 78;Error Cause;None;
+Run 79;Varianten-ID;Standard;
+Run 79;Success / Failure;true;Success
+Run 79;Gesamtdauer ms;172,811;unproblematisch
+Run 79;Final Placed Rooms;16;
+Run 79;Open Sockets Pre-Cap;7;
+Run 79;Error Cause;None;
+Run 80;Varianten-ID;Standard;
+Run 80;Success / Failure;true;Success
+Run 80;Gesamtdauer ms;786,999;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 80;Final Placed Rooms;21;
+Run 80;Open Sockets Pre-Cap;9;
+Run 80;Error Cause;None;
+Run 81;Varianten-ID;Standard;
+Run 81;Success / Failure;true;Success
+Run 81;Gesamtdauer ms;645,087;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 81;Final Placed Rooms;21;
+Run 81;Open Sockets Pre-Cap;9;
+Run 81;Error Cause;None;
+Run 82;Varianten-ID;Standard;
+Run 82;Success / Failure;true;Success
+Run 82;Gesamtdauer ms;355,983;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 82;Final Placed Rooms;21;
+Run 82;Open Sockets Pre-Cap;9;
+Run 82;Error Cause;None;
+Run 83;Varianten-ID;Standard;
+Run 83;Success / Failure;true;Success
+Run 83;Gesamtdauer ms;256,552;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 83;Final Placed Rooms;21;
+Run 83;Open Sockets Pre-Cap;9;
+Run 83;Error Cause;None;
+Run 84;Varianten-ID;Standard;
+Run 84;Success / Failure;true;Success
+Run 84;Gesamtdauer ms;358,275;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 84;Final Placed Rooms;15;
+Run 84;Open Sockets Pre-Cap;5;
+Run 84;Error Cause;None;
+Run 85;Varianten-ID;Standard;
+Run 85;Success / Failure;true;Success
+Run 85;Gesamtdauer ms;229,291;unproblematisch
+Run 85;Final Placed Rooms;15;
+Run 85;Open Sockets Pre-Cap;5;
+Run 85;Error Cause;None;
+Run 86;Varianten-ID;Standard;
+Run 86;Success / Failure;true;Success
+Run 86;Gesamtdauer ms;1055,157;teuer, Performance pruefen
+Run 86;Final Placed Rooms;20;
+Run 86;Open Sockets Pre-Cap;8;
+Run 86;Error Cause;None;
+Run 87;Varianten-ID;Standard;
+Run 87;Success / Failure;true;Success
+Run 87;Gesamtdauer ms;922,265;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 87;Final Placed Rooms;20;
+Run 87;Open Sockets Pre-Cap;8;
+Run 87;Error Cause;None;
+Run 88;Varianten-ID;Standard;
+Run 88;Success / Failure;true;Success
+Run 88;Gesamtdauer ms;645,897;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 88;Final Placed Rooms;20;
+Run 88;Open Sockets Pre-Cap;8;
+Run 88;Error Cause;None;
+Run 89;Varianten-ID;Standard;
+Run 89;Success / Failure;true;Success
+Run 89;Gesamtdauer ms;532,643;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 89;Final Placed Rooms;20;
+Run 89;Open Sockets Pre-Cap;8;
+Run 89;Error Cause;None;
+Run 90;Varianten-ID;Standard;
+Run 90;Success / Failure;true;Success
+Run 90;Gesamtdauer ms;413,311;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 90;Final Placed Rooms;20;
+Run 90;Open Sockets Pre-Cap;8;
+Run 90;Error Cause;None;
+Run 91;Varianten-ID;Standard;
+Run 91;Success / Failure;true;Success
+Run 91;Gesamtdauer ms;396,265;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 91;Final Placed Rooms;20;
+Run 91;Open Sockets Pre-Cap;8;
+Run 91;Error Cause;None;
+Run 92;Varianten-ID;Standard;
+Run 92;Success / Failure;true;Success
+Run 92;Gesamtdauer ms;193,813;unproblematisch
+Run 92;Final Placed Rooms;20;
+Run 92;Open Sockets Pre-Cap;8;
+Run 92;Error Cause;None;
+Run 93;Varianten-ID;Standard;
+Run 93;Success / Failure;true;Success
+Run 93;Gesamtdauer ms;385,067;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 93;Final Placed Rooms;11;
+Run 93;Open Sockets Pre-Cap;4;
+Run 93;Error Cause;None;
+Run 94;Varianten-ID;Standard;
+Run 94;Success / Failure;true;Success
+Run 94;Gesamtdauer ms;347,863;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 94;Final Placed Rooms;11;
+Run 94;Open Sockets Pre-Cap;4;
+Run 94;Error Cause;None;
+Run 95;Varianten-ID;Standard;
+Run 95;Success / Failure;true;Success
+Run 95;Gesamtdauer ms;258,778;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 95;Final Placed Rooms;11;
+Run 95;Open Sockets Pre-Cap;4;
+Run 95;Error Cause;None;
+Run 96;Varianten-ID;Standard;
+Run 96;Success / Failure;true;Success
+Run 96;Gesamtdauer ms;246,191;unproblematisch
+Run 96;Final Placed Rooms;11;
+Run 96;Open Sockets Pre-Cap;4;
+Run 96;Error Cause;None;
+Run 97;Varianten-ID;Standard;
+Run 97;Success / Failure;true;Success
+Run 97;Gesamtdauer ms;72,722;unproblematisch
+Run 97;Final Placed Rooms;11;
+Run 97;Open Sockets Pre-Cap;4;
+Run 97;Error Cause;None;
+Run 98;Varianten-ID;Standard;
+Run 98;Success / Failure;true;Success
+Run 98;Gesamtdauer ms;186,962;unproblematisch
+Run 98;Final Placed Rooms;21;
+Run 98;Open Sockets Pre-Cap;11;
+Run 98;Error Cause;None;
+Run 99;Varianten-ID;Standard;
+Run 99;Success / Failure;true;Success
+Run 99;Gesamtdauer ms;252,437;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 99;Final Placed Rooms;18;
+Run 99;Open Sockets Pre-Cap;7;
+Run 99;Error Cause;None;
+Run 100;Varianten-ID;Standard;
+Run 100;Success / Failure;true;Success
+Run 100;Gesamtdauer ms;1080,297;teuer, Performance pruefen
+Run 100;Final Placed Rooms;17;
+Run 100;Open Sockets Pre-Cap;7;
+Run 100;Error Cause;None;
+Run 101;Varianten-ID;Standard;
+Run 101;Success / Failure;true;Success
+Run 101;Gesamtdauer ms;1031,755;teuer, Performance pruefen
+Run 101;Final Placed Rooms;17;
+Run 101;Open Sockets Pre-Cap;7;
+Run 101;Error Cause;None;
+Run 102;Varianten-ID;Standard;
+Run 102;Success / Failure;true;Success
+Run 102;Gesamtdauer ms;879,707;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 102;Final Placed Rooms;17;
+Run 102;Open Sockets Pre-Cap;7;
+Run 102;Error Cause;None;
+Run 103;Varianten-ID;Standard;
+Run 103;Success / Failure;true;Success
+Run 103;Gesamtdauer ms;649,733;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 103;Final Placed Rooms;17;
+Run 103;Open Sockets Pre-Cap;7;
+Run 103;Error Cause;None;
+Run 104;Varianten-ID;Standard;
+Run 104;Success / Failure;true;Success
+Run 104;Gesamtdauer ms;611,178;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 104;Final Placed Rooms;17;
+Run 104;Open Sockets Pre-Cap;7;
+Run 104;Error Cause;None;
+Run 105;Varianten-ID;Standard;
+Run 105;Success / Failure;true;Success
+Run 105;Gesamtdauer ms;565,066;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 105;Final Placed Rooms;17;
+Run 105;Open Sockets Pre-Cap;7;
+Run 105;Error Cause;None;
+Run 106;Varianten-ID;Standard;
+Run 106;Success / Failure;true;Success
+Run 106;Gesamtdauer ms;448,956;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 106;Final Placed Rooms;17;
+Run 106;Open Sockets Pre-Cap;7;
+Run 106;Error Cause;None;
+Run 107;Varianten-ID;Standard;
+Run 107;Success / Failure;true;Success
+Run 107;Gesamtdauer ms;276,267;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 107;Final Placed Rooms;17;
+Run 107;Open Sockets Pre-Cap;7;
+Run 107;Error Cause;None;
+Run 108;Varianten-ID;Standard;
+Run 108;Success / Failure;true;Success
+Run 108;Gesamtdauer ms;164,217;unproblematisch
+Run 108;Final Placed Rooms;17;
+Run 108;Open Sockets Pre-Cap;7;
+Run 108;Error Cause;None;
+Run 109;Varianten-ID;Standard;
+Run 109;Success / Failure;true;Success
+Run 109;Gesamtdauer ms;152,637;unproblematisch
+Run 109;Final Placed Rooms;14;
+Run 109;Open Sockets Pre-Cap;6;
+Run 109;Error Cause;None;
+Run 110;Varianten-ID;Standard;
+Run 110;Success / Failure;true;Success
+Run 110;Gesamtdauer ms;316,184;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 110;Final Placed Rooms;17;
+Run 110;Open Sockets Pre-Cap;6;
+Run 110;Error Cause;None;
+Run 111;Varianten-ID;Standard;
+Run 111;Success / Failure;true;Success
+Run 111;Gesamtdauer ms;182,244;unproblematisch
+Run 111;Final Placed Rooms;17;
+Run 111;Open Sockets Pre-Cap;6;
+Run 111;Error Cause;None;
+Run 112;Varianten-ID;Standard;
+Run 112;Success / Failure;true;Success
+Run 112;Gesamtdauer ms;603,705;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 112;Final Placed Rooms;14;
+Run 112;Open Sockets Pre-Cap;7;
+Run 112;Error Cause;None;
+Run 113;Varianten-ID;Standard;
+Run 113;Success / Failure;true;Success
+Run 113;Gesamtdauer ms;403,229;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 113;Final Placed Rooms;14;
+Run 113;Open Sockets Pre-Cap;7;
+Run 113;Error Cause;None;
+Run 114;Varianten-ID;Standard;
+Run 114;Success / Failure;true;Success
+Run 114;Gesamtdauer ms;164,124;unproblematisch
+Run 114;Final Placed Rooms;14;
+Run 114;Open Sockets Pre-Cap;7;
+Run 114;Error Cause;None;
+Run 115;Varianten-ID;Standard;
+Run 115;Success / Failure;true;Success
+Run 115;Gesamtdauer ms;321,84;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 115;Final Placed Rooms;16;
+Run 115;Open Sockets Pre-Cap;3;
+Run 115;Error Cause;None;
+Run 116;Varianten-ID;Standard;
+Run 116;Success / Failure;true;Success
+Run 116;Gesamtdauer ms;230,269;unproblematisch
+Run 116;Final Placed Rooms;16;
+Run 116;Open Sockets Pre-Cap;3;
+Run 116;Error Cause;None;
+Run 117;Varianten-ID;Standard;
+Run 117;Success / Failure;true;Success
+Run 117;Gesamtdauer ms;193,312;unproblematisch
+Run 117;Final Placed Rooms;16;
+Run 117;Open Sockets Pre-Cap;3;
+Run 117;Error Cause;None;
+Run 118;Varianten-ID;Standard;
+Run 118;Success / Failure;true;Success
+Run 118;Gesamtdauer ms;131,799;unproblematisch
+Run 118;Final Placed Rooms;16;
+Run 118;Open Sockets Pre-Cap;3;
+Run 118;Error Cause;None;
+Run 119;Varianten-ID;Standard;
+Run 119;Success / Failure;true;Success
+Run 119;Gesamtdauer ms;283,858;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 119;Final Placed Rooms;17;
+Run 119;Open Sockets Pre-Cap;3;
+Run 119;Error Cause;None;
+Run 120;Varianten-ID;Standard;
+Run 120;Success / Failure;true;Success
+Run 120;Gesamtdauer ms;241,18;unproblematisch
+Run 120;Final Placed Rooms;17;
+Run 120;Open Sockets Pre-Cap;3;
+Run 120;Error Cause;None;
+Run 121;Varianten-ID;Standard;
+Run 121;Success / Failure;true;Success
+Run 121;Gesamtdauer ms;143,894;unproblematisch
+Run 121;Final Placed Rooms;17;
+Run 121;Open Sockets Pre-Cap;3;
+Run 121;Error Cause;None;
+Run 122;Varianten-ID;Standard;
+Run 122;Success / Failure;true;Success
+Run 122;Gesamtdauer ms;123,924;unproblematisch
+Run 122;Final Placed Rooms;17;
+Run 122;Open Sockets Pre-Cap;3;
+Run 122;Error Cause;None;
+Run 123;Varianten-ID;Standard;
+Run 123;Success / Failure;true;Success
+Run 123;Gesamtdauer ms;168,415;unproblematisch
+Run 123;Final Placed Rooms;20;
+Run 123;Open Sockets Pre-Cap;9;
+Run 123;Error Cause;None;
+Run 124;Varianten-ID;Standard;
+Run 124;Success / Failure;true;Success
+Run 124;Gesamtdauer ms;1303,167;teuer, Performance pruefen
+Run 124;Final Placed Rooms;18;
+Run 124;Open Sockets Pre-Cap;8;
+Run 124;Error Cause;None;
+Run 125;Varianten-ID;Standard;
+Run 125;Success / Failure;true;Success
+Run 125;Gesamtdauer ms;1221,616;teuer, Performance pruefen
+Run 125;Final Placed Rooms;18;
+Run 125;Open Sockets Pre-Cap;8;
+Run 125;Error Cause;None;
+Run 126;Varianten-ID;Standard;
+Run 126;Success / Failure;true;Success
+Run 126;Gesamtdauer ms;1051,136;teuer, Performance pruefen
+Run 126;Final Placed Rooms;18;
+Run 126;Open Sockets Pre-Cap;8;
+Run 126;Error Cause;None;
+Run 127;Varianten-ID;Standard;
+Run 127;Success / Failure;true;Success
+Run 127;Gesamtdauer ms;975,399;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 127;Final Placed Rooms;18;
+Run 127;Open Sockets Pre-Cap;8;
+Run 127;Error Cause;None;
+Run 128;Varianten-ID;Standard;
+Run 128;Success / Failure;true;Success
+Run 128;Gesamtdauer ms;834,26;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 128;Final Placed Rooms;18;
+Run 128;Open Sockets Pre-Cap;8;
+Run 128;Error Cause;None;
+Run 129;Varianten-ID;Standard;
+Run 129;Success / Failure;true;Success
+Run 129;Gesamtdauer ms;847,098;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 129;Final Placed Rooms;18;
+Run 129;Open Sockets Pre-Cap;8;
+Run 129;Error Cause;None;
+Run 130;Varianten-ID;Standard;
+Run 130;Success / Failure;true;Success
+Run 130;Gesamtdauer ms;649,107;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 130;Final Placed Rooms;18;
+Run 130;Open Sockets Pre-Cap;8;
+Run 130;Error Cause;None;
+Run 131;Varianten-ID;Standard;
+Run 131;Success / Failure;true;Success
+Run 131;Gesamtdauer ms;502,15;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 131;Final Placed Rooms;18;
+Run 131;Open Sockets Pre-Cap;8;
+Run 131;Error Cause;None;
+Run 132;Varianten-ID;Standard;
+Run 132;Success / Failure;true;Success
+Run 132;Gesamtdauer ms;271,941;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 132;Final Placed Rooms;18;
+Run 132;Open Sockets Pre-Cap;8;
+Run 132;Error Cause;None;
+Run 133;Varianten-ID;Standard;
+Run 133;Success / Failure;true;Success
+Run 133;Gesamtdauer ms;193,483;unproblematisch
+Run 133;Final Placed Rooms;18;
+Run 133;Open Sockets Pre-Cap;8;
+Run 133;Error Cause;None;
+Run 134;Varianten-ID;Standard;
+Run 134;Success / Failure;true;Success
+Run 134;Gesamtdauer ms;47,824;sehr schnell
+Run 134;Final Placed Rooms;12;
+Run 134;Open Sockets Pre-Cap;4;
+Run 134;Error Cause;None;
+Run 135;Varianten-ID;Standard;
+Run 135;Success / Failure;true;Success
+Run 135;Gesamtdauer ms;182,085;unproblematisch
+Run 135;Final Placed Rooms;20;
+Run 135;Open Sockets Pre-Cap;10;
+Run 135;Error Cause;None;
+Run 136;Varianten-ID;Standard;
+Run 136;Success / Failure;true;Success
+Run 136;Gesamtdauer ms;300,57;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 136;Final Placed Rooms;10;
+Run 136;Open Sockets Pre-Cap;0;
+Run 136;Error Cause;None;
+Run 137;Varianten-ID;Standard;
+Run 137;Success / Failure;true;Success
+Run 137;Gesamtdauer ms;241,946;unproblematisch
+Run 137;Final Placed Rooms;10;
+Run 137;Open Sockets Pre-Cap;0;
+Run 137;Error Cause;None;
+Run 138;Varianten-ID;Standard;
+Run 138;Success / Failure;true;Success
+Run 138;Gesamtdauer ms;163,883;unproblematisch
+Run 138;Final Placed Rooms;10;
+Run 138;Open Sockets Pre-Cap;0;
+Run 138;Error Cause;None;
+Run 139;Varianten-ID;Standard;
+Run 139;Success / Failure;true;Success
+Run 139;Gesamtdauer ms;67,313;unproblematisch
+Run 139;Final Placed Rooms;10;
+Run 139;Open Sockets Pre-Cap;0;
+Run 139;Error Cause;None;
+Run 140;Varianten-ID;Standard;
+Run 140;Success / Failure;true;Success
+Run 140;Gesamtdauer ms;33,352;sehr schnell
+Run 140;Final Placed Rooms;10;
+Run 140;Open Sockets Pre-Cap;0;
+Run 140;Error Cause;None;
+Run 141;Varianten-ID;Standard;
+Run 141;Success / Failure;true;Success
+Run 141;Gesamtdauer ms;415,908;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 141;Final Placed Rooms;14;
+Run 141;Open Sockets Pre-Cap;8;
+Run 141;Error Cause;None;
+Run 142;Varianten-ID;Standard;
+Run 142;Success / Failure;true;Success
+Run 142;Gesamtdauer ms;958,619;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 142;Final Placed Rooms;15;
+Run 142;Open Sockets Pre-Cap;3;
+Run 142;Error Cause;None;
+Run 143;Varianten-ID;Standard;
+Run 143;Success / Failure;true;Success
+Run 143;Gesamtdauer ms;860,443;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 143;Final Placed Rooms;15;
+Run 143;Open Sockets Pre-Cap;3;
+Run 143;Error Cause;None;
+Run 144;Varianten-ID;Standard;
+Run 144;Success / Failure;true;Success
+Run 144;Gesamtdauer ms;694,276;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 144;Final Placed Rooms;15;
+Run 144;Open Sockets Pre-Cap;3;
+Run 144;Error Cause;None;
+Run 145;Varianten-ID;Standard;
+Run 145;Success / Failure;true;Success
+Run 145;Gesamtdauer ms;673,933;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 145;Final Placed Rooms;15;
+Run 145;Open Sockets Pre-Cap;3;
+Run 145;Error Cause;None;
+Run 146;Varianten-ID;Standard;
+Run 146;Success / Failure;true;Success
+Run 146;Gesamtdauer ms;541,514;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 146;Final Placed Rooms;15;
+Run 146;Open Sockets Pre-Cap;3;
+Run 146;Error Cause;None;
+Run 147;Varianten-ID;Standard;
+Run 147;Success / Failure;true;Success
+Run 147;Gesamtdauer ms;408,486;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 147;Final Placed Rooms;15;
+Run 147;Open Sockets Pre-Cap;3;
+Run 147;Error Cause;None;
+Run 148;Varianten-ID;Standard;
+Run 148;Success / Failure;true;Success
+Run 148;Gesamtdauer ms;226,468;unproblematisch
+Run 148;Final Placed Rooms;15;
+Run 148;Open Sockets Pre-Cap;3;
+Run 148;Error Cause;None;
+Run 149;Varianten-ID;Standard;
+Run 149;Success / Failure;true;Success
+Run 149;Gesamtdauer ms;176,812;unproblematisch
+Run 149;Final Placed Rooms;15;
+Run 149;Open Sockets Pre-Cap;3;
+Run 149;Error Cause;None;
+Run 150;Varianten-ID;Standard;
+Run 150;Success / Failure;true;Success
+Run 150;Gesamtdauer ms;768,673;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 150;Final Placed Rooms;12;
+Run 150;Open Sockets Pre-Cap;4;
+Run 150;Error Cause;None;
+Run 151;Varianten-ID;Standard;
+Run 151;Success / Failure;true;Success
+Run 151;Gesamtdauer ms;717,43;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 151;Final Placed Rooms;12;
+Run 151;Open Sockets Pre-Cap;4;
+Run 151;Error Cause;None;
+Run 152;Varianten-ID;Standard;
+Run 152;Success / Failure;true;Success
+Run 152;Gesamtdauer ms;636,757;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 152;Final Placed Rooms;12;
+Run 152;Open Sockets Pre-Cap;4;
+Run 152;Error Cause;None;
+Run 153;Varianten-ID;Standard;
+Run 153;Success / Failure;true;Success
+Run 153;Gesamtdauer ms;505,576;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 153;Final Placed Rooms;12;
+Run 153;Open Sockets Pre-Cap;4;
+Run 153;Error Cause;None;
+Run 154;Varianten-ID;Standard;
+Run 154;Success / Failure;true;Success
+Run 154;Gesamtdauer ms;476,881;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 154;Final Placed Rooms;12;
+Run 154;Open Sockets Pre-Cap;4;
+Run 154;Error Cause;None;
+Run 155;Varianten-ID;Standard;
+Run 155;Success / Failure;true;Success
+Run 155;Gesamtdauer ms;348,06;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 155;Final Placed Rooms;12;
+Run 155;Open Sockets Pre-Cap;4;
+Run 155;Error Cause;None;
+Run 156;Varianten-ID;Standard;
+Run 156;Success / Failure;true;Success
+Run 156;Gesamtdauer ms;216,506;unproblematisch
+Run 156;Final Placed Rooms;12;
+Run 156;Open Sockets Pre-Cap;4;
+Run 156;Error Cause;None;
+Run 157;Varianten-ID;Standard;
+Run 157;Success / Failure;true;Success
+Run 157;Gesamtdauer ms;63,902;unproblematisch
+Run 157;Final Placed Rooms;12;
+Run 157;Open Sockets Pre-Cap;4;
+Run 157;Error Cause;None;
+Run 158;Varianten-ID;Standard;
+Run 158;Success / Failure;true;Success
+Run 158;Gesamtdauer ms;1408,798;teuer, Performance pruefen
+Run 158;Final Placed Rooms;20;
+Run 158;Open Sockets Pre-Cap;12;
+Run 158;Error Cause;None;
+Run 159;Varianten-ID;Standard;
+Run 159;Success / Failure;true;Success
+Run 159;Gesamtdauer ms;1391,707;teuer, Performance pruefen
+Run 159;Final Placed Rooms;20;
+Run 159;Open Sockets Pre-Cap;12;
+Run 159;Error Cause;None;
+Run 160;Varianten-ID;Standard;
+Run 160;Success / Failure;true;Success
+Run 160;Gesamtdauer ms;1319,203;teuer, Performance pruefen
+Run 160;Final Placed Rooms;20;
+Run 160;Open Sockets Pre-Cap;12;
+Run 160;Error Cause;None;
+Run 161;Varianten-ID;Standard;
+Run 161;Success / Failure;true;Success
+Run 161;Gesamtdauer ms;1195,085;teuer, Performance pruefen
+Run 161;Final Placed Rooms;20;
+Run 161;Open Sockets Pre-Cap;12;
+Run 161;Error Cause;None;
+Run 162;Varianten-ID;Standard;
+Run 162;Success / Failure;true;Success
+Run 162;Gesamtdauer ms;1082,66;teuer, Performance pruefen
+Run 162;Final Placed Rooms;20;
+Run 162;Open Sockets Pre-Cap;12;
+Run 162;Error Cause;None;
+Run 163;Varianten-ID;Standard;
+Run 163;Success / Failure;true;Success
+Run 163;Gesamtdauer ms;852,012;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 163;Final Placed Rooms;20;
+Run 163;Open Sockets Pre-Cap;12;
+Run 163;Error Cause;None;
+Run 164;Varianten-ID;Standard;
+Run 164;Success / Failure;true;Success
+Run 164;Gesamtdauer ms;713,239;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 164;Final Placed Rooms;20;
+Run 164;Open Sockets Pre-Cap;12;
+Run 164;Error Cause;None;
+Run 165;Varianten-ID;Standard;
+Run 165;Success / Failure;true;Success
+Run 165;Gesamtdauer ms;491,4;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 165;Final Placed Rooms;20;
+Run 165;Open Sockets Pre-Cap;12;
+Run 165;Error Cause;None;
+Run 166;Varianten-ID;Standard;
+Run 166;Success / Failure;true;Success
+Run 166;Gesamtdauer ms;353,216;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 166;Final Placed Rooms;20;
+Run 166;Open Sockets Pre-Cap;12;
+Run 166;Error Cause;None;
+Run 167;Varianten-ID;Standard;
+Run 167;Success / Failure;true;Success
+Run 167;Gesamtdauer ms;248,983;unproblematisch
+Run 167;Final Placed Rooms;20;
+Run 167;Open Sockets Pre-Cap;12;
+Run 167;Error Cause;None;
+Run 168;Varianten-ID;Standard;
+Run 168;Success / Failure;true;Success
+Run 168;Gesamtdauer ms;577,433;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 168;Final Placed Rooms;13;
+Run 168;Open Sockets Pre-Cap;3;
+Run 168;Error Cause;None;
+Run 169;Varianten-ID;Standard;
+Run 169;Success / Failure;true;Success
+Run 169;Gesamtdauer ms;500,432;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 169;Final Placed Rooms;13;
+Run 169;Open Sockets Pre-Cap;3;
+Run 169;Error Cause;None;
+Run 170;Varianten-ID;Standard;
+Run 170;Success / Failure;true;Success
+Run 170;Gesamtdauer ms;317,1;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 170;Final Placed Rooms;13;
+Run 170;Open Sockets Pre-Cap;3;
+Run 170;Error Cause;None;
+Run 171;Varianten-ID;Standard;
+Run 171;Success / Failure;true;Success
+Run 171;Gesamtdauer ms;246,978;unproblematisch
+Run 171;Final Placed Rooms;13;
+Run 171;Open Sockets Pre-Cap;3;
+Run 171;Error Cause;None;
+Run 172;Varianten-ID;Standard;
+Run 172;Success / Failure;true;Success
+Run 172;Gesamtdauer ms;139,98;unproblematisch
+Run 172;Final Placed Rooms;13;
+Run 172;Open Sockets Pre-Cap;3;
+Run 172;Error Cause;None;
+Run 173;Varianten-ID;Standard;
+Run 173;Success / Failure;true;Success
+Run 173;Gesamtdauer ms;181,062;unproblematisch
+Run 173;Final Placed Rooms;12;
+Run 173;Open Sockets Pre-Cap;1;
+Run 173;Error Cause;None;
+Run 174;Varianten-ID;Standard;
+Run 174;Success / Failure;true;Success
+Run 174;Gesamtdauer ms;40,427;sehr schnell
+Run 174;Final Placed Rooms;12;
+Run 174;Open Sockets Pre-Cap;1;
+Run 174;Error Cause;None;
+Run 175;Varianten-ID;Standard;
+Run 175;Success / Failure;true;Success
+Run 175;Gesamtdauer ms;1680,38;teuer, Performance pruefen
+Run 175;Final Placed Rooms;10;
+Run 175;Open Sockets Pre-Cap;3;
+Run 175;Error Cause;None;
+Run 176;Varianten-ID;Standard;
+Run 176;Success / Failure;true;Success
+Run 176;Gesamtdauer ms;1575,779;teuer, Performance pruefen
+Run 176;Final Placed Rooms;10;
+Run 176;Open Sockets Pre-Cap;3;
+Run 176;Error Cause;None;
+Run 177;Varianten-ID;Standard;
+Run 177;Success / Failure;true;Success
+Run 177;Gesamtdauer ms;1583,827;teuer, Performance pruefen
+Run 177;Final Placed Rooms;11;
+Run 177;Open Sockets Pre-Cap;3;
+Run 177;Error Cause;None;
+Run 178;Varianten-ID;Standard;
+Run 178;Success / Failure;true;Success
+Run 178;Gesamtdauer ms;1556,024;teuer, Performance pruefen
+Run 178;Final Placed Rooms;10;
+Run 178;Open Sockets Pre-Cap;3;
+Run 178;Error Cause;None;
+Run 179;Varianten-ID;Standard;
+Run 179;Success / Failure;true;Success
+Run 179;Gesamtdauer ms;1244,573;teuer, Performance pruefen
+Run 179;Final Placed Rooms;10;
+Run 179;Open Sockets Pre-Cap;3;
+Run 179;Error Cause;None;
+Run 180;Varianten-ID;Standard;
+Run 180;Success / Failure;true;Success
+Run 180;Gesamtdauer ms;1324,68;teuer, Performance pruefen
+Run 180;Final Placed Rooms;10;
+Run 180;Open Sockets Pre-Cap;3;
+Run 180;Error Cause;None;
+Run 181;Varianten-ID;Standard;
+Run 181;Success / Failure;true;Success
+Run 181;Gesamtdauer ms;1150,903;teuer, Performance pruefen
+Run 181;Final Placed Rooms;10;
+Run 181;Open Sockets Pre-Cap;3;
+Run 181;Error Cause;None;
+Run 182;Varianten-ID;Standard;
+Run 182;Success / Failure;true;Success
+Run 182;Gesamtdauer ms;1061,966;teuer, Performance pruefen
+Run 182;Final Placed Rooms;10;
+Run 182;Open Sockets Pre-Cap;3;
+Run 182;Error Cause;None;
+Run 183;Varianten-ID;Standard;
+Run 183;Success / Failure;true;Success
+Run 183;Gesamtdauer ms;938,527;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 183;Final Placed Rooms;10;
+Run 183;Open Sockets Pre-Cap;3;
+Run 183;Error Cause;None;
+Run 184;Varianten-ID;Standard;
+Run 184;Success / Failure;true;Success
+Run 184;Gesamtdauer ms;1027,455;teuer, Performance pruefen
+Run 184;Final Placed Rooms;15;
+Run 184;Open Sockets Pre-Cap;7;
+Run 184;Error Cause;None;
+Run 185;Varianten-ID;Standard;
+Run 185;Success / Failure;true;Success
+Run 185;Gesamtdauer ms;854,068;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 185;Final Placed Rooms;15;
+Run 185;Open Sockets Pre-Cap;7;
+Run 185;Error Cause;None;
+Run 186;Varianten-ID;Standard;
+Run 186;Success / Failure;true;Success
+Run 186;Gesamtdauer ms;707,877;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 186;Final Placed Rooms;15;
+Run 186;Open Sockets Pre-Cap;7;
+Run 186;Error Cause;None;
+Run 187;Varianten-ID;Standard;
+Run 187;Success / Failure;true;Success
+Run 187;Gesamtdauer ms;633,382;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 187;Final Placed Rooms;15;
+Run 187;Open Sockets Pre-Cap;7;
+Run 187;Error Cause;None;
+Run 188;Varianten-ID;Standard;
+Run 188;Success / Failure;true;Success
+Run 188;Gesamtdauer ms;580,79;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 188;Final Placed Rooms;15;
+Run 188;Open Sockets Pre-Cap;7;
+Run 188;Error Cause;None;
+Run 189;Varianten-ID;Standard;
+Run 189;Success / Failure;true;Success
+Run 189;Gesamtdauer ms;506,324;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 189;Final Placed Rooms;15;
+Run 189;Open Sockets Pre-Cap;7;
+Run 189;Error Cause;None;
+Run 190;Varianten-ID;Standard;
+Run 190;Success / Failure;true;Success
+Run 190;Gesamtdauer ms;453,915;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 190;Final Placed Rooms;15;
+Run 190;Open Sockets Pre-Cap;7;
+Run 190;Error Cause;None;
+Run 191;Varianten-ID;Standard;
+Run 191;Success / Failure;true;Success
+Run 191;Gesamtdauer ms;454,572;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 191;Final Placed Rooms;15;
+Run 191;Open Sockets Pre-Cap;7;
+Run 191;Error Cause;None;
+Run 192;Varianten-ID;Standard;
+Run 192;Success / Failure;true;Success
+Run 192;Gesamtdauer ms;366,358;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 192;Final Placed Rooms;15;
+Run 192;Open Sockets Pre-Cap;7;
+Run 192;Error Cause;None;
+Run 193;Varianten-ID;Standard;
+Run 193;Success / Failure;true;Success
+Run 193;Gesamtdauer ms;232,737;unproblematisch
+Run 193;Final Placed Rooms;15;
+Run 193;Open Sockets Pre-Cap;7;
+Run 193;Error Cause;None;
+Run 194;Varianten-ID;Standard;
+Run 194;Success / Failure;true;Success
+Run 194;Gesamtdauer ms;568,859;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 194;Final Placed Rooms;21;
+Run 194;Open Sockets Pre-Cap;9;
+Run 194;Error Cause;None;
+Run 195;Varianten-ID;Standard;
+Run 195;Success / Failure;true;Success
+Run 195;Gesamtdauer ms;391,305;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 195;Final Placed Rooms;21;
+Run 195;Open Sockets Pre-Cap;9;
+Run 195;Error Cause;None;
+Run 196;Varianten-ID;Standard;
+Run 196;Success / Failure;true;Success
+Run 196;Gesamtdauer ms;299,341;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 196;Final Placed Rooms;21;
+Run 196;Open Sockets Pre-Cap;9;
+Run 196;Error Cause;None;
+Run 197;Varianten-ID;Standard;
+Run 197;Success / Failure;true;Success
+Run 197;Gesamtdauer ms;119,771;unproblematisch
+Run 197;Final Placed Rooms;21;
+Run 197;Open Sockets Pre-Cap;9;
+Run 197;Error Cause;None;
+Run 198;Varianten-ID;Standard;
+Run 198;Success / Failure;true;Success
+Run 198;Gesamtdauer ms;353,415;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 198;Final Placed Rooms;9;
+Run 198;Open Sockets Pre-Cap;1;
+Run 198;Error Cause;None;
+Run 199;Varianten-ID;Standard;
+Run 199;Success / Failure;true;Success
+Run 199;Gesamtdauer ms;281,526;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 199;Final Placed Rooms;9;
+Run 199;Open Sockets Pre-Cap;1;
+Run 199;Error Cause;None;
+Run 200;Varianten-ID;Standard;
+Run 200;Success / Failure;true;Success
+Run 200;Gesamtdauer ms;180,919;unproblematisch
+Run 200;Final Placed Rooms;9;
+Run 200;Open Sockets Pre-Cap;1;
+Run 200;Error Cause;None;
+Run 201;Varianten-ID;Standard;
+Run 201;Success / Failure;true;Success
+Run 201;Gesamtdauer ms;41,691;sehr schnell
+Run 201;Final Placed Rooms;9;
+Run 201;Open Sockets Pre-Cap;1;
+Run 201;Error Cause;None;
+Run 202;Varianten-ID;Standard;
+Run 202;Success / Failure;true;Success
+Run 202;Gesamtdauer ms;1008,563;teuer, Performance pruefen
+Run 202;Final Placed Rooms;17;
+Run 202;Open Sockets Pre-Cap;9;
+Run 202;Error Cause;None;
+Run 203;Varianten-ID;Standard;
+Run 203;Success / Failure;true;Success
+Run 203;Gesamtdauer ms;889,316;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 203;Final Placed Rooms;17;
+Run 203;Open Sockets Pre-Cap;9;
+Run 203;Error Cause;None;
+Run 204;Varianten-ID;Standard;
+Run 204;Success / Failure;true;Success
+Run 204;Gesamtdauer ms;586,618;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 204;Final Placed Rooms;17;
+Run 204;Open Sockets Pre-Cap;9;
+Run 204;Error Cause;None;
+Run 205;Varianten-ID;Standard;
+Run 205;Success / Failure;true;Success
+Run 205;Gesamtdauer ms;443,605;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 205;Final Placed Rooms;17;
+Run 205;Open Sockets Pre-Cap;9;
+Run 205;Error Cause;None;
+Run 206;Varianten-ID;Standard;
+Run 206;Success / Failure;true;Success
+Run 206;Gesamtdauer ms;381,648;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 206;Final Placed Rooms;17;
+Run 206;Open Sockets Pre-Cap;9;
+Run 206;Error Cause;None;
+Run 207;Varianten-ID;Standard;
+Run 207;Success / Failure;true;Success
+Run 207;Gesamtdauer ms;147,131;unproblematisch
+Run 207;Final Placed Rooms;17;
+Run 207;Open Sockets Pre-Cap;7;
+Run 207;Error Cause;None;
+Run 208;Varianten-ID;Standard;
+Run 208;Success / Failure;true;Success
+Run 208;Gesamtdauer ms;326,07;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 208;Final Placed Rooms;13;
+Run 208;Open Sockets Pre-Cap;7;
+Run 208;Error Cause;None;
+Run 209;Varianten-ID;Standard;
+Run 209;Success / Failure;true;Success
+Run 209;Gesamtdauer ms;166,001;unproblematisch
+Run 209;Final Placed Rooms;13;
+Run 209;Open Sockets Pre-Cap;7;
+Run 209;Error Cause;None;
+Run 210;Varianten-ID;Standard;
+Run 210;Success / Failure;true;Success
+Run 210;Gesamtdauer ms;2388,568;teuer, Performance pruefen
+Run 210;Final Placed Rooms;13;
+Run 210;Open Sockets Pre-Cap;8;
+Run 210;Error Cause;None;
+Run 211;Varianten-ID;Standard;
+Run 211;Success / Failure;true;Success
+Run 211;Gesamtdauer ms;1272,788;teuer, Performance pruefen
+Run 211;Final Placed Rooms;15;
+Run 211;Open Sockets Pre-Cap;8;
+Run 211;Error Cause;None;
+Run 212;Varianten-ID;Standard;
+Run 212;Success / Failure;true;Success
+Run 212;Gesamtdauer ms;1187,184;teuer, Performance pruefen
+Run 212;Final Placed Rooms;15;
+Run 212;Open Sockets Pre-Cap;8;
+Run 212;Error Cause;None;
+Run 213;Varianten-ID;Standard;
+Run 213;Success / Failure;true;Success
+Run 213;Gesamtdauer ms;900,226;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 213;Final Placed Rooms;15;
+Run 213;Open Sockets Pre-Cap;8;
+Run 213;Error Cause;None;
+Run 214;Varianten-ID;Standard;
+Run 214;Success / Failure;true;Success
+Run 214;Gesamtdauer ms;688,971;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 214;Final Placed Rooms;15;
+Run 214;Open Sockets Pre-Cap;8;
+Run 214;Error Cause;None;
+Run 215;Varianten-ID;Standard;
+Run 215;Success / Failure;true;Success
+Run 215;Gesamtdauer ms;643,826;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 215;Final Placed Rooms;15;
+Run 215;Open Sockets Pre-Cap;8;
+Run 215;Error Cause;None;
+Run 216;Varianten-ID;Standard;
+Run 216;Success / Failure;true;Success
+Run 216;Gesamtdauer ms;584,015;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 216;Final Placed Rooms;15;
+Run 216;Open Sockets Pre-Cap;8;
+Run 216;Error Cause;None;
+Run 217;Varianten-ID;Standard;
+Run 217;Success / Failure;true;Success
+Run 217;Gesamtdauer ms;540,752;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 217;Final Placed Rooms;15;
+Run 217;Open Sockets Pre-Cap;8;
+Run 217;Error Cause;None;
+Run 218;Varianten-ID;Standard;
+Run 218;Success / Failure;true;Success
+Run 218;Gesamtdauer ms;453,292;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 218;Final Placed Rooms;15;
+Run 218;Open Sockets Pre-Cap;8;
+Run 218;Error Cause;None;
+Run 219;Varianten-ID;Standard;
+Run 219;Success / Failure;true;Success
+Run 219;Gesamtdauer ms;268,747;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 219;Final Placed Rooms;15;
+Run 219;Open Sockets Pre-Cap;8;
+Run 219;Error Cause;None;
+Run 220;Varianten-ID;Standard;
+Run 220;Success / Failure;true;Success
+Run 220;Gesamtdauer ms;176,798;unproblematisch
+Run 220;Final Placed Rooms;15;
+Run 220;Open Sockets Pre-Cap;8;
+Run 220;Error Cause;None;
+Run 221;Varianten-ID;Standard;
+Run 221;Success / Failure;true;Success
+Run 221;Gesamtdauer ms;666,715;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 221;Final Placed Rooms;13;
+Run 221;Open Sockets Pre-Cap;8;
+Run 221;Error Cause;None;
+Run 222;Varianten-ID;Standard;
+Run 222;Success / Failure;true;Success
+Run 222;Gesamtdauer ms;571,859;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 222;Final Placed Rooms;13;
+Run 222;Open Sockets Pre-Cap;8;
+Run 222;Error Cause;None;
+Run 223;Varianten-ID;Standard;
+Run 223;Success / Failure;true;Success
+Run 223;Gesamtdauer ms;509,855;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 223;Final Placed Rooms;13;
+Run 223;Open Sockets Pre-Cap;8;
+Run 223;Error Cause;None;
+Run 224;Varianten-ID;Standard;
+Run 224;Success / Failure;true;Success
+Run 224;Gesamtdauer ms;383,093;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 224;Final Placed Rooms;13;
+Run 224;Open Sockets Pre-Cap;8;
+Run 224;Error Cause;None;
+Run 225;Varianten-ID;Standard;
+Run 225;Success / Failure;true;Success
+Run 225;Gesamtdauer ms;341,039;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 225;Final Placed Rooms;13;
+Run 225;Open Sockets Pre-Cap;8;
+Run 225;Error Cause;None;
+Run 226;Varianten-ID;Standard;
+Run 226;Success / Failure;true;Success
+Run 226;Gesamtdauer ms;248,004;unproblematisch
+Run 226;Final Placed Rooms;13;
+Run 226;Open Sockets Pre-Cap;8;
+Run 226;Error Cause;None;
+Run 227;Varianten-ID;Standard;
+Run 227;Success / Failure;true;Success
+Run 227;Gesamtdauer ms;147,743;unproblematisch
+Run 227;Final Placed Rooms;13;
+Run 227;Open Sockets Pre-Cap;8;
+Run 227;Error Cause;None;
+Run 228;Varianten-ID;Standard;
+Run 228;Success / Failure;true;Success
+Run 228;Gesamtdauer ms;233,817;unproblematisch
+Run 228;Final Placed Rooms;16;
+Run 228;Open Sockets Pre-Cap;6;
+Run 228;Error Cause;None;
+Run 229;Varianten-ID;Standard;
+Run 229;Success / Failure;true;Success
+Run 229;Gesamtdauer ms;175,999;unproblematisch
+Run 229;Final Placed Rooms;16;
+Run 229;Open Sockets Pre-Cap;6;
+Run 229;Error Cause;None;
+Run 230;Varianten-ID;Standard;
+Run 230;Success / Failure;true;Success
+Run 230;Gesamtdauer ms;149,792;unproblematisch
+Run 230;Final Placed Rooms;16;
+Run 230;Open Sockets Pre-Cap;6;
+Run 230;Error Cause;None;
+Run 231;Varianten-ID;Standard;
+Run 231;Success / Failure;true;Success
+Run 231;Gesamtdauer ms;955,539;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 231;Final Placed Rooms;19;
+Run 231;Open Sockets Pre-Cap;9;
+Run 231;Error Cause;None;
+Run 232;Varianten-ID;Standard;
+Run 232;Success / Failure;true;Success
+Run 232;Gesamtdauer ms;653,12;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 232;Final Placed Rooms;19;
+Run 232;Open Sockets Pre-Cap;9;
+Run 232;Error Cause;None;
+Run 233;Varianten-ID;Standard;
+Run 233;Success / Failure;true;Success
+Run 233;Gesamtdauer ms;516,259;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 233;Final Placed Rooms;19;
+Run 233;Open Sockets Pre-Cap;9;
+Run 233;Error Cause;None;
+Run 234;Varianten-ID;Standard;
+Run 234;Success / Failure;true;Success
+Run 234;Gesamtdauer ms;360,813;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 234;Final Placed Rooms;19;
+Run 234;Open Sockets Pre-Cap;9;
+Run 234;Error Cause;None;
+Run 235;Varianten-ID;Standard;
+Run 235;Success / Failure;true;Success
+Run 235;Gesamtdauer ms;209,877;unproblematisch
+Run 235;Final Placed Rooms;19;
+Run 235;Open Sockets Pre-Cap;9;
+Run 235;Error Cause;None;
+Run 236;Varianten-ID;Standard;
+Run 236;Success / Failure;true;Success
+Run 236;Gesamtdauer ms;765,481;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 236;Final Placed Rooms;20;
+Run 236;Open Sockets Pre-Cap;9;
+Run 236;Error Cause;None;
+Run 237;Varianten-ID;Standard;
+Run 237;Success / Failure;true;Success
+Run 237;Gesamtdauer ms;546,316;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 237;Final Placed Rooms;20;
+Run 237;Open Sockets Pre-Cap;9;
+Run 237;Error Cause;None;
+Run 238;Varianten-ID;Standard;
+Run 238;Success / Failure;true;Success
+Run 238;Gesamtdauer ms;400,412;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 238;Final Placed Rooms;20;
+Run 238;Open Sockets Pre-Cap;9;
+Run 238;Error Cause;None;
+Run 239;Varianten-ID;Standard;
+Run 239;Success / Failure;true;Success
+Run 239;Gesamtdauer ms;258,026;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 239;Final Placed Rooms;20;
+Run 239;Open Sockets Pre-Cap;9;
+Run 239;Error Cause;None;
+Run 240;Varianten-ID;Standard;
+Run 240;Success / Failure;true;Success
+Run 240;Gesamtdauer ms;256,908;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 240;Final Placed Rooms;16;
+Run 240;Open Sockets Pre-Cap;7;
+Run 240;Error Cause;None;
+Run 241;Varianten-ID;Standard;
+Run 241;Success / Failure;true;Success
+Run 241;Gesamtdauer ms;163,513;unproblematisch
+Run 241;Final Placed Rooms;16;
+Run 241;Open Sockets Pre-Cap;7;
+Run 241;Error Cause;None;
+Run 242;Varianten-ID;Standard;
+Run 242;Success / Failure;true;Success
+Run 242;Gesamtdauer ms;86,62;unproblematisch
+Run 242;Final Placed Rooms;16;
+Run 242;Open Sockets Pre-Cap;7;
+Run 242;Error Cause;None;
+Run 243;Varianten-ID;Standard;
+Run 243;Success / Failure;true;Success
+Run 243;Gesamtdauer ms;527,761;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 243;Final Placed Rooms;13;
+Run 243;Open Sockets Pre-Cap;2;
+Run 243;Error Cause;None;
+Run 244;Varianten-ID;Standard;
+Run 244;Success / Failure;true;Success
+Run 244;Gesamtdauer ms;351,956;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 244;Final Placed Rooms;13;
+Run 244;Open Sockets Pre-Cap;2;
+Run 244;Error Cause;None;
+Run 245;Varianten-ID;Standard;
+Run 245;Success / Failure;true;Success
+Run 245;Gesamtdauer ms;220,618;unproblematisch
+Run 245;Final Placed Rooms;13;
+Run 245;Open Sockets Pre-Cap;2;
+Run 245;Error Cause;None;
+Run 246;Varianten-ID;Standard;
+Run 246;Success / Failure;true;Success
+Run 246;Gesamtdauer ms;184,648;unproblematisch
+Run 246;Final Placed Rooms;13;
+Run 246;Open Sockets Pre-Cap;2;
+Run 246;Error Cause;None;
+Run 247;Varianten-ID;Standard;
+Run 247;Success / Failure;true;Success
+Run 247;Gesamtdauer ms;40,624;sehr schnell
+Run 247;Final Placed Rooms;13;
+Run 247;Open Sockets Pre-Cap;2;
+Run 247;Error Cause;None;
+Run 248;Varianten-ID;Standard;
+Run 248;Success / Failure;true;Success
+Run 248;Gesamtdauer ms;1080,493;teuer, Performance pruefen
+Run 248;Final Placed Rooms;9;
+Run 248;Open Sockets Pre-Cap;2;
+Run 248;Error Cause;None;
+Run 249;Varianten-ID;Standard;
+Run 249;Success / Failure;true;Success
+Run 249;Gesamtdauer ms;961,665;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 249;Final Placed Rooms;21;
+Run 249;Open Sockets Pre-Cap;7;
+Run 249;Error Cause;None;
+Run 250;Varianten-ID;Standard;
+Run 250;Success / Failure;true;Success
+Run 250;Gesamtdauer ms;882,056;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 250;Final Placed Rooms;21;
+Run 250;Open Sockets Pre-Cap;7;
+Run 250;Error Cause;None;
+Run 251;Varianten-ID;Standard;
+Run 251;Success / Failure;true;Success
+Run 251;Gesamtdauer ms;739,245;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 251;Final Placed Rooms;21;
+Run 251;Open Sockets Pre-Cap;7;
+Run 251;Error Cause;None;
+Run 252;Varianten-ID;Standard;
+Run 252;Success / Failure;true;Success
+Run 252;Gesamtdauer ms;623,224;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 252;Final Placed Rooms;21;
+Run 252;Open Sockets Pre-Cap;7;
+Run 252;Error Cause;None;
+Run 253;Varianten-ID;Standard;
+Run 253;Success / Failure;true;Success
+Run 253;Gesamtdauer ms;550,028;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 253;Final Placed Rooms;21;
+Run 253;Open Sockets Pre-Cap;7;
+Run 253;Error Cause;None;
+Run 254;Varianten-ID;Standard;
+Run 254;Success / Failure;true;Success
+Run 254;Gesamtdauer ms;447,805;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 254;Final Placed Rooms;21;
+Run 254;Open Sockets Pre-Cap;7;
+Run 254;Error Cause;None;
+Run 255;Varianten-ID;Standard;
+Run 255;Success / Failure;true;Success
+Run 255;Gesamtdauer ms;366,041;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 255;Final Placed Rooms;21;
+Run 255;Open Sockets Pre-Cap;7;
+Run 255;Error Cause;None;
+Run 256;Varianten-ID;Standard;
+Run 256;Success / Failure;true;Success
+Run 256;Gesamtdauer ms;248,727;unproblematisch
+Run 256;Final Placed Rooms;21;
+Run 256;Open Sockets Pre-Cap;7;
+Run 256;Error Cause;None;
+Run 257;Varianten-ID;Standard;
+Run 257;Success / Failure;true;Success
+Run 257;Gesamtdauer ms;157,874;unproblematisch
+Run 257;Final Placed Rooms;21;
+Run 257;Open Sockets Pre-Cap;7;
+Run 257;Error Cause;None;
+Run 258;Varianten-ID;Standard;
+Run 258;Success / Failure;true;Success
+Run 258;Gesamtdauer ms;75,003;unproblematisch
+Run 258;Final Placed Rooms;21;
+Run 258;Open Sockets Pre-Cap;7;
+Run 258;Error Cause;None;
+Run 259;Varianten-ID;Standard;
+Run 259;Success / Failure;true;Success
+Run 259;Gesamtdauer ms;346,618;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 259;Final Placed Rooms;11;
+Run 259;Open Sockets Pre-Cap;2;
+Run 259;Error Cause;None;
+Run 260;Varianten-ID;Standard;
+Run 260;Success / Failure;true;Success
+Run 260;Gesamtdauer ms;265,897;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 260;Final Placed Rooms;11;
+Run 260;Open Sockets Pre-Cap;2;
+Run 260;Error Cause;None;
+Run 261;Varianten-ID;Standard;
+Run 261;Success / Failure;true;Success
+Run 261;Gesamtdauer ms;84,689;unproblematisch
+Run 261;Final Placed Rooms;11;
+Run 261;Open Sockets Pre-Cap;2;
+Run 261;Error Cause;None;
+Run 262;Varianten-ID;Standard;
+Run 262;Success / Failure;true;Success
+Run 262;Gesamtdauer ms;150,772;unproblematisch
+Run 262;Final Placed Rooms;18;
+Run 262;Open Sockets Pre-Cap;6;
+Run 262;Error Cause;None;
+Run 263;Varianten-ID;Standard;
+Run 263;Success / Failure;true;Success
+Run 263;Gesamtdauer ms;262,585;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 263;Final Placed Rooms;16;
+Run 263;Open Sockets Pre-Cap;7;
+Run 263;Error Cause;None;
+Run 264;Varianten-ID;Standard;
+Run 264;Success / Failure;true;Success
+Run 264;Gesamtdauer ms;110,439;unproblematisch
+Run 264;Final Placed Rooms;16;
+Run 264;Open Sockets Pre-Cap;7;
+Run 264;Error Cause;None;
+Run 265;Varianten-ID;Standard;
+Run 265;Success / Failure;true;Success
+Run 265;Gesamtdauer ms;497,204;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 265;Final Placed Rooms;19;
+Run 265;Open Sockets Pre-Cap;8;
+Run 265;Error Cause;None;
+Run 266;Varianten-ID;Standard;
+Run 266;Success / Failure;true;Success
+Run 266;Gesamtdauer ms;425,777;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 266;Final Placed Rooms;19;
+Run 266;Open Sockets Pre-Cap;8;
+Run 266;Error Cause;None;
+Run 267;Varianten-ID;Standard;
+Run 267;Success / Failure;true;Success
+Run 267;Gesamtdauer ms;332,211;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 267;Final Placed Rooms;19;
+Run 267;Open Sockets Pre-Cap;8;
+Run 267;Error Cause;None;
+Run 268;Varianten-ID;Standard;
+Run 268;Success / Failure;true;Success
+Run 268;Gesamtdauer ms;226,672;unproblematisch
+Run 268;Final Placed Rooms;19;
+Run 268;Open Sockets Pre-Cap;8;
+Run 268;Error Cause;None;
+Run 269;Varianten-ID;Standard;
+Run 269;Success / Failure;true;Success
+Run 269;Gesamtdauer ms;841,746;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 269;Final Placed Rooms;15;
+Run 269;Open Sockets Pre-Cap;5;
+Run 269;Error Cause;None;
+Run 270;Varianten-ID;Standard;
+Run 270;Success / Failure;true;Success
+Run 270;Gesamtdauer ms;688,646;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 270;Final Placed Rooms;15;
+Run 270;Open Sockets Pre-Cap;5;
+Run 270;Error Cause;None;
+Run 271;Varianten-ID;Standard;
+Run 271;Success / Failure;true;Success
+Run 271;Gesamtdauer ms;564,863;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 271;Final Placed Rooms;15;
+Run 271;Open Sockets Pre-Cap;5;
+Run 271;Error Cause;None;
+Run 272;Varianten-ID;Standard;
+Run 272;Success / Failure;true;Success
+Run 272;Gesamtdauer ms;481,624;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 272;Final Placed Rooms;15;
+Run 272;Open Sockets Pre-Cap;5;
+Run 272;Error Cause;None;
+Run 273;Varianten-ID;Standard;
+Run 273;Success / Failure;true;Success
+Run 273;Gesamtdauer ms;418,339;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 273;Final Placed Rooms;15;
+Run 273;Open Sockets Pre-Cap;5;
+Run 273;Error Cause;None;
+Run 274;Varianten-ID;Standard;
+Run 274;Success / Failure;true;Success
+Run 274;Gesamtdauer ms;323,226;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 274;Final Placed Rooms;15;
+Run 274;Open Sockets Pre-Cap;5;
+Run 274;Error Cause;None;
+Run 275;Varianten-ID;Standard;
+Run 275;Success / Failure;true;Success
+Run 275;Gesamtdauer ms;140,66;unproblematisch
+Run 275;Final Placed Rooms;15;
+Run 275;Open Sockets Pre-Cap;5;
+Run 275;Error Cause;None;
+Run 276;Varianten-ID;Standard;
+Run 276;Success / Failure;true;Success
+Run 276;Gesamtdauer ms;462,709;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 276;Final Placed Rooms;17;
+Run 276;Open Sockets Pre-Cap;8;
+Run 276;Error Cause;None;
+Run 277;Varianten-ID;Standard;
+Run 277;Success / Failure;true;Success
+Run 277;Gesamtdauer ms;210,703;unproblematisch
+Run 277;Final Placed Rooms;17;
+Run 277;Open Sockets Pre-Cap;8;
+Run 277;Error Cause;None;
+Run 278;Varianten-ID;Standard;
+Run 278;Success / Failure;true;Success
+Run 278;Gesamtdauer ms;930,35;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 278;Final Placed Rooms;14;
+Run 278;Open Sockets Pre-Cap;5;
+Run 278;Error Cause;None;
+Run 279;Varianten-ID;Standard;
+Run 279;Success / Failure;true;Success
+Run 279;Gesamtdauer ms;769,259;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 279;Final Placed Rooms;14;
+Run 279;Open Sockets Pre-Cap;5;
+Run 279;Error Cause;None;
+Run 280;Varianten-ID;Standard;
+Run 280;Success / Failure;true;Success
+Run 280;Gesamtdauer ms;374,994;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 280;Final Placed Rooms;14;
+Run 280;Open Sockets Pre-Cap;5;
+Run 280;Error Cause;None;
+Run 281;Varianten-ID;Standard;
+Run 281;Success / Failure;true;Success
+Run 281;Gesamtdauer ms;280,813;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 281;Final Placed Rooms;14;
+Run 281;Open Sockets Pre-Cap;5;
+Run 281;Error Cause;None;
+Run 282;Varianten-ID;Standard;
+Run 282;Success / Failure;true;Success
+Run 282;Gesamtdauer ms;198,161;unproblematisch
+Run 282;Final Placed Rooms;14;
+Run 282;Open Sockets Pre-Cap;5;
+Run 282;Error Cause;None;
+Run 283;Varianten-ID;Standard;
+Run 283;Success / Failure;true;Success
+Run 283;Gesamtdauer ms;175,607;unproblematisch
+Run 283;Final Placed Rooms;14;
+Run 283;Open Sockets Pre-Cap;5;
+Run 283;Error Cause;None;
+Run 284;Varianten-ID;Standard;
+Run 284;Success / Failure;true;Success
+Run 284;Gesamtdauer ms;67,068;unproblematisch
+Run 284;Final Placed Rooms;14;
+Run 284;Open Sockets Pre-Cap;5;
+Run 284;Error Cause;None;
+Run 285;Varianten-ID;Standard;
+Run 285;Success / Failure;true;Success
+Run 285;Gesamtdauer ms;260,901;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 285;Final Placed Rooms;16;
+Run 285;Open Sockets Pre-Cap;6;
+Run 285;Error Cause;None;
+Run 286;Varianten-ID;Standard;
+Run 286;Success / Failure;true;Success
+Run 286;Gesamtdauer ms;147,973;unproblematisch
+Run 286;Final Placed Rooms;17;
+Run 286;Open Sockets Pre-Cap;8;
+Run 286;Error Cause;None;
+Run 287;Varianten-ID;Standard;
+Run 287;Success / Failure;true;Success
+Run 287;Gesamtdauer ms;188,258;unproblematisch
+Run 287;Final Placed Rooms;15;
+Run 287;Open Sockets Pre-Cap;8;
+Run 287;Error Cause;None;
+Run 288;Varianten-ID;Standard;
+Run 288;Success / Failure;true;Success
+Run 288;Gesamtdauer ms;552,407;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 288;Final Placed Rooms;16;
+Run 288;Open Sockets Pre-Cap;6;
+Run 288;Error Cause;None;
+Run 289;Varianten-ID;Standard;
+Run 289;Success / Failure;true;Success
+Run 289;Gesamtdauer ms;565,272;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 289;Final Placed Rooms;16;
+Run 289;Open Sockets Pre-Cap;6;
+Run 289;Error Cause;None;
+Run 290;Varianten-ID;Standard;
+Run 290;Success / Failure;true;Success
+Run 290;Gesamtdauer ms;409,593;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 290;Final Placed Rooms;16;
+Run 290;Open Sockets Pre-Cap;6;
+Run 290;Error Cause;None;
+Run 291;Varianten-ID;Standard;
+Run 291;Success / Failure;true;Success
+Run 291;Gesamtdauer ms;200,22;unproblematisch
+Run 291;Final Placed Rooms;16;
+Run 291;Open Sockets Pre-Cap;6;
+Run 291;Error Cause;None;
+Run 292;Varianten-ID;Standard;
+Run 292;Success / Failure;true;Success
+Run 292;Gesamtdauer ms;113,587;unproblematisch
+Run 292;Final Placed Rooms;16;
+Run 292;Open Sockets Pre-Cap;6;
+Run 292;Error Cause;None;
+Run 293;Varianten-ID;Standard;
+Run 293;Success / Failure;true;Success
+Run 293;Gesamtdauer ms;748,873;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 293;Final Placed Rooms;19;
+Run 293;Open Sockets Pre-Cap;12;
+Run 293;Error Cause;None;
+Run 294;Varianten-ID;Standard;
+Run 294;Success / Failure;true;Success
+Run 294;Gesamtdauer ms;764,983;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 294;Final Placed Rooms;19;
+Run 294;Open Sockets Pre-Cap;12;
+Run 294;Error Cause;None;
+Run 295;Varianten-ID;Standard;
+Run 295;Success / Failure;true;Success
+Run 295;Gesamtdauer ms;676,902;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 295;Final Placed Rooms;19;
+Run 295;Open Sockets Pre-Cap;12;
+Run 295;Error Cause;None;
+Run 296;Varianten-ID;Standard;
+Run 296;Success / Failure;true;Success
+Run 296;Gesamtdauer ms;455,644;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 296;Final Placed Rooms;19;
+Run 296;Open Sockets Pre-Cap;12;
+Run 296;Error Cause;None;
+Run 297;Varianten-ID;Standard;
+Run 297;Success / Failure;true;Success
+Run 297;Gesamtdauer ms;365,008;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 297;Final Placed Rooms;17;
+Run 297;Open Sockets Pre-Cap;6;
+Run 297;Error Cause;None;
+Run 298;Varianten-ID;Standard;
+Run 298;Success / Failure;true;Success
+Run 298;Gesamtdauer ms;306,057;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 298;Final Placed Rooms;17;
+Run 298;Open Sockets Pre-Cap;6;
+Run 298;Error Cause;None;
+Run 299;Varianten-ID;Standard;
+Run 299;Success / Failure;true;Success
+Run 299;Gesamtdauer ms;116,828;unproblematisch
+Run 299;Final Placed Rooms;17;
+Run 299;Open Sockets Pre-Cap;6;
+Run 299;Error Cause;None;
+Run 300;Varianten-ID;Standard;
+Run 300;Success / Failure;true;Success
+Run 300;Gesamtdauer ms;382,768;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 300;Final Placed Rooms;17;
+Run 300;Open Sockets Pre-Cap;9;
+Run 300;Error Cause;None;
+Run 301;Varianten-ID;Standard;
+Run 301;Success / Failure;true;Success
+Run 301;Gesamtdauer ms;271,794;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 301;Final Placed Rooms;17;
+Run 301;Open Sockets Pre-Cap;9;
+Run 301;Error Cause;None;
+Run 302;Varianten-ID;Standard;
+Run 302;Success / Failure;true;Success
+Run 302;Gesamtdauer ms;1042,247;teuer, Performance pruefen
+Run 302;Final Placed Rooms;13;
+Run 302;Open Sockets Pre-Cap;5;
+Run 302;Error Cause;None;
+Run 303;Varianten-ID;Standard;
+Run 303;Success / Failure;true;Success
+Run 303;Gesamtdauer ms;916,162;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 303;Final Placed Rooms;13;
+Run 303;Open Sockets Pre-Cap;5;
+Run 303;Error Cause;None;
+Run 304;Varianten-ID;Standard;
+Run 304;Success / Failure;true;Success
+Run 304;Gesamtdauer ms;722,499;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 304;Final Placed Rooms;13;
+Run 304;Open Sockets Pre-Cap;5;
+Run 304;Error Cause;None;
+Run 305;Varianten-ID;Standard;
+Run 305;Success / Failure;true;Success
+Run 305;Gesamtdauer ms;386,9;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 305;Final Placed Rooms;13;
+Run 305;Open Sockets Pre-Cap;5;
+Run 305;Error Cause;None;
+Run 306;Varianten-ID;Standard;
+Run 306;Success / Failure;true;Success
+Run 306;Gesamtdauer ms;195,971;unproblematisch
+Run 306;Final Placed Rooms;13;
+Run 306;Open Sockets Pre-Cap;5;
+Run 306;Error Cause;None;
+Run 307;Varianten-ID;Standard;
+Run 307;Success / Failure;true;Success
+Run 307;Gesamtdauer ms;89,309;unproblematisch
+Run 307;Final Placed Rooms;13;
+Run 307;Open Sockets Pre-Cap;5;
+Run 307;Error Cause;None;
+Run 308;Varianten-ID;Standard;
+Run 308;Success / Failure;true;Success
+Run 308;Gesamtdauer ms;2707,797;teuer, Performance pruefen
+Run 308;Final Placed Rooms;11;
+Run 308;Open Sockets Pre-Cap;4;
+Run 308;Error Cause;None;
+Run 309;Varianten-ID;Standard;
+Run 309;Success / Failure;true;Success
+Run 309;Gesamtdauer ms;2590,449;teuer, Performance pruefen
+Run 309;Final Placed Rooms;11;
+Run 309;Open Sockets Pre-Cap;4;
+Run 309;Error Cause;None;
+Run 310;Varianten-ID;Standard;
+Run 310;Success / Failure;true;Success
+Run 310;Gesamtdauer ms;2421,209;teuer, Performance pruefen
+Run 310;Final Placed Rooms;11;
+Run 310;Open Sockets Pre-Cap;4;
+Run 310;Error Cause;None;
+Run 311;Varianten-ID;Standard;
+Run 311;Success / Failure;true;Success
+Run 311;Gesamtdauer ms;1482,295;teuer, Performance pruefen
+Run 311;Final Placed Rooms;17;
+Run 311;Open Sockets Pre-Cap;7;
+Run 311;Error Cause;None;
+Run 312;Varianten-ID;Standard;
+Run 312;Success / Failure;true;Success
+Run 312;Gesamtdauer ms;1263,889;teuer, Performance pruefen
+Run 312;Final Placed Rooms;17;
+Run 312;Open Sockets Pre-Cap;7;
+Run 312;Error Cause;None;
+Run 313;Varianten-ID;Standard;
+Run 313;Success / Failure;true;Success
+Run 313;Gesamtdauer ms;1218,779;teuer, Performance pruefen
+Run 313;Final Placed Rooms;17;
+Run 313;Open Sockets Pre-Cap;7;
+Run 313;Error Cause;None;
+Run 314;Varianten-ID;Standard;
+Run 314;Success / Failure;true;Success
+Run 314;Gesamtdauer ms;1109,027;teuer, Performance pruefen
+Run 314;Final Placed Rooms;17;
+Run 314;Open Sockets Pre-Cap;7;
+Run 314;Error Cause;None;
+Run 315;Varianten-ID;Standard;
+Run 315;Success / Failure;true;Success
+Run 315;Gesamtdauer ms;931,44;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 315;Final Placed Rooms;17;
+Run 315;Open Sockets Pre-Cap;7;
+Run 315;Error Cause;None;
+Run 316;Varianten-ID;Standard;
+Run 316;Success / Failure;true;Success
+Run 316;Gesamtdauer ms;838,601;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 316;Final Placed Rooms;17;
+Run 316;Open Sockets Pre-Cap;7;
+Run 316;Error Cause;None;
+Run 317;Varianten-ID;Standard;
+Run 317;Success / Failure;true;Success
+Run 317;Gesamtdauer ms;726,418;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 317;Final Placed Rooms;17;
+Run 317;Open Sockets Pre-Cap;7;
+Run 317;Error Cause;None;
+Run 318;Varianten-ID;Standard;
+Run 318;Success / Failure;true;Success
+Run 318;Gesamtdauer ms;529,286;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 318;Final Placed Rooms;17;
+Run 318;Open Sockets Pre-Cap;7;
+Run 318;Error Cause;None;
+Run 319;Varianten-ID;Standard;
+Run 319;Success / Failure;true;Success
+Run 319;Gesamtdauer ms;372,842;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 319;Final Placed Rooms;17;
+Run 319;Open Sockets Pre-Cap;7;
+Run 319;Error Cause;None;
+Run 320;Varianten-ID;Standard;
+Run 320;Success / Failure;true;Success
+Run 320;Gesamtdauer ms;289,527;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 320;Final Placed Rooms;17;
+Run 320;Open Sockets Pre-Cap;7;
+Run 320;Error Cause;None;
+Run 321;Varianten-ID;Standard;
+Run 321;Success / Failure;true;Success
+Run 321;Gesamtdauer ms;144,898;unproblematisch
+Run 321;Final Placed Rooms;13;
+Run 321;Open Sockets Pre-Cap;5;
+Run 321;Error Cause;None;
+Run 322;Varianten-ID;Standard;
+Run 322;Success / Failure;true;Success
+Run 322;Gesamtdauer ms;244,024;unproblematisch
+Run 322;Final Placed Rooms;16;
+Run 322;Open Sockets Pre-Cap;4;
+Run 322;Error Cause;None;
+Run 323;Varianten-ID;Standard;
+Run 323;Success / Failure;true;Success
+Run 323;Gesamtdauer ms;123,552;unproblematisch
+Run 323;Final Placed Rooms;16;
+Run 323;Open Sockets Pre-Cap;3;
+Run 323;Error Cause;None;
+Run 324;Varianten-ID;Standard;
+Run 324;Success / Failure;true;Success
+Run 324;Gesamtdauer ms;187,459;unproblematisch
+Run 324;Final Placed Rooms;13;
+Run 324;Open Sockets Pre-Cap;3;
+Run 324;Error Cause;None;
+Run 325;Varianten-ID;Standard;
+Run 325;Success / Failure;true;Success
+Run 325;Gesamtdauer ms;160,857;unproblematisch
+Run 325;Final Placed Rooms;13;
+Run 325;Open Sockets Pre-Cap;3;
+Run 325;Error Cause;None;
+Run 326;Varianten-ID;Standard;
+Run 326;Success / Failure;true;Success
+Run 326;Gesamtdauer ms;161,886;unproblematisch
+Run 326;Final Placed Rooms;14;
+Run 326;Open Sockets Pre-Cap;7;
+Run 326;Error Cause;None;
+Run 327;Varianten-ID;Standard;
+Run 327;Success / Failure;true;Success
+Run 327;Gesamtdauer ms;104,59;unproblematisch
+Run 327;Final Placed Rooms;14;
+Run 327;Open Sockets Pre-Cap;7;
+Run 327;Error Cause;None;
+Run 328;Varianten-ID;Standard;
+Run 328;Success / Failure;true;Success
+Run 328;Gesamtdauer ms;337,395;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 328;Final Placed Rooms;9;
+Run 328;Open Sockets Pre-Cap;1;
+Run 328;Error Cause;None;
+Run 329;Varianten-ID;Standard;
+Run 329;Success / Failure;true;Success
+Run 329;Gesamtdauer ms;242,569;unproblematisch
+Run 329;Final Placed Rooms;9;
+Run 329;Open Sockets Pre-Cap;1;
+Run 329;Error Cause;None;
+Run 330;Varianten-ID;Standard;
+Run 330;Success / Failure;true;Success
+Run 330;Gesamtdauer ms;177,378;unproblematisch
+Run 330;Final Placed Rooms;9;
+Run 330;Open Sockets Pre-Cap;1;
+Run 330;Error Cause;None;
+Run 331;Varianten-ID;Standard;
+Run 331;Success / Failure;true;Success
+Run 331;Gesamtdauer ms;118,314;unproblematisch
+Run 331;Final Placed Rooms;9;
+Run 331;Open Sockets Pre-Cap;1;
+Run 331;Error Cause;None;
+Run 332;Varianten-ID;Standard;
+Run 332;Success / Failure;true;Success
+Run 332;Gesamtdauer ms;30,739;sehr schnell
+Run 332;Final Placed Rooms;9;
+Run 332;Open Sockets Pre-Cap;1;
+Run 332;Error Cause;None;
+Run 333;Varianten-ID;Standard;
+Run 333;Success / Failure;true;Success
+Run 333;Gesamtdauer ms;130,067;unproblematisch
+Run 333;Final Placed Rooms;15;
+Run 333;Open Sockets Pre-Cap;4;
+Run 333;Error Cause;None;
+Run 334;Varianten-ID;Standard;
+Run 334;Success / Failure;true;Success
+Run 334;Gesamtdauer ms;298,704;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 334;Final Placed Rooms;15;
+Run 334;Open Sockets Pre-Cap;7;
+Run 334;Error Cause;None;
+Run 335;Varianten-ID;Standard;
+Run 335;Success / Failure;true;Success
+Run 335;Gesamtdauer ms;213,487;unproblematisch
+Run 335;Final Placed Rooms;15;
+Run 335;Open Sockets Pre-Cap;7;
+Run 335;Error Cause;None;
+Run 336;Varianten-ID;Standard;
+Run 336;Success / Failure;true;Success
+Run 336;Gesamtdauer ms;296,36;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 336;Final Placed Rooms;24;
+Run 336;Open Sockets Pre-Cap;15;
+Run 336;Error Cause;None;
+Run 337;Varianten-ID;Standard;
+Run 337;Success / Failure;true;Success
+Run 337;Gesamtdauer ms;227,034;unproblematisch
+Run 337;Final Placed Rooms;24;
+Run 337;Open Sockets Pre-Cap;15;
+Run 337;Error Cause;None;
+Run 338;Varianten-ID;Standard;
+Run 338;Success / Failure;true;Success
+Run 338;Gesamtdauer ms;917,8;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 338;Final Placed Rooms;10;
+Run 338;Open Sockets Pre-Cap;0;
+Run 338;Error Cause;None;
+Run 339;Varianten-ID;Standard;
+Run 339;Success / Failure;true;Success
+Run 339;Gesamtdauer ms;609,142;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 339;Final Placed Rooms;10;
+Run 339;Open Sockets Pre-Cap;0;
+Run 339;Error Cause;None;
+Run 340;Varianten-ID;Standard;
+Run 340;Success / Failure;true;Success
+Run 340;Gesamtdauer ms;466,95;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 340;Final Placed Rooms;10;
+Run 340;Open Sockets Pre-Cap;0;
+Run 340;Error Cause;None;
+Run 341;Varianten-ID;Standard;
+Run 341;Success / Failure;true;Success
+Run 341;Gesamtdauer ms;301,63;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 341;Final Placed Rooms;10;
+Run 341;Open Sockets Pre-Cap;0;
+Run 341;Error Cause;None;
+Run 342;Varianten-ID;Standard;
+Run 342;Success / Failure;true;Success
+Run 342;Gesamtdauer ms;146,132;unproblematisch
+Run 342;Final Placed Rooms;10;
+Run 342;Open Sockets Pre-Cap;0;
+Run 342;Error Cause;None;
+Run 343;Varianten-ID;Standard;
+Run 343;Success / Failure;true;Success
+Run 343;Gesamtdauer ms;39,961;sehr schnell
+Run 343;Final Placed Rooms;10;
+Run 343;Open Sockets Pre-Cap;0;
+Run 343;Error Cause;None;
+Run 344;Varianten-ID;Standard;
+Run 344;Success / Failure;true;Success
+Run 344;Gesamtdauer ms;738,987;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 344;Final Placed Rooms;20;
+Run 344;Open Sockets Pre-Cap;10;
+Run 344;Error Cause;None;
+Run 345;Varianten-ID;Standard;
+Run 345;Success / Failure;true;Success
+Run 345;Gesamtdauer ms;666,347;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 345;Final Placed Rooms;20;
+Run 345;Open Sockets Pre-Cap;10;
+Run 345;Error Cause;None;
+Run 346;Varianten-ID;Standard;
+Run 346;Success / Failure;true;Success
+Run 346;Gesamtdauer ms;605,228;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 346;Final Placed Rooms;20;
+Run 346;Open Sockets Pre-Cap;10;
+Run 346;Error Cause;None;
+Run 347;Varianten-ID;Standard;
+Run 347;Success / Failure;true;Success
+Run 347;Gesamtdauer ms;491,539;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 347;Final Placed Rooms;20;
+Run 347;Open Sockets Pre-Cap;10;
+Run 347;Error Cause;None;
+Run 348;Varianten-ID;Standard;
+Run 348;Success / Failure;true;Success
+Run 348;Gesamtdauer ms;411,734;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 348;Final Placed Rooms;20;
+Run 348;Open Sockets Pre-Cap;10;
+Run 348;Error Cause;None;
+Run 349;Varianten-ID;Standard;
+Run 349;Success / Failure;true;Success
+Run 349;Gesamtdauer ms;198,928;unproblematisch
+Run 349;Final Placed Rooms;20;
+Run 349;Open Sockets Pre-Cap;10;
+Run 349;Error Cause;None;
+Run 350;Varianten-ID;Standard;
+Run 350;Success / Failure;true;Success
+Run 350;Gesamtdauer ms;594,772;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 350;Final Placed Rooms;15;
+Run 350;Open Sockets Pre-Cap;6;
+Run 350;Error Cause;None;
+Run 351;Varianten-ID;Standard;
+Run 351;Success / Failure;true;Success
+Run 351;Gesamtdauer ms;498,652;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 351;Final Placed Rooms;15;
+Run 351;Open Sockets Pre-Cap;6;
+Run 351;Error Cause;None;
+Run 352;Varianten-ID;Standard;
+Run 352;Success / Failure;true;Success
+Run 352;Gesamtdauer ms;347,072;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 352;Final Placed Rooms;15;
+Run 352;Open Sockets Pre-Cap;6;
+Run 352;Error Cause;None;
+Run 353;Varianten-ID;Standard;
+Run 353;Success / Failure;true;Success
+Run 353;Gesamtdauer ms;159,315;unproblematisch
+Run 353;Final Placed Rooms;15;
+Run 353;Open Sockets Pre-Cap;6;
+Run 353;Error Cause;None;
+Run 354;Varianten-ID;Standard;
+Run 354;Success / Failure;true;Success
+Run 354;Gesamtdauer ms;848,291;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 354;Final Placed Rooms;12;
+Run 354;Open Sockets Pre-Cap;2;
+Run 354;Error Cause;None;
+Run 355;Varianten-ID;Standard;
+Run 355;Success / Failure;true;Success
+Run 355;Gesamtdauer ms;739,595;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 355;Final Placed Rooms;12;
+Run 355;Open Sockets Pre-Cap;2;
+Run 355;Error Cause;None;
+Run 356;Varianten-ID;Standard;
+Run 356;Success / Failure;true;Success
+Run 356;Gesamtdauer ms;640,622;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 356;Final Placed Rooms;12;
+Run 356;Open Sockets Pre-Cap;2;
+Run 356;Error Cause;None;
+Run 357;Varianten-ID;Standard;
+Run 357;Success / Failure;true;Success
+Run 357;Gesamtdauer ms;515,082;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 357;Final Placed Rooms;12;
+Run 357;Open Sockets Pre-Cap;2;
+Run 357;Error Cause;None;
+Run 358;Varianten-ID;Standard;
+Run 358;Success / Failure;true;Success
+Run 358;Gesamtdauer ms;365,719;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 358;Final Placed Rooms;12;
+Run 358;Open Sockets Pre-Cap;2;
+Run 358;Error Cause;None;
+Run 359;Varianten-ID;Standard;
+Run 359;Success / Failure;true;Success
+Run 359;Gesamtdauer ms;114,526;unproblematisch
+Run 359;Final Placed Rooms;12;
+Run 359;Open Sockets Pre-Cap;2;
+Run 359;Error Cause;None;
+Run 360;Varianten-ID;Standard;
+Run 360;Success / Failure;true;Success
+Run 360;Gesamtdauer ms;164,535;unproblematisch
+Run 360;Final Placed Rooms;19;
+Run 360;Open Sockets Pre-Cap;6;
+Run 360;Error Cause;None;
+Run 361;Varianten-ID;Standard;
+Run 361;Success / Failure;true;Success
+Run 361;Gesamtdauer ms;52,393;unproblematisch
+Run 361;Final Placed Rooms;19;
+Run 361;Open Sockets Pre-Cap;6;
+Run 361;Error Cause;None;
+Run 362;Varianten-ID;Standard;
+Run 362;Success / Failure;true;Success
+Run 362;Gesamtdauer ms;361,649;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 362;Final Placed Rooms;25;
+Run 362;Open Sockets Pre-Cap;11;
+Run 362;Error Cause;None;
+Run 363;Varianten-ID;Standard;
+Run 363;Success / Failure;true;Success
+Run 363;Gesamtdauer ms;207,572;unproblematisch
+Run 363;Final Placed Rooms;25;
+Run 363;Open Sockets Pre-Cap;11;
+Run 363;Error Cause;None;
+Run 364;Varianten-ID;Standard;
+Run 364;Success / Failure;true;Success
+Run 364;Gesamtdauer ms;74,733;unproblematisch
+Run 364;Final Placed Rooms;25;
+Run 364;Open Sockets Pre-Cap;11;
+Run 364;Error Cause;None;
+Run 365;Varianten-ID;Standard;
+Run 365;Success / Failure;true;Success
+Run 365;Gesamtdauer ms;1084,057;teuer, Performance pruefen
+Run 365;Final Placed Rooms;18;
+Run 365;Open Sockets Pre-Cap;7;
+Run 365;Error Cause;None;
+Run 366;Varianten-ID;Standard;
+Run 366;Success / Failure;true;Success
+Run 366;Gesamtdauer ms;1022,468;teuer, Performance pruefen
+Run 366;Final Placed Rooms;18;
+Run 366;Open Sockets Pre-Cap;7;
+Run 366;Error Cause;None;
+Run 367;Varianten-ID;Standard;
+Run 367;Success / Failure;true;Success
+Run 367;Gesamtdauer ms;731,039;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 367;Final Placed Rooms;18;
+Run 367;Open Sockets Pre-Cap;7;
+Run 367;Error Cause;None;
+Run 368;Varianten-ID;Standard;
+Run 368;Success / Failure;true;Success
+Run 368;Gesamtdauer ms;475,963;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 368;Final Placed Rooms;18;
+Run 368;Open Sockets Pre-Cap;7;
+Run 368;Error Cause;None;
+Run 369;Varianten-ID;Standard;
+Run 369;Success / Failure;true;Success
+Run 369;Gesamtdauer ms;401,733;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 369;Final Placed Rooms;18;
+Run 369;Open Sockets Pre-Cap;7;
+Run 369;Error Cause;None;
+Run 370;Varianten-ID;Standard;
+Run 370;Success / Failure;true;Success
+Run 370;Gesamtdauer ms;332,079;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 370;Final Placed Rooms;18;
+Run 370;Open Sockets Pre-Cap;7;
+Run 370;Error Cause;None;
+Run 371;Varianten-ID;Standard;
+Run 371;Success / Failure;true;Success
+Run 371;Gesamtdauer ms;278,356;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 371;Final Placed Rooms;18;
+Run 371;Open Sockets Pre-Cap;7;
+Run 371;Error Cause;None;
+Run 372;Varianten-ID;Standard;
+Run 372;Success / Failure;true;Success
+Run 372;Gesamtdauer ms;497,328;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 372;Final Placed Rooms;19;
+Run 372;Open Sockets Pre-Cap;10;
+Run 372;Error Cause;None;
+Run 373;Varianten-ID;Standard;
+Run 373;Success / Failure;true;Success
+Run 373;Gesamtdauer ms;364,152;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 373;Final Placed Rooms;19;
+Run 373;Open Sockets Pre-Cap;10;
+Run 373;Error Cause;None;
+Run 374;Varianten-ID;Standard;
+Run 374;Success / Failure;true;Success
+Run 374;Gesamtdauer ms;304,014;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 374;Final Placed Rooms;19;
+Run 374;Open Sockets Pre-Cap;10;
+Run 374;Error Cause;None;
+Run 375;Varianten-ID;Standard;
+Run 375;Success / Failure;true;Success
+Run 375;Gesamtdauer ms;275,714;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 375;Final Placed Rooms;19;
+Run 375;Open Sockets Pre-Cap;10;
+Run 375;Error Cause;None;
+Run 376;Varianten-ID;Standard;
+Run 376;Success / Failure;true;Success
+Run 376;Gesamtdauer ms;185,383;unproblematisch
+Run 376;Final Placed Rooms;19;
+Run 376;Open Sockets Pre-Cap;10;
+Run 376;Error Cause;None;
+Run 377;Varianten-ID;Standard;
+Run 377;Success / Failure;true;Success
+Run 377;Gesamtdauer ms;198,953;unproblematisch
+Run 377;Final Placed Rooms;11;
+Run 377;Open Sockets Pre-Cap;2;
+Run 377;Error Cause;None;
+Run 378;Varianten-ID;Standard;
+Run 378;Success / Failure;true;Success
+Run 378;Gesamtdauer ms;137,868;unproblematisch
+Run 378;Final Placed Rooms;11;
+Run 378;Open Sockets Pre-Cap;2;
+Run 378;Error Cause;None;
+Run 379;Varianten-ID;Standard;
+Run 379;Success / Failure;true;Success
+Run 379;Gesamtdauer ms;1741,156;teuer, Performance pruefen
+Run 379;Final Placed Rooms;10;
+Run 379;Open Sockets Pre-Cap;2;
+Run 379;Error Cause;None;
+Run 380;Varianten-ID;Standard;
+Run 380;Success / Failure;true;Success
+Run 380;Gesamtdauer ms;1411,715;teuer, Performance pruefen
+Run 380;Final Placed Rooms;18;
+Run 380;Open Sockets Pre-Cap;10;
+Run 380;Error Cause;None;
+Run 381;Varianten-ID;Standard;
+Run 381;Success / Failure;true;Success
+Run 381;Gesamtdauer ms;1226,657;teuer, Performance pruefen
+Run 381;Final Placed Rooms;18;
+Run 381;Open Sockets Pre-Cap;10;
+Run 381;Error Cause;None;
+Run 382;Varianten-ID;Standard;
+Run 382;Success / Failure;true;Success
+Run 382;Gesamtdauer ms;1097,987;teuer, Performance pruefen
+Run 382;Final Placed Rooms;18;
+Run 382;Open Sockets Pre-Cap;10;
+Run 382;Error Cause;None;
+Run 383;Varianten-ID;Standard;
+Run 383;Success / Failure;true;Success
+Run 383;Gesamtdauer ms;949,868;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 383;Final Placed Rooms;18;
+Run 383;Open Sockets Pre-Cap;10;
+Run 383;Error Cause;None;
+Run 384;Varianten-ID;Standard;
+Run 384;Success / Failure;true;Success
+Run 384;Gesamtdauer ms;944,248;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 384;Final Placed Rooms;18;
+Run 384;Open Sockets Pre-Cap;10;
+Run 384;Error Cause;None;
+Run 385;Varianten-ID;Standard;
+Run 385;Success / Failure;true;Success
+Run 385;Gesamtdauer ms;830,189;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 385;Final Placed Rooms;18;
+Run 385;Open Sockets Pre-Cap;10;
+Run 385;Error Cause;None;
+Run 386;Varianten-ID;Standard;
+Run 386;Success / Failure;true;Success
+Run 386;Gesamtdauer ms;711,846;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 386;Final Placed Rooms;18;
+Run 386;Open Sockets Pre-Cap;10;
+Run 386;Error Cause;None;
+Run 387;Varianten-ID;Standard;
+Run 387;Success / Failure;true;Success
+Run 387;Gesamtdauer ms;514,152;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 387;Final Placed Rooms;18;
+Run 387;Open Sockets Pre-Cap;10;
+Run 387;Error Cause;None;
+Run 388;Varianten-ID;Standard;
+Run 388;Success / Failure;true;Success
+Run 388;Gesamtdauer ms;416,497;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 388;Final Placed Rooms;18;
+Run 388;Open Sockets Pre-Cap;10;
+Run 388;Error Cause;None;
+Run 389;Varianten-ID;Standard;
+Run 389;Success / Failure;true;Success
+Run 389;Gesamtdauer ms;346,401;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 389;Final Placed Rooms;18;
+Run 389;Open Sockets Pre-Cap;10;
+Run 389;Error Cause;None;
+Run 390;Varianten-ID;Standard;
+Run 390;Success / Failure;true;Success
+Run 390;Gesamtdauer ms;327,903;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 390;Final Placed Rooms;16;
+Run 390;Open Sockets Pre-Cap;7;
+Run 390;Error Cause;None;
+Run 391;Varianten-ID;Standard;
+Run 391;Success / Failure;true;Success
+Run 391;Gesamtdauer ms;456,762;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 391;Final Placed Rooms;18;
+Run 391;Open Sockets Pre-Cap;10;
+Run 391;Error Cause;None;
+Run 392;Varianten-ID;Standard;
+Run 392;Success / Failure;true;Success
+Run 392;Gesamtdauer ms;316,38;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 392;Final Placed Rooms;18;
+Run 392;Open Sockets Pre-Cap;10;
+Run 392;Error Cause;None;
+Run 393;Varianten-ID;Standard;
+Run 393;Success / Failure;true;Success
+Run 393;Gesamtdauer ms;574,751;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 393;Final Placed Rooms;13;
+Run 393;Open Sockets Pre-Cap;5;
+Run 393;Error Cause;None;
+Run 394;Varianten-ID;Standard;
+Run 394;Success / Failure;true;Success
+Run 394;Gesamtdauer ms;540,741;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 394;Final Placed Rooms;13;
+Run 394;Open Sockets Pre-Cap;5;
+Run 394;Error Cause;None;
+Run 395;Varianten-ID;Standard;
+Run 395;Success / Failure;true;Success
+Run 395;Gesamtdauer ms;434,878;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 395;Final Placed Rooms;13;
+Run 395;Open Sockets Pre-Cap;5;
+Run 395;Error Cause;None;
+Run 396;Varianten-ID;Standard;
+Run 396;Success / Failure;true;Success
+Run 396;Gesamtdauer ms;328,397;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 396;Final Placed Rooms;13;
+Run 396;Open Sockets Pre-Cap;5;
+Run 396;Error Cause;None;
+Run 397;Varianten-ID;Standard;
+Run 397;Success / Failure;true;Success
+Run 397;Gesamtdauer ms;138,249;unproblematisch
+Run 397;Final Placed Rooms;13;
+Run 397;Open Sockets Pre-Cap;5;
+Run 397;Error Cause;None;
+Run 398;Varianten-ID;Standard;
+Run 398;Success / Failure;true;Success
+Run 398;Gesamtdauer ms;253,36;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 398;Final Placed Rooms;19;
+Run 398;Open Sockets Pre-Cap;6;
+Run 398;Error Cause;None;
+Run 399;Varianten-ID;Standard;
+Run 399;Success / Failure;true;Success
+Run 399;Gesamtdauer ms;131,179;unproblematisch
+Run 399;Final Placed Rooms;19;
+Run 399;Open Sockets Pre-Cap;6;
+Run 399;Error Cause;None;
+Run 400;Varianten-ID;Standard;
+Run 400;Success / Failure;true;Success
+Run 400;Gesamtdauer ms;152,204;unproblematisch
+Run 400;Final Placed Rooms;22;
+Run 400;Open Sockets Pre-Cap;11;
+Run 400;Error Cause;None;
+Run 401;Varianten-ID;Standard;
+Run 401;Success / Failure;true;Success
+Run 401;Gesamtdauer ms;937,776;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 401;Final Placed Rooms;18;
+Run 401;Open Sockets Pre-Cap;6;
+Run 401;Error Cause;None;
+Run 402;Varianten-ID;Standard;
+Run 402;Success / Failure;true;Success
+Run 402;Gesamtdauer ms;778,999;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 402;Final Placed Rooms;18;
+Run 402;Open Sockets Pre-Cap;6;
+Run 402;Error Cause;None;
+Run 403;Varianten-ID;Standard;
+Run 403;Success / Failure;true;Success
+Run 403;Gesamtdauer ms;710,559;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 403;Final Placed Rooms;18;
+Run 403;Open Sockets Pre-Cap;6;
+Run 403;Error Cause;None;
+Run 404;Varianten-ID;Standard;
+Run 404;Success / Failure;true;Success
+Run 404;Gesamtdauer ms;516,491;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 404;Final Placed Rooms;18;
+Run 404;Open Sockets Pre-Cap;6;
+Run 404;Error Cause;None;
+Run 405;Varianten-ID;Standard;
+Run 405;Success / Failure;true;Success
+Run 405;Gesamtdauer ms;399,917;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 405;Final Placed Rooms;18;
+Run 405;Open Sockets Pre-Cap;6;
+Run 405;Error Cause;None;
+Run 406;Varianten-ID;Standard;
+Run 406;Success / Failure;true;Success
+Run 406;Gesamtdauer ms;282,83;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 406;Final Placed Rooms;18;
+Run 406;Open Sockets Pre-Cap;6;
+Run 406;Error Cause;None;
+Run 407;Varianten-ID;Standard;
+Run 407;Success / Failure;true;Success
+Run 407;Gesamtdauer ms;143,337;unproblematisch
+Run 407;Final Placed Rooms;18;
+Run 407;Open Sockets Pre-Cap;6;
+Run 407;Error Cause;None;
+Run 408;Varianten-ID;Standard;
+Run 408;Success / Failure;true;Success
+Run 408;Gesamtdauer ms;87,866;unproblematisch
+Run 408;Final Placed Rooms;18;
+Run 408;Open Sockets Pre-Cap;6;
+Run 408;Error Cause;None;
+Run 409;Varianten-ID;Standard;
+Run 409;Success / Failure;true;Success
+Run 409;Gesamtdauer ms;583,853;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 409;Final Placed Rooms;19;
+Run 409;Open Sockets Pre-Cap;8;
+Run 409;Error Cause;None;
+Run 410;Varianten-ID;Standard;
+Run 410;Success / Failure;true;Success
+Run 410;Gesamtdauer ms;564,98;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 410;Final Placed Rooms;19;
+Run 410;Open Sockets Pre-Cap;8;
+Run 410;Error Cause;None;
+Run 411;Varianten-ID;Standard;
+Run 411;Success / Failure;true;Success
+Run 411;Gesamtdauer ms;495,395;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 411;Final Placed Rooms;19;
+Run 411;Open Sockets Pre-Cap;8;
+Run 411;Error Cause;None;
+Run 412;Varianten-ID;Standard;
+Run 412;Success / Failure;true;Success
+Run 412;Gesamtdauer ms;318,189;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 412;Final Placed Rooms;19;
+Run 412;Open Sockets Pre-Cap;8;
+Run 412;Error Cause;None;
+Run 413;Varianten-ID;Standard;
+Run 413;Success / Failure;true;Success
+Run 413;Gesamtdauer ms;766,079;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 413;Final Placed Rooms;14;
+Run 413;Open Sockets Pre-Cap;7;
+Run 413;Error Cause;None;
+Run 414;Varianten-ID;Standard;
+Run 414;Success / Failure;true;Success
+Run 414;Gesamtdauer ms;445,749;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 414;Final Placed Rooms;14;
+Run 414;Open Sockets Pre-Cap;7;
+Run 414;Error Cause;None;
+Run 415;Varianten-ID;Standard;
+Run 415;Success / Failure;true;Success
+Run 415;Gesamtdauer ms;426,745;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 415;Final Placed Rooms;14;
+Run 415;Open Sockets Pre-Cap;7;
+Run 415;Error Cause;None;
+Run 416;Varianten-ID;Standard;
+Run 416;Success / Failure;true;Success
+Run 416;Gesamtdauer ms;171,995;unproblematisch
+Run 416;Final Placed Rooms;14;
+Run 416;Open Sockets Pre-Cap;7;
+Run 416;Error Cause;None;
+Run 417;Varianten-ID;Standard;
+Run 417;Success / Failure;true;Success
+Run 417;Gesamtdauer ms;159,356;unproblematisch
+Run 417;Final Placed Rooms;14;
+Run 417;Open Sockets Pre-Cap;7;
+Run 417;Error Cause;None;
+Run 418;Varianten-ID;Standard;
+Run 418;Success / Failure;true;Success
+Run 418;Gesamtdauer ms;329,772;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 418;Final Placed Rooms;18;
+Run 418;Open Sockets Pre-Cap;7;
+Run 418;Error Cause;None;
+Run 419;Varianten-ID;Standard;
+Run 419;Success / Failure;true;Success
+Run 419;Gesamtdauer ms;889,884;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 419;Final Placed Rooms;16;
+Run 419;Open Sockets Pre-Cap;8;
+Run 419;Error Cause;None;
+Run 420;Varianten-ID;Standard;
+Run 420;Success / Failure;true;Success
+Run 420;Gesamtdauer ms;645,621;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 420;Final Placed Rooms;16;
+Run 420;Open Sockets Pre-Cap;8;
+Run 420;Error Cause;None;
+Run 421;Varianten-ID;Standard;
+Run 421;Success / Failure;true;Success
+Run 421;Gesamtdauer ms;513,648;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 421;Final Placed Rooms;16;
+Run 421;Open Sockets Pre-Cap;8;
+Run 421;Error Cause;None;
+Run 422;Varianten-ID;Standard;
+Run 422;Success / Failure;true;Success
+Run 422;Gesamtdauer ms;456,477;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 422;Final Placed Rooms;16;
+Run 422;Open Sockets Pre-Cap;8;
+Run 422;Error Cause;None;
+Run 423;Varianten-ID;Standard;
+Run 423;Success / Failure;true;Success
+Run 423;Gesamtdauer ms;500,693;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 423;Final Placed Rooms;14;
+Run 423;Open Sockets Pre-Cap;3;
+Run 423;Error Cause;None;
+Run 424;Varianten-ID;Standard;
+Run 424;Success / Failure;true;Success
+Run 424;Gesamtdauer ms;300,812;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 424;Final Placed Rooms;14;
+Run 424;Open Sockets Pre-Cap;3;
+Run 424;Error Cause;None;
+Run 425;Varianten-ID;Standard;
+Run 425;Success / Failure;true;Success
+Run 425;Gesamtdauer ms;241,287;unproblematisch
+Run 425;Final Placed Rooms;14;
+Run 425;Open Sockets Pre-Cap;3;
+Run 425;Error Cause;None;
+Run 426;Varianten-ID;Standard;
+Run 426;Success / Failure;true;Success
+Run 426;Gesamtdauer ms;128,328;unproblematisch
+Run 426;Final Placed Rooms;14;
+Run 426;Open Sockets Pre-Cap;3;
+Run 426;Error Cause;None;
+Run 427;Varianten-ID;Standard;
+Run 427;Success / Failure;true;Success
+Run 427;Gesamtdauer ms;41,019;sehr schnell
+Run 427;Final Placed Rooms;14;
+Run 427;Open Sockets Pre-Cap;4;
+Run 427;Error Cause;None;
+Run 428;Varianten-ID;Standard;
+Run 428;Success / Failure;true;Success
+Run 428;Gesamtdauer ms;237,162;unproblematisch
+Run 428;Final Placed Rooms;17;
+Run 428;Open Sockets Pre-Cap;7;
+Run 428;Error Cause;None;
+Run 429;Varianten-ID;Standard;
+Run 429;Success / Failure;true;Success
+Run 429;Gesamtdauer ms;764,478;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 429;Final Placed Rooms;16;
+Run 429;Open Sockets Pre-Cap;11;
+Run 429;Error Cause;None;
+Run 430;Varianten-ID;Standard;
+Run 430;Success / Failure;true;Success
+Run 430;Gesamtdauer ms;605,665;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 430;Final Placed Rooms;16;
+Run 430;Open Sockets Pre-Cap;11;
+Run 430;Error Cause;None;
+Run 431;Varianten-ID;Standard;
+Run 431;Success / Failure;true;Success
+Run 431;Gesamtdauer ms;506,98;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 431;Final Placed Rooms;16;
+Run 431;Open Sockets Pre-Cap;11;
+Run 431;Error Cause;None;
+Run 432;Varianten-ID;Standard;
+Run 432;Success / Failure;true;Success
+Run 432;Gesamtdauer ms;347,483;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 432;Final Placed Rooms;16;
+Run 432;Open Sockets Pre-Cap;11;
+Run 432;Error Cause;None;
+Run 433;Varianten-ID;Standard;
+Run 433;Success / Failure;true;Success
+Run 433;Gesamtdauer ms;247,573;unproblematisch
+Run 433;Final Placed Rooms;16;
+Run 433;Open Sockets Pre-Cap;11;
+Run 433;Error Cause;None;
+Run 434;Varianten-ID;Standard;
+Run 434;Success / Failure;true;Success
+Run 434;Gesamtdauer ms;143,11;unproblematisch
+Run 434;Final Placed Rooms;14;
+Run 434;Open Sockets Pre-Cap;4;
+Run 434;Error Cause;None;
+Run 435;Varianten-ID;Standard;
+Run 435;Success / Failure;true;Success
+Run 435;Gesamtdauer ms;648,779;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 435;Final Placed Rooms;15;
+Run 435;Open Sockets Pre-Cap;3;
+Run 435;Error Cause;None;
+Run 436;Varianten-ID;Standard;
+Run 436;Success / Failure;true;Success
+Run 436;Gesamtdauer ms;417,354;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 436;Final Placed Rooms;15;
+Run 436;Open Sockets Pre-Cap;3;
+Run 436;Error Cause;None;
+Run 437;Varianten-ID;Standard;
+Run 437;Success / Failure;true;Success
+Run 437;Gesamtdauer ms;234,371;unproblematisch
+Run 437;Final Placed Rooms;15;
+Run 437;Open Sockets Pre-Cap;3;
+Run 437;Error Cause;None;
+Run 438;Varianten-ID;Standard;
+Run 438;Success / Failure;true;Success
+Run 438;Gesamtdauer ms;65,993;unproblematisch
+Run 438;Final Placed Rooms;15;
+Run 438;Open Sockets Pre-Cap;3;
+Run 438;Error Cause;None;
+Run 439;Varianten-ID;Standard;
+Run 439;Success / Failure;true;Success
+Run 439;Gesamtdauer ms;236,908;unproblematisch
+Run 439;Final Placed Rooms;15;
+Run 439;Open Sockets Pre-Cap;1;
+Run 439;Error Cause;None;
+Run 440;Varianten-ID;Standard;
+Run 440;Success / Failure;true;Success
+Run 440;Gesamtdauer ms;133,929;unproblematisch
+Run 440;Final Placed Rooms;15;
+Run 440;Open Sockets Pre-Cap;1;
+Run 440;Error Cause;None;
+Run 441;Varianten-ID;Standard;
+Run 441;Success / Failure;true;Success
+Run 441;Gesamtdauer ms;918,066;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 441;Final Placed Rooms;19;
+Run 441;Open Sockets Pre-Cap;10;
+Run 441;Error Cause;None;
+Run 442;Varianten-ID;Standard;
+Run 442;Success / Failure;true;Success
+Run 442;Gesamtdauer ms;904,515;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 442;Final Placed Rooms;19;
+Run 442;Open Sockets Pre-Cap;10;
+Run 442;Error Cause;None;
+Run 443;Varianten-ID;Standard;
+Run 443;Success / Failure;true;Success
+Run 443;Gesamtdauer ms;747,101;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 443;Final Placed Rooms;19;
+Run 443;Open Sockets Pre-Cap;10;
+Run 443;Error Cause;None;
+Run 444;Varianten-ID;Standard;
+Run 444;Success / Failure;true;Success
+Run 444;Gesamtdauer ms;676,264;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 444;Final Placed Rooms;19;
+Run 444;Open Sockets Pre-Cap;10;
+Run 444;Error Cause;None;
+Run 445;Varianten-ID;Standard;
+Run 445;Success / Failure;true;Success
+Run 445;Gesamtdauer ms;573,676;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 445;Final Placed Rooms;19;
+Run 445;Open Sockets Pre-Cap;10;
+Run 445;Error Cause;None;
+Run 446;Varianten-ID;Standard;
+Run 446;Success / Failure;true;Success
+Run 446;Gesamtdauer ms;450,423;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 446;Final Placed Rooms;19;
+Run 446;Open Sockets Pre-Cap;10;
+Run 446;Error Cause;None;
+Run 447;Varianten-ID;Standard;
+Run 447;Success / Failure;true;Success
+Run 447;Gesamtdauer ms;313,476;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 447;Final Placed Rooms;19;
+Run 447;Open Sockets Pre-Cap;10;
+Run 447;Error Cause;None;
+Run 448;Varianten-ID;Standard;
+Run 448;Success / Failure;true;Success
+Run 448;Gesamtdauer ms;221,294;unproblematisch
+Run 448;Final Placed Rooms;19;
+Run 448;Open Sockets Pre-Cap;10;
+Run 448;Error Cause;None;
+Run 449;Varianten-ID;Standard;
+Run 449;Success / Failure;true;Success
+Run 449;Gesamtdauer ms;409,149;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 449;Final Placed Rooms;18;
+Run 449;Open Sockets Pre-Cap;10;
+Run 449;Error Cause;None;
+Run 450;Varianten-ID;Standard;
+Run 450;Success / Failure;true;Success
+Run 450;Gesamtdauer ms;317,49;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 450;Final Placed Rooms;18;
+Run 450;Open Sockets Pre-Cap;10;
+Run 450;Error Cause;None;
+Run 451;Varianten-ID;Standard;
+Run 451;Success / Failure;true;Success
+Run 451;Gesamtdauer ms;306,198;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 451;Final Placed Rooms;18;
+Run 451;Open Sockets Pre-Cap;10;
+Run 451;Error Cause;None;
+Run 452;Varianten-ID;Standard;
+Run 452;Success / Failure;true;Success
+Run 452;Gesamtdauer ms;373,939;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 452;Final Placed Rooms;19;
+Run 452;Open Sockets Pre-Cap;11;
+Run 452;Error Cause;None;
+Run 453;Varianten-ID;Standard;
+Run 453;Success / Failure;true;Success
+Run 453;Gesamtdauer ms;319,864;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 453;Final Placed Rooms;19;
+Run 453;Open Sockets Pre-Cap;11;
+Run 453;Error Cause;None;
+Run 454;Varianten-ID;Standard;
+Run 454;Success / Failure;true;Success
+Run 454;Gesamtdauer ms;506,496;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 454;Final Placed Rooms;10;
+Run 454;Open Sockets Pre-Cap;2;
+Run 454;Error Cause;None;
+Run 455;Varianten-ID;Standard;
+Run 455;Success / Failure;true;Success
+Run 455;Gesamtdauer ms;346,02;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 455;Final Placed Rooms;10;
+Run 455;Open Sockets Pre-Cap;2;
+Run 455;Error Cause;None;
+Run 456;Varianten-ID;Standard;
+Run 456;Success / Failure;true;Success
+Run 456;Gesamtdauer ms;297,643;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 456;Final Placed Rooms;10;
+Run 456;Open Sockets Pre-Cap;2;
+Run 456;Error Cause;None;
+Run 457;Varianten-ID;Standard;
+Run 457;Success / Failure;true;Success
+Run 457;Gesamtdauer ms;283,886;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 457;Final Placed Rooms;10;
+Run 457;Open Sockets Pre-Cap;2;
+Run 457;Error Cause;None;
+Run 458;Varianten-ID;Standard;
+Run 458;Success / Failure;true;Success
+Run 458;Gesamtdauer ms;110,523;unproblematisch
+Run 458;Final Placed Rooms;10;
+Run 458;Open Sockets Pre-Cap;2;
+Run 458;Error Cause;None;
+Run 459;Varianten-ID;Standard;
+Run 459;Success / Failure;true;Success
+Run 459;Gesamtdauer ms;292,886;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 459;Final Placed Rooms;19;
+Run 459;Open Sockets Pre-Cap;9;
+Run 459;Error Cause;None;
+Run 460;Varianten-ID;Standard;
+Run 460;Success / Failure;true;Success
+Run 460;Gesamtdauer ms;208,454;unproblematisch
+Run 460;Final Placed Rooms;19;
+Run 460;Open Sockets Pre-Cap;9;
+Run 460;Error Cause;None;
+Run 461;Varianten-ID;Standard;
+Run 461;Success / Failure;true;Success
+Run 461;Gesamtdauer ms;229,346;unproblematisch
+Run 461;Final Placed Rooms;17;
+Run 461;Open Sockets Pre-Cap;9;
+Run 461;Error Cause;None;
+Run 462;Varianten-ID;Standard;
+Run 462;Success / Failure;true;Success
+Run 462;Gesamtdauer ms;665,803;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 462;Final Placed Rooms;16;
+Run 462;Open Sockets Pre-Cap;7;
+Run 462;Error Cause;None;
+Run 463;Varianten-ID;Standard;
+Run 463;Success / Failure;true;Success
+Run 463;Gesamtdauer ms;527,942;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 463;Final Placed Rooms;16;
+Run 463;Open Sockets Pre-Cap;7;
+Run 463;Error Cause;None;
+Run 464;Varianten-ID;Standard;
+Run 464;Success / Failure;true;Success
+Run 464;Gesamtdauer ms;590,386;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 464;Final Placed Rooms;16;
+Run 464;Open Sockets Pre-Cap;7;
+Run 464;Error Cause;None;
+Run 465;Varianten-ID;Standard;
+Run 465;Success / Failure;true;Success
+Run 465;Gesamtdauer ms;385,258;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 465;Final Placed Rooms;16;
+Run 465;Open Sockets Pre-Cap;7;
+Run 465;Error Cause;None;
+Run 466;Varianten-ID;Standard;
+Run 466;Success / Failure;true;Success
+Run 466;Gesamtdauer ms;232,27;unproblematisch
+Run 466;Final Placed Rooms;16;
+Run 466;Open Sockets Pre-Cap;7;
+Run 466;Error Cause;None;
+Run 467;Varianten-ID;Standard;
+Run 467;Success / Failure;true;Success
+Run 467;Gesamtdauer ms;774,134;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 467;Final Placed Rooms;16;
+Run 467;Open Sockets Pre-Cap;7;
+Run 467;Error Cause;None;
+Run 468;Varianten-ID;Standard;
+Run 468;Success / Failure;true;Success
+Run 468;Gesamtdauer ms;677,298;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 468;Final Placed Rooms;16;
+Run 468;Open Sockets Pre-Cap;7;
+Run 468;Error Cause;None;
+Run 469;Varianten-ID;Standard;
+Run 469;Success / Failure;true;Success
+Run 469;Gesamtdauer ms;497,393;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 469;Final Placed Rooms;16;
+Run 469;Open Sockets Pre-Cap;7;
+Run 469;Error Cause;None;
+Run 470;Varianten-ID;Standard;
+Run 470;Success / Failure;true;Success
+Run 470;Gesamtdauer ms;448,064;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 470;Final Placed Rooms;16;
+Run 470;Open Sockets Pre-Cap;7;
+Run 470;Error Cause;None;
+Run 471;Varianten-ID;Standard;
+Run 471;Success / Failure;true;Success
+Run 471;Gesamtdauer ms;400,344;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 471;Final Placed Rooms;16;
+Run 471;Open Sockets Pre-Cap;7;
+Run 471;Error Cause;None;
+Run 472;Varianten-ID;Standard;
+Run 472;Success / Failure;true;Success
+Run 472;Gesamtdauer ms;333,847;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 472;Final Placed Rooms;16;
+Run 472;Open Sockets Pre-Cap;7;
+Run 472;Error Cause;None;
+Run 473;Varianten-ID;Standard;
+Run 473;Success / Failure;true;Success
+Run 473;Gesamtdauer ms;332,302;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 473;Final Placed Rooms;16;
+Run 473;Open Sockets Pre-Cap;7;
+Run 473;Error Cause;None;
+Run 474;Varianten-ID;Standard;
+Run 474;Success / Failure;true;Success
+Run 474;Gesamtdauer ms;438,1;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 474;Final Placed Rooms;15;
+Run 474;Open Sockets Pre-Cap;6;
+Run 474;Error Cause;None;
+Run 475;Varianten-ID;Standard;
+Run 475;Success / Failure;true;Success
+Run 475;Gesamtdauer ms;286,205;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 475;Final Placed Rooms;15;
+Run 475;Open Sockets Pre-Cap;6;
+Run 475;Error Cause;None;
+Run 476;Varianten-ID;Standard;
+Run 476;Success / Failure;true;Success
+Run 476;Gesamtdauer ms;181,818;unproblematisch
+Run 476;Final Placed Rooms;15;
+Run 476;Open Sockets Pre-Cap;6;
+Run 476;Error Cause;None;
+Run 477;Varianten-ID;Standard;
+Run 477;Success / Failure;true;Success
+Run 477;Gesamtdauer ms;115,001;unproblematisch
+Run 477;Final Placed Rooms;15;
+Run 477;Open Sockets Pre-Cap;6;
+Run 477;Error Cause;None;
+Run 478;Varianten-ID;Standard;
+Run 478;Success / Failure;true;Success
+Run 478;Gesamtdauer ms;239,88;unproblematisch
+Run 478;Final Placed Rooms;14;
+Run 478;Open Sockets Pre-Cap;4;
+Run 478;Error Cause;None;
+Run 479;Varianten-ID;Standard;
+Run 479;Success / Failure;true;Success
+Run 479;Gesamtdauer ms;109,672;unproblematisch
+Run 479;Final Placed Rooms;14;
+Run 479;Open Sockets Pre-Cap;4;
+Run 479;Error Cause;None;
+Run 480;Varianten-ID;Standard;
+Run 480;Success / Failure;true;Success
+Run 480;Gesamtdauer ms;1412,301;teuer, Performance pruefen
+Run 480;Final Placed Rooms;16;
+Run 480;Open Sockets Pre-Cap;5;
+Run 480;Error Cause;None;
+Run 481;Varianten-ID;Standard;
+Run 481;Success / Failure;true;Success
+Run 481;Gesamtdauer ms;1076,179;teuer, Performance pruefen
+Run 481;Final Placed Rooms;16;
+Run 481;Open Sockets Pre-Cap;5;
+Run 481;Error Cause;None;
+Run 482;Varianten-ID;Standard;
+Run 482;Success / Failure;true;Success
+Run 482;Gesamtdauer ms;1002,048;teuer, Performance pruefen
+Run 482;Final Placed Rooms;16;
+Run 482;Open Sockets Pre-Cap;5;
+Run 482;Error Cause;None;
+Run 483;Varianten-ID;Standard;
+Run 483;Success / Failure;true;Success
+Run 483;Gesamtdauer ms;966,622;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 483;Final Placed Rooms;16;
+Run 483;Open Sockets Pre-Cap;5;
+Run 483;Error Cause;None;
+Run 484;Varianten-ID;Standard;
+Run 484;Success / Failure;true;Success
+Run 484;Gesamtdauer ms;730,798;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 484;Final Placed Rooms;16;
+Run 484;Open Sockets Pre-Cap;5;
+Run 484;Error Cause;None;
+Run 485;Varianten-ID;Standard;
+Run 485;Success / Failure;true;Success
+Run 485;Gesamtdauer ms;550,113;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 485;Final Placed Rooms;16;
+Run 485;Open Sockets Pre-Cap;5;
+Run 485;Error Cause;None;
+Run 486;Varianten-ID;Standard;
+Run 486;Success / Failure;true;Success
+Run 486;Gesamtdauer ms;397,823;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 486;Final Placed Rooms;16;
+Run 486;Open Sockets Pre-Cap;5;
+Run 486;Error Cause;None;
+Run 487;Varianten-ID;Standard;
+Run 487;Success / Failure;true;Success
+Run 487;Gesamtdauer ms;371,233;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 487;Final Placed Rooms;16;
+Run 487;Open Sockets Pre-Cap;5;
+Run 487;Error Cause;None;
+Run 488;Varianten-ID;Standard;
+Run 488;Success / Failure;true;Success
+Run 488;Gesamtdauer ms;272,475;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 488;Final Placed Rooms;16;
+Run 488;Open Sockets Pre-Cap;5;
+Run 488;Error Cause;None;
+Run 489;Varianten-ID;Standard;
+Run 489;Success / Failure;true;Success
+Run 489;Gesamtdauer ms;264,034;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 489;Final Placed Rooms;16;
+Run 489;Open Sockets Pre-Cap;5;
+Run 489;Error Cause;None;
+Run 490;Varianten-ID;Standard;
+Run 490;Success / Failure;true;Success
+Run 490;Gesamtdauer ms;211,342;unproblematisch
+Run 490;Final Placed Rooms;16;
+Run 490;Open Sockets Pre-Cap;9;
+Run 490;Error Cause;None;
+Run 491;Varianten-ID;Standard;
+Run 491;Success / Failure;true;Success
+Run 491;Gesamtdauer ms;151,552;unproblematisch
+Run 491;Final Placed Rooms;16;
+Run 491;Open Sockets Pre-Cap;9;
+Run 491;Error Cause;None;
+Run 492;Varianten-ID;Standard;
+Run 492;Success / Failure;true;Success
+Run 492;Gesamtdauer ms;40,266;sehr schnell
+Run 492;Final Placed Rooms;10;
+Run 492;Open Sockets Pre-Cap;1;
+Run 492;Error Cause;None;
+Run 493;Varianten-ID;Standard;
+Run 493;Success / Failure;true;Success
+Run 493;Gesamtdauer ms;915,373;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 493;Final Placed Rooms;17;
+Run 493;Open Sockets Pre-Cap;9;
+Run 493;Error Cause;None;
+Run 494;Varianten-ID;Standard;
+Run 494;Success / Failure;true;Success
+Run 494;Gesamtdauer ms;872,629;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 494;Final Placed Rooms;17;
+Run 494;Open Sockets Pre-Cap;9;
+Run 494;Error Cause;None;
+Run 495;Varianten-ID;Standard;
+Run 495;Success / Failure;true;Success
+Run 495;Gesamtdauer ms;857,826;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 495;Final Placed Rooms;17;
+Run 495;Open Sockets Pre-Cap;9;
+Run 495;Error Cause;None;
+Run 496;Varianten-ID;Standard;
+Run 496;Success / Failure;true;Success
+Run 496;Gesamtdauer ms;755,13;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 496;Final Placed Rooms;17;
+Run 496;Open Sockets Pre-Cap;9;
+Run 496;Error Cause;None;
+Run 497;Varianten-ID;Standard;
+Run 497;Success / Failure;true;Success
+Run 497;Gesamtdauer ms;720,699;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 497;Final Placed Rooms;17;
+Run 497;Open Sockets Pre-Cap;9;
+Run 497;Error Cause;None;
+Run 498;Varianten-ID;Standard;
+Run 498;Success / Failure;true;Success
+Run 498;Gesamtdauer ms;565,943;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 498;Final Placed Rooms;17;
+Run 498;Open Sockets Pre-Cap;9;
+Run 498;Error Cause;None;
+Run 499;Varianten-ID;Standard;
+Run 499;Success / Failure;true;Success
+Run 499;Gesamtdauer ms;476,17;spuerbar, aber fuer Offline-Generierung brauchbar
+Run 499;Final Placed Rooms;17;
+Run 499;Open Sockets Pre-Cap;9;
+Run 499;Error Cause;None;

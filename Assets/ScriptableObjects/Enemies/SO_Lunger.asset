@@ -25,20 +25,20 @@ MonoBehaviour:
     m_Bits: 192
   LosHeightOffset: 0.8
   RequireLOSToAttack: 1
-  MoveSpeed: 3.5
+  MoveSpeed: 3
   RotationSpeed: 8
   BiteDesiredRange: 1
   BiteMaxRange: 1.5
   BiteDamage: 10
   BiteCooldown: 1.2
   LungeMinDistance: 3.5
-  LungeSpeed: 20
-  LungeOvershootDistance: 3
-  LungeHitRadius: 1.6
-  LungeDamage: 15
-  LungeWindupDuration: 0.4
+  LungeSpeed: 13
+  LungeOvershootDistance: 3.25
+  LungeHitRadius: 1.5
+  LungeDamage: 20
+  LungeWindupDuration: 0.75
   LungeRecoveryDuration: 1.2
-  LungeCooldown: 4
+  LungeCooldown: 5
   LungeStopOnHit: 1
   UseNavMesh: 1
   NavRepathInterval: 0.3

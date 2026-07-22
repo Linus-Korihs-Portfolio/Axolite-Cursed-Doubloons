@@ -18,7 +18,9 @@ namespace PCG.RoomAssembler.Logic
             bool endPlaced)
         {
             if (!endPlaced)
-                return WeightedPickFiltered(pool, r => r != null && !r.isDeadEnd);
+                return WeightedPickFiltered(
+                    pool,
+                    r => r != null && !r.isDeadEnd && !r.isEnd);
 
             return WeightedPick(pool);
         }

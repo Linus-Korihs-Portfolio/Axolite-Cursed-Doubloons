@@ -60,6 +60,13 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
 
     public Transform GetAimTransform() => (currentState == BurrowerState.Burrowed && headAimPoint != null) ? headAimPoint : transform;
 
+    [Header("Animation")]
+    [SerializeField] private BurrowerAnimatorBridge animationBridge;
+    [SerializeField] private Transform visualRoot;
+    [SerializeField] private bool applyVisualYawOffset;
+    [SerializeField] private float visualYawOffset;
+    [SerializeField, Min(0f)] private float deathDestroyDelay = 1.5f;
+
     [Header("Debug")]
     [SerializeField] private bool enableLogs;
     private CombatantStats stats;
@@ -99,6 +106,14 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
         stats.Died += OnDied;
         stats.DamageTaken += OnDamageTaken;
 
+        if (animationBridge == null)
+            animationBridge = GetComponentInChildren<BurrowerAnimatorBridge>(true);
+
+        if (visualRoot == null && animationBridge != null)
+            visualRoot = animationBridge.transform;
+
+        ApplyVisualOrientationOffset();
+
         rb = GetComponent<Rigidbody>();
         myCollider = GetComponent<Collider>();
         if (rb != null)
@@ -109,12 +124,23 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
         }
 
         spawnY = transform.position.y;
-        burrowedY = spawnY - (settings != null ? settings.BurrowDepth : 1.5f);
+        float burrowDepth = settings != null ? settings.BurrowDepth : 1.5f;
+        if (headAimPoint != null)
+        {
+            float headHeight = headAimPoint.position.y - transform.position.y;
+            burrowDepth = Mathf.Min(burrowDepth, Mathf.Max(0.05f, headHeight - 0.05f));
+        }
+        burrowedY = spawnY - burrowDepth;
 
         // Start fully underground.
         Vector3 p = transform.position;
         p.y = burrowedY;
         transform.position = p;
+
+        if (animationBridge == null)
+            Log("No BurrowerAnimatorBridge found in children. Animations will not be driven by BurrowerEnemy.");
+        else
+            animationBridge.ResetToHidden();
     }
 
     private void OnDestroy()
@@ -210,6 +236,8 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
 
             case BurrowerState.FlyingUp:
             {
+                SetAnimationSpeed(1f);
+
                 float hoverY  = spawnY + (settings != null ? settings.HoverHeight : 5f);
                 float diff    = hoverY - transform.position.y;
 
@@ -229,6 +257,8 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
 
             case BurrowerState.Hovering:
             {
+                SetAnimationSpeed(0f);
+
                 // Hover in place and search for the closest target.
                 diveTarget = FindClosestTarget();
 
@@ -262,6 +292,8 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
 
             case BurrowerState.Diving:
             {
+                SetAnimationSpeed(1f);
+
                 if (diveTarget == null || IsDead(diveTarget))
                 {
                     Log("Dive target gone — flying back up");
@@ -397,7 +429,9 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
             Collider col = overlapBuffer[i];
             if (col == null) continue;
 
-            bool valid = col.CompareTag(settings.PlayerTag) || col.CompareTag(settings.MinionTag);
+            bool valid =
+                EnemyTargetUtility.FindTaggedActor(col.transform, settings.PlayerTag) != null ||
+                EnemyTargetUtility.FindTaggedActor(col.transform, settings.MinionTag) != null;
             if (!valid) continue;
 
             CombatantStats ts = col.GetComponentInParent<CombatantStats>();
@@ -503,21 +537,22 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
             if (col == null) continue;
 
             Transform t = col.transform;
-            Transform root = t.root;
-            if (!root.gameObject.activeInHierarchy) continue;
+            Transform player = EnemyTargetUtility.FindTaggedActor(t, settings.PlayerTag);
+            Transform minion = EnemyTargetUtility.FindTaggedActor(t, settings.MinionTag);
+            Transform actor = player != null ? player : minion;
+            if (actor == null || !actor.gameObject.activeInHierarchy) continue;
 
             CombatantStats cs = t.GetComponentInParent<CombatantStats>() ?? t.GetComponentInChildren<CombatantStats>();
             if (cs != null && cs.IsDead) continue;
 
-            // Check collider transform AND the hierarchy root for the tag.
-            bool isMinion = t.CompareTag(settings.MinionTag) || root.CompareTag(settings.MinionTag);
-            bool isPlayer = t.CompareTag(settings.PlayerTag) || root.CompareTag(settings.PlayerTag);
+            bool isMinion = minion != null;
+            bool isPlayer = player != null;
             if (!isMinion && !isPlayer) continue;
 
             // For players, use the explicit playerTransform override if assigned. For minions, use the collider transform or root
             Transform trackTarget;
-            if (isPlayer) trackTarget = playerTransform != null ? playerTransform : root;
-            else trackTarget = cs != null ? cs.transform : t;
+            if (isPlayer) trackTarget = playerTransform != null ? playerTransform : player;
+            else trackTarget = cs != null ? cs.transform : actor;
 
             float sq = (trackTarget.position - transform.position).sqrMagnitude;
 
@@ -571,11 +606,121 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
             if (!kinematic) rb.linearVelocity = Vector3.zero;
         }
         currentState = newState;
+        PlayAnimationForState(newState);
     }
 
     private void Log(string msg)
     {
         if (enableLogs) Debug.Log($"[Burrower:{name}] {msg}");
+    }
+
+    public void OnFirstAttackHitFrame()
+    {
+        Log("First attack hit frame reached. Snap damage is currently applied by the snap trigger.");
+    }
+
+    public void OnFirstAttackEndFrame()
+    {
+        Log("First attack animation ended.");
+    }
+
+    public void OnSecondAttackHitFrame()
+    {
+        Log("Second attack hit frame reached. Dive damage is currently applied when the dive reaches hit distance.");
+    }
+
+    public void OnSecondAttackEndFrame()
+    {
+        Log("Second attack animation ended.");
+    }
+
+    public void OnGrabAttackGrabFrame()
+    {
+        Log("Grab attack grab frame reached. Grab logic is currently applied when the dive reaches hit distance.");
+    }
+
+    public void OnGrabAttackHitFrame()
+    {
+        Log("Grab attack hit frame reached.");
+    }
+
+    public void OnGrabAttackEndFrame()
+    {
+        Log("Grab attack animation ended.");
+    }
+
+    public void OnDeathAnimationFinished()
+    {
+        if (stats != null && stats.IsDead)
+            Destroy(gameObject);
+    }
+
+    private void ApplyVisualOrientationOffset()
+    {
+        if (!applyVisualYawOffset || visualRoot == null) return;
+
+        visualRoot.localRotation = Quaternion.Euler(0f, visualYawOffset, 0f);
+    }
+
+    private void PlayAnimationForState(BurrowerState state)
+    {
+        if (animationBridge == null) return;
+
+        switch (state)
+        {
+            case BurrowerState.Burrowed:
+                animationBridge.ResetToHidden();
+                break;
+
+            case BurrowerState.Triggered:
+                animationBridge.WakeUp();
+                break;
+
+            case BurrowerState.FlyingUp:
+                animationBridge.SetSpeed(1f);
+                break;
+
+            case BurrowerState.Hovering:
+                animationBridge.ResetToHover();
+                break;
+
+            case BurrowerState.Diving:
+                if (divingAtMinion)
+                    animationBridge.PlayGrabAttack();
+                else
+                    animationBridge.PlaySecondAttack();
+                break;
+
+            case BurrowerState.Landed:
+                animationBridge.PlayFlyDown();
+                break;
+
+            case BurrowerState.BurrowingDown:
+                animationBridge.PlayDigDown();
+                break;
+        }
+    }
+
+    private void SetAnimationSpeed(float speed)
+    {
+        if (animationBridge != null)
+            animationBridge.SetSpeed(speed);
+    }
+
+    private void PlayDeathAnimation()
+    {
+        if (animationBridge == null) return;
+
+        bool underground =
+            currentState == BurrowerState.Burrowed ||
+            currentState == BurrowerState.Triggered ||
+            currentState == BurrowerState.Emerging ||
+            currentState == BurrowerState.BurrowingDown;
+
+        if (underground)
+            animationBridge.PlayDeathDigging();
+        else
+            animationBridge.PlayDeathFlying();
     }
 
     private void RestoreDiveCollision()
@@ -590,6 +735,7 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
     private void OnDied()
     {
         RestoreDiveCollision();
-        Destroy(gameObject);
+        PlayDeathAnimation();
+        Destroy(gameObject, deathDestroyDelay);
     }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "SO/PCG/Room Assembler", fileName = "RoomAssemblerConfig")]
 public class RoomAssemblerConfig : ScriptableObject
 {
+    public const int MinimumEmergencyRooms = 5;
+
     [Header("Rooms")]
     [Tooltip("First room placed at world origin. Its Bounds can be used to auto-calculate room unit size.")]
     public RoomDefinition startRoom;
@@ -44,6 +46,25 @@ public class RoomAssemblerConfig : ScriptableObject
 
     [Tooltip("How many full generation retries if constraints fail.")]
     [Min(1)] public int maxGenerationRetries = 5;
+
+    [Header("Emergency Fallback")]
+    [Tooltip("After normal retries fail, run a bounded set of easier attempts so the player is less likely to receive no level.")]
+    public bool useEmergencyFallback = true;
+
+    [Tooltip("Maximum number of easier full-layout attempts. Generation still stops after this limit.")]
+    [Min(1)] public int emergencyFallbackRetries = 5;
+
+    [Tooltip("Minimum room count allowed only during emergency fallback attempts.")]
+    [Min(MinimumEmergencyRooms)] public int emergencyMinimumRooms = MinimumEmergencyRooms;
+
+    [Tooltip("Extra room capacity allowed only during emergency fallback attempts.")]
+    [Min(0)] public int emergencyAdditionalMaxRooms = 15;
+
+    [Tooltip("Ignore the configured start-to-end distance range during emergency fallback attempts.")]
+    public bool emergencyIgnoreEndDistance = true;
+
+    [Tooltip("Always try the end room once the emergency minimum room count can be reached.")]
+    public bool emergencyForceEndRoom = true;
 
     [Header("Loops")]
     [Tooltip("Allow generated layout loops instead of only tree-like expansion.")]
@@ -92,9 +113,6 @@ public class RoomAssemblerConfig : ScriptableObject
     [Tooltip("Moves fallback wall caps backward along socket forward axis. Useful to recess the cap into the opening.")]
     public float wallCapInset = 0.0f;
 
-    [Tooltip("Extra yaw rotation in degrees for fallback wall caps.")]
-    public float wallCapYawOffset = 0f;
-
     [Header("Seed")]
     [Tooltip("Use a different seed on each run. If disabled, generation is deterministic from the Seed value.")]
     public bool randomSeed = true;
@@ -105,4 +123,11 @@ public class RoomAssemblerConfig : ScriptableObject
     [Header("Debug")]
     [Tooltip("Print detailed generation and placement logs to the Console.")]
     public bool log = false;
+
+    private void OnValidate()
+    {
+        emergencyMinimumRooms = Mathf.Max(MinimumEmergencyRooms, emergencyMinimumRooms);
+        emergencyFallbackRetries = Mathf.Max(1, emergencyFallbackRetries);
+        emergencyAdditionalMaxRooms = Mathf.Max(0, emergencyAdditionalMaxRooms);
+    }
 }
