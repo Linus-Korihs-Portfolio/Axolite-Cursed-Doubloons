@@ -1,6 +1,68 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &7614254363185091521
+--- !u!1001 &3777293631872833719
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5939108357546205132}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.455
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.82
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.039
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99988353
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.012187314
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.00792851
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0046421387
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+      propertyPath: m_Name
+      value: "MDL_Pinch_M\xFCnze"
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+--- !u!4 &3738302112029572956 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 112c57ccd3d25a94699ab01af6069408, type: 3}
+  m_PrefabInstance: {fileID: 3777293631872833719}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6188309727045564455
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -50,7 +112,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 5d57240b2816e1944b5dc5e107968d63, type: 3}
       propertyPath: m_Name
-      value: PF_Pinch
+      value: PF_Pinch 1
       objectReference: {fileID: 0}
     - target: {fileID: 3068120554941624833, guid: 5d57240b2816e1944b5dc5e107968d63, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -62,41 +124,49 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: ef50e2561647f334a8178077c93f376e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5d57240b2816e1944b5dc5e107968d63, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3738302112029572956}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5d57240b2816e1944b5dc5e107968d63, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1183406597985661269}
+      addedObject: {fileID: 8640103871313832043}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5d57240b2816e1944b5dc5e107968d63, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7738279046109470607}
+      addedObject: {fileID: 11831265195685189}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5d57240b2816e1944b5dc5e107968d63, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2360836865107305404}
+      addedObject: {fileID: 6814031222297265858}
   m_SourcePrefab: {fileID: 100100000, guid: 5d57240b2816e1944b5dc5e107968d63, type: 3}
---- !u!95 &4089780463241866832 stripped
+--- !u!95 &327600868639999414 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 5d57240b2816e1944b5dc5e107968d63, type: 3}
-  m_PrefabInstance: {fileID: 7614254363185091521}
+  m_PrefabInstance: {fileID: 6188309727045564455}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &7307703724104789648 stripped
+--- !u!4 &5939108357546205132 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5d57240b2816e1944b5dc5e107968d63, type: 3}
+  m_PrefabInstance: {fileID: 6188309727045564455}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6422171796428555638 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 5d57240b2816e1944b5dc5e107968d63, type: 3}
-  m_PrefabInstance: {fileID: 7614254363185091521}
+  m_PrefabInstance: {fileID: 6188309727045564455}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1183406597985661269
+--- !u!114 &8640103871313832043
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7307703724104789648}
+  m_GameObject: {fileID: 6422171796428555638}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a2b46465ff351e4dbd2e0116229384c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PinchAnimatorBridge
-  animator: {fileID: 4089780463241866832}
+  animator: {fileID: 327600868639999414}
   idleStateName: Pinch_Idle
   dialogStateName: Pinch_Dialog
   idleBreakStateName: Pinch_IdleBreak
@@ -105,19 +175,19 @@ MonoBehaviour:
   layerIndex: 0
   transitionDuration: 0.1
   useAnimatorParameters: 1
---- !u!114 &7738279046109470607
+--- !u!114 &11831265195685189
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7307703724104789648}
+  m_GameObject: {fileID: 6422171796428555638}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3677f2ebe4854f4182804f014f172b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PinchAnimatorAutoTester
-  bridge: {fileID: 1183406597985661269}
+  bridge: {fileID: 8640103871313832043}
   idleKey: 49
   dialogKey: 50
   idleBreakKey: 51
@@ -130,16 +200,24 @@ MonoBehaviour:
     width: 260
     height: 170
   resetToIdleOnStart: 1
---- !u!114 &2360836865107305404
+--- !u!114 &6814031222297265858
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7307703724104789648}
+  m_GameObject: {fileID: 6422171796428555638}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb9db3ea12a3c7b488bb78575278ec7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 3a2b46465ff351e4dbd2e0116229384c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PinchAnimationEvents
-  bridge: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::PinchAnimatorBridge
+  animator: {fileID: 327600868639999414}
+  idleStateName: Pinch_Idle
+  dialogStateName: Pinch_Dialog
+  idleBreakStateName: Pinch_IdleBreak
+  dialogTriggerName: Dialog
+  idleBreakTriggerName: IdleBreak
+  layerIndex: 0
+  transitionDuration: 0.1
+  useAnimatorParameters: 1
