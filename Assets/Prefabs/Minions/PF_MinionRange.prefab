@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5564108357955004293}
   - component: {fileID: 1197607494259493259}
   - component: {fileID: 6766769260842065333}
+  - component: {fileID: 760200100100100101}
   - component: {fileID: 923669364683773200}
   - component: {fileID: 1481406901911585056}
   m_Layer: 9
@@ -74,6 +75,7 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 44941301b654e83499bf94b8a3b883e6, type: 2}
   roleType: 1
   followTarget: {fileID: 0}
+  animationBridge: {fileID: 760200100100100101}
   drawRoleRangeGizmos: 0
   currentState: 0
   currentCombatPhase: 0
@@ -94,7 +96,7 @@ MonoBehaviour:
   baseProfile: {fileID: 11400000, guid: 6384b8f9b043f3e4a8ec5a3af88cc5de, type: 2}
   currentHealth: 0
   despawnOnDeath: 1
-  despawnDelay: 0
+  despawnDelay: 1
 --- !u!114 &1481406901911585056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,9 +107,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a3e8cf36e4dcea4ab24ac240f5ed2a6, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::MinionDebugToolkit
   agent: {fileID: 6766769260842065333}
+--- !u!114 &760200100100100101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980464467663854597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec7da28501dd4076b36d93b6fd1f7249, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::MinionAnimatorBridge
+  animator: {fileID: 760200100100100102}
+  idleStateName: AN_M1_Idle
+  walkStateName: AN_M1_Walk Cycle
+  attackStateName: AN_M1_Attack Start
+  deathStateName: AN_M1_Death
+  transitionDuration: 0.05
+  attackLockDuration: 0.6
+  logAnimatorCalls: 0
+  logSetupWarnings: 1
 --- !u!1001 &8250234263101299714
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -279,8 +302,38 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c1a92267f5c6d3b46aa183557f793d8d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 760200100100100102}
   m_SourcePrefab: {fileID: 100100000, guid: c1a92267f5c6d3b46aa183557f793d8d, type: 3}
+--- !u!1 &760200100100100103 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c1a92267f5c6d3b46aa183557f793d8d, type: 3}
+  m_PrefabInstance: {fileID: 8250234263101299714}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &760200100100100102
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 760200100100100103}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 59bee0b6c200b864c951d0b14da1762e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage:
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &8499419654028377065 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c1a92267f5c6d3b46aa183557f793d8d, type: 3}

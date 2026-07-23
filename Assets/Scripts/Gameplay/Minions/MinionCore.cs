@@ -12,6 +12,9 @@ public partial class MinionCore : MonoBehaviour
     [Header("Runtime Targets")]
     [SerializeField] private Transform followTarget;
 
+    [Header("Animation")]
+    [SerializeField] private MinionAnimatorBridge animationBridge;
+
     // Runtime copies loaded from MinionSettings and the role's MinionBehaviourSettings at Initialize().
     private bool autoAssignCombatCommands;
     private float autoTargetRadius;
@@ -136,6 +139,7 @@ public partial class MinionCore : MonoBehaviour
     private void OnCombatantDied()
     {
         Log("Died.");
+        PlayDeathAnimation();
         ClearCommand();
         stateMachine.ForceState(MinionState.Idle);
         Died?.Invoke(this);
@@ -161,6 +165,8 @@ public partial class MinionCore : MonoBehaviour
         abilitySystem = new MinionAbilitySystem();
         abilitySystem.Logger = Log;
         sharedCombatStats = GetComponent<CombatantStats>();
+        if (animationBridge == null)
+            animationBridge = GetComponentInChildren<MinionAnimatorBridge>(true);
         navPath = new NavMeshPath();
 
         if (sharedCombatStats != null) sharedCombatStats.Died += OnCombatantDied;
@@ -283,6 +289,7 @@ public partial class MinionCore : MonoBehaviour
         // Execute the current state and combat phase.
         wasMovingThisFrame = false;
         ExecuteCurrentState(currentTime);
+        UpdateAnimationState();
 
         // Keep nearby minions from stacking into the same spot.
         ApplyLocalSeparation(Time.deltaTime);
@@ -327,6 +334,29 @@ public partial class MinionCore : MonoBehaviour
                 ExecuteCombat(currentTime);
                 return;
         }
+    }
+
+    private void UpdateAnimationState()
+    {
+        if (animationBridge == null) return;
+        if (sharedCombatStats != null && sharedCombatStats.IsDead) return;
+
+        if (wasMovingThisFrame)
+            animationBridge.PlayWalk();
+        else
+            animationBridge.PlayIdle();
+    }
+
+    private void PlayAttackAnimation()
+    {
+        if (animationBridge != null)
+            animationBridge.PlayAttack();
+    }
+
+    private void PlayDeathAnimation()
+    {
+        if (animationBridge != null)
+            animationBridge.PlayDeath();
     }
 }
 

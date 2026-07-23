@@ -63,6 +63,12 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
     [Header("Animation")]
     [SerializeField] private BurrowerAnimatorBridge animationBridge;
     [SerializeField] private Transform visualRoot;
+    [SerializeField] private GameObject animatedVisualPrefab;
+    [SerializeField] private Transform animatedVisualParent;
+    [SerializeField] private Vector3 animatedVisualLocalPosition;
+    [SerializeField] private Vector3 animatedVisualLocalEulerAngles;
+    [SerializeField] private Vector3 animatedVisualLocalScale = Vector3.one;
+    [SerializeField] private bool hidePlaceholderMeshWhenVisualSpawned = true;
     [SerializeField] private bool applyVisualYawOffset;
     [SerializeField] private float visualYawOffset;
     [SerializeField, Min(0f)] private float deathDestroyDelay = 1.5f;
@@ -105,6 +111,8 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
         stats = GetComponent<CombatantStats>();
         stats.Died += OnDied;
         stats.DamageTaken += OnDamageTaken;
+
+        EnsureAnimatedVisual();
 
         if (animationBridge == null)
             animationBridge = GetComponentInChildren<BurrowerAnimatorBridge>(true);
@@ -149,6 +157,32 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
         {
             stats.Died -= OnDied;
             stats.DamageTaken -= OnDamageTaken;
+        }
+    }
+
+    private void EnsureAnimatedVisual()
+    {
+        if (animationBridge == null)
+            animationBridge = GetComponentInChildren<BurrowerAnimatorBridge>(true);
+
+        if (animationBridge != null || animatedVisualPrefab == null) return;
+
+        Transform parent = animatedVisualParent != null ? animatedVisualParent : transform;
+        GameObject spawnedVisual = Instantiate(animatedVisualPrefab, parent);
+        spawnedVisual.name = animatedVisualPrefab.name;
+        spawnedVisual.transform.localPosition = animatedVisualLocalPosition;
+        spawnedVisual.transform.localRotation = Quaternion.Euler(animatedVisualLocalEulerAngles);
+        spawnedVisual.transform.localScale = animatedVisualLocalScale;
+
+        animationBridge = spawnedVisual.GetComponentInChildren<BurrowerAnimatorBridge>(true);
+        if (visualRoot == null)
+            visualRoot = spawnedVisual.transform;
+
+        if (hidePlaceholderMeshWhenVisualSpawned)
+        {
+            MeshRenderer placeholderRenderer = GetComponent<MeshRenderer>();
+            if (placeholderRenderer != null)
+                placeholderRenderer.enabled = false;
         }
     }
 

@@ -116,7 +116,8 @@ public partial class MinionCore
                 bool canAttack = !requireLineOfSightForAllAttacks || hasLineOfSight;
                 if (canAttack)
                 {
-                    abilitySystem.TryUseBestAbility(transform, currentTarget, currentTime, sharedCombatStats, roleType);
+                    if (abilitySystem.TryUseBestAbility(transform, currentTarget, currentTime, sharedCombatStats, roleType))
+                        PlayAttackAnimation();
                 }
                 break;
 
