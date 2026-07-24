@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using PCG.RoomAssembler.Data;
 using TMPro;
 using UnityEngine;
@@ -155,7 +156,18 @@ public sealed class LevelStartRunFlowController : MonoBehaviour
     {
         if (!runStarted || transitioningLevel) return;
 
+        StartCoroutine(AdvanceToNextLevelRoutine());
+    }
+
+    private IEnumerator AdvanceToNextLevelRoutine()
+    {
         transitioningLevel = true;
+        DisableExitInteraction();
+
+        // OnTriggerEnter is still inside Unity's physics callback. Waiting one frame
+        // keeps the room clear/regenerate path out of that callback.
+        yield return null;
+
         RunSetupData data = RunSetupData.EnsureInstance();
         data.levelIndex = Mathf.Max(1, data.levelIndex + 1);
 
@@ -346,12 +358,12 @@ public sealed class LevelStartRunFlowController : MonoBehaviour
             return;
         }
 
-        Vector3 position = GetRoomFloorCenter(endRoom.root);
+        Vector3 position = GetRoomExitCenter(endRoom.root);
 
         exitObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         exitObject.name = $"Next Level Exit {RunSetupData.EnsureInstance().levelIndex + 1}";
         exitObject.transform.SetPositionAndRotation(position, Quaternion.identity);
-        exitObject.transform.localScale = new Vector3(1.35f, 0.12f, 1.35f);
+        exitObject.transform.localScale = new Vector3(1.35f, 0.45f, 1.35f);
 
         Collider trigger = exitObject.GetComponent<Collider>();
         if (trigger != null) trigger.isTrigger = true;
@@ -361,10 +373,13 @@ public sealed class LevelStartRunFlowController : MonoBehaviour
         rb.useGravity = false;
 
         Renderer renderer = exitObject.GetComponent<Renderer>();
+        Material exitMaterial = CreateGlowMaterial(new Color(0.1f, 0.9f, 1f, 1f), 2.2f);
         if (renderer != null)
         {
-            renderer.sharedMaterial = CreateGlowMaterial(new Color(0.1f, 0.9f, 1f, 1f), 2.2f);
+            renderer.sharedMaterial = exitMaterial;
         }
+
+        CreateExitBeacon(exitObject.transform, exitMaterial);
 
         Light light = exitObject.AddComponent<Light>();
         light.type = LightType.Point;
@@ -413,13 +428,13 @@ public sealed class LevelStartRunFlowController : MonoBehaviour
         }
     }
 
-    private static Vector3 GetRoomFloorCenter(GameObject roomRoot)
+    private static Vector3 GetRoomExitCenter(GameObject roomRoot)
     {
         Transform boundsTransform = roomRoot.transform.Find("Bounds");
         if (boundsTransform != null && boundsTransform.TryGetComponent(out BoxCollider boundsCollider))
         {
             Bounds bounds = boundsCollider.bounds;
-            return new Vector3(bounds.center.x, bounds.min.y + 0.18f, bounds.center.z);
+            return new Vector3(bounds.center.x, bounds.center.y, bounds.center.z);
         }
 
         Renderer[] renderers = roomRoot.GetComponentsInChildren<Renderer>();
@@ -431,10 +446,39 @@ public sealed class LevelStartRunFlowController : MonoBehaviour
                 bounds.Encapsulate(renderers[i].bounds);
             }
 
-            return new Vector3(bounds.center.x, bounds.min.y + 0.18f, bounds.center.z);
+            return new Vector3(bounds.center.x, Mathf.Max(bounds.center.y, bounds.min.y + 0.75f), bounds.center.z);
         }
 
-        return roomRoot.transform.position + Vector3.up * 0.18f;
+        return roomRoot.transform.position + Vector3.up * 0.75f;
+    }
+
+    private static void CreateExitBeacon(Transform parent, Material material)
+    {
+        GameObject beam = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        beam.name = "Exit Beacon Beam";
+        beam.transform.SetParent(parent, false);
+        beam.transform.localPosition = Vector3.up * 1.05f;
+        beam.transform.localScale = new Vector3(0.28f, 1.1f, 0.28f);
+        DisableCollider(beam);
+
+        Renderer beamRenderer = beam.GetComponent<Renderer>();
+        if (beamRenderer != null) beamRenderer.sharedMaterial = material;
+
+        GameObject orb = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        orb.name = "Exit Beacon Orb";
+        orb.transform.SetParent(parent, false);
+        orb.transform.localPosition = Vector3.up * 2.2f;
+        orb.transform.localScale = Vector3.one * 0.65f;
+        DisableCollider(orb);
+
+        Renderer orbRenderer = orb.GetComponent<Renderer>();
+        if (orbRenderer != null) orbRenderer.sharedMaterial = material;
+    }
+
+    private static void DisableCollider(GameObject target)
+    {
+        Collider collider = target.GetComponent<Collider>();
+        if (collider != null) collider.enabled = false;
     }
 
     private void ClearExitObject()
@@ -444,6 +488,17 @@ public sealed class LevelStartRunFlowController : MonoBehaviour
         exitObject.SetActive(false);
         Destroy(exitObject);
         exitObject = null;
+    }
+
+    private void DisableExitInteraction()
+    {
+        if (exitObject == null) return;
+
+        Collider[] colliders = exitObject.GetComponentsInChildren<Collider>();
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            colliders[i].enabled = false;
+        }
     }
 
     private void EnsurePlayerKelpVisual()
