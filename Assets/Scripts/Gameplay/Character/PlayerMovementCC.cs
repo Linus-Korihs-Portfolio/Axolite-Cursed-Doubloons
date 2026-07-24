@@ -27,6 +27,7 @@ public class PlayerMovementCC : MonoBehaviour
 
     private Vector3 externalVelocity;
     private float externalTimer;
+    private KelpAnimatorBridge kelpAnimator;
 
     private void Awake()
     {
@@ -80,6 +81,7 @@ public class PlayerMovementCC : MonoBehaviour
         if (move.magnitude >= DirUpdateDeadzone) LastMoveDir = move.normalized;
 
         Vector3 velocity = move * WalkSpeed * SpeedMultiplier;
+        UpdateKelpMovementAnimation(move.magnitude * SpeedMultiplier);
         if (externalTimer > 0f) velocity += externalVelocity;
 
         velocity.y = verticalVelocity;
@@ -91,5 +93,32 @@ public class PlayerMovementCC : MonoBehaviour
         vel.y = 0f;
         externalVelocity = vel;
         externalTimer = Mathf.Max(duration, 0.01f);
+    }
+
+    private void UpdateKelpMovementAnimation(float speed)
+    {
+        KelpAnimatorBridge bridge = ResolveKelpAnimator();
+        if (bridge != null)
+        {
+            bridge.SetSpeed(Mathf.Clamp01(speed));
+        }
+    }
+
+    private KelpAnimatorBridge ResolveKelpAnimator()
+    {
+        if (kelpAnimator != null) return kelpAnimator;
+
+        PlayerKelpVisualInstaller installer = GetComponentInParent<PlayerKelpVisualInstaller>();
+        if (installer != null && installer.Bridge != null)
+        {
+            kelpAnimator = installer.Bridge;
+        }
+
+        if (kelpAnimator == null)
+        {
+            kelpAnimator = transform.root.GetComponentInChildren<KelpAnimatorBridge>(true);
+        }
+
+        return kelpAnimator;
     }
 }

@@ -122,9 +122,20 @@ public partial class MinionCore : MonoBehaviour
     public MinionRoleType RoleType => roleType; // Exposed runtime metadata for commander/input systems.
     public SupportMode? ActiveSupportMode => currentRole != null ? currentRole.GetSupportMode() : null;
     public bool IsDismissed => isDismissed;
+    public Transform FollowTarget => followTarget;
 
     // Fired just before the GameObject is destroyed due to death.
     public event Action<MinionCore> Died;
+
+    public void SetFollowTarget(Transform target, bool followImmediately = true)
+    {
+        followTarget = target;
+
+        if (followImmediately && target != null)
+        {
+            SetFollowCommand();
+        }
+    }
 
     private void Awake()
     {

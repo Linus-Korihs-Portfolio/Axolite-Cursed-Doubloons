@@ -163,11 +163,26 @@ public partial class MinionCore
                 return;
             }
 
+            if (ShouldUseDirectNavigationFallback(stopPoint))
+            {
+                MoveDirectly(toTarget / Mathf.Max(distance, 0.0001f));
+                return;
+            }
+
             HandleUnreachablePath();
             return;
         }
 
         Vector3 direction = toTarget / Mathf.Max(distance, 0.0001f);
+        MoveDirectly(direction);
+    }
+
+    private void MoveDirectly(Vector3 direction)
+    {
+        direction.y = 0f;
+        if (direction.sqrMagnitude <= 0.0001f) return;
+
+        direction.Normalize();
         transform.position += direction * GetRuntimeMoveSpeed() * Time.deltaTime;
         wasMovingThisFrame = true;
         lastMoveDir = direction;
@@ -253,6 +268,18 @@ public partial class MinionCore
         navCornerIndex = 1;
         navLastDestination = desiredDestination;
         return true;
+    }
+
+    private bool ShouldUseDirectNavigationFallback(Vector3 desiredDestination)
+    {
+        bool hasStart = NavMesh.SamplePosition(transform.position, out _, 1.0f, NavMesh.AllAreas);
+        bool hasDestination = NavMesh.SamplePosition(
+            desiredDestination,
+            out _,
+            Mathf.Max(0.1f, navTargetSampleRadius),
+            NavMesh.AllAreas);
+
+        return !hasStart || !hasDestination;
     }
 
     private void HandleUnreachablePath()
