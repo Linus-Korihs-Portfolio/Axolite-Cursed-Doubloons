@@ -1,4 +1,7 @@
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public sealed class PlayerKelpVisualInstaller : MonoBehaviour
 {
@@ -20,15 +23,23 @@ public sealed class PlayerKelpVisualInstaller : MonoBehaviour
 
     private void Awake()
     {
+        InstallIfNeeded();
+        SubscribeStats();
+    }
+
+    public void InstallIfNeeded()
+    {
         if (visualRoot == null)
         {
-            visualRoot = transform;
+            visualRoot = PlayerRootResolver.BodyTransform(gameObject);
+            if (visualRoot == null) visualRoot = transform;
         }
 
         Bridge = FindExistingBridge();
-        if (Bridge == null && kelpPrefab != null)
+        GameObject resolvedKelpPrefab = ResolveKelpPrefab();
+        if (Bridge == null && resolvedKelpPrefab != null)
         {
-            GameObject visual = Instantiate(kelpPrefab, visualRoot);
+            GameObject visual = Instantiate(resolvedKelpPrefab, visualRoot);
             visual.name = spawnedVisualName;
             visual.transform.localPosition = localPosition;
             visual.transform.localRotation = Quaternion.Euler(localEulerAngles);
@@ -42,6 +53,14 @@ public sealed class PlayerKelpVisualInstaller : MonoBehaviour
         }
 
         RefreshDamageFlashRenderers();
+    }
+
+    private void SubscribeStats()
+    {
+        if (stats != null)
+        {
+            stats.Died -= HandleDied;
+        }
 
         stats = GetComponentInChildren<CombatantStats>();
         if (stats != null)
@@ -72,6 +91,22 @@ public sealed class PlayerKelpVisualInstaller : MonoBehaviour
         }
 
         return GetComponentInChildren<KelpAnimatorBridge>(true);
+    }
+
+    private GameObject ResolveKelpPrefab()
+    {
+        if (kelpPrefab != null) return kelpPrefab;
+
+        kelpPrefab = Resources.Load<GameObject>("PF_Kelp");
+        if (kelpPrefab != null) return kelpPrefab;
+
+        kelpPrefab = Resources.Load<GameObject>("Runtime/PF_Kelp");
+        if (kelpPrefab != null) return kelpPrefab;
+
+#if UNITY_EDITOR
+        kelpPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Characters/PF_Kelp.prefab");
+#endif
+        return kelpPrefab;
     }
 
     private void DisablePlaceholderRenderer()

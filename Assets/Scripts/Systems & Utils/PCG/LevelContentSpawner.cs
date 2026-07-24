@@ -159,6 +159,7 @@ public class LevelContentSpawner : MonoBehaviour
         }
 
         CurrentPlayer = player;
+        Transform playerBody = PlayerRootResolver.BodyTransform(player);
         PlayerMinionCommander commander = player.GetComponentInChildren<PlayerMinionCommander>();
         if (commander == null) commander = FindFirstObjectByType<PlayerMinionCommander>();
         if (commander != null) commander.ClearRegisteredMinions();
@@ -166,9 +167,9 @@ public class LevelContentSpawner : MonoBehaviour
         System.Random rng = CreateChildRandom(seed, 202);
         int fallbackIndex = 0;
         int fallbackTotal = Mathf.Max(1, Mathf.Max(0, melee) + Mathf.Max(0, ranged) + Mathf.Max(0, support));
-        SpawnMinionGroup("Melee", melee, null, rng, commander, player, fallbackTotal, ref fallbackIndex);
-        SpawnMinionGroup("Ranged", ranged, null, rng, commander, player, fallbackTotal, ref fallbackIndex);
-        SpawnMinionGroup("Support", support, null, rng, commander, player, fallbackTotal, ref fallbackIndex);
+        SpawnMinionGroup("Melee", melee, null, rng, commander, playerBody, fallbackTotal, ref fallbackIndex);
+        SpawnMinionGroup("Ranged", ranged, null, rng, commander, playerBody, fallbackTotal, ref fallbackIndex);
+        SpawnMinionGroup("Support", support, null, rng, commander, playerBody, fallbackTotal, ref fallbackIndex);
     }
 
     public void ClearSpawnedObjects()
@@ -289,12 +290,13 @@ public class LevelContentSpawner : MonoBehaviour
         List<PCGSpawnPoint> points = CollectSpawnPoints(rooms, PCGSpawnPointKind.Minion);
         PlayerMinionCommander commander = player != null ? player.GetComponentInChildren<PlayerMinionCommander>() : FindFirstObjectByType<PlayerMinionCommander>();
         if (commander != null) commander.ClearRegisteredMinions();
+        Transform playerBody = PlayerRootResolver.BodyTransform(player);
 
         int fallbackIndex = 0;
         int fallbackTotal = Mathf.Max(1, total);
-        SpawnMinionGroup("Melee", melee, points, rng, commander, player, fallbackTotal, ref fallbackIndex);
-        SpawnMinionGroup("Ranged", ranged, points, rng, commander, player, fallbackTotal, ref fallbackIndex);
-        SpawnMinionGroup("Support", support, points, rng, commander, player, fallbackTotal, ref fallbackIndex);
+        SpawnMinionGroup("Melee", melee, points, rng, commander, playerBody, fallbackTotal, ref fallbackIndex);
+        SpawnMinionGroup("Ranged", ranged, points, rng, commander, playerBody, fallbackTotal, ref fallbackIndex);
+        SpawnMinionGroup("Support", support, points, rng, commander, playerBody, fallbackTotal, ref fallbackIndex);
     }
 
     private void SpawnMinionGroup(
@@ -303,7 +305,7 @@ public class LevelContentSpawner : MonoBehaviour
         List<PCGSpawnPoint> points,
         System.Random rng,
         PlayerMinionCommander commander,
-        GameObject player,
+        Transform playerBody,
         int fallbackTotal,
         ref int fallbackIndex)
     {
@@ -317,14 +319,14 @@ public class LevelContentSpawner : MonoBehaviour
             int fallbackSlot = fallbackIndex++;
             GameObject minionObject = point != null
                 ? SpawnPrefab(entry.prefab, point, roleId)
-                : SpawnPrefabNearPlayer(entry.prefab, player, roleId, fallbackSlot, fallbackTotal);
+                : SpawnPrefabNearPlayer(entry.prefab, playerBody, roleId, fallbackSlot, fallbackTotal);
 
             if (minionObject == null) continue;
 
             MinionCore minion = minionObject.GetComponentInChildren<MinionCore>();
-            if (minion != null && player != null)
+            if (minion != null && playerBody != null)
             {
-                minion.SetFollowTarget(player.transform);
+                minion.SetFollowTarget(playerBody);
             }
 
             if (commander != null && minion != null)
@@ -508,12 +510,12 @@ public class LevelContentSpawner : MonoBehaviour
         return go;
     }
 
-    private GameObject SpawnPrefabNearPlayer(GameObject prefab, GameObject player, string contentId, int indexInGroup, int groupCount)
+    private GameObject SpawnPrefabNearPlayer(GameObject prefab, Transform playerBody, string contentId, int indexInGroup, int groupCount)
     {
-        if (prefab == null || player == null) return null;
+        if (prefab == null || playerBody == null) return null;
 
-        Vector3 basePosition = player.transform.position;
-        Vector3 forward = player.transform.forward;
+        Vector3 basePosition = playerBody.position;
+        Vector3 forward = playerBody.forward;
         forward.y = 0f;
         if (forward.sqrMagnitude < 0.001f) forward = Vector3.forward;
         forward.Normalize();
@@ -535,7 +537,7 @@ public class LevelContentSpawner : MonoBehaviour
             }
         }
 
-        return SpawnPrefabAt(prefab, position, player.transform.rotation, contentId);
+        return SpawnPrefabAt(prefab, position, playerBody.rotation, contentId);
     }
 
     private GameObject SpawnPrefabAt(GameObject prefab, Vector3 position, Quaternion rotation, string contentId)
@@ -641,7 +643,13 @@ public class LevelContentSpawner : MonoBehaviour
             if (controllers[i] != null) controllers[i].enabled = false;
         }
 
+        Transform body = PlayerRootResolver.BodyTransform(player);
         player.transform.SetPositionAndRotation(position, rotation);
+        if (body != null && body != player.transform)
+        {
+            body.localPosition = Vector3.zero;
+            body.localRotation = Quaternion.identity;
+        }
 
         Rigidbody[] rigidbodies = player.GetComponentsInChildren<Rigidbody>();
         for (int i = 0; i < rigidbodies.Length; i++)

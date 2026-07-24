@@ -172,6 +172,7 @@ public sealed class LevelStartRunFlowController : MonoBehaviour
 
         commander = FindFirstObjectByType<PlayerMinionCommander>();
         player = commander != null ? PlayerRootResolver.FromCommander(commander) : FindTaggedPlayerRoot();
+        EnsurePlayerKelpVisual();
     }
 
     private void LoadRunSceneThenGenerate()
@@ -298,12 +299,15 @@ public sealed class LevelStartRunFlowController : MonoBehaviour
     {
         if (startButtonObject != null || player == null) return;
 
-        Vector3 forward = player.transform.forward;
+        Transform playerBody = PlayerRootResolver.BodyTransform(player);
+        if (playerBody == null) playerBody = player.transform;
+
+        Vector3 forward = playerBody.forward;
         forward.y = 0f;
         if (forward.sqrMagnitude < 0.001f) forward = Vector3.forward;
         forward.Normalize();
 
-        Vector3 position = player.transform.position + forward * 3f + Vector3.up * 0.12f;
+        Vector3 position = playerBody.position + forward * 3f + Vector3.up * 0.12f;
 
         startButtonObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         startButtonObject.name = "Run Start Button";
@@ -440,6 +444,19 @@ public sealed class LevelStartRunFlowController : MonoBehaviour
         exitObject.SetActive(false);
         Destroy(exitObject);
         exitObject = null;
+    }
+
+    private void EnsurePlayerKelpVisual()
+    {
+        if (player == null) return;
+
+        PlayerKelpVisualInstaller installer = player.GetComponentInChildren<PlayerKelpVisualInstaller>(true);
+        if (installer == null)
+        {
+            installer = player.AddComponent<PlayerKelpVisualInstaller>();
+        }
+
+        installer.InstallIfNeeded();
     }
 
     private void EnsureSelectionUI()

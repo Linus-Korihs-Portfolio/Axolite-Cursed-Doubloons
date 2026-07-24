@@ -74,6 +74,32 @@ public static class PlayerRootResolver
         return null;
     }
 
+    public static Transform BodyTransform(GameObject player)
+    {
+        GameObject root = FromGameObject(player);
+        if (root == null) return null;
+
+        PlayerMovementCC movement = root.GetComponentInChildren<PlayerMovementCC>(true);
+        if (movement != null && movement.BodyTransform != null)
+        {
+            return movement.BodyTransform;
+        }
+
+        CharacterController controller = root.GetComponentInChildren<CharacterController>(true);
+        if (controller != null)
+        {
+            return controller.transform;
+        }
+
+        PlayerMinionCommander commander = root.GetComponentInChildren<PlayerMinionCommander>(true);
+        if (commander != null && commander.transform.parent != null)
+        {
+            return commander.transform.parent;
+        }
+
+        return root.transform;
+    }
+
     private static bool IsPlayerCandidate(GameObject candidate)
     {
         if (candidate == null) return false;
