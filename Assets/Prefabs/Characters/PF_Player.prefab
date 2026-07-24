@@ -409,6 +409,7 @@ GameObject:
   - component: {fileID: 7388677436742357913}
   - component: {fileID: 2488087701667082845}
   - component: {fileID: 7575410052766950279}
+  - component: {fileID: 8847731206094003011}
   m_Layer: 3
   m_Name: P_Mesh
   m_TagString: Player
@@ -516,6 +517,24 @@ CharacterController:
   m_SkinWidth: 0.07
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.59, z: 0.1}
+--- !u!114 &8847731206094003011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8325294067539546729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c0a968e169a2054bbd52398182abfa0, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DamageFlash
+  renderers:
+  - {fileID: 2488087701667082845}
+  flashColor: {r: 1, g: 0.05, b: 0.05, a: 1}
+  flashIntensity: 3
+  flashDuration: 0.2
+  stats: {fileID: 5543834454630587138}
 --- !u!1 &8803991097369859890
 GameObject:
   m_ObjectHideFlags: 0

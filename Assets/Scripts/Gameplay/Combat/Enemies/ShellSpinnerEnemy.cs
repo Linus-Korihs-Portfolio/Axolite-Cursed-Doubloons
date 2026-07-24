@@ -885,7 +885,8 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
     public void OnSpinAttackStartFrame()
     {
-        SetContinueSpinningAnimation(true);
+        if (currentState == SpinnerState.Spinning)
+            SetContinueSpinningAnimation(true);
     }
 
     public void OnSpinAttackHitFrame()
@@ -895,6 +896,12 @@ public class ShellSpinnerEnemy : MonoBehaviour
 
     public void OnSpinAttackEndFrame()
     {
+        if (currentState == SpinnerState.Windup || currentState == SpinnerState.Spinning)
+        {
+            SetContinueSpinningAnimation(true);
+            return;
+        }
+
         StopSpinningAnimation();
     }
 
