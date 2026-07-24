@@ -116,7 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 222ca75e431e4124e8bd8faa9890b56f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatantStats
-  baseProfile: {fileID: 11400000, guid: 6384b8f9b043f3e4a8ec5a3af88cc5de, type: 2}
+  baseProfile: {fileID: 11400000, guid: b8715e1f703ebf5419cbaab49ec3f5b6, type: 2}
   currentHealth: 0
   despawnOnDeath: 1
   despawnDelay: 1
