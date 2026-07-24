@@ -219,6 +219,10 @@ public class ShellSpinnerEnemy : MonoBehaviour
             if (placeholderRenderer != null)
                 placeholderRenderer.enabled = false;
         }
+
+        EnemyCursorHighlight highlight = GetComponent<EnemyCursorHighlight>();
+        if (highlight != null)
+            highlight.RefreshRenderers();
     }
 
     private void Update()

@@ -73,6 +73,9 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
     [SerializeField] private float visualYawOffset;
     [SerializeField, Min(0f)] private float deathDestroyDelay = 1.5f;
 
+    [Header("Air Movement")]
+    [SerializeField, Min(0f)] private float airborneTargetSmoothing = 12f;
+
     [Header("Debug")]
     [SerializeField] private bool enableLogs;
     private CombatantStats stats;
@@ -96,6 +99,8 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
     private float noTargetHoverTimer;
 
     private Vector3 frame3DVelocity;
+    private Vector3 smoothedDiveTargetPosition;
+    private bool hasSmoothedDiveTargetPosition;
 
     private Collider myCollider;    // own collider cached for Physics.IgnoreCollision
     private Collider activeDiveCollider;    // target's collider; collision is restored after dive
@@ -184,6 +189,10 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
             if (placeholderRenderer != null)
                 placeholderRenderer.enabled = false;
         }
+
+        EnemyCursorHighlight highlight = GetComponent<EnemyCursorHighlight>();
+        if (highlight != null)
+            highlight.RefreshRenderers();
     }
 
     private void Update()
@@ -340,7 +349,8 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
                 float hitDist = settings != null ? settings.DiveHitDistance : 1.2f;
 
                 // Move toward the target (both horizontally and vertically).
-                Vector3 toTarget = diveTarget.position - transform.position;
+                Vector3 targetPosition = GetSmoothedDiveTargetPosition(diveTarget.position);
+                Vector3 toTarget = targetPosition - transform.position;
                 float dist = toTarget.magnitude;
 
                 if (dist <= hitDist)
@@ -628,9 +638,32 @@ public class BurrowerEnemy : MonoBehaviour, IAimTarget
         transform.rotation   = Quaternion.Slerp(transform.rotation, targetRot, rs * Time.deltaTime);
     }
 
+    private Vector3 GetSmoothedDiveTargetPosition(Vector3 targetPosition)
+    {
+        if (!hasSmoothedDiveTargetPosition || airborneTargetSmoothing <= 0f)
+        {
+            smoothedDiveTargetPosition = targetPosition;
+            hasSmoothedDiveTargetPosition = true;
+            return smoothedDiveTargetPosition;
+        }
+
+        float t = 1f - Mathf.Exp(-airborneTargetSmoothing * Time.deltaTime);
+        smoothedDiveTargetPosition = Vector3.Lerp(smoothedDiveTargetPosition, targetPosition, t);
+        return smoothedDiveTargetPosition;
+    }
+
+    private void StopAirVelocity()
+    {
+        frame3DVelocity = Vector3.zero;
+        if (rb != null && !rb.isKinematic)
+            rb.linearVelocity = Vector3.zero;
+    }
+
     private void SetState(BurrowerState newState)
     {
         if (newState == currentState) return;
+        StopAirVelocity();
+        hasSmoothedDiveTargetPosition = false;
         Log($"State: {currentState} → {newState}");
         // Ground / underground phases move via direct transform — keep kinematic
         if (rb != null)

@@ -25,7 +25,7 @@ MonoBehaviour:
   zoomSmoothing: 10
   occluderMask:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 128
   makeTransparent: 1
   transparentAlpha: 0.25
   occlusionRadius: 0.35

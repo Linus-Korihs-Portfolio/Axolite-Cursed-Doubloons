@@ -284,8 +284,9 @@ MonoBehaviour:
   animatedVisualLocalEulerAngles: {x: 0, y: 0, z: 0}
   animatedVisualLocalScale: {x: 1, y: 1, z: 1}
   hidePlaceholderMeshWhenVisualSpawned: 1
-  applyVisualYawOffset: 0
-  visualYawOffset: 0
+  applyVisualYawOffset: 1
+  visualYawOffset: 180
   deathDestroyDelay: 1.5
+  airborneTargetSmoothing: 12
   enableLogs: 1
   currentState: 0
