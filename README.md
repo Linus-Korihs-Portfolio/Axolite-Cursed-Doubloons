@@ -9,7 +9,7 @@ Axolite: Cursed Doubloons is a 3D roguelite in which the player commands AI-cont
 ## Overview
 
 Axolite: Cursed Doubloons is a 3D adventure roguelite built with Unity and C#.
-The project was created as a fourth-semester university project.
+The project was created as a fifth-semester university project.
 
 The player controls a character inspired by the indirect unit-control gameplay of Pikmin. The player can move, dodge and punch, but the main mechanic is commanding companion units called Sluglings.
 
