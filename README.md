@@ -85,11 +85,9 @@ Handling fixed/random seeds, retry setup and deterministic `System.Random` initi
                 rng = new System.Random(runSeed);
 ```
 
-The generator also logs on how the PCG tried to generate layouts for designer and programmer to better adjust values.
+The generator logs retry attemps, socket capping, NavMesh building, finale generation results and content spawning after a successful layout pass. The logs can help the designer and programmer to debug and adjust PCG values in the Inspector.
 
 ![PCG generation logs](docs/pcg-log.png)
-
-The generator records retry attempts, socket capping, NavMesh building and content spawning after a successful layout pass.
 
 ### Companion Commands
 
@@ -100,6 +98,8 @@ Sluglings can be ordered to attack enemies or objects. The command system select
 ![Recall and dismiss formation](docs/sluglings-recall-dismiss.gif)
 
 The player can recall nearby Sluglings or dismiss them into role-based formation positions around the player.
+
+## How to Play / Run
 
 Download/play:
 - Itch.io: Coming soon
@@ -119,5 +119,5 @@ The project is still in development. This fork reflects the project state from 1
 ## Links
 
 - Original repository: [LinusKorihs/GruenderGame](https://github.com/LinusKorihs/GruenderGame)
-- [Portfolio](https://Linustheuringer.com)
+- [Portfolio](https://linustheuringer.com)
 - Itch.io: Coming soon
