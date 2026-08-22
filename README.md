@@ -104,10 +104,6 @@ The player can recall nearby Sluglings or dismiss them into role-based formation
 
 ## How to Play / Run
 
-Download/play:
-- Itch.io: Coming soon
-- GitHub Release: Coming soon
-
 Development setup:
 - Coming soon
 
