@@ -50,7 +50,10 @@ My main contributions:
 
 Same seed produces the same generated layout, while random seed mode creates a different layout for each run.
 
-- Example Code: [`RoomAssemblerGenerator, Line 112-140`](Assets/Scripts/Systems%20%26%20Utils/PCG/RoomAssemblerGenerator.cs#L112-L140)
+- Example Code:
+
+[`RoomAssemblerGenerator, Line 112-140`](Assets/Scripts/Systems%20%26%20Utils/PCG/RoomAssemblerGenerator.cs#L112-L140)
+
 Handling fixed/random seeds, retry setup and deterministic `System.Random` initialization.
 
 ```csharp
