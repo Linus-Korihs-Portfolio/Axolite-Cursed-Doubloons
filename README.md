@@ -44,9 +44,62 @@ My main contributions:
 
 ## Media
 
-Screenshots and gameplay footage will be added after the next portfolio-relevant project milestone.
+### Procedural Generation
 
-## How to Play / Run
+![Seed-based procedural generation](docs/pcg-seed-generation.gif)
+
+Same seed produces the same generated layout, while random seed mode creates a different layout for each run.
+
+- Example Code: [`RoomAssemblerGenerator, Line 112-140`](Assets/Scripts/Systems%20%26%20Utils/PCG/RoomAssemblerGenerator.cs#L112-L140)
+Handling fixed/random seeds, retry setup and deterministic `System.Random` initialization.
+
+```csharp
+            int totalRetries = normalRetries + fallbackRetries;
+            int initialSeed = seedOverride ?? (config.randomSeed ? Environment.TickCount : config.seed);
+            metrics.initialSeed = initialSeed;
+
+            for (int attempt = 0; attempt < totalRetries; attempt++)
+            {
+                if (clearBeforeGenerate) ClearChildren(parent);
+
+                bool emergencyFallback = attempt >= normalRetries;
+                metrics.emergencyFallbackUsed = emergencyFallback;
+                metrics.fullAttemptsUsed = attempt + 1;
+                int displayAttempt = emergencyFallback
+                    ? attempt - normalRetries + 1
+                    : attempt + 1;
+                int displayAttemptLimit = emergencyFallback ? fallbackRetries : normalRetries;
+
+                if (emergencyFallback && attempt == normalRetries)
+                {
+                    Debug.LogWarning(
+                        $"[PCG] Normal generation failed after {normalRetries} attempts. " +
+                        $"Starting {fallbackRetries} bounded emergency fallback attempt(s) with relaxed constraints.",
+                        this);
+                }
+
+                int runSeed = initialSeed + attempt;
+
+                LastRunSeed = runSeed;
+                metrics.seed = runSeed;
+                rng = new System.Random(runSeed);
+```
+
+The generator also logs on how the PCG tried to generate layouts for designer and programmer to better adjust values.
+
+![PCG generation logs](docs/pcg-log.png)
+
+The generator records retry attempts, socket capping, NavMesh building and content spawning after a successful layout pass.
+
+### Companion Commands
+
+![Slugling command attack](docs/sluglings-attack.gif)
+
+Sluglings can be ordered to attack enemies or objects. The command system selects suitable companion units based on role and current target state.
+
+![Recall and dismiss formation](docs/sluglings-recall-dismiss.gif)
+
+The player can recall nearby Sluglings or dismiss them into role-based formation positions around the player.
 
 Download/play:
 - Itch.io: Coming soon
@@ -66,5 +119,5 @@ The project is still in development. This fork reflects the project state from 1
 ## Links
 
 - Original repository: [LinusKorihs/GruenderGame](https://github.com/LinusKorihs/GruenderGame)
-- Portfolio: Coming soon
+- [Portfolio](https://Linustheuringer.com)
 - Itch.io: Coming soon
