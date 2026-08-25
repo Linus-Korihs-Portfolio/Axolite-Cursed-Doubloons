@@ -105,7 +105,7 @@ The player can recall nearby Sluglings or dismiss them into role-based formation
 ## How to Play / Run
 
 Development setup:
-- Coming soon
+- No public build yet
 
 ## Project Context
 
@@ -119,4 +119,4 @@ The project is still in development. This fork reflects the project state from 1
 
 - Original repository: [LinusKorihs/GruenderGame](https://github.com/LinusKorihs/GruenderGame)
 - [Portfolio](https://linustheuringer.com)
-- Itch.io: Coming soon
+- Itch.io: No public build yet, active in development
