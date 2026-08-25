@@ -118,4 +118,4 @@ The project is still in development. This fork reflects the project state from 1
 - Original repository: [LinusKorihs/GruenderGame](https://github.com/LinusKorihs/GruenderGame)
 - [Portfolio](https://linustheuringer.com)
 - Itch.io: No public build yet, active in development
-- Mail: Linustheuringer@gmail.com
+- Email: [Linustheuringer@gmail.com](mailto:linustheuringer@gmail.com)
